@@ -1,0 +1,29 @@
+digraph G {
+  graph [rankdir=TB, splines=true, overlap=false, fontsize=12, fontname="Times-Roman",
+         ranksep=0.35, nodesep=0.25];
+  node  [shape=ellipse, fontsize=12, fontname="Times-Roman", margin="0.14,0.08"];
+  edge  [fontsize=10, fontname="Times-Roman", arrowsize=0.8];
+
+  D   [label=<Narrative prefix<br/><b>D</b><sub>obs,t</sub>>];
+  I   [label=<Interpreter network<br/><b>I</b><sub>&theta;</sub>>];
+  M   [label=<Latent SCM<br/><b>M</b><sub>t</sub>>];
+  P   [label=<Predictor network<br/><b>P</b><sub>&phi;</sub>>];
+  Phat[label=<Predicted next-event dist.<br/><b>p̂</b><sub>&phi;</sub>(e<sub>t+1</sub>|<br/>D<sub>obs,t</sub>, M<sub>t</sub>)>];
+  E   [label=<Observed event<br/>e<sub>t+1</sub>>];
+  Lp  [label=<Predictive loss (NLL)<br/><b>L</b><sub>pred</sub>>];
+
+  // Forward pass (vertical)
+  D -> I;
+  I -> M;
+  M -> P;
+  D -> P;
+
+  P -> Phat;
+  Phat -> E [style=invis];        // layout: place E beneath Phat
+  E -> Lp;
+  Phat -> Lp [constraint=false];  // keep edge but don't force ranking
+
+  // Gradient flow (optional)
+  Lp -> P [style=dashed];
+  Lp -> I [style=dashed];
+}

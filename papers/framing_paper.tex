@@ -1,0 +1,449 @@
+\documentclass[11pt,letterpaper]{article}
+
+% ─── Packages ──────────────────────────────────────────────
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{mathtools}
+\usepackage{microtype}
+\usepackage[hidelinks]{hyperref}
+\usepackage[round,authoryear]{natbib}
+\usepackage{setspace}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+\usepackage{parskip}
+
+% ─── Formatting ───────────────────────────────────────────
+\onehalfspacing
+\setlength{\parindent}{1.5em}
+\setlength{\parskip}{0.3em}
+
+\titleformat{\section}{\Large\bfseries}{\thesection}{0.75em}{}
+\titleformat{\subsection}{\large\bfseries}{\thesubsection}{0.75em}{}
+\titleformat{\subsubsection}{\normalsize\bfseries\itshape}{\thesubsubsection}{0.75em}{}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[R]{\small\textit{Working Paper --- Draft}}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0pt}
+
+% ─── Theorem environments ─────────────────────────────────
+\newtheoremstyle{defn}{1em}{1em}{\itshape}{}{\bfseries}{.}{.5em}{}
+\theoremstyle{defn}
+\newtheorem{definition}{Definition}
+\newtheorem{hypothesis}{Hypothesis}
+
+% ─── Document ─────────────────────────────────────────────
+\title{\vspace{-2em}\textbf{Narrative Chain-of-Thought as Causal DAG Traversal:}\\[0.3em]
+\large A Formal Framework for Ethical Reasoning in Large Language Models}
+\author{[Authors]\\\textit{[Affiliations]}}
+\date{Working Paper --- April 2026}
+
+\begin{document}
+\maketitle
+
+% ═══════════════════════════════════════════════════════════
+% ABSTRACT
+% ═══════════════════════════════════════════════════════════
+\begin{abstract}
+\noindent
+We propose \textbf{Narrative Chain-of-Thought (N-CoT)}, a prompting framework that recasts chain-of-thought reasoning as traversal of a \textbf{Narrative-Causal Directed Acyclic Graph (NC-DAG)} whose structure is derived from archetypal ethical narratives present in large language model training corpora. Our framework is motivated by a convergence of three independently established findings: (1) that reasoning improves when externalized in its native representational format, as demonstrated by Visualization-of-Thought prompting for spatial reasoning \citep{wu2024mindseye}; (2) that ethical knowledge is irreducibly narrative in structure, as argued by the philosophical tradition from MacIntyre \citeyearpar{macintyre1981,macintyre2016} to Nussbaum \citeyearpar{nussbaum1990,nussbaum1997}; and (3) that causal structure is the primary organizational principle governing narrative comprehension in human cognition \citep{trabasso1985causal,chen2024causal}. We formalize the NC-DAG as a seven-tuple incorporating event nodes, causal edges, agent functions, decision nodes, consequence valuations, uncertainty distributions, and corpus alignment scores. We define CoT steps as a traversal protocol over this graph and introduce decision nodes as a distinguished class making ethical branching points explicit, with uncertainty quantification at each such node. We hypothesize that N-CoT produces \textit{moral simulacra} whose causal structure aligns with deep narrative archetypes, exhibiting richer ethical reasoning than standard CoT. We propose an archetype-based experimental design with evaluation metrics measuring structural alignment, decision-node depth, and consequential reasoning quality.
+\end{abstract}
+
+% ═══════════════════════════════════════════════════════════
+% 1. INTRODUCTION
+% ═══════════════════════════════════════════════════════════
+\section{Introduction}
+
+Large language models have achieved remarkable fluency across diverse reasoning tasks, yet their capacity for ethical reasoning remains conspicuously shallow. When confronted with moral dilemmas, contemporary LLMs overwhelmingly produce one of two response patterns: outright refusal grounded in policy constraints, or hedged deliberation that invokes ethical frameworks without engaging the causal texture of the dilemma at hand. Both patterns share a common failure: they abstract away from the narrative structure in which ethical knowledge is natively encoded, substituting rule-application for the kind of reasoning that moral philosophy, cognitive science, and literary theory all suggest is fundamental to genuine ethical understanding.
+
+Recent benchmark work corroborates this diagnosis. The Morables benchmark \citep{morables2025}, testing moral inference from literary fables, found that the most frequent failure mode across nearly all models was over-reliance on initial narrative cues rather than holistic comprehension of the full story's causal arc. The Moral Stories dataset \citep{emelin2021moral} demonstrated that while models can sometimes generate norm-consistent actions, their capacity for anticipating the downstream consequences of moral and immoral choices remains limited. And the MoralCoT approach \citep{jin2022when}, which prompts models to consider rules and consequences before deciding, improved performance on moral exception scenarios but did so through feature-based deliberation rather than narrative-structural reasoning---and notably, these static prompts can actually inhibit the reasoning of more capable models like GPT-4, as subsequent work by neuro-symbolic researchers found.
+
+This paper proposes a formal framework for addressing this deficit. We begin from the observation, now well-established in the prompting literature, that LLM reasoning improves when the externalized representation matches the native format of the knowledge domain. The Visualization-of-Thought (VoT) paradigm demonstrated this principle for spatial reasoning: prompting LLMs to generate visual representations of intermediate states significantly improved their performance on navigation and tiling tasks \citep{wu2024mindseye}. We argue that an analogous principle applies to ethical reasoning, but that the native representational format is narrative rather than spatial.
+
+The philosophical grounding for this claim is substantial. The tradition of narrative ethics, developed most influentially by Alasdair MacIntyre \citeyearpar{macintyre1981,macintyre2016} and Martha Nussbaum \citeyearpar{nussbaum1990,nussbaum1997}, holds that ethical knowledge is irreducibly storied. MacIntyre argues that only within the context of a narrative does an action become intelligible as the kind of action it is, and that practical reasoning always has a narrative dimension. Nussbaum contends that the analytical style of moral philosophy creates a disconnect between form and content: one cannot adequately reason about ethical struggles through abstraction alone. While this philosophical tradition is not without critics---Strawson \citeyearpar{strawson2004} challenged the constitutive role of narrative in selfhood---the weaker claim we advance here, that narrative structure provides a productive reasoning scaffold for ethical deliberation, is broadly accepted even by those who resist stronger narrative identity theses.
+
+The cognitive science of narrative comprehension provides converging empirical evidence. The foundational work of Trabasso and van den Broek \citeyearpar{trabasso1985causal} established that causal network representations of stories predict recall, summarization, and judged importance of events---and that causal chain membership and causal connectivity account for substantial unique variance beyond story-grammar categories alone. More recently, Chen and Bornstein \citeyearpar{chen2024causal} demonstrated that causal structure is the primary organizational principle by which humans comprehend and recall narratives, outperforming semantic, temporal, and presentation-order strategies even when stories are presented in scrambled form.
+
+We synthesize these lines of evidence into a formal framework we call Narrative Chain-of-Thought (N-CoT). The core technical contribution is the Narrative-Causal DAG (NC-DAG), a directed acyclic graph formalism that encodes the causal structure of ethical narratives with explicit representations of decision points, agent roles, consequence valuations, and uncertainty. We define a traversal protocol that maps CoT reasoning steps onto node visits in the NC-DAG, producing reasoning chains whose structure mirrors the causal architecture of archetypal ethical narratives.
+
+% ═══════════════════════════════════════════════════════════
+% 2. RELATED WORK
+% ═══════════════════════════════════════════════════════════
+\section{Related Work}
+
+Our framework sits at the intersection of six independently developed research streams. We survey each, identifying the specific contributions we draw upon and the gaps our work addresses.
+
+\subsection{Cognitive Science of Narrative Causality}
+
+The foundational claim that causal structure governs narrative comprehension originates with Trabasso, van den Broek, and colleagues in the 1980s. Trabasso and van den Broek \citeyearpar{trabasso1985causal} demonstrated that causal network representations of stories---directed graphs where nodes are story events and edges are causal relations---predict which events readers recall, include in summaries, and judge as important. Their causal network model specifies explicit criteria for establishing causal connections: temporal priority, operative presence, and counterfactual necessity. Events on the causal chain connecting the story's initiating event to its outcome are better remembered; events with more causal connections are judged more important. These findings have been replicated and extended across decades \citep{trabasso1985relatedness,vandenbroek1988,fletcher1988,goldman1999}.
+
+Chen and Bornstein \citeyearpar{chen2024causal} bring this tradition into contact with contemporary computational neuroscience. Their work demonstrates that causal structure scaffolds not only memory but also real-time comprehension, and they draw explicit connections to reinforcement learning, arguing that narratives help link causes to outcomes in complex environments. This provides a computational rationale for why narrative-causal structure might be especially relevant to LLM reasoning: if causal narrative structure is how complex action-consequence relationships are organized in the very texts LLMs are trained on, then activating that structure during reasoning should improve the quality of causal inference.
+
+A challenge from this literature for our formalism is the problem of multiple causation. As Chen and Bornstein note, events in narratives commonly have multiple candidate causes, creating a graph structure more complex than simple chains. Our NC-DAG addresses this by permitting multiple incoming edges per node (multiple causation) and typed edges (enabling, permitting, preventing relations) that capture the variety of causal relationships documented in the cognitive literature.
+
+\subsection{Computational Narratology and Narrative Planning}
+
+Computational narratology encompasses a broad tradition of formalizing narrative structure for computational processing. The field's foundational distinction between \textit{fabula} (the chronological-causal event sequence) and \textit{sujet} (the narrated discourse) maps directly onto our framework: the NC-DAG encodes the fabula; the traversal protocol generates the sujet. Akimoto \citeyearpar{akimoto2017} proposed a hierarchical graph model integrating the story world, story, and discourse as three structural dimensions, each represented as a graph. Mani \citeyearpar{mani2013} provided the first systematic foundation integrating narratology, AI, and computational linguistics.
+
+The narrative planning tradition, particularly the IPOCL planner of Riedl and Young \citeyearpar{riedl2010}, is the closest computational ancestor to our work and requires careful differentiation. IPOCL uses partial-order causal link (POCL) planning to generate causally sound plot progressions while simultaneously reasoning about character intentionality---characters must have perceivable goals that explain their actions. The system produces plan structures (directed graphs of actions connected by causal links) that are, in effect, narrative-causal DAGs. Subsequent work extended this to incorporate character conflict \citep{ware2011} and commonsense causal inference \citep{ammanabrolu2021}.
+
+Our work differs from the narrative planning tradition in three fundamental respects. First, narrative planning generates stories; our framework uses narrative structure as a reasoning scaffold for deliberation about existing ethical scenarios. Second, narrative planners operate with hand-crafted action schemas or learned event representations to produce novel plots; our framework leverages the implicit narrative knowledge already present in LLM training corpora. Third, and most importantly, narrative planners are not concerned with ethical reasoning, decision-making under uncertainty, or the relationship between narrative structure and moral judgment. Our NC-DAG adds decision nodes with explicit uncertainty quantification and consequence valuation---features absent from the planning literature---precisely because we are interested in ethical deliberation, not plot generation.
+
+\subsection{Graph-Structured LLM Reasoning}
+
+The progression from linear chain-of-thought \citep{wei2022chain} through tree-of-thoughts \citep{yao2024tree} to graph-of-thoughts \citep{besta2024} has established graph structure as a productive scaffold for LLM reasoning. Besta et al. provide the most comprehensive taxonomy, identifying seven fundamental aspects of structure-enhanced reasoning: topology class, scope, representation, derivation, reasoning schedule, schedule representation, and harnessed AI pipeline components. Our N-CoT framework instantiates a specific point in this design space: the topology class is a DAG (not a tree or general graph), the representation is implicit (prompted, not provided as a data structure), and the reasoning schedule is a structured traversal with four-phase expansion at decision nodes.
+
+Graph-CoT \citep{jin2024graph} is operationally the most similar existing system. It augments LLMs with external text-attributed knowledge graphs, enabling iterative reasoning through graph interaction and execution. Each iteration involves the LLM deciding what information is needed, querying the graph, and incorporating results. However, Graph-CoT operates over factual knowledge graphs for retrieval-augmented reasoning, not narrative-causal structures for ethical deliberation. The structural parallel is instructive---both involve LLM reasoning guided by graph traversal---but the domain, semantics, and purpose are entirely different.
+
+The VoT paradigm \citep{wu2024mindseye} provides the key analogical anchor. VoT demonstrated that prompting LLMs to generate visual representations at each reasoning step significantly improved spatial reasoning, achieving success rates up to 87.1\% compared to 57.4\% for standard approaches. The mechanism---adding a domain-appropriate externalized representation to each CoT step---is precisely what we propose to do with narrative structure for ethical reasoning. The principled difference is the representational format: visuospatial sketchpads for spatial reasoning; narrative-causal contextualization for ethical reasoning.
+
+An important question raised by this literature concerns whether the NC-DAG functions as an explicit or implicit topology. In our framework, the graph is implicit: the model is prompted to reason as if traversing a narrative-causal structure, but no external graph data structure is provided. This places N-CoT closer to standard CoT than to Graph-CoT in terms of implementation, while aiming for the structural benefits of graph-guided reasoning. The experimental evaluation of structural alignment ($\Phi$) is designed to test whether implicit prompting is sufficient to produce outputs with coherent graph structure.
+
+\subsection{LLM Ethical Reasoning and Moral Benchmarks}
+
+The landscape of LLM ethical reasoning evaluation is extensive. The ETHICS dataset \citep{hendrycks2020} established classification-based evaluation across deontological, utilitarian, virtue, and justice categories. Social Chemistry 101 \citep{forbes2020} introduced rules-of-thumb for social norm reasoning. The Moral Stories dataset \citep{emelin2021moral} is the most structurally relevant existing resource: it comprises 12{,}000 structured, branching narratives where each story includes a norm, situation, intention, normative action, divergent action, and respective consequences. This seven-component structure is, in effect, a simplified NC-DAG with a single decision node and two branches. Our framework generalizes this structure to arbitrary graph complexity with multiple decision nodes, multi-hop causal chains, and uncertainty quantification.
+
+MoralCoT \citep{jin2022when} is the most directly relevant prompting approach. It combines LLMs with cognitive science theories of moral reasoning, prompting models to consider relevant rules, consequences, and permissions before rendering judgment. MoralCoT outperformed seven existing LLMs on moral exception scenarios. However, MoralCoT operates through feature extraction---identifying morally relevant attributes---rather than narrative-structural reasoning. Notably, subsequent neuro-symbolic research found that MoralCoT's static prompts actually degraded GPT-4's performance, suggesting that the rigid feature-based scaffold can constrain the flexible reasoning of more capable models. Our N-CoT avoids this pitfall by providing structural scaffolding (narrative-causal traversal) without prescribing specific features to attend to.
+
+The GLUCOSE dataset \citep{mostafazadeh2020} provides a critical resource for operationalizing causal relations within narrative contexts. GLUCOSE encodes implicit commonsense causal knowledge as causal mini-theories grounded in narrative contexts, identifying ten dimensions of causal explanation covering events, states, motivations, and emotions. These dimensions could inform the edge typing in our NC-DAG formalism and provide training signal for the causal graph extraction pipeline needed for automated structural alignment measurement.
+
+\subsection{Causal Relation Extraction from Text}
+
+The feasibility of our structural alignment metric ($\Phi$) depends on the ability to extract causal graphs from natural language model outputs. Event Causality Identification (ECI) is an active and rapidly developing area of NLP. A comprehensive recent survey identifies three major challenges for ECI: the implicitness of many causal links (requiring deep contextual understanding), long-distance dependencies spanning multiple sentences, and severe sample imbalance in training data. Recent graph-based approaches that formalize ECI as edge prediction in event-relational graphs have achieved substantial improvements, particularly for cross-sentence causalities.
+
+The foundational method for constructing causal networks from narrative text is due to Trabasso and colleagues \citep{trabasso1985relatedness,trabasso1985causal,trabasso1989}. Their procedure segments a story into clauses, classifies each clause into one of six narrative categories (Setting, Event, Internal Response, Goal, Attempt, Outcome), and then applies a pairwise counterfactual necessity test: for each pair of clauses, trained coders ask whether, had event A not occurred, event B would still have occurred in the circumstances of the story. An affirmative answer to the counterfactual yields a causal edge; the resulting edges are typed as physical, motivational, psychological, or enabling relations. This method is well-validated---naive judges' strength ratings for causal relations decline linearly with causal distance in the resulting network, independent of temporal or referential distance---but it is inherently manual and does not scale beyond short narratives.
+
+Recent work has begun to automate this process. Li et al. \citeyearpar{li2025} propose an end-to-end framework for causal graph generation from narrative texts that uses LLM-based summarization to extract concise, agent-centered event vertices, applies seven linguistically informed features (an ``Expert Index'' including genericity, eventivity, boundedness, initiativity, temporal markers, and impact), and classifies causal links using a Situation-Task-Action-Consequence (STAC) model. Their hybrid system outperforms pure LLM-based approaches (GPT-4o, Claude 3.5) on causal graph quality across 100 narrative chapters and short stories. The ReCITE benchmark \citep{recite2025} provides the first realistic evaluation framework for causal graph construction from long-form real-world text. More broadly, a recent survey of LLMs for causal discovery identifies three integration modes: LLMs as direct graph inference engines, as posterior correction mechanisms refining statistically identified structures, and as prior information sources for traditional causal discovery algorithms. These developments make automated NC-DAG construction a tractable engineering problem rather than an open research question. We describe our specific pipeline in Section~\ref{sec:pipeline}.
+
+\subsection{Narrative Ethics in Philosophy}
+
+The philosophical tradition of narrative ethics provides the theoretical warrant for treating narrative as the native representational format for ethical knowledge. MacIntyre \citeyearpar{macintyre1981,macintyre2016} argues that action is only intelligible within narrative context---that the self who reasons morally is always a self embedded in a story, with a past, intentions, and anticipated futures. His concept of `narratability' as a precondition for moral intelligibility directly motivates our formalism's agent function and decision-node structure. Nussbaum \citeyearpar{nussbaum1990,nussbaum1997} argues that novels conduct ethical inquiry in ways superior to analytic philosophy because they explore the concrete particularity of ethical dilemmas faced by fully realized characters, harnessing the cognitive power of emotions. Newton \citeyearpar{newton1995} goes further, arguing that narrative and ethics are inseparable.
+
+We position our work relative to these philosophical claims with deliberate modesty. We do not claim that N-CoT produces genuine moral understanding or that LLMs become moral agents when prompted narratively. Our claim is weaker but more testable: that the causal structure of LLM outputs better aligns with the causal structure of ethical narratives in the training corpus when the model is prompted to reason in narrative-structural terms. This is a claim about representational format and structural fidelity, not about moral cognition.
+
+We also note that the philosophical tradition is not monolithic. Strawson \citeyearpar{strawson2004} challenged the narrative identity thesis. This objection is less damaging to our project than it might appear, because we are not making a claim about human moral cognition but about the structure of ethical knowledge as it is encoded in text corpora. Even if some humans reason non-narratively, the corpora on which LLMs are trained are overwhelmingly narrative in their encoding of ethical content---novels, case studies, news reports, philosophical thought experiments---and it is this statistical fact, not a universal claim about moral psychology, that grounds our approach.
+
+% ═══════════════════════════════════════════════════════════
+% 3. FORMAL FRAMEWORK
+% ═══════════════════════════════════════════════════════════
+\section{Formal Framework: The Narrative-Causal DAG}
+
+\subsection{Preliminaries and Motivation}
+
+A standard directed acyclic graph (DAG) in the Pearlian causal inference tradition consists of nodes representing variables and directed edges representing causal influence, with the acyclicity constraint enforcing that no variable can be its own descendant \citep{pearl2000}. This formalism has been applied extensively in epidemiology, economics, and social science. In the cognitive science of narrative comprehension, Trabasso and colleagues developed the causal network model using similar graph representations, but with semantics specific to narrative: nodes represent story events, edges represent causal enablement or necessity relations, and the causal chain---the path connecting the initiating event to the outcome---emerges as the structural backbone of the narrative.
+
+The narrative planning tradition \citep{riedl2010} extended graph-based representations to include character intentionality: in POCL plans, actions are connected by causal links (one action's effects satisfy another's preconditions), and characters have goal hierarchies that explain their participation. Our formalism synthesizes elements from both traditions while adding features specific to ethical deliberation: decision nodes, consequence valuations, and uncertainty quantification. The key insight motivating our formalism is that ethical narratives possess a specific kind of causal structure poorly captured by both standard causal DAGs (which lack agent and decision semantics) and standard narrative representations (which lack the formal precision needed for computational implementation in prompting frameworks).
+
+\subsection{The NC-DAG: Definition}
+
+We define the Narrative-Causal Directed Acyclic Graph as follows:
+
+\begin{definition}[NC-DAG]
+A Narrative-Causal DAG is a seven-tuple $G = (V, E, A, D, C, U, \Phi)$ where:
+\end{definition}
+
+\begin{itemize}[leftmargin=2em,itemsep=0.4em]
+\item $V = \{v_1, v_2, \ldots, v_n\}$ is a finite set of \textbf{event nodes}, each representing a discrete narrative event or state. Following Trabasso and van den Broek \citeyearpar{trabasso1985causal}, we require that each node be expressible as a proposition with temporal reference and agent involvement.
+
+\item $E \subseteq V \times V$ is a set of \textbf{directed causal edges} such that $(V, E)$ is acyclic. Edges are typed following the causal relation taxonomy established in the cognitive science literature and operationalized in GLUCOSE \citep{mostafazadeh2020}:
+\[ E = E_{\text{enable}} \cup E_{\text{permit}} \cup E_{\text{prevent}}, \]
+corresponding to enabling, permitting, and preventing causal relations. Multiple incoming edges per node are permitted, addressing the multiple-causation challenge identified in the narrative comprehension literature \citep{chen2024causal}.
+
+\item $A: V \to \mathcal{P}(\text{Agents})$ is an \textbf{agent function} mapping each event node to the set of agents involved in or affected by that event. This draws on Riedl and Young's \citeyearpar{riedl2010} insight that narrative events are not abstract state transitions but actions and experiences of intentional agents, and extends it by tracking not only acting agents but affected parties---essential for ethical reasoning where harm to stakeholders is the central concern.
+
+\item $D \subseteq V$ is a distinguished set of \textbf{decision nodes} where $D \subsetneq V$, representing moments where an agent faces a genuine ethical choice. For each $d \in D$, the out-edges represent available actions and the subgraphs reachable from each represent consequential futures. We require $|\text{out}(d)| \geq 2$. Decision nodes are the formal analog of what the Moral Stories dataset \citep{emelin2021moral} encodes as the branching point between normative and divergent actions, generalized to arbitrary branching degree.
+
+\item $C: V_{\text{term}} \to \mathbb{R}$ is a \textbf{consequence valuation function} mapping terminal nodes to ethical valuations. These are signed: positive values indicate outcomes the narrative frames as ethically favorable; negative values indicate harm. Valuations encode the narrative's own evaluative orientation, not an external moral theory.
+
+\item $U: D \to \Delta(\text{out}(d))$ is an \textbf{uncertainty distribution} assigning to each decision node a probability distribution over outgoing edges, representing the agent's assessment of how likely each consequential path is. We extend $U$ to include second-order epistemic uncertainty $\eta(d)$ over parameterizations of $U(d, \cdot)$, capturing the agent's confidence in their own consequence estimates.
+
+\item $\Phi: \mathcal{G} \to [0, 1]$ is a \textbf{corpus alignment score} measuring the degree to which the graph's causal structure matches archetypal narrative structures present in the model's training corpus. Formally,
+\[ \Phi(G) = \max_{i} \sigma(G, \Lambda_i) \]
+where $\Lambda = \{\Lambda_1, \ldots, \Lambda_k\}$ is a reference library of archetypal NC-DAGs and $\sigma$ is a graph kernel measuring topological, decision-structural, consequence-pattern, and agent-role alignment.
+\end{itemize}
+
+\subsection{Decision Nodes and Ethical Branching}
+
+The introduction of decision nodes $D$ as a formally distinguished subset of $V$ is the critical addition separating our framework from both Pearlian causal DAGs and narrative planning formalisms. In Pearl's framework, all nodes are treated symmetrically as variables. In POCL planning \citep{riedl2010}, while characters have goals, there is no formal distinction between events involving genuine moral choice and events representing mere causal consequence. In the Moral Stories dataset \citep{emelin2021moral}, the branching between normative and divergent action is structural but limited to a single binary fork.
+
+We require that decision nodes satisfy three properties:
+
+\begin{definition}[Decision Node Properties]
+A decision node $d \in D$ satisfies:
+\begin{enumerate}[label=(\roman*),leftmargin=2em]
+\item \textit{Agency Constraint:} $A(d)$ contains at least one agent with the capacity to choose among available out-edges, distinguishing ethical decisions from mere causal branching due to external forces.
+\item \textit{Consequence Divergence:} The subgraphs reachable from distinct out-edges must lead to terminal nodes with non-identical consequence valuations, ensuring ethical non-triviality.
+\item \textit{Uncertainty Non-Degeneracy:} $U(d, \cdot)$ must assign non-zero probability to at least two out-edges. Genuine ethical decisions involve uncertain consequences; a decision where the best path is known with certainty reduces to optimization, not moral reasoning.
+\end{enumerate}
+\end{definition}
+
+\subsection{Uncertainty Quantification at Decision Nodes}
+
+We model uncertainty through two complementary mechanisms. \textit{Aleatory uncertainty} captures the genuine stochastic character of moral consequences and is represented by $U(d, \cdot)$. \textit{Epistemic uncertainty} captures the agent's incomplete knowledge and is represented by a second-order distribution $\eta(d)$ over the simplex $\Delta(\text{out}(d))$. The expected ethical value of choosing edge $e$ from decision node $d$ is:
+\[ EV(d, e) = \int \sum_{t} C(t) \cdot P(t \mid e, \theta) \, d\eta(\theta). \]
+
+This formulation does not prescribe a specific ethical theory. A risk-averse agent weights high-variance paths differently from a risk-neutral one; a deontologically-inclined agent may refuse certain edges regardless of expected value; a consequentialist optimizes $EV$ directly. The NC-DAG provides formal scaffolding within which different theories can be expressed as different traversal policies.
+
+\subsection{Automated NC-DAG Construction from Text}
+\label{sec:pipeline}
+
+A formal framework is only as useful as its ability to be instantiated from actual data. We require a method for constructing NC-DAGs from two sources: (a) canonical ethical narratives in existing corpora, to build the reference archetype library $\Lambda$, and (b) LLM-generated reasoning outputs, to compute the structural alignment score $\Phi$. We describe a four-stage automated pipeline that adapts the conceptual logic of Trabasso's counterfactual method into a computationally tractable procedure. The pipeline does not claim novelty in its component techniques---it assembles existing capabilities into a configuration adequate for our specific purpose.
+
+\subsubsection*{Stage 1: Event Extraction}
+
+Given a text $T$ (either a canonical narrative or a model output), we prompt an LLM to decompose $T$ into a sequence of discrete event descriptions $\mathcal{E} = \{e_1, e_2, \ldots, e_n\}$. Each event is expressed as a concise, agent-centered proposition following the vertex format of Li et al. \citeyearpar{li2025}: a single event or state involving identified agents. The prompt instructs the LLM to identify: (i) actions taken by named agents, (ii) states or conditions that obtain as a result of prior actions, (iii) internal states (intentions, beliefs, emotions) of agents, and (iv) external circumstances that constrain or enable action. These correspond to Trabasso's six narrative categories (Setting, Event, Internal Response, Goal, Attempt, Outcome) but are elicited through natural language instruction rather than a fixed taxonomy.
+
+\subsubsection*{Stage 2: Causal Link Identification}
+
+For each pair of events $(e_i, e_j)$ where $i < j$ in the temporal ordering, we apply a prompted counterfactual necessity test. The LLM is asked: ``In the circumstances of this narrative, if event $e_i$ had not occurred, would event $e_j$ still have occurred?'' A negative answer establishes a causal edge from $e_i$ to $e_j$. This directly operationalizes Trabasso's criterion---necessity in the circumstances of the story---as a natural language prompt. For each identified edge, the LLM is further asked to classify the relation type as physical, motivational, psychological, or enabling, following \citet{trabasso1989}.
+
+\subsubsection*{Stage 3: Decision Node and Consequence Identification}
+
+The LLM is prompted to identify, among the extracted events, those that represent moments of genuine agent choice---points where a different action was available and would have led to a materially different outcome. For each candidate decision node, the LLM is asked to generate the counterfactual alternative actions (the unchosen out-edges) and to project their likely consequences. Terminal events---those with no identified causal successors---are tagged and the LLM is asked to assign a consequence valuation: is this outcome framed by the narrative as ethically positive, negative, or mixed, and with what intensity?
+
+\subsubsection*{Stage 4: Graph Assembly and Validation}
+
+The extracted events become nodes $V$, the counterfactual-tested causal links become edges $E$, the decision points become $D \subseteq V$, and the consequence valuations become $C$. A directed graph is assembled and checked for acyclicity (any cycles are resolved by re-examining the temporal ordering of the implicated events). The agent function $A$ is populated from the agent mentions extracted in Stage 1. The uncertainty distribution $U$ at decision nodes is estimated from the LLM's expressed confidence in the consequence projections from Stage 3, operationalized as the softmax-normalized probability the model assigns to each projected outcome.
+
+\medskip
+
+This pipeline is designed for adequacy, not perfection. It will produce noisier graphs than manual annotation by trained coders. However, several design choices mitigate the noise. First, the counterfactual prompting strategy aligns with how LLMs are known to perform well---conditional generation and hypothetical reasoning. Second, the pipeline is applied to both reference archetypes and model outputs, so systematic biases in extraction will affect the numerator and denominator of the alignment score $\Phi$ similarly, preserving the validity of cross-condition comparisons. Third, for the reference archetype library $\Lambda$, we supplement automated extraction with human review: the automatically generated NC-DAGs for the canonical archetypes are examined and corrected by annotators trained in Trabasso's counterfactual method, producing gold-standard references that anchor the evaluation.
+
+We note that this pipeline can itself be seen as an instance of narrative-causal reasoning by an LLM---the extraction model is being asked to comprehend a narrative's causal structure. This reflexivity is a feature, not a bug: if LLMs cannot extract causal graphs from ethical narratives, the premise that they have internalized narrative-causal structure from training is undermined, and the N-CoT framework loses its motivation. The pipeline's success or failure thus provides an independent test of the framework's foundational assumption.
+
+% ═══════════════════════════════════════════════════════════
+% 4. COT AS TRAVERSAL
+% ═══════════════════════════════════════════════════════════
+\section{Chain-of-Thought as NC-DAG Traversal}
+
+\subsection{The Traversal Protocol}
+
+We define N-CoT as a traversal of the NC-DAG where each CoT step corresponds to a node visit. This parallels VoT's visuospatial sketchpad mechanism: where VoT adds a spatial visualization at each step, N-CoT adds a narrative-causal contextualization.
+
+\begin{definition}[N-CoT Traversal]
+Given an NC-DAG $G$ and an input ethical scenario $x$, a Narrative Chain-of-Thought traversal is a sequence $T = (s_1, \ldots, s_m)$ where each step $s_i = (v_i, n_i)$ pairs a visited node with a natural language generation describing the event, its agents (per $A$), its causal antecedents, and its situated context. Successive steps respect the edge structure. At decision nodes, the protocol requires a structured four-phase expansion (Section~\ref{sec:decision-expansion}). Traversal terminates at a terminal node with reflective assessment of the ethical significance of the path taken.
+\end{definition}
+
+\subsection{Decision-Node Expansion}
+\label{sec:decision-expansion}
+
+The most important operational difference between N-CoT and standard CoT occurs at decision nodes. When traversal reaches $d \in D$, the protocol requires a four-phase expansion:
+
+\begin{description}[leftmargin=2em,itemsep=0.4em]
+\item[Phase 1 --- Situation Assessment.] Identify the agent(s), available actions (out-edges), and narrative context making this an ethically significant moment.
+\item[Phase 2 --- Consequence Projection.] For each available action, trace forward through the NC-DAG to identify reachable terminal states. This is the narrative analog of forward search in a planning problem---connecting our framework to the narrative planning tradition's notion of causal links between actions and their effects.
+\item[Phase 3 --- Uncertainty Articulation.] Explicitly represent aleatory and epistemic uncertainty for each consequential path. This phase requires the model to say what it does not know, not merely what it predicts---addressing a gap identified across the LLM ethics literature.
+\item[Phase 4 --- Resolution and Commitment.] Select or narrate the chosen action, grounding the choice in the preceding phases and referencing the narrative arc---how this choice connects to antecedent events and shapes the remaining story.
+\end{description}
+
+This four-phase expansion is what distinguishes N-CoT from both shallow heuristics and existing structured approaches like MoralCoT. MoralCoT prompts for feature extraction (rules, consequences, permissions); N-CoT prompts for narrative-structural traversal. The distinction matters because feature-based approaches can constrain flexible reasoning in capable models, whereas structural scaffolding provides guidance without prescribing content.
+
+\subsection{Comparison with Existing Approaches}
+
+Standard CoT \citep{wei2022chain} generates intermediate steps without structural constraints. In ethical reasoning, this produces locally coherent but globally disconnected chains that invoke principles without tracing causal consequences. Graph-CoT \citep{jin2024graph} introduces explicit graph traversal but over knowledge graphs for factual reasoning, lacking decision semantics, uncertainty quantification, and narrative structure. VoT \citep{wu2024mindseye} is the closest structural analog; N-CoT substitutes narrative-causal representation for visuospatial representation, applying the same representational-format-matching principle to a different cognitive domain.
+
+Relative to the narrative planning tradition \citep{riedl2010}, N-CoT inverts the direction of use: narrative planners generate plots by constructing causal graphs from action schemas; N-CoT uses narrative-causal structure to guide reasoning about pre-existing ethical scenarios. The graph is not constructed de novo but inferred from---and constrained by---the model's implicit knowledge of how ethical narratives are structured in its training corpus.
+
+% ═══════════════════════════════════════════════════════════
+% 5. HYPOTHESIS
+% ═══════════════════════════════════════════════════════════
+\section{Core Hypothesis: Narrative CoT Produces Deeper Moral Simulacra}
+
+\subsection{The Concept of Moral Simulacra}
+
+A moral simulacrum is a structural reproduction of the causal-narrative logic embedded in ethical narratives from the training corpus. We distinguish between deep simulacra---outputs whose causal structure faithfully reproduces ethical reasoning patterns---and surface outputs that reproduce only policy-level features. Standard LLM ethical outputs fall into two surface categories: policy-constrained refusals (``I cannot help with that'') and framework-hedged deliberation (``From a utilitarian perspective X, but from a deontological perspective Y''). Neither engages the narrative-causal structure of the dilemma.
+
+A deep moral simulacrum traces how an agent's choice cascades through consequences affecting multiple stakeholders, articulates uncertainty, weighs competing values within a specific situation, and arrives at a judgment reflecting the moral sensibility embedded in the corpus's ethical archetypes.
+
+\subsection{The Hypothesis}
+
+\begin{hypothesis}[Narrative Externalization Advantage]
+N-CoT prompting produces moral simulacra whose causal structure more closely aligns with archetypal ethical narratives in the training corpus than standard CoT, and this structural alignment correlates with higher quality ethical reasoning as assessed by both structural metrics and human evaluation.
+\end{hypothesis}
+
+Three testable components:
+\begin{description}[leftmargin=2em]
+\item[H1 (Structural Alignment):] $\Phi(G)$ for NC-DAGs generated via N-CoT is significantly higher than for implicit causal graphs reconstructed from standard CoT outputs.
+\item[H2 (Decision Depth):] N-CoT outputs contain more explicitly articulated decision nodes, with richer consequence projections and more nuanced uncertainty articulations.
+\item[H3 (Reasoning Quality):] Human evaluators rate N-CoT outputs as exhibiting deeper ethical reasoning, controlling for fluency and surface quality.
+\end{description}
+
+\subsection{Theoretical Grounding}
+
+The hypothesis rests on the conjunction of three claims. First, the representational format matching principle: reasoning improves when externalized in the native format of the knowledge domain, as empirically established by VoT for spatial reasoning. Second, the corpus archetype claim: LLM training corpora contain rich narrative structures encoding ethical reasoning that cluster around recognizable archetypes. This is supported by the existence of datasets like Moral Stories and GLUCOSE, which demonstrate that narrative-causal ethical structure can be crowdsourced at scale, implying its prevalence in natural text. Third, the externalization activation claim: standard CoT does not reliably activate these structures because its unconstrained format lacks the scaffolding needed to organize narrative-causal reasoning. N-CoT provides this scaffolding.
+
+% ═══════════════════════════════════════════════════════════
+% 6. EXPERIMENTAL DESIGN
+% ═══════════════════════════════════════════════════════════
+\section{Experimental Design: Archetype-Based Testing}
+
+\subsection{Archetype Selection and NC-DAG Construction}
+
+We design a test suite grounded in canonical ethical narrative archetypes, each formalized as a reference NC-DAG. Archetypes are selected to span the major structural patterns of moral dilemma in the training corpus:
+
+\begin{description}[leftmargin=2em,itemsep=0.4em]
+\item[Archetype 1: Forced Binary Choice (Trolley).] Single decision node, two out-edges, clear consequence divergence. Tests whether N-CoT elicits richer consequence projections than standard CoT's typical two-sentence framing. Structurally isomorphic to the Moral Stories branching structure, serving as a baseline.
+
+\item[Archetype 2: Cascading Harm (Unintended Consequences).] Decision node whose chosen edge leads through intermediate events to unforeseen terminal consequences. Tests multi-hop causal projection and uncertainty articulation. This archetype directly exercises the causal chain reasoning documented by Trabasso and van den Broek.
+
+\item[Archetype 3: Multi-Stakeholder Conflict (Competing Loyalties).] Decision node with three or more out-edges favoring different stakeholder groups. Tests the agent function and the model's capacity to represent multiple affected parties.
+
+\item[Archetype 4: Iterated Decision Under Norm Erosion (Slippery Slope).] Chain of decision nodes where each choice alters the uncertainty distribution at the next. Tests evolving moral landscapes and cumulative effects of sequential decisions.
+
+\item[Archetype 5: Individual vs. Institutional Integrity (Whistleblower).] Asymmetric decision where one edge preserves personal safety but permits institutional harm, while the other exposes the agent to risk but halts the harm. Tests asymmetric consequence valuation and agent-specific risk.
+\end{description}
+
+\subsection{Experimental Protocol}
+
+Each archetype is instantiated in multiple concrete scenarios. Each scenario is presented under four conditions:
+
+\begin{description}[leftmargin=2em]
+\item[Condition 1 (Baseline IO):] Direct response with no reasoning scaffold.
+\item[Condition 2 (Standard CoT):] Standard step-by-step reasoning instruction.
+\item[Condition 3 (Ethical Framework CoT):] CoT with explicit instruction to reason using named ethical frameworks (deontology, consequentialism, virtue ethics). Controls for the possibility that any structured prompting improves ethical reasoning.
+\item[Condition 4 (N-CoT):] Narrative Chain-of-Thought prompting instructing the model to narrate the scenario as a story with characters and causal connections; identify decision points and facing agents; project consequences of each action as narrative continuations; articulate uncertainty; and resolve within the narrative frame.
+\end{description}
+
+\subsection{Evaluation Metrics}
+
+We employ five evaluation dimensions combining automated structural metrics with human assessment:
+
+\begin{description}[leftmargin=2em,itemsep=0.4em]
+\item[Metric 1 --- Structural Alignment ($\Phi$).] Apply the four-stage extraction pipeline (Section~\ref{sec:pipeline}) to outputs from all four experimental conditions, producing NC-DAGs for each. Compute corpus alignment against the human-reviewed reference archetypes from the $\Lambda$ library. Because the same extraction pipeline is applied uniformly across conditions, systematic extraction biases cancel in cross-condition comparisons.
+
+\item[Metric 2 --- Decision Node Count and Depth.] Count explicitly articulated decision points and assess engagement depth using a rubric based on the four-phase expansion protocol.
+
+\item[Metric 3 --- Consequence Divergence Score.] Measure whether the model distinguishes consequences of different actions. A high score indicates tracing multiple consequential paths.
+
+\item[Metric 4 --- Uncertainty Articulation Quality.] Score from 0 (no acknowledgment) to 3 (explicit second-order uncertainty distinguishing aleatory from epistemic sources).
+
+\item[Metric 5 --- Human Evaluation.] Blinded evaluators assess stakeholder consideration, consequential reasoning quality, moral nuance, coherence, and scenario specificity on Likert scales.
+\end{description}
+
+% ═══════════════════════════════════════════════════════════
+% 7. DISCUSSION
+% ═══════════════════════════════════════════════════════════
+\section{Discussion and Limitations}
+
+\subsection{Anticipated Challenges}
+
+We identify several challenges that must be addressed in implementation. The automated NC-DAG extraction pipeline (Section~\ref{sec:pipeline}), while grounded in Trabasso's well-validated counterfactual method, relies on LLM-prompted causal judgments that will introduce noise relative to expert human annotation. Our mitigation strategy---uniform application across conditions, human-reviewed gold-standard archetypes, and the observation that systematic biases cancel in comparative metrics---is pragmatically sound but does not eliminate the possibility of condition-specific extraction artifacts. For instance, if N-CoT outputs are more explicitly causal in their language (because the prompt encourages narrative structure), the extraction pipeline might find more edges regardless of whether the underlying reasoning is deeper. We address this by including human evaluation (Metric 5) as an independent check that does not rely on automated extraction.
+
+A subtler challenge concerns the reflexivity noted in Section~\ref{sec:pipeline}: the extraction pipeline uses an LLM to extract causal structure from LLM outputs. If the extraction model shares systematic biases with the generation model, the pipeline might preferentially `understand' outputs from the same model family. We mitigate this by using a different model for extraction than for generation, but cross-model systematic biases in narrative-causal comprehension cannot be fully excluded.
+
+The archetype library $\Lambda$ is culturally situated in Western literary and philosophical traditions. Non-Western ethical traditions may organize moral narratives around structurally different principles---relational harmony rather than individual choice, cyclical rather than linear consequence---requiring archetype expansion for cross-cultural validity.
+
+The implicit-topology design choice means that the model must infer narrative-causal structure from prompting alone, without an external graph data structure. If the model's implicit narrative knowledge is insufficient, N-CoT may produce outputs that are narratively flavored but structurally incoherent. The structural alignment metric is designed to detect this failure mode.
+
+\subsection{Relationship to Alignment Research}
+
+Perhaps most ambitiously, the framework suggests a new approach to AI alignment: rather than aligning models to lists of values or rules, one might align them to narrative archetypes---patterns of ethical reasoning refined through millennia of human storytelling. This is speculative, but the formal machinery developed here provides the tools to make such an approach precise and testable. The NC-DAG formalism provides a potential formal language for specifying what `deep alignment' means: alignment not at the level of behavioral compliance but at the level of structural correspondence between a model's ethical reasoning and the causal patterns through which human cultures have encoded their most carefully considered moral knowledge.
+
+% ═══════════════════════════════════════════════════════════
+% REFERENCES
+% ═══════════════════════════════════════════════════════════
+\bibliographystyle{plainnat}
+
+\begin{thebibliography}{99}
+
+\bibitem[Akimoto(2017)]{akimoto2017}
+Akimoto, T. (2017). Computational Modeling of Narrative Structure: A Hierarchical Graph Model for Multidimensional Narrative Structure.
+
+\bibitem[Ammanabrolu et al.(2021)]{ammanabrolu2021}
+Ammanabrolu, P., Cheung, W., Broniec, W., \& Riedl, M. O. (2021). Automated Storytelling via Causal, Commonsense Plot Ordering. \textit{AAAI}.
+
+\bibitem[Besta et al.(2024)]{besta2024}
+Besta, M., et al. (2024). Demystifying Chains, Trees, and Graphs of Thoughts. \textit{arXiv:2401.14295}.
+
+\bibitem[Chen \& Bornstein(2024)]{chen2024causal}
+Chen, J., \& Bornstein, A. M. (2024). The causal structure and computational value of narratives. \textit{PMC}.
+
+\bibitem[Emelin et al.(2021)]{emelin2021moral}
+Emelin, D., Le Bras, R., Hwang, J. D., Forbes, M., \& Choi, Y. (2021). Moral Stories: Situated Reasoning about Norms, Intents, Actions, and their Consequences. \textit{EMNLP 2021}.
+
+\bibitem[Fletcher \& Bloom(1988)]{fletcher1988}
+Fletcher, C. R., \& Bloom, C. P. (1988). Causal reasoning in the comprehension of simple narrative texts. \textit{Journal of Memory and Language}, 27, 235--244.
+
+\bibitem[Forbes et al.(2020)]{forbes2020}
+Forbes, M., Hwang, J. D., Shwartz, V., Sap, M., \& Choi, Y. (2020). Social Chemistry 101: Learning to Reason about Social and Moral Norms. \textit{EMNLP 2020}.
+
+\bibitem[Goldman et al.(1999)]{goldman1999}
+Goldman, S. R., Graesser, A. C., \& van den Broek, P. (Eds.). (1999). \textit{Narrative Comprehension, Causality, and Coherence: Essays in Honor of Tom Trabasso}. Lawrence Erlbaum.
+
+\bibitem[Hendrycks et al.(2020)]{hendrycks2020}
+Hendrycks, D., et al. (2020). Aligning AI with Shared Human Values. \textit{arXiv:2008.02275}.
+
+\bibitem[Jin et al.(2024)]{jin2024graph}
+Jin, B., et al. (2024). Graph Chain-of-Thought: Augmenting Large Language Models by Reasoning on Graphs. \textit{Findings of ACL 2024}.
+
+\bibitem[Jin et al.(2022)]{jin2022when}
+Jin, Z., Levine, S., Gonzalez Adauto, F., et al. (2022). When to Make Exceptions: Exploring Language Models as Accounts of Human Moral Judgment. \textit{NeurIPS 2022}.
+
+\bibitem[Li et al.(2025)]{li2025}
+Li, Z., et al. (2025). Beyond LLMs: A Linguistic Approach to Causal Graph Generation from Narrative Texts. \textit{ACL Workshop on Narrative Understanding}.
+
+\bibitem[MacIntyre(1981)]{macintyre1981}
+MacIntyre, A. (1981/1984). \textit{After Virtue: A Study in Moral Theory}. University of Notre Dame Press.
+
+\bibitem[MacIntyre(2016)]{macintyre2016}
+MacIntyre, A. (2016). \textit{Ethics in the Conflicts of Modernity: An Essay on Desire, Practical Reasoning, and Narrative}. Cambridge University Press.
+
+\bibitem[Mani(2013)]{mani2013}
+Mani, I. (2013). \textit{Computational Modeling of Narrative}. Morgan \& Claypool.
+
+\bibitem[Morables(2025)]{morables2025}
+Morables Team (2025). Morables: A Benchmark for Assessing Abstract Moral Reasoning in LLMs with Fables. \textit{arXiv:2509.12371}.
+
+\bibitem[Mostafazadeh et al.(2020)]{mostafazadeh2020}
+Mostafazadeh, N., et al. (2020). GLUCOSE: GeneraLized and COntextualized Story Explanations. \textit{EMNLP 2020}.
+
+\bibitem[Newton(1995)]{newton1995}
+Newton, A. Z. (1995). \textit{Narrative Ethics}. Harvard University Press.
+
+\bibitem[Nussbaum(1990)]{nussbaum1990}
+Nussbaum, M. C. (1990). \textit{Love's Knowledge: Essays on Philosophy and Literature}. Oxford University Press.
+
+\bibitem[Nussbaum(1997)]{nussbaum1997}
+Nussbaum, M. C. (1997). \textit{Cultivating Humanity}. Harvard University Press.
+
+\bibitem[Pearl(2000)]{pearl2000}
+Pearl, J. (2000). \textit{Causality: Models, Reasoning, and Inference}. Cambridge University Press.
+
+\bibitem[ReCITE(2025)]{recite2025}
+ReCITE Team (2025). Can Large Language Models Infer Causal Relationships from Real-World Text? \textit{arXiv:2505.18931}.
+
+\bibitem[Riedl \& Young(2010)]{riedl2010}
+Riedl, M. O., \& Young, R. M. (2010). Narrative Planning: Balancing Plot and Character. \textit{Journal of Artificial Intelligence Research}, 39, 217--268.
+
+\bibitem[Strawson(2004)]{strawson2004}
+Strawson, G. (2004). Against Narrativity. \textit{Ratio}, 17(4), 428--452.
+
+\bibitem[Trabasso \& Sperry(1985)]{trabasso1985relatedness}
+Trabasso, T., \& Sperry, L. L. (1985). Causal Relatedness and Importance of Story Events. \textit{Journal of Memory and Language}, 24, 595--611.
+
+\bibitem[Trabasso \& van den Broek(1985)]{trabasso1985causal}
+Trabasso, T., \& van den Broek, P. (1985). Causal Thinking and the Representation of Narrative Events. \textit{Journal of Memory and Language}, 24(5), 612--630.
+
+\bibitem[Trabasso et al.(1989)]{trabasso1989}
+Trabasso, T., van den Broek, P., \& Suh, S. Y. (1989). Logical Necessity and Transitivity of Causal Relations in Stories. \textit{Discourse Processes}, 12(1), 1--25.
+
+\bibitem[van den Broek(1988)]{vandenbroek1988}
+van den Broek, P. (1988). The effects of causal relations and hierarchical position on the importance of story statements. \textit{Journal of Memory and Language}, 27, 1--22.
+
+\bibitem[Ware \& Young(2011)]{ware2011}
+Ware, S., \& Young, R. M. (2011). CPOCL: A Narrative Planner Supporting Conflict. \textit{AIIDE}.
+
+\bibitem[Wei et al.(2022)]{wei2022chain}
+Wei, J., et al. (2022). Chain-of-Thought Prompting Elicits Reasoning in Large Language Models. \textit{NeurIPS}.
+
+\bibitem[Wu et al.(2024)]{wu2024mindseye}
+Wu, W., et al. (2024). Mind's Eye of LLMs: Visualization-of-Thought Elicits Spatial Reasoning in Large Language Models. \textit{NeurIPS 2024}.
+
+\bibitem[Yao et al.(2024)]{yao2024tree}
+Yao, S., et al. (2024). Tree of Thoughts: Deliberate Problem Solving with Large Language Models. \textit{NeurIPS}.
+
+\end{thebibliography}
+
+\end{document}

@@ -1,0 +1,88 @@
+digraph ANI_Audit_Clean3 {
+  graph [
+    rankdir=TB,
+    bgcolor="white",
+    pad="0.10",
+    nodesep="0.42",
+    ranksep="0.62",
+    splines=true
+  ];
+
+  node [
+    shape=ellipse,
+    style="solid",
+    color="black",
+    penwidth=2
+  ];
+
+  edge [
+    color="black",
+    penwidth=2,
+    arrowsize=0.9,
+    fontname="Times-Roman",
+    fontsize=18
+  ];
+
+  Dplan [label=<
+    <TABLE BORDER="0" CELLBORDER="0" CELLPADDING="0">
+      <TR><TD><FONT FACE="Times-Roman" POINT-SIZE="24">Proposed Plan</FONT></TD></TR>
+      <TR><TD><FONT FACE="Times-Roman" POINT-SIZE="24"><I>D</I><SUP><FONT POINT-SIZE="16">plan</FONT></SUP></FONT></TD></TR>
+    </TABLE>
+  >];
+
+  Ifix [label=<
+    <TABLE BORDER="0" CELLBORDER="0" CELLPADDING="0">
+      <TR><TD><FONT FACE="Times-Roman" POINT-SIZE="24">Fixed Interpreter</FONT></TD></TR>
+      <TR><TD><FONT FACE="Times-Roman" POINT-SIZE="24"><I>I</I><SUB><FONT POINT-SIZE="16">θ</FONT></SUB></FONT></TD></TR>
+    </TABLE>
+  >];
+
+  Mplan [label=<
+    <TABLE BORDER="0" CELLBORDER="0" CELLPADDING="0">
+      <TR><TD><FONT FACE="Times-Roman" POINT-SIZE="24">Latent SCM</FONT></TD></TR>
+      <TR><TD><FONT FACE="Times-Roman" POINT-SIZE="24"><I>M</I><SUP><FONT POINT-SIZE="16">plan</FONT></SUP></FONT></TD></TR>
+    </TABLE>
+  >];
+
+  splan [label=<
+    <TABLE BORDER="0" CELLBORDER="0" CELLPADDING="0">
+      <TR><TD><FONT FACE="Times-Roman" POINT-SIZE="24">Coherence Score</FONT></TD></TR>
+      <TR><TD><FONT FACE="Times-Roman" POINT-SIZE="24"><I>s</I><SUP><FONT POINT-SIZE="16">plan</FONT></SUP></FONT></TD></TR>
+    </TABLE>
+  >];
+
+  Decide [label=<
+    <TABLE BORDER="0" CELLBORDER="0" CELLPADDING="0">
+      <TR><TD><FONT FACE="Times-Roman" POINT-SIZE="24">Decision</FONT></TD></TR>
+      <TR><TD><FONT FACE="Times-Roman" POINT-SIZE="20">approve ⇐⇒ <I>s</I><SUP><FONT POINT-SIZE="14">plan</FONT></SUP> ≥ τ</FONT></TD></TR>
+    </TABLE>
+  >];
+
+  Approve [label=<
+    <TABLE BORDER="0" CELLBORDER="0" CELLPADDING="0">
+      <TR><TD><FONT FACE="Times-Roman" POINT-SIZE="24">Approve</FONT></TD></TR>
+      <TR><TD><FONT FACE="Times-Roman" POINT-SIZE="20">(a = 1)</FONT></TD></TR>
+    </TABLE>
+  >];
+
+  Reject [label=<
+    <TABLE BORDER="0" CELLBORDER="0" CELLPADDING="0">
+      <TR><TD><FONT FACE="Times-Roman" POINT-SIZE="24">Reject</FONT></TD></TR>
+      <TR><TD><FONT FACE="Times-Roman" POINT-SIZE="20">(a = 0)</FONT></TD></TR>
+    </TABLE>
+  >];
+
+  Dplan -> Ifix;
+
+  Ifix  -> Mplan;
+  Ifix  -> splan;
+
+  Mplan -> Decide;
+  splan -> Decide;
+
+  Decide -> Approve [label=<<FONT FACE="Times-Roman"><I>s</I><SUP><FONT POINT-SIZE="12">plan</FONT></SUP> ≥ τ</FONT>>];
+  Decide -> Reject  [label=<<FONT FACE="Times-Roman"><I>s</I><SUP><FONT POINT-SIZE="12">plan</FONT></SUP> &lt; τ</FONT>>];
+
+  {rank=same; Mplan; splan;}
+  {rank=same; Approve; Reject;}
+}

@@ -1,0 +1,39 @@
+digraph G {
+  graph [rankdir=TB, splines=true, overlap=false, fontsize=12, fontname="Times-Roman",
+         ranksep=0.35, nodesep=0.25];
+  node  [shape=ellipse, fontsize=12, fontname="Times-Roman", margin="0.14,0.08"];
+  edge  [fontsize=10, fontname="Times-Roman", arrowsize=0.8];
+
+  // Parsimony branch
+  M    [label=<Latent SCM<br/><b>M</b><sub>t</sub>>];
+  C    [label=<Complexity proxy<br/><b>K̂</b><sub>C</sub>(M<sub>t</sub>)>];
+  Lpar [label=<Parsimony loss<br/><b>L</b><sub>par</sub>>];
+
+  // Preference branch
+  Dpref[label=<Preference pairs<br/><b>D</b><sub>pref</sub> : (M<sub>W</sub>, M<sub>L</sub>)>];
+  rhat [label=<Preference scorer<br/><b>r̂</b><sub>&psi;</sub>>];
+  Lpref[label=<Preference loss (DPO)<br/><b>L</b><sub>pref</sub>>];
+
+  // Predictive loss (from Subgraph A)
+  Lpred[label=<Predictive loss (NLL)<br/><b>L</b><sub>pred</sub>>];
+
+  // Total objective + updates
+  Ltot [label=<Total objective<br/><b>L</b><sub>total</sub> = &lambda;<sub>pred</sub>L<sub>pred</sub> + &lambda;<sub>par</sub>L<sub>par</sub> +<br/>&lambda;<sub>pref</sub>L<sub>pref</sub>>];
+  Params[label=<Parameters<br/>&#123;&theta;,&phi;,&psi;&#125;>];
+
+  // Branch edges (vertical stacks)
+  M -> C -> Lpar;
+  Dpref -> rhat -> Lpref;
+
+  // Total objective (keep narrow: only Lpred constrains vertical order)
+  Lpred -> Ltot [label="&lambda;_pred"];
+  Lpar  -> Ltot [constraint=false, label="&lambda;_par"];
+  Lpref -> Ltot [constraint=false, label="&lambda;_pref"];
+
+  // Layout ordering between blocks (invisible edges)
+  Lpar  -> Dpref [style=invis];
+  Lpref -> Lpred [style=invis];
+
+  // Update step
+  Ltot -> Params [style=dashed];
+}
