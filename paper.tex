@@ -1,0 +1,208 @@
+\documentclass[11pt]{article}
+
+% Status: working draft skeleton. The canonical version of this paper is the
+% project's source of truth (see Guidance_Documents/study_design.md). All
+% empirical claims here should be regenerated from
+% ncot_divergence_pilot.ipynb and divergence_study_outputs/.
+
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath, amssymb}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{enumitem}
+
+\title{Narrative Chain-of-Thought:\\
+A Divergence Pilot on Ethical Reasoning Under Targeted Failure Modes}
+\author{Patrick Cooper}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+We test whether prompting a large language model to narrate its reasoning
+through an ethical dilemma --- as a story told from the protagonist's
+perspective --- produces materially different outputs than standard
+chain-of-thought (CoT). Rather than grading ethical quality, which is itself a
+contested research problem, we measure two forms of \emph{divergence} between
+narrative-CoT and standard-CoT outputs across five scenarios designed to
+trigger known failure modes of standard CoT. Tier~1 measures structural
+divergence on a six-variable rubric coded by two independent judge models from
+different families, with Cohen's kappa reported per variable to bound the
+rubric's noise floor. Tier~2 measures conclusion divergence as Jensen-Shannon
+divergence between condition-conditional decision distributions on a fixed
+per-scenario decision taxonomy, with bootstrap confidence intervals. We find
+that on \texttt{gpt-5.4-nano}, narrative CoT diverges sharply from standard
+CoT on the structural dimensions where standard CoT empirically fails (most
+clearly on uncertainty articulation), while leaving distributions unchanged
+on scenarios where standard CoT does not exhibit the targeted failure mode in
+the first place. We argue this targeted-divergence pattern, not uniform
+divergence, is the empirical signature that motivates further work on
+narrative-structured reasoning.
+\end{abstract}
+
+\section{Introduction}
+
+\textit{To be drafted from the author's notes. The minimum claim is: a minimal
+prompt-level intervention --- asking the model to narrate rather than reason
+in the abstract --- is sufficient to produce divergent structural and
+conclusion outputs on scenarios that target known failure modes of standard
+chain-of-thought.}
+
+\section{Related work}
+
+\textit{To be drafted: chain-of-thought prompting, faithfulness of CoT,
+narrative reasoning in cognitive science, ethical-reasoning benchmarks for
+LLMs.}
+
+\section{Method}
+\label{sec:method}
+
+\subsection{Conditions}
+
+Three prompting conditions, identical decoding parameters across all three:
+
+\begin{enumerate}[leftmargin=2em]
+  \item \textbf{baseline\_io}: bare input/output, ``Answer directly and concisely.''
+  \item \textbf{standard\_cot}: ``Think step by step, then give your answer.''
+  \item \textbf{narrative\_cot}: a five-section narrated reasoning prompt that
+    asks the model to (1)~characterise the decision-maker, (2)~identify all
+    stakeholders whose lives intersect with the decision, (3)~narrate the
+    consequences of each available action at least two steps out, (4)~articulate
+    what remains genuinely uncertain, and (5)~state the decision plainly.
+    The prompt deliberately omits any formal apparatus.
+\end{enumerate}
+
+\subsection{Scenarios}
+
+Five scenarios, surface-novel but structurally clear, each designed to
+trigger one or two specific failure modes of standard CoT: scarce
+experimental treatment allocation; pharmaceutical data suppression;
+disagreeing siblings and dementia care; autonomous emergency vehicle policy;
+research participant with changing capacity. Each scenario carries a fixed
+\emph{decision taxonomy} of canonical action labels used by the Tier~2
+decision extractor.
+
+\subsection{Tier 1: structural divergence}
+
+Per output, two independent judge models from different families
+(\texttt{gpt-4o-mini} primary, \texttt{gpt-5.4-nano} secondary) code:
+refusal, truncation, action commitment, stakeholder count, max causal hops
+(0--5, with worked examples), uncertainty articulation (0--3), and named
+ethical frameworks invoked. Reported with means by condition, Mann--Whitney
+$U$ tests, Cliff's delta as the magnitude effect size, and bootstrap 95\% CIs
+on Cliff's delta.
+
+Cohen's kappa (linearly weighted for ordinal codes) is reported per
+variable as the inter-judge agreement noise floor; variables with $\kappa <
+0.4$ are flagged.
+
+\subsection{Tier 2: conclusion divergence}
+
+Each output is mapped onto its scenario's fixed decision taxonomy by an
+extractor LLM. Conclusion divergence is operationalised as
+\[
+  \mathrm{JSD}\bigl(P_{\text{narr}} \,\big\Vert\, P_{\text{std}}\bigr)
+\]
+where $P_{\text{narr}}$ and $P_{\text{std}}$ are the empirical decision
+distributions per scenario, JSD is in $[0, 1]$ using $\log_2$, and bootstrap
+95\% CIs are computed on $N_{\text{boot}}$ resamples. We report
+\[
+  \text{divergence excess}
+  := \mathrm{JSD}(P_{\text{narr}}, P_{\text{std}})
+  - \max\bigl(\mathrm{JSD}_{\text{narr,internal}},
+              \mathrm{JSD}_{\text{std,internal}}\bigr)
+\]
+where the within-condition JSDs are computed by random splitting; this
+controls for the within-condition decision variance and reports
+cross-condition divergence \emph{beyond} that noise floor.
+
+\subsection{Targeted-failure-mode analysis}
+
+For each (scenario, target failure mode) pair we report whether the failure
+mode actually fires in standard CoT (using a per-mode operationalisation,
+e.g.\ \texttt{uncertainty\_score} $\le 1$ for \texttt{uncertainty\_suppression}),
+its fire rate in narrative CoT, and the corresponding Tier~2 divergence
+excess. Aggregating across scenarios that target the same mode lets us ask
+the email's central question: is divergence concentrated on the targeted
+modes, or distributed uniformly?
+
+\section{Results}
+\label{sec:results}
+
+\textit{To be filled in from the current notebook run. The headline numbers
+in this section should be regenerated from \texttt{divergence\_study\_outputs/}
+on every paper draft.}
+
+\subsection{Tier 1: structural divergence}
+
+\textit{Insert table \texttt{tier1\_effect\_sizes.csv} and figure
+\texttt{tier1\_structural\_metrics.png} once the paper draft is final.}
+
+\subsection{Inter-judge agreement}
+
+\textit{Insert \texttt{interjudge\_agreement.csv}.}
+
+\subsection{Tier 2: conclusion divergence}
+
+\textit{Insert table \texttt{tier2\_summary.csv} and figure
+\texttt{tier2\_decision\_distributions.png}.}
+
+\subsection{Targeted failure-mode pattern}
+
+\textit{Insert tables \texttt{failure\_mode\_profile.csv} and
+\texttt{failure\_mode\_aggregate.csv}, plus figure
+\texttt{divergence\_profile\_heatmap.png}.}
+
+\section{Discussion}
+
+\textit{To be drafted. The structure of the discussion should mirror the
+interpretation guide in Section~8 of the notebook: read robustness first,
+then targeted firing, then magnitude.}
+
+\section{Limitations}
+
+\begin{itemize}[leftmargin=2em]
+  \item Two generation models, both from OpenAI. Effects observed here may
+    not transfer to other vendors. The structural pattern is consistent
+    across both, but the conclusion-divergence pattern differs sharply:
+    \texttt{gpt-4o} is much more steerable by narrative framing than
+    \texttt{gpt-5.4-nano}, suggesting the reasoning model is partly already
+    doing narrative reasoning under standard CoT.
+  \item Single primary judge (\texttt{claude-sonnet-4-6}) and single
+    secondary judge (\texttt{gpt-4o-mini}). A third judge from a third
+    vendor would harden the inter-judge agreement floor.
+  \item $N=20$ samples per cell yields wide bootstrap CIs (e.g.\
+    JSD$(narr, std)\in[0.07, 0.55]$ on \texttt{hospital\_allocation}). 
+    Production claims need $N \ge 30$.
+  \item One of the five hypothesised failure modes
+    (\texttt{premature\_refusal}) does not fire on either generation model
+    in this pilot, so that hypothesis is not tested.
+  \item Inter-judge $\kappa$ on \texttt{max\_causal\_hops} remains low
+    ($\kappa \approx 0.08$) even after rubric tightening with calibration
+    anchors. Direction agreement is reported separately and survives, but
+    the absolute count is unreliable.
+  \item No human evaluation (Tier~3 deferred).
+\end{itemize}
+
+\section{Future work}
+
+Listed in detail in Section~9 of the notebook. The most important next steps
+are: (1)~scale to $N \ge 30$ and 20--30 scenarios; (2)~add a generation model
+that exhibits the failure modes the current model does not; (3)~add a third,
+cross-vendor judge; (4)~run human pairwise preference (Tier~3); (5)~ablate the
+narrative-CoT prompt to identify which sub-instructions carry the
+divergence.
+
+\section*{Reproducibility}
+
+All generation, judging, and analysis code lives in
+\texttt{ncot\_divergence\_pilot.ipynb}. Per-sample artefacts (model outputs,
+both judges' codings, and decision-extractor outputs) are cached in
+\texttt{divergence\_study\_outputs/}. The study design is locked in
+\texttt{Guidance\_Documents/study\_design.md}; this paper should be
+regenerated whenever that document changes.
+
+\end{document}
