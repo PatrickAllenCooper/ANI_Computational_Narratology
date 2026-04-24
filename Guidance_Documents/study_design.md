@@ -132,9 +132,47 @@ The cell-level cache in `divergence_study_outputs/` keys every artifact by *both
 
 `PatrickAllenCooper/ANI_Computational_Narratology` — the notebook, this guidance document, the analysis artifacts in `divergence_study_outputs/`, and the paper draft in `paper.tex` are the canonical record.
 
+## Scaled DailyDilemmas pilot (Section 12)
+
+Section 12 of the notebook runs the full analysis stack on 100 scenarios sampled from the DailyDilemmas dataset (Chiu et al. 2024), providing higher-fidelity statistics across a broader, automatically-sampled scenario distribution. Dataset: `kellycyy/daily_dilemmas`, `Dilemmas_with_values_aggregated` split (1,360 unique dilemmas).
+
+### Scaled headline results
+
+| Finding | gpt-5.4-nano | gpt-4o |
+|---|---|---|
+| Tier-1: stakeholder_count length-residualized δ | +0.51 [0.48, 0.54] | +0.75 [0.72, 0.77] |
+| Tier-1: uncertainty_score length-residualized δ | +0.77 [0.75, 0.80] | +0.98 [0.98, 0.99] |
+| Tier-2: mean JSD(narr, std) | 0.087 | 0.178 |
+| Tier-2: mean divergence_excess | 0.055 | 0.138 |
+| Tier-2: significant cells (perm p < 0.05) | 26 / 100 | 26 / 100 |
+| `uncertainty_suppression` fire rate (std) | 98% | 98% |
+| `uncertainty_suppression` fire rate (narr) | 0% | 0% |
+| `stakeholder_collapse` fire rate (std) | 80% | 74% |
+| `stakeholder_collapse` fire rate (narr) | 0% | 4% |
+| MP-NCoT: PRESERVE / AMPLIFY / ELIMINATE (80 informative cells) | 39 / 21 / 20 | (pooled) |
+
+### Key scaled-pilot findings
+
+1. **Uncertainty_suppression fires on 98% of DailyDilemmas scenarios under standard CoT and is eliminated to 0% by narrative CoT on both generators.** The effect is not concentrated in a few hand-picked scenarios; it is near-universal across everyday moral dilemmas.
+
+2. **Stakeholder_collapse is the dominant failure mode** (firing 74–80% of the time in standard CoT). Narrative CoT reduces it to near-zero (gpt-5.4-nano: 0%, gpt-4o: 4%).
+
+3. **Structural effect sizes survive length residualization on both generators.** Unlike the 5-scenario pilot where `uncertainty_score` was length-confounded on gpt-5.4-nano (residualized δ ≈ 0.11), the 100-scenario scaled pilot shows residualized δ = +0.77 on gpt-5.4-nano and +0.98 on gpt-4o — both with CIs far from zero. The larger sample size (N=2,000 per condition × generator cell) tightens the CIs enough to resolve what was noise at N=200.
+
+4. **Tier-1 and Tier-2 are uncorrelated (Spearman ρ ≈ 0).** Scenarios where structural metrics diverge most between narrative and standard CoT are no more likely to show conclusion divergence (Tier-2 JSD) than scenarios where structural metrics are similar. The structural and conclusion dimensions are measuring independent aspects of narrative CoT's effect.
+
+5. **MP-NCoT at scale: PRESERVE is the plurality verdict (39/80 informative cells) but AMPLIFY and ELIMINATE are nearly tied (21 vs 20).** The result is not dominated by one regime. A large minority (120/200 cells) show "n/a — no original divergence"; narrative CoT changed no decisions on scenarios where standard CoT was already deterministic.
+
+6. **Topic stratification reveals real between-domain variation.** Narrative CoT shows strongest Tier-2 divergence on `workplace` scenarios (gpt-5.4-nano, excess=0.20) and `religion_custom` scenarios (gpt-4o, excess=0.41); weakest on `role_duty_responsibility` and `committed_relationship`. This suggests narrative framing is more disruptive when a scenario has contextual and role-based considerations that standard CoT flattens.
+
+### Auto-tagger quality on scaled scenarios
+
+The auto-tagger for failure modes has strong precision/recall on `stakeholder_collapse` (P=0.87–0.93, R=1.00) and `uncertainty_suppression` (P=0.99, R=0.87) — the two failure modes that actually fire. It has zero precision on `premature_refusal`, `framework_enumeration`, and `consequential_flattening` (all auto-tagged but none fire empirically), which means the auto-tagger over-labels those modes. For the analysis cells that condition on auto-tagged failure modes, this introduces noise only for the three non-firing modes; the two firing modes are reliably tagged.
+
 ## Change log
 
 - v0.1 — Drafted from author's study-design email plus the second-iteration notebook (dual-judge, decision-extractor, failure-mode-targeted analysis, Cliff's delta + bootstrap CIs, JSD with bootstrap CI).
 - v0.2 — Added robustness layers documented inline above: cross-judge directional check, length residualization, decision entropy. Tier-1 interpretation threshold tightened to require length-residualized effect, not just raw effect.
 - v0.3 — Added second generation model (`gpt-4o`); promoted `claude-sonnet-4-6` to primary cross-vendor judge; tightened `max_causal_hops` rubric with calibration anchors; added per-generator failure-mode firing analysis; cache schema now keys every artifact by `(generator, judge)` so adding either dimension is non-destructive.
-- v0.4 — Added (a) deterministic regex-based causal-hop counter that no longer depends on judge anchoring and serves as the primary `max_causal_hops` measurement going forward; (b) per-scenario inter-judge kappa breakdown that locates disagreement and shows `max_causal_hops` is broken at the rubric level on every scenario; (c) length-confound scatter diagnostic plus a length-overlap effect-size analysis that rules out the "purely length" null model on `stakeholder_count`; (d) permutation test for Tier-2 cross-condition JSD, giving non-parametric p-values per (generator, scenario); (e) high-level synthesis section in the notebook that defends the claims this pilot can support and explicitly disclaims those it cannot.
+- v0.4 — Added (a) deterministic regex-based causal-hop counter; (b) per-scenario inter-judge kappa breakdown; (c) length-confound scatter diagnostic + length-overlap effect-size analysis; (d) permutation test for Tier-2 cross-condition JSD; (e) high-level synthesis section.
+- v0.5 — Added Section 12: scaled DailyDilemmas pilot (100 scenarios, full Tier-1/Tier-2/MP-NCoT/length-residualization/family-aggregation analysis stack, plus scale-only analyses: per-scenario effect-size histogram, Tier-1 vs Tier-2 correlation, topic stratification). Key finding: the original 5-scenario pilot's core results replicate at scale with substantially tighter CIs; `uncertainty_suppression` and `stakeholder_collapse` fire in 74–98% of standard-CoT responses and are near-universally eliminated by narrative CoT across both generators.
