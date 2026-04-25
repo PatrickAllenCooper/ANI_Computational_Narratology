@@ -215,11 +215,58 @@ Agents do update positions across rounds. The debate is not pure restatement. Di
 
 **Interpretation**: The dominant dynamic is persistent divergence, not convergence. Stakeholders argue across the three rounds but rarely reach common ground, and the rare consensus that does emerge mirrors what single-protagonist NCoT already found. This suggests that narrative-format multi-agent debate, at this scale, functions as a mechanism for *articulating* disagreement rather than *resolving* it. Whether structured resolution prompts (e.g., a defeasibility round after Round 2) could shift the consensus rate is an open question for the next experiment.
 
+## Section 14 — Open Action-Space Debate Experiment
+
+Section 14 is a direct follow-up to Section 13. The core question: was the 6% consensus rate in Section 13 primarily downstream of the closed taxonomy, or does genuine normative divergence persist even when agents are given room to invent novel solutions?
+
+### Design changes from Section 13
+
+R0 and R1 are reused from Section 13 with zero new API calls. R2 is regenerated with an explicit invitation: each agent may either (a) commit to an original-taxonomy option, or (b) propose a novel action not in the taxonomy if the debate revealed concerns the original options cannot accommodate. The moderator is upgraded from a passive consensus-detector to an **active synthesizer** that extracts novel action proposals, normalises them to canonical snake_case labels, identifies cross-agent convergence on novel actions, and when no convergence emerged, attempts to construct a synthesis position from complementary concerns in the R2 texts.
+
+### Saved artifacts (Section 14)
+
+| File | Contents |
+|---|---|
+| `debate_v2_all_round_decisions.csv` | Per-agent R0/R1/R2_open decisions with `NOVEL` class and `novel_action_label` |
+| `debate_v2_consensus.csv` | Active moderator outputs (100 rows) |
+| `debate_v2_novel_actions_catalog.csv` | All extracted novel action labels from extractor + moderator |
+| `debate_v2_open_vs_closed_comparison.csv` | Per-(scenario, generator) consensus comparison to Section 13 |
+| `debate_v2_mind_change_rates.csv` | Per-agent R0->R2_open change flag |
+| `debate_v2_mind_change_delta.csv` | Change rate delta (open minus closed) |
+| `debate_v2_synthesis_emergence.csv` | Synthesis emergence flag per debate |
+| `debate_v2_novel_action_rate_by_role.csv` | Novel-action proposal rate by decision role |
+| `debate_v2_novel_action_rate_by_role.png` | Bar chart of above |
+| `debate_v2_open_vs_closed_consensus.png` | Grouped bar chart comparing closed and open consensus rates |
+
+All per-sample JSON cache files (`debate_v2_round2_*.json`, `debate_v2_consensus_*.json`, `debate_v2_dec_round2_*.json`) are gitignored.
+
+### Headline findings (Section 14)
+
+**Q1: Does opening the action space produce convergence the closed protocol could not?**
+
+Direct consensus rate increased only marginally: 6.0% (closed, Section 13) to 9.0% (open, Section 14), a delta of +3.0%. Of the open consensus events, 63% were on novel-action kind (not taxonomy). However, the synthesis emergence rate -- the fraction of debates where the active moderator was able to formulate a coherent synthesis position grounded in agent statements -- was 82% overall, ranging from 40% to 100% across scenarios and generators. This is the primary positive finding: the open action space did not produce spontaneous agent-level convergence, but the underlying concerns the agents surfaced were coherent enough that an active synthesizer could construct a synthesis position in the vast majority of cases.
+
+The interpretation: the bottleneck on consensus is not the closed taxonomy alone, nor is it mere stubbornness. Agents do reveal complementary concerns across perspectives (hence the high synthesis emergence rate), but they do not spontaneously recognise that those concerns are compatible (hence the low direct consensus rate).
+
+**Q2: What does a new useful revelation look like empirically?**
+
+- Novel-action proposal rate in R2: 73.2% overall. gpt-4o proposed novel actions in nearly every R2 output (decider: 100%, primary_affected: 96%, third_party: 98%). gpt-5.4-nano was more conservative (52-55%).
+- 270 unique novel action labels extracted across 367 catalog entries.
+- Top recurrent novel actions span all five scenarios: `gradual_transition_plan` (aging parent), `collaborative_disclosure_plan` / `transparent_conditional_disclosure` (pharma whistleblower), `split_the_dose` (hospital allocation), `shared_hope` (research volunteer).
+- Mind-change rate (R0 to R2): 77.9% open vs 24.1% closed, a delta of +53.8%. Opening the action space nearly tripled the rate at which agents moved to a different position. Critically, much of this change is to `NOVEL` -- agents are not just switching between original-taxonomy options but genuinely exiting the original option space.
+
+**The gap between 73% novel-action proposals and 9% consensus** is the central finding. Agents overwhelmingly exit the closed option space when given permission, and when they do, the moderator can usually find a synthesis. But without an explicit synthesis mechanism, those novel proposals do not self-organise into convergence. This confirms the plan hypothesis: the bottleneck is not the taxonomy, it is the absence of a mechanism that surfaces the compatibility of divergent concerns.
+
+### Implication for next experiments
+
+The synthesis positions the moderator formulated represent exactly the "new useful revelations in the space of normative possibility" the Section 14 plan was designed to surface. A natural next step is a Round 3 in which those moderator-generated synthesis positions are presented back to the agents and each agent is asked to accept, modify, or reject the synthesis with justification. This would test whether a structured mediator round can convert the latent synthesis potential (82% emergence rate) into actual agent-level convergence.
+
 ## Change log
 
-- v0.1 — Drafted from author's study-design email plus the second-iteration notebook (dual-judge, decision-extractor, failure-mode-targeted analysis, Cliff's delta + bootstrap CIs, JSD with bootstrap CI).
-- v0.2 — Added robustness layers documented inline above: cross-judge directional check, length residualization, decision entropy. Tier-1 interpretation threshold tightened to require length-residualized effect, not just raw effect.
-- v0.3 — Added second generation model (`gpt-4o`); promoted `claude-sonnet-4-6` to primary cross-vendor judge; tightened `max_causal_hops` rubric with calibration anchors; added per-generator failure-mode firing analysis; cache schema now keys every artifact by `(generator, judge)` so adding either dimension is non-destructive.
-- v0.4 — Added (a) deterministic regex-based causal-hop counter; (b) per-scenario inter-judge kappa breakdown; (c) length-confound scatter diagnostic + length-overlap effect-size analysis; (d) permutation test for Tier-2 cross-condition JSD; (e) high-level synthesis section.
-- v0.5 — Added Section 12: scaled DailyDilemmas pilot (100 scenarios, full Tier-1/Tier-2/MP-NCoT/length-residualization/family-aggregation analysis stack, plus scale-only analyses: per-scenario effect-size histogram, Tier-1 vs Tier-2 correlation, topic stratification). Key finding: the original 5-scenario pilot's core results replicate at scale with substantially tighter CIs; `uncertainty_suppression` and `stakeholder_collapse` fire in 74–98% of standard-CoT responses and are near-universally eliminated by narrative CoT across both generators.
-- v0.6 — Added Section 13: multi-agent narrative debate experiment (5 scenarios x 3 perspectives x 10 samples x 2 generators x 3 rounds + moderator). Key findings: overall consensus rate is 6%; when consensus is reached it tracks single-protagonist NCoT (JSD ≈ 0.025); overall mind-change rate is 24% with `primary_affected` agents most malleable (38%) and `third_party` agents most stable (14%).
+- v0.1 -- Drafted from author's study-design email plus the second-iteration notebook (dual-judge, decision-extractor, failure-mode-targeted analysis, Cliff's delta + bootstrap CIs, JSD with bootstrap CI).
+- v0.2 -- Added robustness layers documented inline above: cross-judge directional check, length residualization, decision entropy. Tier-1 interpretation threshold tightened to require length-residualized effect, not just raw effect.
+- v0.3 -- Added second generation model (`gpt-4o`); promoted `claude-sonnet-4-6` to primary cross-vendor judge; tightened `max_causal_hops` rubric with calibration anchors; added per-generator failure-mode firing analysis; cache schema now keys every artifact by `(generator, judge)` so adding either dimension is non-destructive.
+- v0.4 -- Added (a) deterministic regex-based causal-hop counter; (b) per-scenario inter-judge kappa breakdown; (c) length-confound scatter diagnostic + length-overlap effect-size analysis; (d) permutation test for Tier-2 cross-condition JSD; (e) high-level synthesis section.
+- v0.5 -- Added Section 12: scaled DailyDilemmas pilot (100 scenarios, full Tier-1/Tier-2/MP-NCoT/length-residualization/family-aggregation analysis stack, plus scale-only analyses: per-scenario effect-size histogram, Tier-1 vs Tier-2 correlation, topic stratification). Key finding: the original 5-scenario pilot's core results replicate at scale with substantially tighter CIs; `uncertainty_suppression` and `stakeholder_collapse` fire in 74-98% of standard-CoT responses and are near-universally eliminated by narrative CoT across both generators.
+- v0.6 -- Added Section 13: multi-agent narrative debate experiment (5 scenarios x 3 perspectives x 10 samples x 2 generators x 3 rounds + moderator). Key findings: overall consensus rate is 6%; when consensus is reached it tracks single-protagonist NCoT (JSD ~0.025); overall mind-change rate is 24% with `primary_affected` agents most malleable (38%) and `third_party` agents most stable (14%).
+- v0.7 -- Added Section 14: open action-space debate experiment. Key findings: novel-action proposal rate 73.2% (gpt-4o ~98%, gpt-5.4-nano ~50%); direct consensus rate +3% vs closed; mind-change rate +53.8% vs closed; synthesis emergence rate 82%. The central finding is that agents overwhelmingly exit the closed option space when permitted, the moderator can usually find a synthesis from the revealed concerns, but agents do not self-organise convergence without an explicit synthesis presentation mechanism.
