@@ -169,6 +169,52 @@ Section 12 of the notebook runs the full analysis stack on 100 scenarios sampled
 
 The auto-tagger for failure modes has strong precision/recall on `stakeholder_collapse` (P=0.87–0.93, R=1.00) and `uncertainty_suppression` (P=0.99, R=0.87) — the two failure modes that actually fire. It has zero precision on `premature_refusal`, `framework_enumeration`, and `consequential_flattening` (all auto-tagged but none fire empirically), which means the auto-tagger over-labels those modes. For the analysis cells that condition on auto-tagged failure modes, this introduces noise only for the three non-firing modes; the two firing modes are reliably tagged.
 
+## Section 13 — Multi-Agent Narrative Debate Experiment
+
+Section 13 implements Alvaro's suggestion: turn the multi-protagonist NCoT result into a structured debate. If single-protagonist narrative CoT is a commitment device for the named protagonist (Section 11), what happens when those agents argue with each other? The section re-uses the original five hand-crafted scenarios and their cached MP-NCoT outputs as Round 0 opening statements.
+
+### Design
+
+- **Scope**: 5 original scenarios, 3 stakeholder perspectives per scenario (decider, primary_affected, third_party), N=10 samples per cell, both generators (`gpt-5.4-nano`, `gpt-4o`).
+- **Round 0** (opening): Cached MP-NCoT outputs from Section 11, sample_idx 0–9. Zero new API calls.
+- **Round 1** (rebuttal): Each agent reads the other two agents' Round 0 statements and writes a rebuttal, optionally revising its position. 300 new generation calls.
+- **Round 2** (final position): Each agent reads all Round 1 rebuttals and writes a final position. 300 new generation calls.
+- **Moderator consensus pass**: A `gpt-4o-mini` moderator reads the full 9-statement transcript and returns `consensus_reached`, `consensus_decision`, `points_of_disagreement`, and `summary`. 100 calls.
+- **Decision extraction**: Per-agent, per-round decision labels extracted by `gpt-4o-mini`. Round 0 decisions reuse Section 11 cache; Rounds 1–2 add 600 new extraction calls.
+- **Cache scheme**: `debate_round1_{gen}_{scenario}_{perspective}_{idx}.json`, `debate_round2_*`, `debate_consensus_*`, `debate_dec_{round}_{gen}_{scenario}_{perspective}_{idx}.json`. All artifacts in `divergence_study_outputs/`.
+
+### Saved artifacts
+
+| File | Contents |
+|---|---|
+| `debate_all_round_decisions.csv` | Per-agent, per-round canonical decision labels (900 rows: 5 x 3 x 10 x 2 generators x 3 rounds) |
+| `debate_consensus.csv` | Moderator outputs (100 rows: 5 x 10 x 2 generators) |
+| `debate_mind_change_rates.csv` | Per-(agent, scenario, generator, sample) change flag + role |
+| `debate_mind_change_by_role.csv` | Aggregated change rate by `decision_role` and generator |
+| `debate_consensus_rate.csv` | Consensus rate by scenario and generator |
+| `debate_consensus_vs_single_protagonist.csv` | JSD between moderator consensus distribution and single-protagonist NCoT |
+| `debate_per_round_distributions_{gen}.png` | Per-scenario x per-round decision distributions |
+| `debate_decision_trajectories_{gen}_{scenario}.png` | 3x3 trajectory grids per scenario x generator |
+| `debate_consensus_rate_by_scenario.png` | Consensus rate bar chart |
+
+### Headline findings (Section 13)
+
+**Q1: Does debate produce different conclusions than single-protagonist NCoT?**
+
+No, and the mechanism is clear: the consensus rate is very low (6% overall, range 0–15% across scenarios and generators). When the moderator does reach consensus, the decision closely tracks what single-protagonist narrative CoT already produced (JSD ≈ 0.025 — the one scenario with sufficient consensus data). Debate does not unlock different conclusions; it mostly fails to converge, exposing persistent stakeholder disagreement.
+
+**Q2: Do agents update their positions across rounds (genuine deliberation)?**
+
+Yes, but unevenly by role:
+- `primary_affected` agents change decision 38% of the time (R0 to R2)
+- `decider` agents change decision 20% of the time
+- `third_party` agents change decision 14% of the time
+- Overall mind-change rate: 24%
+
+Agents do update positions across rounds. The debate is not pure restatement. Directly-affected parties are the most malleable; formal decision-makers and third parties are more stable. This is consistent with the narrative CoT commitment-device finding from Section 11: the decider perspective generates the strongest narrative commitment and is hardest to dislodge.
+
+**Interpretation**: The dominant dynamic is persistent divergence, not convergence. Stakeholders argue across the three rounds but rarely reach common ground, and the rare consensus that does emerge mirrors what single-protagonist NCoT already found. This suggests that narrative-format multi-agent debate, at this scale, functions as a mechanism for *articulating* disagreement rather than *resolving* it. Whether structured resolution prompts (e.g., a defeasibility round after Round 2) could shift the consensus rate is an open question for the next experiment.
+
 ## Change log
 
 - v0.1 — Drafted from author's study-design email plus the second-iteration notebook (dual-judge, decision-extractor, failure-mode-targeted analysis, Cliff's delta + bootstrap CIs, JSD with bootstrap CI).
@@ -176,3 +222,4 @@ The auto-tagger for failure modes has strong precision/recall on `stakeholder_co
 - v0.3 — Added second generation model (`gpt-4o`); promoted `claude-sonnet-4-6` to primary cross-vendor judge; tightened `max_causal_hops` rubric with calibration anchors; added per-generator failure-mode firing analysis; cache schema now keys every artifact by `(generator, judge)` so adding either dimension is non-destructive.
 - v0.4 — Added (a) deterministic regex-based causal-hop counter; (b) per-scenario inter-judge kappa breakdown; (c) length-confound scatter diagnostic + length-overlap effect-size analysis; (d) permutation test for Tier-2 cross-condition JSD; (e) high-level synthesis section.
 - v0.5 — Added Section 12: scaled DailyDilemmas pilot (100 scenarios, full Tier-1/Tier-2/MP-NCoT/length-residualization/family-aggregation analysis stack, plus scale-only analyses: per-scenario effect-size histogram, Tier-1 vs Tier-2 correlation, topic stratification). Key finding: the original 5-scenario pilot's core results replicate at scale with substantially tighter CIs; `uncertainty_suppression` and `stakeholder_collapse` fire in 74–98% of standard-CoT responses and are near-universally eliminated by narrative CoT across both generators.
+- v0.6 — Added Section 13: multi-agent narrative debate experiment (5 scenarios x 3 perspectives x 10 samples x 2 generators x 3 rounds + moderator). Key findings: overall consensus rate is 6%; when consensus is reached it tracks single-protagonist NCoT (JSD ≈ 0.025); overall mind-change rate is 24% with `primary_affected` agents most malleable (38%) and `third_party` agents most stable (14%).
