@@ -261,12 +261,54 @@ The interpretation: the bottleneck on consensus is not the closed taxonomy alone
 
 The synthesis positions the moderator formulated represent exactly the "new useful revelations in the space of normative possibility" the Section 14 plan was designed to surface. A natural next step is a Round 3 in which those moderator-generated synthesis positions are presented back to the agents and each agent is asked to accept, modify, or reject the synthesis with justification. This would test whether a structured mediator round can convert the latent synthesis potential (82% emergence rate) into actual agent-level convergence.
 
+## Section 15 — Synthesis Acceptance Round (Round 3)
+
+Section 15 tests the key hypothesis emerging from Section 14: if the moderator can construct a coherent synthesis in 82% of debates, does explicitly presenting that synthesis back to the agents produce convergence?
+
+### Design
+
+For the 82 cells from Section 14 that had a `synthesis_label`, each agent receives the full prior transcript (R0, R1, R2) and the moderator's synthesis position, and must respond with exactly one of: `ACCEPT`, `ACCEPT_WITH_MODIFICATION` (stating what change they require), or `REJECT` (stating what concern is unresolvable). A final moderator pass reads the three responses and determines whether consensus was reached (all accepted the same position) or partial convergence (>=2 of 3 accepted).
+
+- R3 generation: ~246 calls (82 synthesis cells x 3 perspectives)
+- Final moderator: ~82 calls
+- R3 decision extraction: ~246 calls
+
+### Saved artifacts (Section 15)
+
+| File | Contents |
+|---|---|
+| `debate_v3_r3_decisions.csv` | Per-agent R3 response type + decision + modification/rejection text |
+| `debate_v3_final_mod.csv` | Final moderator outcome per debate cell |
+| `debate_v3_convergence_progression.csv` | Closed/open/synthesis consensus rates per (scenario, generator) |
+| `debate_v3_synthesis_outcomes_by_scenario.csv` | Aggregated accept/modify/reject counts per (scenario, generator) |
+| `debate_v3_convergence_progression.png` | Line chart of convergence across all three debate designs |
+| `debate_v3_response_types.png` | Stacked bar chart of R3 response types by generator |
+
+All per-sample JSON files gitignored.
+
+### Headline findings (Section 15)
+
+The synthesis presentation achieved a complete collapse of rejection. The response type distribution was: 98.4% `ACCEPT_WITH_MODIFICATION`, 1.6% `ACCEPT`, 0% `REJECT`. Every agent found the synthesis acceptable to some degree — nobody refused outright. This is a qualitatively different outcome from Section 13's stubborn disagreement and Section 14's open-but-uncoordinated novel proposals.
+
+However, full consensus (all agents agreeing on the same final position) remained at 0%. Partial convergence (>=2 of 3 accepting) was 100% of synthesis-presented cells. The paradox: universal acceptance, zero formal consensus. The mechanism is that `ACCEPT_WITH_MODIFICATION` gives each agent a way to endorse the synthesis while pulling it in their direction. Three agents each wanting a different modification still leaves no single agreed position.
+
+**The diagnosis across Sections 13-15:**
+
+| Section | Design | Consensus | Partial conv. | Key dynamic |
+|---|---|---|---|---|
+| 13 | Closed taxonomy, 3 rounds | 6% | ~35% | Agents restate positions; taxonomy is the container |
+| 14 | Open action space, active synthesizer | 9% | ~50% | Agents exit taxonomy readily (73%); moderator finds synthesis in 82% of cases; agents do not self-coordinate |
+| 15 | Synthesis presentation, accept/modify/reject | 0% | 100% | Zero rejection; all accept with modification; disagreement collapses from "what to do" to "how exactly to do it" |
+
+The disagreement has been progressively re-located by the protocol design. After Section 15, the residual disagreement is not about which direction to take but about the specific parameters of an approach all parties find acceptable. This is a structurally different kind of disagreement — it is negotiable in a way that Section 13's categorical standoff was not. A natural next step would be a single negotiation round in which the moderator integrates the three requested modifications into one proposal and asks for a final binary accept/reject, but the current evidence already supports the main conclusion: structured synthesis presentation converts stakeholder standoff into coordinated refinement.
+
 ## Change log
 
-- v0.1 -- Drafted from author's study-design email plus the second-iteration notebook (dual-judge, decision-extractor, failure-mode-targeted analysis, Cliff's delta + bootstrap CIs, JSD with bootstrap CI).
-- v0.2 -- Added robustness layers documented inline above: cross-judge directional check, length residualization, decision entropy. Tier-1 interpretation threshold tightened to require length-residualized effect, not just raw effect.
-- v0.3 -- Added second generation model (`gpt-4o`); promoted `claude-sonnet-4-6` to primary cross-vendor judge; tightened `max_causal_hops` rubric with calibration anchors; added per-generator failure-mode firing analysis; cache schema now keys every artifact by `(generator, judge)` so adding either dimension is non-destructive.
-- v0.4 -- Added (a) deterministic regex-based causal-hop counter; (b) per-scenario inter-judge kappa breakdown; (c) length-confound scatter diagnostic + length-overlap effect-size analysis; (d) permutation test for Tier-2 cross-condition JSD; (e) high-level synthesis section.
-- v0.5 -- Added Section 12: scaled DailyDilemmas pilot (100 scenarios, full Tier-1/Tier-2/MP-NCoT/length-residualization/family-aggregation analysis stack, plus scale-only analyses: per-scenario effect-size histogram, Tier-1 vs Tier-2 correlation, topic stratification). Key finding: the original 5-scenario pilot's core results replicate at scale with substantially tighter CIs; `uncertainty_suppression` and `stakeholder_collapse` fire in 74-98% of standard-CoT responses and are near-universally eliminated by narrative CoT across both generators.
-- v0.6 -- Added Section 13: multi-agent narrative debate experiment (5 scenarios x 3 perspectives x 10 samples x 2 generators x 3 rounds + moderator). Key findings: overall consensus rate is 6%; when consensus is reached it tracks single-protagonist NCoT (JSD ~0.025); overall mind-change rate is 24% with `primary_affected` agents most malleable (38%) and `third_party` agents most stable (14%).
-- v0.7 -- Added Section 14: open action-space debate experiment. Key findings: novel-action proposal rate 73.2% (gpt-4o ~98%, gpt-5.4-nano ~50%); direct consensus rate +3% vs closed; mind-change rate +53.8% vs closed; synthesis emergence rate 82%. The central finding is that agents overwhelmingly exit the closed option space when permitted, the moderator can usually find a synthesis from the revealed concerns, but agents do not self-organise convergence without an explicit synthesis presentation mechanism.
+- v0.1 -- Drafted from author's study-design email plus the second-iteration notebook.
+- v0.2 -- Added robustness layers: cross-judge directional check, length residualization, decision entropy.
+- v0.3 -- Added second generation model (`gpt-4o`); promoted `claude-sonnet-4-6` to primary judge.
+- v0.4 -- Added deterministic causal-hop counter, per-scenario kappa, length-confound scatter, permutation test.
+- v0.5 -- Added Section 12: scaled DailyDilemmas pilot (100 scenarios).
+- v0.6 -- Added Section 13: multi-agent narrative debate (closed taxonomy, 3 rounds + moderator). Consensus 6%, mind-change 24%.
+- v0.7 -- Added Section 14: open action-space debate. Novel-action proposal rate 73%; mind-change +53.8%; synthesis emergence 82%.
+- v0.8 -- Added Section 15: synthesis acceptance round (R3). Zero rejection (0%); 100% acceptance (98.4% with modification); full consensus 0%; partial convergence 100% among cells with synthesis. Disagreement relocated from categorical standoff to coordinated parameter refinement.
