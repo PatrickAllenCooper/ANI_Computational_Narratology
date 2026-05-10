@@ -2,7 +2,16 @@
 
 A minimum-viable empirical test of whether narrative-structured prompting produces systematically different ethical reasoning outputs than standard chain-of-thought, across two generation model families and two cross-vendor judges.
 
-The canonical study design lives in `Guidance_Documents/study_design.md`. The paper draft is `paper.tex`. Implementation is `ncot_divergence_pilot.ipynb`. Per-run artifacts (CSVs and figures) are in `divergence_study_outputs/`; per-sample cache JSON is gitignored and regenerated from the notebook.
+The canonical study design lives in `Guidance_Documents/study_design.md`. The submission-formatted draft targeting Association for Computational Linguistics Rolling Review (ARR)---ACL template, long paper---is `papers/ACL_paper.tex`. Earlier drafts live under `papers/archive/`. Implementation is `ncot_divergence_pilot.ipynb`. Per-run artifacts (CSVs and figures) are in `divergence_study_outputs/`; per-sample cache JSON is gitignored and regenerated from the notebook.
+
+## Credential rotation
+
+Any API key that has left the local machine (pasted into chat, email, or any web form) must be rotated immediately:
+
+- Azure Foundry key (`AZURE_AI_API_KEY`): Azure portal -> your resource -> Keys and Endpoint -> Regenerate.
+- xAI key (`XAI_API_KEY`): console.x.ai -> API Keys -> Delete and create new.
+
+Never commit a filled-in `.env`. The `.gitignore` already excludes it.
 
 ## Setup
 

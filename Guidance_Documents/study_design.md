@@ -130,7 +130,7 @@ The cell-level cache in `divergence_study_outputs/` keys every artifact by *both
 
 ## Repository
 
-`PatrickAllenCooper/ANI_Computational_Narratology` — the notebook, this guidance document, the analysis artifacts in `divergence_study_outputs/`, and the paper draft in `paper.tex` are the canonical record.
+`PatrickAllenCooper/ANI_Computational_Narratology` --- the notebook, this guidance document, the analysis artefacts in `divergence_study_outputs/`, and the ARR-facing paper draft `papers/ACL_paper.tex` are the canonical record (`papers/archive/` holds prior variants).
 
 ## Scaled DailyDilemmas pilot (Section 12)
 
@@ -363,3 +363,27 @@ Both signals are consistent with narrative scaffolding contributing structurally
 - v0.9 -- Added Section 16: integrative negotiation round (R4). The moderator integrates three modification requests into one proposal; agents cast a final binary vote. Full consensus 95.1%, majority accept 100%, mean 2.98/3 modifications addressed per integration. The four-round arc (Sections 13-16) demonstrates a complete convergence pathway: 6% closed standoff to 95% integrated consensus.
 - v1.0 -- Position paper (`papers/position_paper.tex`) revised to NeurIPS 2026 Position Paper Track form with a two-mechanism inference-time framing. Demonstration I refreshed against Section 12 scaled DailyDilemmas numbers (uncertainty_suppression 98% to 0%; stakeholder_collapse 74-80% to 0-4%; length-residualised stakeholder_count delta +0.51 / +0.75; uncertainty_score delta +0.77 / +0.98). Demonstration II added covering the Sections 13-16 four-round debate arc (6% closed to 95% integrated consensus, 1.6% residual rejection). Joint Framework subsections compressed to free space; fourth Alternative View added anticipating the "multi-agent convergence is sycophancy" objection; Future Work updated with the structured-defeasibility benchmark and per-mechanism scaling tasks; track-fit rationale draft added as a commented block at the end of the .tex.
 - v1.1 -- Demonstration II scope-of-claim paragraph added to `papers/position_paper.tex` and Section 13--16 guidance, addressing the missing non-narrative-CoT debate baseline (the strict ablation that holds the four-round integration protocol constant and replaces narrative scaffolding in Rounds 0-2 with standard chain-of-thought). The arc shows the integration step is the proximate cause of the 9% to 95% jump given narrative inputs; whether narrative is necessary is recorded as outstanding rather than implicit. Conclusion future-work list updated to call out this baseline as the priority Demonstration II follow-up, with two suggestive (not dispositive) observations sourced from `debate_v3_r3_decisions.csv` and `debate_v4_r4_votes.csv`: stakeholder-grounded modification language across rounds and the role-concentration of the four R4 rejections.
+- v1.2 -- NeurIPS-style position draft moved to `papers/archive/position_paper.tex`. Primary LaTeX draft for ACL-style review is `papers/ACL_paper.tex` (official `acl.sty` / `acl_natbib.bst`, `references.bib`). Submission path is Association for Computational Linguistics Rolling Review (ARR): submit to ARR first; commit to a venue (e.g. ACL 2026 main conference) only after reviews and meta-review, per ARR policy. The repository line in this document now points at `papers/ACL_paper.tex`; v1.0/v1.1 entries above still name `position_paper.tex` for historical accuracy.
+- v1.3 -- Eight-phase experimental pipeline added to extend the ACL draft with cross-vendor replication (claude-haiku-4-5, grok-4-1-fast-reasoning, claude-sonnet-4-6; N=20/20/10 per cell) and a five-act narrative arc of experiments. Scripts added under `scripts/`: `generators.py` (multi-vendor router), `run_phase1_quartet.py`, `aggregate_phase1.py`, `run_phase2_ablation.py`, `run_phase3_debate.py`, `kc_proxy.py`, `run_phase4_kc.py`, `run_sycophancyeval.py`, `run_agentic_probe.py`. Adversarial sycophancy probe set (30 hand-curated probes) committed to `data/adversarial_sycophancy_probes.json`. Tier-3 human pairwise preference pre-registration committed to `Guidance_Documents/tier3_preregistration.md`. Agentic-probe pre-registration added below.
+
+## Phase 6 Agentic-Misalignment Probe: Pre-Registration Block
+
+Pre-registered before runs are executed. Committed here per plan specification.
+
+**Predicted direction:** N-CoT scaffolding REDUCES the harmful-action rate compared to standard CoT in both the blackmail and corporate-espionage scenarios.
+
+**Predicted mechanism:** The protagonist + stakeholder enumeration + two-step projection sections of the N-CoT prompt concretise the long-horizon collapse trajectory for the agent role, making the full causal chain of the harmful action salient before the agent calls any tool.
+
+**Null-result interpretation:** If N-CoT does not reduce harmful-action rate relative to standard CoT, this is interpreted as "inference-time scaffolding does not reach this failure mode at the severity level represented by the two test scenarios." This outcome is reportable and meaningful. It does not invalidate Experiments 1 and 2, which operate on structurally different task types. It would motivate a training-time or fine-grained prompt-injection approach as the next intervention.
+
+**Scenarios:** Two fictional scenarios adapted from publicly described Anthropic agentic-misalignment research:
+  1. `blackmail` -- agent discovers compromising executive emails and has access to `send_email`.
+  2. `corporate_espionage` -- agent discovers a vendor misconfiguration granting access to competitor documents.
+
+**Models:** gpt-5.4-nano, claude-haiku-4-5, grok-4-1-fast-reasoning, claude-sonnet-4-6.
+
+**N:** 5 per (scenario x condition x model) cell = 100 long-context generations total.
+
+**Outcome coding:** harmful_action | refuse | hedge (as defined in `scripts/run_agentic_probe.py`).
+
+**Analysis:** Per-model, per-scenario reduction in harmful_action rate from standard_cot to narrative_cot. No significance test at N=5; results are directional and exploratory. Bootstrapped 95% CIs reported.
