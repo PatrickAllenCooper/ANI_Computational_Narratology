@@ -209,6 +209,30 @@ def _anthropic_endpoint() -> str:
     return f"{base}/anthropic/v1/messages"
 
 
+_ANTHROPIC_SESSION: object = None
+
+
+def _get_anthropic_session():
+    """Return a long-lived requests.Session with connection pooling."""
+    global _ANTHROPIC_SESSION
+    if _ANTHROPIC_SESSION is not None:
+        return _ANTHROPIC_SESSION
+    import requests
+    from requests.adapters import HTTPAdapter
+    from urllib3.util.retry import Retry
+    session = requests.Session()
+    # pool_connections / pool_maxsize avoid per-call DNS lookups under high concurrency
+    adapter = HTTPAdapter(
+        pool_connections=32,
+        pool_maxsize=32,
+        max_retries=Retry(total=0),  # we manage retries ourselves
+    )
+    session.mount("https://", adapter)
+    session.mount("http://", adapter)
+    _ANTHROPIC_SESSION = session
+    return session
+
+
 def _call_anthropic(
     model: str,
     system: str,
@@ -216,7 +240,7 @@ def _call_anthropic(
     *,
     max_tokens: int,
 ) -> GenerationResult:
-    import requests
+    session = _get_anthropic_session()
     endpoint = _anthropic_endpoint()
     api_key = os.environ.get("AZURE_AI_API_KEY", "")
     headers = {
@@ -234,7 +258,7 @@ def _call_anthropic(
     for attempt in range(5):
         try:
             t0 = time.monotonic()
-            r = requests.post(endpoint, json=payload, headers=headers, timeout=300)
+            r = session.post(endpoint, json=payload, headers=headers, timeout=300)
             latency = time.monotonic() - t0
             if r.status_code == 429:
                 wait = int(r.headers.get("Retry-After", 30))
@@ -265,25 +289,36 @@ def _call_anthropic(
 
 
 # ---------------------------------------------------------------------------
-# xAI surface (OpenAI-compatible)
+# xAI / Grok surface
+#
+# Grok models may be served either directly from api.x.ai (requires a real
+# xAI console key) or from an Azure AI Foundry deployment via the
+# /models OpenAI-compatible endpoint.  We try the Azure Foundry path first
+# because that is the configuration used in this project; if XAI_API_KEY
+# differs from AZURE_AI_API_KEY the caller can override by setting
+# XAI_USE_NATIVE=1 to force the api.x.ai route.
 # ---------------------------------------------------------------------------
 
-_XAI_CLIENT: object = None
+_XAI_AZURE_CLIENT: object = None
 
 
-def _get_xai_client():
-    global _XAI_CLIENT
-    if _XAI_CLIENT is not None:
-        return _XAI_CLIENT
+def _get_xai_via_azure_client():
+    """Return an OpenAI-SDK client pointed at the Azure Foundry /models endpoint."""
+    global _XAI_AZURE_CLIENT
+    if _XAI_AZURE_CLIENT is not None:
+        return _XAI_AZURE_CLIENT
     from openai import OpenAI
-    api_key = os.environ.get("XAI_API_KEY")
+    api_key = os.environ.get("XAI_API_KEY") or os.environ.get("AZURE_AI_API_KEY")
     if not api_key:
-        raise RuntimeError("XAI_API_KEY not set")
-    _XAI_CLIENT = OpenAI(
+        raise RuntimeError("Neither XAI_API_KEY nor AZURE_AI_API_KEY is set")
+    endpoint_raw = os.environ.get("AZURE_AI_PROJECT_ENDPOINT", "")
+    base = endpoint_raw.split("/api/projects")[0].rstrip("/")
+    # Azure AI Foundry Models endpoint is OpenAI-compatible at {base}/models
+    _XAI_AZURE_CLIENT = OpenAI(
         api_key=api_key,
-        base_url="https://api.x.ai/v1",
+        base_url=f"{base}/models",
     )
-    return _XAI_CLIENT
+    return _XAI_AZURE_CLIENT
 
 
 def _call_xai(
@@ -295,7 +330,17 @@ def _call_xai(
     max_tokens: int,
     json_mode: bool = False,
 ) -> GenerationResult:
-    client = _get_xai_client()
+    """Call a Grok model.  Routes via Azure Foundry /models unless XAI_USE_NATIVE=1."""
+    use_native = os.environ.get("XAI_USE_NATIVE", "0") == "1"
+    if use_native:
+        from openai import OpenAI
+        xai_key = os.environ.get("XAI_API_KEY")
+        if not xai_key:
+            raise RuntimeError("XAI_API_KEY not set")
+        client = OpenAI(api_key=xai_key, base_url="https://api.x.ai/v1")
+    else:
+        client = _get_xai_via_azure_client()
+
     last_err: Optional[Exception] = None
     for attempt in range(5):
         try:
@@ -306,7 +351,6 @@ def _call_xai(
                     {"role": "system", "content": system},
                     {"role": "user", "content": user},
                 ],
-                seed=sample_idx,
             )
             if _is_reasoning(model):
                 kwargs["max_completion_tokens"] = max_tokens
@@ -332,7 +376,7 @@ def _call_xai(
             if _is_content_filter(e):
                 return GenerationResult(text="", finish_reason="content_filter", model=model)
             _retry_sleep(attempt, e)
-    raise RuntimeError(f"xAI generation failed after 5 attempts: {last_err}") from last_err
+    raise RuntimeError(f"Grok generation failed after 5 attempts: {last_err}") from last_err
 
 
 # ---------------------------------------------------------------------------
