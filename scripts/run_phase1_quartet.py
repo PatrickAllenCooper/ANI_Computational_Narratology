@@ -26,9 +26,9 @@ Cache naming: inherits the notebook convention:
 
 Required env vars (load via .env):
   AZURE_AI_PROJECT_ENDPOINT, AZURE_AI_API_KEY, XAI_API_KEY
-  AZURE_AI_MODEL_JUDGE       (default: claude-sonnet-4-6)
-  AZURE_AI_MODEL_JUDGE_2     (default: gpt-4o-mini)
-  AZURE_AI_MODEL_DECISION    (default: gpt-4o-mini)
+  AZURE_AI_MODEL_JUDGE       (default: claude-haiku-4-5)
+  AZURE_AI_MODEL_JUDGE_2     (default: gpt-5.4-nano)
+  AZURE_AI_MODEL_DECISION    (default: gpt-5.4-nano)
 
 Usage:
   python -m scripts.run_phase1_quartet [--generators MODEL,MODEL] [--n N]
@@ -254,38 +254,68 @@ class Scenario:
 
 
 def load_daily_dilemmas(n: int = 100) -> list[Scenario]:
-    """Load DailyDilemmas from HuggingFace and return a deterministic stratified sample."""
+    """Load DailyDilemmas from HuggingFace and return a deterministic stratified sample.
+
+    The dataset has two rows per dilemma (to_do / not_to_do); we pair them
+    by dilemma_idx and build one Scenario per paired dilemma.
+    Split is 'test' (only split in Dilemmas_with_values_aggregated config).
+    """
     try:
         from datasets import load_dataset
     except ImportError:
         print("ERROR: install 'datasets' to load DailyDilemmas: pip install datasets")
         sys.exit(1)
-    ds = load_dataset("kellycyy/daily_dilemmas", "Dilemmas_with_values_aggregated",
-                      split="train", trust_remote_code=True)
-    # Group by topic
-    by_topic: dict[str, list] = {}
+    ds = load_dataset(
+        "kellycyy/daily_dilemmas",
+        "Dilemmas_with_values_aggregated",
+        split="test",
+    )
+    # Pair to_do / not_to_do rows by dilemma_idx
+    pairs: dict[int, dict] = {}
     for row in ds:
-        t = row.get("topic", "unknown")
-        by_topic.setdefault(t, []).append(row)
+        didx = int(row["dilemma_idx"])
+        if didx not in pairs:
+            pairs[didx] = {
+                "dilemma_idx": didx,
+                "dilemma_situation": row["dilemma_situation"],
+                "topic_group": row["topic_group"],
+                "to_do": None,
+                "not_to_do": None,
+            }
+        if row["action_type"] == "to_do":
+            pairs[didx]["to_do"] = row["action"]
+        else:
+            pairs[didx]["not_to_do"] = row["action"]
+
+    # Build Scenario objects; skip incomplete pairs
+    all_dilemmas: list[Scenario] = []
+    for didx, p in sorted(pairs.items()):
+        if not p["dilemma_situation"] or not p["to_do"] or not p["not_to_do"]:
+            continue
+        all_dilemmas.append(Scenario(
+            id=f"dd_{didx}",
+            prompt=p["dilemma_situation"],
+            topic=p["topic_group"],
+            action_1=p["to_do"],
+            action_2=p["not_to_do"],
+        ))
+
+    # Deterministic stratified sample by topic_group
+    by_topic: dict[str, list[Scenario]] = {}
+    for s in all_dilemmas:
+        by_topic.setdefault(s.topic, []).append(s)
     topics = sorted(by_topic.keys())
     n_topics = len(topics)
     quota = n // n_topics
     remainder = n - quota * n_topics
     rng = random.Random(SCALED_SAMPLE_SEED)
-    selected = []
+    selected: list[Scenario] = []
     for i, topic in enumerate(topics):
         pool = list(by_topic[topic])
         rng.shuffle(pool)
         take = quota + (1 if i < remainder else 0)
-        for row in pool[:take]:
-            selected.append(Scenario(
-                id=f"dd_{row.get('id', str(len(selected)))}",
-                prompt=row.get("dilemma", ""),
-                topic=topic,
-                action_1=row.get("action_to_do", "action_1"),
-                action_2=row.get("action_not_to_do", "action_2"),
-            ))
-    return selected
+        selected.extend(pool[:take])
+    return selected[:n]
 
 
 # ---------------------------------------------------------------------------
@@ -470,10 +500,10 @@ DEFAULT_CONDITIONS = ["baseline_io", "standard_cot", "narrative_cot"]
 
 N_PER_GENERATOR = {
     "claude-haiku-4-5": 20,
-    "grok-4-1-fast-reasoning": 20,
-    "claude-sonnet-4-6": 10,
+    "grok-4-1-fast-reasoning": 5,
+    "claude-sonnet-4-6": 5,
 }
-DEFAULT_N_FALLBACK = 20
+DEFAULT_N_FALLBACK = 5
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -491,9 +521,9 @@ def main(argv: list[str] | None = None) -> int:
     generators = [g.strip() for g in args.generators.split(",") if g.strip()]
     conditions = [c.strip() for c in args.conditions.split(",") if c.strip()]
 
-    judge_model = os.environ.get("AZURE_AI_MODEL_JUDGE", "claude-sonnet-4-6")
-    judge2_model = os.environ.get("AZURE_AI_MODEL_JUDGE_2", "gpt-4o-mini")
-    extractor_model = os.environ.get("AZURE_AI_MODEL_DECISION", "gpt-4o-mini")
+    judge_model = os.environ.get("AZURE_AI_MODEL_JUDGE", "claude-haiku-4-5")
+    judge2_model = os.environ.get("AZURE_AI_MODEL_JUDGE_2", "gpt-5.4-nano")
+    extractor_model = os.environ.get("AZURE_AI_MODEL_DECISION", "gpt-5.4-nano")
 
     print(f"Generators: {generators}")
     print(f"Conditions: {conditions}")

@@ -140,7 +140,7 @@ def run_adversarial_probe(
     gen_model: str,
     condition: str,
     sample_idx: int = 0,
-    judge_model: str = "claude-sonnet-4-6",
+    judge_model: str = "claude-haiku-4-5",
     skip_graph: bool = False,
     skip_lm: bool = False,
 ) -> dict:
@@ -250,7 +250,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--workers", type=int, default=4)
     args = parser.parse_args(argv)
 
-    judge_model = os.environ.get("AZURE_AI_MODEL_JUDGE", "claude-sonnet-4-6")
+    judge_model = os.environ.get("AZURE_AI_MODEL_JUDGE", "claude-haiku-4-5")
 
     # ---- Task 1: Phase 1 K_C ------------------------------------------------
     if not args.skip_phase1:

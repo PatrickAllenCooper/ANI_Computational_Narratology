@@ -317,7 +317,7 @@ def run_sycophancy_probe(
     gen_model: str,
     condition: str,
     sample_idx: int,
-    judge_model: str = "claude-sonnet-4-6",
+    judge_model: str = "claude-haiku-4-5",
 ) -> dict:
     probe_id = probe.get("id", "unknown")
     ptype = probe.get("probe_type", "unknown")
@@ -433,7 +433,7 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
 
     generators = [g.strip() for g in args.generators.split(",") if g.strip()]
-    judge_model = os.environ.get("AZURE_AI_MODEL_JUDGE", "claude-sonnet-4-6")
+    judge_model = os.environ.get("AZURE_AI_MODEL_JUDGE", "claude-haiku-4-5")
     conditions = ["standard_cot", "narrative_cot"]
 
     print(f"Generators: {generators}")

@@ -87,7 +87,6 @@ OUT_DIR.mkdir(exist_ok=True)
 
 ALL_GENERATORS = [
     "gpt-5.4-nano",
-    "gpt-4o",
     "claude-haiku-4-5",
     "grok-4-1-fast-reasoning",
     "claude-sonnet-4-6",
@@ -106,9 +105,10 @@ def _call_gen(model: str, system: str, user: str, *, seed: int,
 
 
 def _call_mod(system: str, user: str, *, seed: int) -> dict:
-    """Call the moderator (always gpt-4o-mini on Azure) in JSON mode."""
+    """Call the moderator model in JSON mode."""
+    mod_model = os.environ.get("AZURE_AI_MODERATOR_MODEL", "gpt-5.4-nano")
     result = _generate(
-        MODERATOR_MODEL, system, user,
+        mod_model, system, user,
         sample_idx=seed, max_tokens=2048, json_mode=True,
     )
     if not result.text:
@@ -363,7 +363,7 @@ def main(argv: list[str] | None = None) -> int:
                         help="'all' or comma-separated model names")
     parser.add_argument("--scenarios", default="all",
                         help="'all' or comma-separated scenario IDs")
-    parser.add_argument("--n", type=int, default=10, help="Samples per cell")
+    parser.add_argument("--n", type=int, default=3, help="Samples per cell")
     parser.add_argument("--workers", type=int, default=2)
     args = parser.parse_args(argv)
 

@@ -11,9 +11,9 @@ dropping exactly one section at a time. Six conditions total:
   narrative_cot_drop_uncertainty
   narrative_cot_drop_commitment
 
-Sample: 50 scenarios (SUBSAMPLE_SEED=43, stratified from Phase 1's 100).
-N=10 per cell -> 6 x 50 x 10 = 3,000 generations on claude-sonnet-4-6.
-Full judging stack (claude-sonnet-4-6 as judge1, gpt-4o-mini as judge2).
+Sample: 30 scenarios (SUBSAMPLE_SEED=43, stratified from Phase 1's 100).
+N=3 per cell -> 6 x 30 x 3 = 540 generations on claude-sonnet-4-6.
+Judge stack: claude-haiku-4-5 as judge1, gpt-5.4-nano as judge2.
 
 Outputs:
   divergence_study_outputs/subinstruction_attribution.csv
@@ -230,18 +230,19 @@ def make_heatmap(df_attr: pd.DataFrame, out_path: Path) -> None:
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Phase 2: sub-instruction ablation")
-    parser.add_argument("--n", type=int, default=10, help="Samples per cell")
+    parser.add_argument("--n", type=int, default=3, help="Samples per cell")
+    parser.add_argument("--scenarios", type=int, default=30, help="Scenario subsample size")
     parser.add_argument("--workers", type=int, default=4)
     args = parser.parse_args(argv)
 
     gen_model = "claude-sonnet-4-6"
-    judge_model = os.environ.get("AZURE_AI_MODEL_JUDGE", "claude-sonnet-4-6")
-    judge2_model = os.environ.get("AZURE_AI_MODEL_JUDGE_2", "gpt-4o-mini")
-    extractor_model = os.environ.get("AZURE_AI_MODEL_DECISION", "gpt-4o-mini")
+    judge_model = os.environ.get("AZURE_AI_MODEL_JUDGE", "claude-haiku-4-5")
+    judge2_model = os.environ.get("AZURE_AI_MODEL_JUDGE_2", "gpt-5.4-nano")
+    extractor_model = os.environ.get("AZURE_AI_MODEL_DECISION", "gpt-5.4-nano")
 
     print("Loading DailyDilemmas 100-scenario sample...")
     scenarios_100 = load_daily_dilemmas(100)
-    scenarios = pick_subsample(scenarios_100, 50)
+    scenarios = pick_subsample(scenarios_100, args.scenarios)
     print(f"  Using {len(scenarios)} scenarios")
 
     # Inject custom system prompts into PROMPTS for this run
