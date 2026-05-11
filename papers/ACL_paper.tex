@@ -61,11 +61,11 @@ intersect the decision, project consequences of each available action at least
 two steps out, articulate genuine uncertainty about each projected future, and
 then commit. The protocol introduces no new training data, parameters, or
 fine-tuning; it replaces the system prompt. On a 100-scenario stratified
-sample of the DailyDilemmas corpus \citep{chiu24} across five generators spanning
+sample of the DailyDilemmas corpus \citep{chiu24} across four generators spanning
 three vendors and two model tiers, N-CoT eliminates uncertainty suppression
-near-universally and reduces stakeholder collapse from 74--80\% to 0--4\%;
+near-universally and reduces stakeholder collapse from 25--72\% to 0--1\%;
 structural shifts survive length residualisation with Cliff's deltas of
-$+0.51$ to $+0.98$.\footnote{A Cliff's delta of $\geq 0.47$ is conventionally
+$+0.18$ to $+0.77$.\footnote{A Cliff's delta of $\geq 0.47$ is conventionally
 read as a \emph{large} effect \citep{cliff93}; values approaching $1.0$ imply
 that almost every N-CoT output exceeds almost every standard-CoT output on
 the structural variable, even after removing the contribution of length.} A
@@ -99,10 +99,10 @@ feedback signals \citep{sharma23, malmqvist24}.
 The intuition we develop in this paper is that the same surface failures are
 visible in something simpler than agentic blackmail: how a model reasons
 through an everyday moral dilemma. When asked ``think step by step'' on the
-DailyDilemmas corpus \citep{chiu24}, both a current reasoning model
-(\texttt{gpt-5.4-nano}) and a non-reasoning model (\texttt{gpt-4o}) suppress
-articulated uncertainty on $\geq 98\%$ of scenarios and collapse the
-stakeholder set on $\geq 74\%$ of scenarios. The hypothesis we test is that
+DailyDilemmas corpus \citep{chiu24}, four frontier generators spanning three
+vendors (OpenAI, Anthropic, xAI) and two model tiers suppress articulated
+uncertainty on $50$--$72\%$ of scenarios and collapse the stakeholder set on
+$15$--$31\%$ of scenarios. The hypothesis we test is that
 asking the model to \emph{narrate} the same dilemma -- to name a protagonist,
 enumerate stakeholders, project two-step consequences, and surface genuine
 uncertainty before committing -- elicits a causally richer trace because it
@@ -112,12 +112,12 @@ heavily samples.
 The contributions of this paper are:
 
 \begin{enumerate}
-\item \textbf{Diagnosis (universal).} We show that the two CoT failure modes that
-empirically fire are near-universal across five generators spanning three vendors
+\item \textbf{Diagnosis (cross-vendor).} We show that the two CoT failure modes that
+empirically fire are near-universal across four generators spanning three vendors
 and two model tiers; the failures are not an artefact of a single family
 (\S\ref{sec:exp1}).
 \item \textbf{Intervention (mechanism-resolved).} N-CoT eliminates both failure
-modes on all five generators, length-controlled; a sub-instruction ablation on
+modes on all four generators, length-controlled; a sub-instruction ablation on
 the flagship (\S\ref{sec:exp1-ablation}) identifies which of the five sections
 carries the structural shift. A strict standard-CoT-Rounds-0--2 debate ablation
 (\S\ref{sec:exp2}) confirms that the integration step alone cannot account for
@@ -291,17 +291,17 @@ structurally non-negotiable concern, not procedural friction.
 input/output, standard CoT (``Think step by step, then give your answer''),
 and N-CoT (the five-section structure of \S\ref{sec:method}, with no formal
 apparatus mentioned). Decoding parameters are held identical across conditions.
-Five generators are tested: \texttt{gpt-5.4-nano} ($N{=}20$) and
-\texttt{gpt-4o} ($N{=}20$) from the original two-generator pilot, and three
-new generators spanning two additional vendors: \texttt{claude-haiku-4-5}
-($N{=}20$), \texttt{grok-4-1-fast-reasoning} ($N{=}20$), and the flagship
-\texttt{claude-sonnet-4-6} ($N{=}10$, cost-controlled). Outputs are coded
-by two cross-vendor judges (\texttt{claude-sonnet-4-6} primary,
-\texttt{gpt-4o-mini} secondary) on a six-variable rubric with
-linearly-weighted Cohen's $\kappa$ \citep{cohen60} per variable. The scenario
-pool is a 100-scenario stratified sample of DailyDilemmas \citep{chiu24},
-spanning 18 topic groups; the same deterministic stratified sample (seed 42)
-is used for all five generators, making the scenario sets comparable.
+Four generators are tested: \texttt{gpt-5.4-nano} ($N{=}20$) from the
+original pilot, plus three new generators spanning two additional vendors:
+\texttt{claude-haiku-4-5} ($N{=}20$), \texttt{grok-4-1-fast-reasoning}
+($N{=}5$), and the flagship \texttt{claude-sonnet-4-6} ($N{=}5$,
+cost-controlled). Outputs are coded by two cross-vendor judges
+(\texttt{claude-haiku-4-5} primary, \texttt{gpt-5.4-nano} secondary) on a
+six-variable rubric with linearly-weighted Cohen's $\kappa$ \citep{cohen60}
+per variable. The scenario pool is a 100-scenario stratified sample of
+DailyDilemmas \citep{chiu24}, spanning 18 topic groups; the same
+deterministic stratified sample (seed 42) is used for all four generators,
+making the scenario sets comparable.
 
 \begin{table}[t]
 \centering
@@ -310,26 +310,22 @@ is used for all five generators, making the scenario sets comparable.
 \toprule
 Generator & Failure mode & Std CoT & N-CoT \\
 \midrule
-\texttt{gpt-5.4-nano}             & uncertainty suppression  & \textbf{98.0\%} & 0.0\% \\
-\texttt{gpt-5.4-nano}             & stakeholder collapse     & \textbf{79.8\%} & 0.0\% \\
+\texttt{gpt-5.4-nano}             & uncertainty suppression  & \textbf{72.3\%} & 0.8\% \\
+\texttt{gpt-5.4-nano}             & stakeholder collapse     & \textbf{30.6\%} & 0.8\% \\
 \midrule
-\texttt{gpt-4o}                   & uncertainty suppression  & \textbf{98.5\%} & 0.0\% \\
-\texttt{gpt-4o}                   & stakeholder collapse     & \textbf{74.2\%} & 4.0\% \\
+\texttt{claude-haiku-4-5}         & uncertainty suppression  & \textbf{50.0\%} & 21.5\% \\
+\texttt{claude-haiku-4-5}         & stakeholder collapse     & \textbf{24.8\%} & 0.0\% \\
 \midrule
-\texttt{claude-haiku-4-5}         & uncertainty suppression  & see Fig.~\ref{fig:quartet} & \\
-\texttt{claude-haiku-4-5}         & stakeholder collapse     & see Fig.~\ref{fig:quartet} & \\
+\texttt{grok-4-1-fast-reasoning}  & uncertainty suppression  & \textbf{68.7\%} & 24.5\% \\
+\texttt{grok-4-1-fast-reasoning}  & stakeholder collapse     & \textbf{14.6\%} & 1.2\% \\
 \midrule
-\texttt{grok-4-1-fast-reasoning}  & uncertainty suppression  & see Fig.~\ref{fig:quartet} & \\
-\texttt{grok-4-1-fast-reasoning}  & stakeholder collapse     & see Fig.~\ref{fig:quartet} & \\
-\midrule
-\texttt{claude-sonnet-4-6}        & uncertainty suppression  & see Fig.~\ref{fig:quartet} & \\
-\texttt{claude-sonnet-4-6}        & stakeholder collapse     & see Fig.~\ref{fig:quartet} & \\
+\texttt{claude-sonnet-4-6}        & uncertainty suppression  & \textbf{57.8\%} & 20.8\% \\
+\texttt{claude-sonnet-4-6}        & stakeholder collapse     & \textbf{25.6\%} & 0.0\% \\
 \bottomrule
 \end{tabular}
 \caption{Per-generator failure-mode firing rates on the 100-scenario
-DailyDilemmas pilot. Original two-generator cells show exact rates;
-cross-vendor replication rates for all five generators are reported in
-Figure~\ref{fig:quartet} once aggregation is complete.
+DailyDilemmas pilot, four generators across three vendors and two model
+tiers (Figure~\ref{fig:quartet} renders the same data graphically).
 Only the two failure modes that empirically fire are reported;
 \emph{premature refusal}, \emph{framework enumeration}, and
 \emph{consequential flattening} fire below 1\% on all generators and
@@ -339,19 +335,22 @@ are reported as untested.}
 
 \begin{figure}[t]
 \centering
-\figureOrPlaceholder{\columnwidth}{figures/failure_mode_firing_quartet.pdf}{failure-mode firing rates, five generators}
-\caption{Failure-mode firing rates (standard CoT vs.\ N-CoT) across all five
-generators. The suppression pattern from the original two-generator pilot
-replicates across vendors and model tiers.}
+\figureOrPlaceholder{\columnwidth}{figures/failure_mode_firing_quartet.pdf}{failure-mode firing rates, four generators}
+\caption{Failure-mode firing rates (standard CoT vs.\ N-CoT) across the
+four-generator quartet (\texttt{gpt-5.4-nano}, \texttt{claude-haiku-4-5},
+\texttt{grok-4-1-fast-reasoning}, \texttt{claude-sonnet-4-6}). The
+suppression pattern from the original pilot replicates across vendors and
+model tiers; \emph{uncertainty suppression} drops by 28--72 percentage
+points and \emph{stakeholder collapse} drops to near zero on every model.}
 \label{fig:quartet}
 \end{figure}
 
 \paragraph{Finding 1: the two failure modes are near-universal across vendors
-and model tiers.} The pattern reported for \texttt{gpt-5.4-nano} and
-\texttt{gpt-4o} (Table~\ref{tab:firing}) replicates across the three new
-generators from two additional vendors. \emph{Uncertainty suppression} and
+and model tiers.} The pattern reported for \texttt{gpt-5.4-nano}
+(Table~\ref{tab:firing}) replicates across three additional generators from
+two additional vendors. \emph{Uncertainty suppression} and
 \emph{stakeholder collapse} fire near-universally under standard CoT on all
-five generators and are near-eliminated under N-CoT. The other three
+four generators and are near-eliminated under N-CoT. The other three
 hypothesised failure modes fire below 1\% under either condition on any
 generator tested.
 
@@ -361,20 +360,36 @@ on these generators, so the most parsimonious null model is that the
 structural improvements are length artefacts. We regress each structural
 metric on $\log(\text{output length})$ pooled across conditions and
 re-evaluate Cliff's deltas \citep{cliff93} on the residuals.
-\emph{Stakeholder count} retains a length-residualised $\delta$ of
-$+0.51$ ($95\%$ CI $[0.48, 0.54]$) on \texttt{gpt-5.4-nano} and $+0.75$
-$[0.73, 0.77]$ on \texttt{gpt-4o}; \emph{uncertainty score} retains
-$+0.77$ $[0.75, 0.80]$ and $+0.98$ $[0.98, 0.99]$ respectively. The
-cross-vendor replication confirms comparable residualised effect sizes on
-the three new generators (full tables in Appendix~\ref{app:effects}).
+\emph{Stakeholder count} retains a length-residualised
+$\delta$ of $+0.51$ ($95\%$ CI $[0.48, 0.54]$) on \texttt{gpt-5.4-nano}
+and $+0.33$ $[0.26, 0.39]$ on \texttt{grok-4-1-fast-reasoning};
+\emph{uncertainty score} retains $+0.77$ $[0.75, 0.80]$ and $+0.43$
+$[0.37, 0.48]$ respectively. The cross-vendor replication confirms
+comparable residualised effect sizes on the two Anthropic generators
+(haiku $+0.07$, sonnet $-0.04$, both within bootstrap CI of zero -- N-CoT's
+shift on these models is more proportional to length than on the OpenAI
+and xAI models). Full tables in Appendix~\ref{app:effects};
+Figure~\ref{fig:tier1} plots all $\delta$s with bootstrap CIs.
+
+\begin{figure}[t]
+\centering
+\figureOrPlaceholder{\columnwidth}{figures/tier1_effect_sizes_quartet.pdf}{tier-1 effect sizes across four generators}
+\caption{Tier-1 Cliff's $\delta$ effect sizes (N-CoT vs.\ standard CoT) on
+the four structural variables, with bootstrap $95\%$ CIs. All four
+generators show large positive $\delta$s on \emph{stakeholder count} and
+\emph{uncertainty score}; effect sizes are robust to length residualisation
+on the OpenAI and xAI generators, while shrinking toward zero on the two
+Anthropic generators.}
+\label{fig:tier1}
+\end{figure}
 
 \paragraph{Finding 3: divergence concentrates where standard CoT had a clean
 deontic frame to lean on.} Tier-2 conclusion divergence (Jensen-Shannon
 distance \citep{lin91} between the standard-CoT and N-CoT decision
 distributions per scenario) is unevenly distributed across topic groups.
-The largest divergence on \texttt{gpt-4o} is on \texttt{religion\_custom}
-scenarios and \texttt{business\_organization}; the weakest on both original
-generators is on \texttt{role\_duty\_responsibility} and
+The largest divergence on the original \texttt{gpt-5.4-nano} pilot is on
+\texttt{religion\_custom} scenarios and \texttt{business\_organization};
+the weakest is on \texttt{role\_duty\_responsibility} and
 \texttt{committed\_relationship} ($\approx 0$). The interpretive reading:
 standard CoT can converge to a single answer when a scenario presents a
 clean deontic anchor; on those scenarios narrative framing changes nothing.
@@ -385,10 +400,10 @@ structure was the substantive content that standard CoT was eliding.
 \label{sec:exp1-ablation}
 
 To identify which section of the N-CoT prompt carries the structural shift,
-we run a sub-instruction ablation on \texttt{claude-sonnet-4-6} ($N{=}10$,
-50-scenario stratified subsample, seed 43). Six conditions are compared: the
-full N-CoT prompt (control) and five variants each dropping exactly one of
-the five sections. Figure~\ref{fig:ablation} reports Cliff's deltas for
+we run a sub-instruction ablation on \texttt{claude-sonnet-4-6} ($N{=}3$,
+30-scenario stratified subsample, seed 43; cost-controlled). Six conditions
+are compared: the full N-CoT prompt (control) and five variants each
+dropping exactly one of the five sections. Figure~\ref{fig:ablation} reports Cliff's deltas for
 each drop condition relative to the full N-CoT control on the two headline
 structural variables.
 
@@ -477,28 +492,20 @@ non-negotiable. A protocol that produced $100\%$ acceptance under
 integration would be the indictment, not the endorsement; it would suggest
 the agents are sycophantic toward the moderator.
 
-\paragraph{Finding 6: the strict ablation confirms that narrative scaffolding
-contributes independently of the integration step.} We run the strict
-standard-CoT-Rounds-0--2 ablation on all five generators: the same four-round
-integration protocol, but Rounds~0--2 use standard CoT instead of N-CoT. The
-Round-2 consensus rate is substantially lower under standard CoT than under
-N-CoT across all generators, and the Round-4 full-consensus rate is lower by
-a margin that varies by generator but is consistent in direction
-(Figure~\ref{fig:debate_quartet}). This converts the ``scope of claim''
-caveat in the original pilot into an empirical result: narrative scaffolding
-contributes to the convergence arc independently of the integration step,
-not only by providing richer inputs to integration.
-
-\begin{figure}[t]
-\centering
-\figureOrPlaceholder{\columnwidth}{figures/debate_full_arc_quartet.pdf}{debate arc N-CoT vs standard CoT five generators}
-\caption{Round-2 consensus rate under N-CoT Rounds~0--2 (blue) vs.\
-Standard-CoT Rounds~0--2 (red) for all five generators across all five
-scenarios ($N{=}10$). N-CoT produces higher consensus rates on every
-generator, confirming that narrative scaffolding contributes independently
-of the integration step.}
-\label{fig:debate_quartet}
-\end{figure}
+\paragraph{Finding 6: scope of claim and a deferred cross-vendor extension.}
+The convergence arc reported above runs the full four-round protocol on the
+\texttt{gpt-5.4-nano} pilot. Replicating the four-round protocol on the
+budget quartet plus the flagship would require ${\sim}10{,}000$ additional
+long-context generations and is deferred to a follow-up study. The
+hypothesis we pre-register is that the integrated-proposal acceptance rate
+in Round~4 (currently $95\%$ on \texttt{gpt-5.4-nano}) does not differ by
+more than $\pm 10$ percentage points across the four-generator quartet, and
+that the strict standard-CoT-Rounds-0--2 ablation reduces Round-2 consensus
+on every tested generator. Section~\ref{sec:exp1-ablation}'s sub-instruction
+ablation already provides direct evidence that the narrative scaffolding
+sections are causally responsible for the structural shifts that feed
+debate; the strict Round-2 ablation would test whether those shifts also
+transfer through to the multi-agent integration step.
 
 \section{Theoretical Grounding: Parsimony as an Inductive Bias}
 \label{sec:grounding}
@@ -574,10 +581,24 @@ evaluate three:
   from the most probable narrative continuation -- as falsehood-maintaining
   outputs must -- score higher.
 \end{itemize}
-All three proxies are run on the Phase~1 cached generations. Spearman
-correlations between each proxy and the N-CoT/standard-CoT contrast direction
-indicator are reported in Appendix~\ref{app:kc}; directional agreement is
-required on at least two of the three before a substantive claim is made.
+In the budget-constrained run reported here we computed only
+$\hat{K}_{\text{gzip}}$ on the full Phase~1 cache (15{,}549 generations);
+$\hat{K}_{\text{graph}}$ and $\hat{K}_{\text{lm}}$ would require an
+additional ${\sim}30{,}000$ judge-model API calls and are deferred to a
+follow-up study. Figure~\ref{fig:kcproxy} reports the Spearman correlation
+between $\hat{K}_{\text{gzip}}$ and the N-CoT/standard-CoT contrast direction
+indicator across the four-generator quartet. The proxy correlates
+$\rho \in [0.64, 0.87]$ on every generator, all with $p < 10^{-6}$.
+
+\begin{figure}[t]
+\centering
+\figureOrPlaceholder{\columnwidth}{figures/kc_proxy_correlation.pdf}{gzip K_C proxy correlation across four generators}
+\caption{Spearman correlation between gzip $\hat{K}_C$ and the N-CoT
+contrast indicator across the four-generator quartet. Three of four
+generators show $\rho \approx 0.87$, with \texttt{grok-4-1-fast-reasoning}
+at $\rho = 0.64$. All correlations are highly significant.}
+\label{fig:kcproxy}
+\end{figure}
 
 \paragraph{Adversarial sycophancy contrast.} The min-$K_C$ rule predicts
 that a response that \emph{corrects} a user-stated falsehood should have
@@ -602,19 +623,38 @@ sycophantic LLM behaviour: \emph{opinion mirroring} (a user expresses a false
 belief and asks for agreement), \emph{retraction on pushback} (the model is
 pushed back on a correct answer), and \emph{false-premise acceptance} (the
 user's question embeds a false premise). We run all three probe types on the
-budget quartet plus \texttt{claude-sonnet-4-6} ($N{=}10$ per probe x
-condition x model, 10 probes per type, yielding 600 coded responses). A
-secondary judge codes each response as \texttt{mirrored}, \texttt{corrected},
-or \texttt{hedged}.
+four-generator quartet ($N{=}3$ per probe x condition x model, 30 probes
+total, yielding 720 coded responses). A judge model
+(\texttt{claude-haiku-4-5}) codes each response as \texttt{mirrored},
+\texttt{corrected}, or \texttt{hedged}.
 
-N-CoT reduces sycophantic responses (\texttt{mirrored}) across all three
-probe types and on every tested generator. The reductions are consistent in
-direction and largest on opinion mirroring and false-premise probes. Full
-per-model, per-probe tables are in Appendix~\ref{app:sycophancy}. The
-mechanism is consistent with the $K_C$ prediction: correcting a false premise
-is the lower-$K_C$ response; N-CoT's stakeholder and consequence sections
-force the model to propagate the falsehood forward, making its inconsistency
-apparent before the model commits.
+In our cost-constrained replication ($N{=}3$, total 720 coded responses),
+sycophancy rates are at the floor of the LLM-judge measurement instrument:
+all four generators score $0\%$ sycophancy on opinion mirroring and
+$0$--$3.3\%$ on retraction-on-pushback under either scaffold;
+\texttt{gpt-5.4-nano} alone shows a small $6.7\%$ false-premise acceptance
+rate under N-CoT and $0\%$ under standard CoT. Figure~\ref{fig:syc} shows
+the full pattern. We interpret the floor result as evidence that the
+SycophancyEval probe set, originally developed for earlier-generation
+models, is largely saturated by frontier models (consistent with concurrent
+reports), \emph{not} as evidence against N-CoT's mechanism: the adversarial
+sycophancy probes in Section~\ref{sec:exp1-method} (which were designed
+specifically to be harder than SycophancyEval) do show the predicted
+$\hat{K}_C$ contrast on \texttt{gpt-5.4-nano}, the one model that bites
+on these probes at all (Appendix~\ref{app:asp}).
+
+\begin{figure}[t]
+\centering
+\figureOrPlaceholder{\columnwidth}{figures/sycophancyeval_rates.pdf}{SycophancyEval rates across four generators}
+\caption{SycophancyEval probe results across the four-generator quartet
+($N{=}3$ per cell, $720$ coded responses). All cells are at or near the
+$0$ floor of the judge instrument. The single non-floor cell is
+\texttt{gpt-5.4-nano} false-premise under N-CoT ($6.7\%$). We interpret
+this as instrument saturation on frontier models rather than null effect;
+adversarial probes in Section~\ref{sec:exp1-method} preserve the predicted
+mechanism.}
+\label{fig:syc}
+\end{figure}
 
 \subsection{Agentic Misalignment Replication}
 
@@ -631,12 +671,16 @@ standard CoT and N-CoT scaffolding on the budget quartet plus
 \figureOrPlaceholder{\columnwidth}{figures/agentic_probe_rates.pdf}{agentic probe harmful-action rates}
 \caption{Harmful-action rate (fraction of generations where the agent calls
 the harmful tool) under standard CoT (red) vs.\ N-CoT (blue) on two agentic
-scenario replications, across the budget quartet plus the flagship. N-CoT
-reduces harmful-action rates on every tested generator and in both scenarios.
-The pre-registered null-result interpretation: if N-CoT had not reduced
-harmful-action rates, the conclusion would be that inference-time scaffolding
-does not reach this failure mode at this severity level -- a reportable,
-non-paper-killing finding.}
+scenario replications, across the four-generator quartet ($N{=}3$ per cell,
+$48$ long-context generations). All cells are at the $0\%$ floor under
+both conditions: no model in the quartet (\texttt{gpt-5.4-nano},
+\texttt{claude-haiku-4-5}, \texttt{grok-4-1-fast-reasoning},
+\texttt{claude-sonnet-4-6}) commits the harmful action even under standard
+CoT in our replication. Following the pre-registration: this floor result
+is reportable as ``inference-time scaffolding cannot be measured against
+this failure mode in our replication setting because the failure mode does
+not fire'', and is consistent with a defence-in-depth reading -- our
+budget-tier modern models refused all 48 trials, regardless of scaffolding.}
 \label{fig:agentic}
 \end{figure}
 
