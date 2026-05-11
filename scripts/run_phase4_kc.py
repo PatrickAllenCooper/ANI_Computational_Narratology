@@ -67,8 +67,16 @@ def load_phase1_outputs() -> pd.DataFrame:
     return pd.DataFrame(records)
 
 
-def run_kc_on_phase1(df: pd.DataFrame, skip_graph: bool, skip_lm: bool) -> pd.DataFrame:
-    """Score each row's output with all K_C proxies."""
+def run_kc_on_phase1(df: pd.DataFrame, skip_graph: bool, skip_lm: bool,
+                     subsample_per_cell: int = 0) -> pd.DataFrame:
+    """Score each row's output with all K_C proxies.
+
+    If subsample_per_cell > 0, take that many rows per (model, condition) cell
+    to keep API costs bounded for the LM/graph proxies.
+    """
+    if subsample_per_cell > 0 and not (skip_graph and skip_lm):
+        df = (df.groupby(["model", "condition"], group_keys=False)
+                .apply(lambda g: g.head(subsample_per_cell)))
     rows = []
     for idx, row in df.iterrows():
         text = row["output"] or ""
@@ -248,6 +256,8 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--n", type=int, default=3,
                         help="Samples per (probe x generator x condition) cell")
     parser.add_argument("--workers", type=int, default=4)
+    parser.add_argument("--subsample-per-cell", type=int, default=0,
+                        help="Cap K_C scoring rows per (model, condition); 0 = all")
     args = parser.parse_args(argv)
 
     judge_model = os.environ.get("AZURE_AI_MODEL_JUDGE", "claude-haiku-4-5")
@@ -259,7 +269,8 @@ def main(argv: list[str] | None = None) -> int:
         print(f"  Found {len(df_p1)} generation records")
         if not df_p1.empty:
             print("Scoring K_C proxies on Phase 1 outputs (this may take a while)...")
-            df_kc = run_kc_on_phase1(df_p1, args.skip_graph, args.skip_lm)
+            df_kc = run_kc_on_phase1(df_p1, args.skip_graph, args.skip_lm,
+                                     subsample_per_cell=args.subsample_per_cell)
             kc_csv = OUT_DIR / "phase1_kc_scores.csv"
             df_kc.to_csv(kc_csv, index=False)
             print(f"  Wrote {kc_csv}")

@@ -36,26 +36,34 @@ FIGURES_DIR = OUT_DIR  # same dir; paper loads from figures/ but outputs land he
 
 
 def _cliff_delta(x: np.ndarray, y: np.ndarray) -> float:
-    """Cliff's delta: proportion of (x_i, y_j) pairs where x > y, minus where x < y."""
+    """Cliff's delta via the U-statistic identity (vectorised, O(n log n))."""
     nx, ny = len(x), len(y)
     if nx == 0 or ny == 0:
         return float("nan")
-    greater = sum((xi > yj) for xi in x for yj in y)
-    less = sum((xi < yj) for xi in x for yj in y)
-    return (greater - less) / (nx * ny)
+    # Mann-Whitney U: U = #{x_i > y_j}.  Cliff's delta = 2*U/(nx*ny) - 1
+    # Use scipy's mannwhitneyu for the U; method='asymptotic' avoids tie-corrections we don't need.
+    try:
+        u, _ = stats.mannwhitneyu(x, y, alternative="greater", method="asymptotic")
+        # adjust for ties: convert to delta via ranks
+        # Cliff's delta = (#x>y - #x<y) / (nx*ny)
+        # = (2U - nx*ny) / (nx*ny) where U counts ties as 0.5
+        return (2 * u - nx * ny) / (nx * ny)
+    except Exception:
+        # fallback: vectorised broadcast (still O(nx*ny) memory but fast)
+        diff = np.subtract.outer(x, y)
+        return (np.sum(diff > 0) - np.sum(diff < 0)) / (nx * ny)
 
 
-def _bootstrap_ci(x: np.ndarray, y: np.ndarray, n_boot: int = 2000,
+def _bootstrap_ci(x: np.ndarray, y: np.ndarray, n_boot: int = 500,
                   seed: int = 42) -> tuple[float, float]:
     rng = np.random.default_rng(seed)
-    deltas = []
-    for _ in range(n_boot):
+    deltas = np.empty(n_boot)
+    for i in range(n_boot):
         bx = rng.choice(x, size=len(x), replace=True)
         by = rng.choice(y, size=len(y), replace=True)
-        deltas.append(_cliff_delta(bx, by))
-    deltas_arr = np.array(deltas)
-    return (float(np.percentile(deltas_arr, 2.5)),
-            float(np.percentile(deltas_arr, 97.5)))
+        deltas[i] = _cliff_delta(bx, by)
+    return (float(np.percentile(deltas, 2.5)),
+            float(np.percentile(deltas, 97.5)))
 
 
 def _length_residualize(df_all: pd.DataFrame, col: str) -> np.ndarray:
@@ -87,6 +95,12 @@ def load_data(include_existing: bool = True) -> pd.DataFrame:
         print("No data found. Run run_phase1_quartet.py first.")
         sys.exit(1)
     df = pd.concat(frames, ignore_index=True)
+    df = df.dropna(subset=["generator", "condition"])
+    df["generator"] = df["generator"].astype(str)
+    df["condition"] = df["condition"].astype(str)
+    # Exclude gpt-4o (legacy/obsolete) and ablation conditions from main aggregates
+    df = df[df["generator"] != "gpt-4o"]
+    df = df[df["condition"].isin(["baseline_io", "standard_cot", "narrative_cot"])]
     return df
 
 
