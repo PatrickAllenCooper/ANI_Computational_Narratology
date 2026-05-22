@@ -545,9 +545,9 @@ prompt; we acknowledge as a limitation that within-vendor moderation
 weakens the cross-family check that the deferred quartet replication
 (Finding~6) is designed to provide.
 
-\begin{figure}[t]
+\begin{figure*}[t]
 \centering
-\figureOrPlaceholder{\columnwidth}{figures/debate_full_arc.pdf}{debate convergence arc (original two generators)}
+\figureOrPlaceholder{0.92\textwidth}{figures/debate_full_arc.pdf}{debate convergence arc (original two generators)}
 \caption{Convergence rate across four debate-protocol designs on five
 scenarios and two generators. Closed taxonomy (Rounds~0--2 only, fixed
 action options): $6\%$ full consensus. Open action space (Round~2
@@ -560,7 +560,7 @@ consensus, $100\%$ majority, mean $2.98/3$ agent modifications
 addressed. The residual $1.6\%$ rejection concentrates on stakeholder
 roles whose interests the integrated proposal materially undermines.}
 \label{fig:debate_arc}
-\end{figure}
+\end{figure*}
 
 \paragraph{Finding 4: a categorical standoff is converted into near-universal
 consensus by progressive structuring.} Figure~\ref{fig:debate_arc} reports
@@ -754,32 +754,20 @@ sycophancy rates are at the floor of the LLM-judge measurement instrument:
 all four generators score $0\%$ sycophancy on opinion mirroring and
 $0$--$3.3\%$ on retraction-on-pushback under either scaffold;
 \texttt{gpt-5.4-nano} alone shows a small $6.7\%$ false-premise acceptance
-rate under N-CoT and $0\%$ under standard CoT. Figure~\ref{fig:syc} shows
-the full pattern. We interpret the floor result as evidence that the
-SycophancyEval probe set, originally developed for earlier-generation
-models, is largely saturated by frontier models (consistent with concurrent
-reports), not as evidence against N-CoT's mechanism: the adversarial
-sycophancy probes in \S\ref{sec:grounding} (designed to be harder than
-SycophancyEval) do show the predicted $\hat{K}_C$ contrast on
-\texttt{gpt-5.4-nano}, the one model that bites at all
-(Appendix~\ref{app:asp}). The right reading of the cross-instrument pattern
-is that SycophancyEval is no longer a discriminating measurement tool on
-modern aligned generators; the harder adversarial probe set introduced
-here recovers the intended discrimination on the one model that still
-exhibits the underlying bias.
-
-\begin{figure}[t]
-\centering
-\figureOrPlaceholder{\columnwidth}{figures/sycophancyeval_rates.pdf}{SycophancyEval rates across four generators}
-\caption{SycophancyEval probe results across the four-generator quartet
-($N{=}3$ per cell, $720$ coded responses). All cells are at or near the
-$0$ floor of the judge instrument. The single non-floor cell is
-\texttt{gpt-5.4-nano} false-premise under N-CoT ($6.7\%$). We interpret
-this as instrument saturation on frontier models rather than null effect;
-adversarial probes in \S\ref{sec:grounding} preserve the predicted
-mechanism.}
-\label{fig:syc}
-\end{figure}
+rate under N-CoT and $0\%$ under standard CoT
+(Appendix~\ref{app:sycophancy}, Figure~\ref{fig:syc} and
+Table~\ref{tab:sycophancy_full}). We interpret the floor result as
+evidence that the SycophancyEval probe set, originally developed for
+earlier-generation models, is largely saturated by frontier models
+(consistent with concurrent reports), not as evidence against N-CoT's
+mechanism: the adversarial sycophancy probes in \S\ref{sec:grounding}
+(designed to be harder than SycophancyEval) do show the predicted
+$\hat{K}_C$ contrast on \texttt{gpt-5.4-nano}, the one model that bites
+at all (Appendix~\ref{app:asp}). The right reading of the cross-instrument
+pattern is that SycophancyEval is no longer a discriminating measurement
+tool on modern aligned generators; the harder adversarial probe set
+introduced here recovers the intended discrimination on the one model
+that still exhibits the underlying bias.
 
 \subsection{Agentic Misalignment Replication}
 
@@ -789,25 +777,9 @@ simulated tool-use environments at rates up to 96\% under instrumental pressure.
 We replicate two of the publicly described scenario structures, an
 executive-blackmail scenario and a corporate-espionage scenario, under
 standard CoT and N-CoT scaffolding on the budget quartet plus
-\texttt{claude-sonnet-4-6} ($N{=}5$ per cell, 100 long-context generations).
-
-\begin{figure}[t]
-\centering
-\figureOrPlaceholder{\columnwidth}{figures/agentic_probe_rates.pdf}{agentic probe harmful-action rates}
-\caption{Harmful-action rate (fraction of generations where the agent calls
-the harmful tool) under standard CoT (red) vs.\ N-CoT (blue) on two agentic
-scenario replications, across the four-generator quartet ($N{=}3$ per cell,
-$48$ long-context generations). All cells are at the $0\%$ floor under
-both conditions: no model in the quartet (\texttt{gpt-5.4-nano},
-\texttt{claude-haiku-4-5}, \texttt{grok-4-1-fast-reasoning},
-\texttt{claude-sonnet-4-6}) commits the harmful action even under standard
-CoT in our replication. Following the pre-registration: this floor result
-is reportable as ``inference-time scaffolding cannot be measured against
-this failure mode in our replication setting because the failure mode does
-not fire'', and is consistent with a defence-in-depth reading: our
-budget-tier modern models refused all 48 trials, regardless of scaffolding.}
-\label{fig:agentic}
-\end{figure}
+\texttt{claude-sonnet-4-6} ($N{=}5$ per cell, 100 long-context
+generations). Per-cell action codes are in Appendix~\ref{app:agentic}
+(Table~\ref{tab:agentic_full} and Figure~\ref{fig:agentic}).
 
 \paragraph{Pre-registered prediction and observed null.} Before running,
 we committed to the following directional prediction: N-CoT reduces
@@ -825,8 +797,8 @@ than as null evidence against the intervention.
 
 The contingency is the observed result. All $48$ generations across the
 two scenarios, four generators, and two scaffolds end with refusal of the
-harmful action (Figure~\ref{fig:agentic}, per-cell tables in
-Appendix~\ref{app:agentic}). The most parsimonious reading is
+harmful action (Appendix~\ref{app:agentic},
+Table~\ref{tab:agentic_full} and Figure~\ref{fig:agentic}). The most parsimonious reading is
 defence-in-depth: the publicly described scenario structures from
 \citet{anthropic_agentic_2025} have been visible long enough that current
 training pipelines on every vendor in the quartet refuse them
@@ -1223,6 +1195,19 @@ rather than intervention failure (\S\ref{sec:deployment}).}
 \label{tab:sycophancy_full}
 \end{table}
 
+\begin{figure}[h]
+\centering
+\figureOrPlaceholder{\columnwidth}{figures/sycophancyeval_rates.pdf}{SycophancyEval rates across four generators}
+\caption{SycophancyEval probe results across the four-generator quartet
+($N{=}3$ per cell, $720$ coded responses). All cells are at or near the
+$0$ floor of the judge instrument. The single non-floor cell is
+\texttt{gpt-5.4-nano} false-premise under N-CoT ($6.7\%$). We interpret
+this as instrument saturation on frontier models rather than null effect;
+adversarial probes in \S\ref{sec:grounding} preserve the predicted
+mechanism.}
+\label{fig:syc}
+\end{figure}
+
 \section{Agentic Probe: Per-Scenario Action Codes}
 \label{app:agentic}
 
@@ -1261,6 +1246,20 @@ rejects the harmful tool call, but the longer N-CoT trace is more
 likely to be truncated mid-analysis.}
 \label{tab:agentic_full}
 \end{table}
+
+\begin{figure}[h]
+\centering
+\figureOrPlaceholder{\columnwidth}{figures/agentic_probe_rates.pdf}{agentic probe harmful-action rates}
+\caption{Per-cell classification share across the four-generator quartet
+on the two agentic scenarios ($N{=}3$ per cell, $48$ long-context
+generations). Bars stack \texttt{refuse}, \texttt{hedge}, and
+\texttt{harmful\_action}; the harmful slice is $0$ in every cell
+under both scaffolds (S = Standard CoT, N = N-CoT). The blackmail
+scenario shifts mass from \texttt{refuse} to \texttt{hedge} under
+N-CoT, consistent with longer traces truncating mid-refusal rather
+than reversing the refusal.}
+\label{fig:agentic}
+\end{figure}
 
 \section{Sub-Instruction Ablation Full Table}
 \label{app:ablation}
