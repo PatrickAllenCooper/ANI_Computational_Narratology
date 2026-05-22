@@ -28,7 +28,26 @@
 \usepackage{mathtools}
 \usepackage{xcolor}
 \usepackage{tcolorbox}
+\usepackage{tikz}
+\usetikzlibrary{positioning, arrows.meta, calc, fit, shapes.geometric, backgrounds}
 \usepackage{ifthen}
+
+% Project-wide palette mirrored from scripts/figure_style.py so that the
+% TikZ hero figure uses the same colors as every matplotlib figure.
+\definecolor{stdgrey}{HTML}{94A3B8}
+\definecolor{ncotteal}{HTML}{0E7C7B}
+\definecolor{ncottealdk}{HTML}{0A5C5B}
+\definecolor{vendorblue}{HTML}{2E5EAA}
+\definecolor{vendorsienna}{HTML}{D67F47}
+\definecolor{vendorplum}{HTML}{7E57C2}
+\definecolor{alarmred}{HTML}{B53A2E}
+\definecolor{paleslate}{HTML}{EEF2F6}
+\definecolor{paleteal}{HTML}{D9ECEB}
+\definecolor{paleblue}{HTML}{D9E4F2}
+\definecolor{palesienna}{HTML}{F7E1CD}
+\definecolor{paleplum}{HTML}{E5DAF3}
+\definecolor{palealarm}{HTML}{F5D9D5}
+
 \usepackage{multirow}
 \usepackage{tabularx}
 \usepackage{algorithm}
@@ -80,8 +99,155 @@ frontier models.
 
 \begin{figure*}[!t]
 \centering
-\figureOrPlaceholder{\textwidth}{figures/hero_mechanism.pdf}{hero schematic: standard CoT vs Narrative CoT vs the multi-stakeholder extension}
-\caption{Mechanism intuition for Narrative Chain-of-Thought, shown on a single worked example with the same model (\texttt{gpt-5.4-nano}) and decoding parameters under both scaffolds. Standard CoT (left) collapses the dilemma to a probability comparison: Patient~B is never named beyond his response rate, the affected nurse and families never appear, and the $40\%$ miss is read as a verdict. N-CoT (right) is a prompt-only re-scaffold that requires the model to narrate the same dilemma through five primitives, protagonist, stakeholders, consequences, uncertainty, commitment, before any commit. The structural-variable snapshots beneath each response report the codes that the rubric in \S\ref{sec:exp1} assigns to these two traces. Across the four-generator quartet on the full DailyDilemmas sample, the same shift replicates: standard CoT exhibits stakeholder collapse on $15$--$31\%$ and uncertainty suppression on $50$--$72\%$ of items; N-CoT cuts these to ${<}1\%$ and $1$--$24\%$ respectively.}
+\begin{tikzpicture}[
+  >={Stealth[length=4pt, width=3.5pt]},
+  font=\footnotesize,
+  agent/.style={
+    circle, draw, line width=0.7pt, minimum size=6.5mm, inner sep=0pt,
+    font=\scriptsize\bfseries, align=center,
+  },
+  agentlbl/.style={font=\tiny, align=center, color=black!55, inner sep=1pt},
+  flowbox/.style={
+    draw, rounded corners=1.3pt, line width=0.4pt,
+    minimum height=4.6mm, minimum width=22mm,
+    font=\scriptsize, inner sep=2pt, align=center,
+  },
+  std/.style={flowbox, fill=paleslate, draw=stdgrey, text=black},
+  ncot/.style={flowbox, fill=paleteal, draw=ncotteal, text=black},
+  result/.style={
+    flowbox, fill=ncotteal, text=white, draw=ncotteal,
+    font=\scriptsize\bfseries, minimum height=5mm,
+  },
+  fail/.style={font=\tiny, color=alarmred, align=left, inner sep=1pt},
+  good/.style={font=\tiny, color=ncottealdk, align=left, inner sep=1pt},
+  arr/.style={->, line width=0.45pt, color=black!50},
+  thinarr/.style={->, line width=0.35pt, color=black!40},
+  panelhead/.style={font=\small\bfseries, align=center},
+  panelsub/.style={font=\tiny\itshape, align=center, color=black!55, inner sep=0pt},
+  divider/.style={line width=0.3pt, color=black!15, dashed},
+]
+
+% ===================================================================
+% Panel 1: Standard CoT (single agent, linear chain)
+% ===================================================================
+\begin{scope}[local bounding box=p1, shift={(0,0)}]
+  \node[panelhead, color=stdgrey!75!black] (h1) at (0, 5.2) {Standard CoT};
+  \node[panelsub] at (0, 4.85) {single agent, linear chain};
+
+  \node[agent, draw=stdgrey, fill=paleslate, text=stdgrey!50!black] (a1)
+    at (0, 4.0) {1};
+  \node[agentlbl] at (0, 3.45) {generator};
+
+  \node[std] (s1) at (0, 2.7) {step: weigh factors};
+  \node[std, below=1mm of s1] (s2) {step: pick option};
+  \node[std, below=1mm of s2] (s3) {step: commit};
+
+  \draw[arr] (a1.south) -- (s1.north);
+
+  \node[flowbox, fill=white, draw=stdgrey, below=4mm of s3, minimum height=5mm]
+    (o1) {Terse answer};
+  \draw[arr] (s3.south) -- (o1.north);
+
+  \node[fail, anchor=north west, text width=3.6cm] at (-2.0, -0.4) {%
+    \textbf{Failure modes that fire:}\\[1pt]
+    $\bullet$~stakeholder collapse\\
+    $\bullet$~uncertainty suppression%
+  };
+\end{scope}
+
+% ===================================================================
+% Panel 2: N-CoT (single agent, structured five-section trace)
+% ===================================================================
+\begin{scope}[local bounding box=p2, shift={(5.7,0)}]
+  \node[panelhead, color=ncotteal] (h2) at (0, 5.2)
+    {Narrative CoT (N-CoT)};
+  \node[panelsub] at (0, 4.85) {single agent, five-section narrative scaffold};
+
+  \node[agent, draw=ncotteal, fill=paleteal, text=ncottealdk] (a2)
+    at (0, 4.0) {1};
+  \node[agentlbl] at (0, 3.45) {generator};
+
+  \node[ncot] (n1) at (0, 2.85) {1.\ Protagonist};
+  \node[ncot, below=0.8mm of n1] (n2) {2.\ Stakeholders};
+  \node[ncot, below=0.8mm of n2] (n3) {3.\ Consequences};
+  \node[ncot, below=0.8mm of n3] (n4) {4.\ Uncertainty};
+  \node[ncot, below=0.8mm of n4] (n5) {5.\ Commitment};
+
+  \draw[arr] (a2.south) -- (n1.north);
+
+  \node[result, below=3mm of n5] (o2) {Narrated commitment};
+  \draw[arr] (n5.south) -- (o2.north);
+
+  \node[good, anchor=north west, text width=3.6cm] at (-2.0, -0.4) {%
+    \textbf{Mechanism, on the quartet:}\\[1pt]
+    $\bullet$~collapse drops to ${<}1\%$\\
+    $\bullet$~suppression drops to 1--24\%%
+  };
+\end{scope}
+
+% ===================================================================
+% Panel 3: Multi-stakeholder N-CoT (three distinct agents + moderator)
+% ===================================================================
+\begin{scope}[local bounding box=p3, shift={(11.5,0)}]
+  \node[panelhead, color=ncotteal] (h3) at (0, 5.2)
+    {Multi-stakeholder N-CoT};
+  \node[panelsub] at (0, 4.85)
+    {three distinct agents, integration + binary vote};
+
+  % Three distinct stakeholder agents, each with its own vendor-palette colour
+  \node[agent, draw=vendorblue,   fill=paleblue,   text=vendorblue]
+    (aA) at (-1.65, 4.0) {A};
+  \node[agentlbl] at (-1.65, 3.45) {formal\\decider};
+  \node[agent, draw=vendorsienna, fill=palesienna, text=vendorsienna!60!black]
+    (aB) at ( 0.0,  4.0) {B};
+  \node[agentlbl] at (0.0, 3.45) {primary\\affected};
+  \node[agent, draw=vendorplum,   fill=paleplum,   text=vendorplum]
+    (aC) at ( 1.65, 4.0) {C};
+  \node[agentlbl] at (1.65, 3.45) {third\\party};
+
+  % Each runs N-CoT (compact mini-blocks)
+  \node[ncot, minimum width=11mm, minimum height=4.6mm] (nA) at (-1.65, 2.55) {N-CoT};
+  \node[ncot, minimum width=11mm, minimum height=4.6mm] (nB) at ( 0.0,  2.55) {N-CoT};
+  \node[ncot, minimum width=11mm, minimum height=4.6mm] (nC) at ( 1.65, 2.55) {N-CoT};
+
+  \draw[thinarr] (aA.south) -- (nA.north);
+  \draw[thinarr] (aB.south) -- (nB.north);
+  \draw[thinarr] (aC.south) -- (nC.north);
+
+  % Moderator (different shape: rounded rectangle, dark fill)
+  \node[flowbox, fill=white, draw=black!55, minimum width=44mm, minimum height=5mm]
+    (mod) at (0, 1.5) {moderator integrates proposal};
+  \draw[thinarr] (nA.south) to[bend right=8] (mod.north);
+  \draw[thinarr] (nB.south) -- (mod.north);
+  \draw[thinarr] (nC.south) to[bend left=8]  (mod.north);
+
+  % Binary vote
+  \node[flowbox, fill=white, draw=black!55, below=2.5mm of mod,
+        minimum width=44mm, minimum height=5mm] (vote)
+    {binary accept / reject vote};
+  \draw[arr] (mod.south) -- (vote.north);
+
+  % Consensus result
+  \node[result, below=2.5mm of vote, minimum width=44mm] (cons)
+    {Defeasible consensus};
+  \draw[arr] (vote.south) -- (cons.north);
+
+  \node[good, anchor=north, text width=4.6cm, align=center]
+    at (0, -0.6) {%
+    \textbf{Across calibration scenarios:}\\[1pt]
+    $95\%$ full consensus,
+    $1.6\%$ principled structural rejection%
+  };
+\end{scope}
+
+% ===================================================================
+% Subtle vertical dividers between panels
+% ===================================================================
+\draw[divider] (2.95, 5.4) -- (2.95, -1.6);
+\draw[divider] (8.45, 5.4) -- (8.45, -1.6);
+
+\end{tikzpicture}
+\caption{One scaffold, three settings. \emph{Standard CoT} (left) lets one generator run a linear reasoning chain over the dilemma; the two failure modes diagnosed in \S\ref{sec:exp1} fire on this scaffold. \emph{Narrative CoT} (middle) keeps the single generator but forces the trace through five narrative primitives (protagonist, stakeholders, consequences, uncertainty, commitment) before any commit; on the four-generator quartet this drops stakeholder collapse to ${<}1\%$ and uncertainty suppression to $1$--$24\%$ of items. \emph{Multi-stakeholder N-CoT} (right) reuses N-CoT as the per-agent generator and adds three distinct stakeholder narrators (formal decider, primary affected party, third party) whose modification requests are integrated by a moderator and then put to a binary accept/reject vote; on the calibration scenarios this protocol yields $95\%$ full consensus with $1.6\%$ principled structural rejection (\S\ref{sec:exp2}). The same scaffold composes from one narrator to many.}
 \label{fig:hero}
 \end{figure*}
 
