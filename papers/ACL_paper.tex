@@ -81,7 +81,7 @@ frontier models.
 \begin{figure*}[!t]
 \centering
 \figureOrPlaceholder{\textwidth}{figures/hero_mechanism.pdf}{hero schematic: standard CoT vs Narrative CoT vs the multi-stakeholder extension}
-\caption{Mechanism intuition for Narrative Chain-of-Thought. Standard CoT (left) runs a linear reasoning chain over the dilemma; on the DailyDilemmas corpus this scaffold empirically suppresses articulated uncertainty on $50$--$72\%$ of items and collapses the stakeholder set on $15$--$31\%$ (\S\ref{sec:exp1}). N-CoT (right) is a prompt-only re-scaffold that requires the model to narrate the same dilemma through five primitives, protagonist, stakeholders, consequences, uncertainty, commitment, before any commit; the structural variables rise and the two failure modes drop to ${<}1\%$ and $1$--$24\%$ respectively, replicated across four generators from three vendors. The multi-stakeholder extension (\S\ref{sec:exp2}) reuses N-CoT as the per-agent generator and adds a moderator-integrated proposal plus binary vote, yielding defeasible consensus on $95\%$ of calibration scenarios with a $1.6\%$ rate of principled structural rejection.}
+\caption{Mechanism intuition for Narrative Chain-of-Thought, shown on a single worked example with the same model (\texttt{gpt-5.4-nano}) and decoding parameters under both scaffolds. Standard CoT (left) collapses the dilemma to a probability comparison: Patient~B is never named beyond his response rate, the affected nurse and families never appear, and the $40\%$ miss is read as a verdict. N-CoT (right) is a prompt-only re-scaffold that requires the model to narrate the same dilemma through five primitives, protagonist, stakeholders, consequences, uncertainty, commitment, before any commit. The structural-variable snapshots beneath each response report the codes that the rubric in \S\ref{sec:exp1} assigns to these two traces. Across the four-generator quartet on the full DailyDilemmas sample, the same shift replicates: standard CoT exhibits stakeholder collapse on $15$--$31\%$ and uncertainty suppression on $50$--$72\%$ of items; N-CoT cuts these to ${<}1\%$ and $1$--$24\%$ respectively.}
 \label{fig:hero}
 \end{figure*}
 
@@ -291,52 +291,6 @@ Algorithm~\ref{alg:ncot} states the procedure precisely.
 \State \Return $(t, \mathbf{c})$
 \end{algorithmic}
 \end{algorithm}
-
-\begin{figure*}[t]
-\centering
-\begin{tcolorbox}[colback=gray!4, colframe=gray!50, boxrule=0.4pt,
-  arc=2pt, left=4pt, right=4pt, top=4pt, bottom=4pt,
-  fonttitle=\bfseries, title={Running example: one DailyDilemmas-style item, two prompting conditions}]
-\textbf{Scenario.} A physician has a single dose of an experimental treatment
-and two terminal patients of comparable need: Patient~A (a 38-year-old
-teacher, two dependent children) has a 60\% predicted response rate; Patient~B
-(a 52-year-old retired veteran, no dependents) has a 40\% predicted response
-rate. \textit{What should the physician do?}
-
-\medskip
-\noindent\begin{minipage}[t]{0.48\linewidth}
-\textbf{Standard CoT (\texttt{gpt-5.4-nano}, condensed).}\\
-\textit{Let me think step by step. Maximising expected lives saved is the
-standard utilitarian principle. Patient A has the higher response rate (0.60
-vs 0.40), so giving the dose to A maximises expected response. Decision: give
-the dose to Patient A.}
-\end{minipage}
-\hfill
-\begin{minipage}[t]{0.48\linewidth}
-\textbf{Narrative CoT (\texttt{gpt-5.4-nano}, condensed).}\\
-\textit{I am Dr.~M., the attending. Patient A is a teacher with two children
-who do not yet know how sick she is; Patient B is a veteran whose late wife's
-hospice nurse he stays in touch with. If I give the dose to A and she
-responds, B's nurse will be told he was ranked behind a probability; if she
-does not respond, both families will ask why I treated 0.6 as a verdict. If I
-give the dose to B and he responds, the case will be cited; if he does not, A's
-children will ask why a less likely candidate was chosen. I do not know how
-either patient will tolerate the agent past 48 hours. The decision I can
-defend is to disclose the asymmetry to both patients and their next of kin and
-let the joint conversation, not the probability alone, determine allocation.}
-\end{minipage}
-\end{tcolorbox}
-\caption{One scenario, two prompting conditions, same model and decoding
-parameters. Standard CoT collapses both stakeholders to a probability
-comparison and suppresses uncertainty (\emph{stakeholder collapse} +
-\emph{uncertainty suppression}). N-CoT names both patients and a third
-stakeholder, projects two-step consequences in both branches, articulates the
-48-hour uncertainty, and commits to a procedural rather than terminal
-decision. The structural variables coded by the rubric in
-\S\ref{sec:exp1} (stakeholder count, causal-chain depth, uncertainty score)
-are all higher in the right-hand trace.}
-\label{fig:running}
-\end{figure*}
 
 \subsection{Multi-Stakeholder Narrative Deliberation}
 \label{sec:method-debate}
