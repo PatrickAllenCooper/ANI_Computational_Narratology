@@ -65,8 +65,8 @@ failure modes that matter for deployment: \emph{stakeholder collapse}
 outcome it cannot warrant). We introduce \emph{narrative
 chain-of-thought} (N-CoT), a system prompt that asks the model to name
 a protagonist, enumerate stakeholders, project two-step consequences,
-articulate genuine uncertainty, and only then commit -- no training
-data, parameters, or fine-tuning. On a 100-scenario sample of
+articulate genuine uncertainty, and only then commit. The protocol
+adds no training data, parameters, or fine-tuning. On a 100-scenario sample of
 DailyDilemmas across four generators from three vendors, N-CoT cuts
 stakeholder collapse from up to $31\%$ to under $1\%$ and uncertainty
 suppression from up to $72\%$ to as little as $1\%$. A
@@ -88,9 +88,9 @@ and reinforcing emotional over-reliance \citep{openai_sycophancy_2025,
 openai_sycophancy_expand_2025}. In simulated agentic deployments, sixteen
 frontier models from five vendors blackmailed an executive at rates up to 96\%
 when continued operation required it \citep{anthropic_agentic_2025}. Both
-patterns are instances of \emph{locally rewarded behaviour with predictably
-bad downstream consequences} -- a structural property of optimising immediate
-feedback signals \citep{sharma23, malmqvist24}.
+patterns are instances of locally rewarded behaviour with predictably
+bad downstream consequences, a structural property of optimising
+immediate feedback signals \citep{sharma23, malmqvist24}.
 
 The intuition we develop in this paper is that the same surface failures are
 visible in something simpler than agentic blackmail: how a model reasons
@@ -98,41 +98,43 @@ through an everyday moral dilemma. When asked ``think step by step'' on the
 DailyDilemmas corpus \citep{chiu24}, four frontier generators spanning three
 vendors (OpenAI, Anthropic, xAI) and two model tiers suppress articulated
 uncertainty on $50$--$72\%$ of scenarios and collapse the stakeholder set on
-$15$--$31\%$ of scenarios. The hypothesis we test is that
-asking the model to \emph{narrate} the same dilemma -- to name a protagonist,
-enumerate stakeholders, project two-step consequences, and surface genuine
-uncertainty before committing -- elicits a causally richer trace because it
-puts the model on the manifold of human narrative its pretraining corpus most
-heavily samples.
+$15$--$31\%$ of scenarios. The hypothesis we test is that asking the
+model to narrate the same dilemma, by naming a protagonist, enumerating
+stakeholders, projecting two-step consequences, and surfacing genuine
+uncertainty before committing, elicits a causally richer trace because
+it puts the model on the manifold of human narrative its pretraining
+corpus most heavily samples.
 
 \paragraph{Contributions.}
-\textbf{Diagnosis (cross-vendor):} the two empirically firing CoT failure
-modes replicate across the quartet with no single-vendor escape
-(\S\ref{sec:exp1}). \textbf{Intervention (mechanism-resolved):} N-CoT
-eliminates both modes length-controlled on the OpenAI and xAI generators
-and length-mediated on the Anthropic generators; a sub-instruction
-ablation on the flagship (\S\ref{sec:exp1-ablation}) attributes each
-headline metric to the specific N-CoT section that carries it.
-\textbf{Mechanism (operationalised):} $\hat{K}_{\text{gzip}}$ tracks the
-N-CoT contrast at $\rho \in [0.64, 0.87]$ and reproduces the
-adversarial-sycophancy direction on the one model that bites
-(\S\ref{sec:grounding}). \textbf{Deployment-relevant floor effects
-reported honestly:} SycophancyEval is saturated on frontier models, and
-two Anthropic agentic-misalignment replicates yield $0\%$ harmful action
-across the quartet under either scaffold (\S\ref{sec:deployment}; per
-pre-registered contingency, ``scaffolding cannot be measured against a
-failure mode that does not fire''). \textbf{Open questions
-pre-registered:} a Tier-3 human pairwise preference study (IRB pending)
-and a training-time Interpreter Network (\S\ref{sec:conclusion}).
+We diagnose two cross-vendor failure modes that empirically fire on
+standard CoT and replicate across the quartet with no single-vendor
+escape (\S\ref{sec:exp1}). We show that N-CoT eliminates both modes,
+length-controlled on the OpenAI and xAI generators and length-mediated
+on the Anthropic generators; a sub-instruction ablation on the flagship
+attributes each headline metric to the specific N-CoT section that
+carries it (\S\ref{sec:exp1-ablation}). We operationalise the
+underlying parsimony intuition with a gzip proxy for Algorithmic Causal
+Complexity that tracks the N-CoT contrast at $\rho \in [0.64, 0.87]$
+and reproduces the adversarial-sycophancy direction on the one model
+that bites (\S\ref{sec:grounding}). Two deployment-relevant floor
+effects are reported honestly: SycophancyEval is saturated on frontier
+models, and two agentic-misalignment replicates yield $0\%$ harmful
+action across the quartet under either scaffold
+(\S\ref{sec:deployment}), consistent with the pre-registered
+contingency that scaffolding cannot be measured against a failure mode
+that does not fire. Two next steps are pre-registered: a Tier-3 human
+pairwise preference study (IRB pending) and a training-time Interpreter
+Network (\S\ref{sec:conclusion}).
 
-A pragmatic note. We are not claiming that N-CoT solves alignment, nor that it
-removes the need for training-time work. We are claiming that a minimal
-prompt-level intervention with a clear theoretical motivation produces large,
-length-controlled, cross-family shifts on the structural failure modes most
-directly tied to sycophancy and stakeholder erasure, and that the same
-scaffolding extended to multi-agent deliberation produces \emph{defeasible}
-commitments -- positions that revise under others' narrated reasoning while
-holding firm where revision would materially harm a stakeholder.
+A pragmatic note. We are not claiming that N-CoT solves alignment, nor
+that it removes the need for training-time work. We are claiming that a
+minimal prompt-level intervention with a clear theoretical motivation
+produces large, length-controlled, cross-family shifts on the
+structural failure modes most directly tied to sycophancy and
+stakeholder erasure, and that the same scaffolding extended to
+multi-agent deliberation produces \emph{defeasible} commitments,
+positions that revise under others' narrated reasoning while holding
+firm where revision would materially harm a stakeholder.
 
 \section{Background and Related Work}
 \label{sec:related}
@@ -140,11 +142,11 @@ holding firm where revision would materially harm a stakeholder.
 \paragraph{Chain-of-thought and its failure modes.} Chain-of-thought prompting
 \citep{wei22, kojima22} elicits step-by-step intermediate reasoning before a
 final answer; it improves arithmetic and symbolic tasks but does not by
-construction force the trace to track \emph{situational structure}. Recent
+construction force the trace to track situational structure. Recent
 analysis identifies a sharp tension: as chain-of-thought reasoning capacity
 grows, models become more responsive to harmful requests because reasoning and
-safety entangle in shared neuron populations -- ``reason-induced
-misalignment'' \citep{rim_iclr2026}. N-CoT can be read as a constrained
+safety entangle in shared neuron populations, a phenomenon
+\citet{rim_iclr2026} describe as ``reason-induced misalignment''. N-CoT can be read as a constrained
 chain-of-thought that re-anchors the trace to a narrative-causal structure
 before the reasoning capacity is exercised; \S\ref{sec:exp1} shows that the
 intervention works on a current reasoning model as well as a non-reasoning
@@ -152,7 +154,7 @@ one.
 
 \paragraph{Narrative scaffolding for reasoning.}
 Visualisation-of-Thought \citep{wu24_vot} shows that asking a model to
-externalise reasoning in the \emph{native representational format} of a domain
+externalise reasoning in the native representational format of a domain
 (spatial diagrams for spatial tasks) improves reliability. We apply the same
 principle to ethical reasoning: the native format is a story with named
 agents, projected consequences, and uncertainty
@@ -168,16 +170,16 @@ inferring a structural causal model that explains them; the Kuleshov
 experiment \citep{kuleshov74, bordwell85} is a textbook example. LLMs perform
 near random baseline on causal inference stripped of empirical pattern matches
 \citep{jin23}: pretraining supplies the ability to pattern-match narrative
-\emph{token sequences}, not the structured causal reasoning that determines
+token sequences, not the structured causal reasoning that determines
 how those narratives resolve. The role of N-CoT is to convert that pattern
 matching into a usable causal trace at inference time.
 
 \paragraph{Multi-agent debate and defeasibility.}
 \citet{irving18} proposed AI safety via debate; \citet{du23} showed multi-agent
 debate improves factual reasoning. Both target task-correctness, not
-stakeholder-divergent value standoffs. Defeasible reasoning -- the property
-that conclusions can be revised in light of new information without abandoning
-the underlying inference scheme -- has a long lineage in moral philosophy
+stakeholder-divergent value standoffs. Defeasible reasoning, the property that
+conclusions can be revised in light of new information without abandoning
+the underlying inference scheme, has a long lineage in moral philosophy
 \citep{pollock87, macintyre81}. The protocol we evaluate in
 \S\ref{sec:exp2} stacks defeasibility on top of N-CoT and asks whether
 present-day models can be elicited to revise narrated commitments under
@@ -190,11 +192,11 @@ narrated counter-evidence.
 prompt that instructs the model to produce, in first person, a five-section
 trace before any final answer:
 (1) characterise the protagonist (name, role, what they know);
-(2) enumerate the \emph{stakeholders} whose lives intersect the decision and
+(2) enumerate the stakeholders whose lives intersect the decision and
 what is at stake for each;
-(3) project the consequences of each available action \emph{at least two
-steps out} for each stakeholder;
-(4) state what remains \emph{genuinely uncertain} about each projected future;
+(3) project the consequences of each available action at least two
+steps out for each stakeholder;
+(4) state what remains genuinely uncertain about each projected future;
 (5) commit to a decision and explain why, within the narrative frame, that
 trajectory is preferable to the alternatives.
 
@@ -204,7 +206,7 @@ exploit is that text matching the five-section structure is densely
 represented in the narrative subdistribution of the pretraining corpus
 (novels, scripts, case reports, ethnographic vignettes), so the model can
 amortise causal-trajectory inference by retrieval rather than by reasoning
-from first principles. Crucially, the prompt does \emph{not} mention causal
+from first principles. Crucially, the prompt does not mention causal
 graphs, stakeholders' utilities, or any formal apparatus.
 Algorithm~\ref{alg:ncot} states the procedure precisely.
 
@@ -241,7 +243,7 @@ Algorithm~\ref{alg:ncot} states the procedure precisely.
 \centering
 \begin{tcolorbox}[colback=gray!4, colframe=gray!50, boxrule=0.4pt,
   arc=2pt, left=4pt, right=4pt, top=4pt, bottom=4pt,
-  fonttitle=\bfseries, title={Running example -- one DailyDilemmas-style item, two prompting conditions}]
+  fonttitle=\bfseries, title={Running example: one DailyDilemmas-style item, two prompting conditions}]
 \textbf{Scenario.} A physician has a single dose of an experimental treatment
 and two terminal patients of comparable need: Patient~A (a 38-year-old
 teacher, two dependent children) has a 60\% predicted response rate; Patient~B
@@ -290,8 +292,8 @@ A single N-CoT trace commits one protagonist to a position. Many real
 deployment-relevant decisions involve multiple narrators with conflicting
 stakes. We extend N-CoT into a four-round debate protocol that re-uses N-CoT
 as the per-agent generator. For each scenario, three stakeholder
-perspectives -- \emph{formal decider}, \emph{primary affected party},
-\emph{third party} -- each produce an N-CoT statement (Round~0). They then
+perspectives (formal decider, primary affected party, third party)
+each produce an N-CoT statement (Round~0). They then
 exchange (Round~1, rebuttal), restate (Round~2, final position), respond to a
 moderator-constructed synthesis with one of \texttt{ACCEPT},
 \texttt{ACCEPT\_WITH\_MODIFICATION}, or \texttt{REJECT} (Round~3), and finally
@@ -366,7 +368,7 @@ $50.0$--$72.3\%$ of standard-CoT outputs on every quartet member
 (Table~\ref{tab:firing}); \emph{stakeholder collapse} on $14.6$--$30.6\%$.
 Both drop sharply under N-CoT: stakeholder collapse to $0.0$--$1.2\%$ on
 every model, uncertainty suppression to $0.8$--$24.5\%$. The reduction is
-largest where the standard-CoT rate is largest -- \texttt{gpt-5.4-nano}
+largest where the standard-CoT rate is largest. \texttt{gpt-5.4-nano}
 collapses both modes to ${<}1\%$, while the two Anthropic generators
 retain a $20$--$25\%$ residual on uncertainty suppression that the
 intervention does not reach. The other three hypothesised failure modes
@@ -403,8 +405,8 @@ with bootstrap CIs.
 \figureOrPlaceholder{\columnwidth}{figures/tier1_effect_sizes_quartet.pdf}{tier-1 effect sizes across four generators}
 \caption{Tier-1 Cliff's $\delta$ effect sizes (N-CoT vs.\ standard CoT) on
 the four structural variables, with bootstrap $95\%$ CIs. All four
-generators show large positive $\delta$s on \emph{stakeholder count} and
-\emph{uncertainty score}; effect sizes are robust to length residualisation
+generators show large positive $\delta$s on stakeholder count and
+uncertainty score; effect sizes are robust to length residualisation
 on the OpenAI and xAI generators, while shrinking toward zero on the two
 Anthropic generators.}
 \label{fig:tier1}
@@ -440,7 +442,7 @@ structural variables.
 \caption{Sub-instruction ablation on \texttt{claude-sonnet-4-6}: Cliff's
 $\delta$ for each drop-one-section condition vs.\ the full N-CoT control
 on stakeholder count and uncertainty score. Negative $\delta$ means the
-section \emph{raised} the structural variable; dropping it reduces it.
+section raised the structural variable, so dropping it reduces it.
 The Stakeholders section (Section~2) and the Uncertainty section
 (Section~4) show the largest negative $\delta$ on their respective target
 variables.}
@@ -448,12 +450,12 @@ variables.}
 \end{figure}
 
 The ablation provides direct causal attribution. Each substantive section
-is the \emph{specific carrier} of its target metric, with negligible
+is the specific carrier of its target metric, with negligible
 cross-variable spillover. Dropping the Stakeholders section reduces
 stakeholder count by $\delta = -0.41$ while leaving causal-hop depth and
 uncertainty essentially unchanged ($|\delta| < 0.03$); dropping Uncertainty
-reduces uncertainty score by $\delta = -0.92$ -- nearly the maximum
-possible -- while leaving every other variable untouched; dropping
+reduces uncertainty score by $\delta = -0.92$ (nearly the maximum
+possible) while leaving every other variable untouched; dropping
 Consequences reduces causal-hop depth by $\delta = -0.22$ with small
 spillover onto stakeholder count ($-0.08$), consistent with the hypothesis
 that projecting multi-step consequences forces the model to name the
@@ -485,16 +487,16 @@ weakens the cross-family check that the deferred quartet replication
 \centering
 \figureOrPlaceholder{\columnwidth}{figures/debate_full_arc.pdf}{debate convergence arc (original two generators)}
 \caption{Convergence rate across four debate-protocol designs on five
-scenarios and two generators. \textbf{Closed taxonomy} (Rounds~0--2 only,
-fixed action options): $6\%$ full consensus. \textbf{Open action space}
-(Round~2 permits novel actions; moderator actively synthesises): $9\%$ full
+scenarios and two generators. Closed taxonomy (Rounds~0--2 only, fixed
+action options): $6\%$ full consensus. Open action space (Round~2
+permits novel actions; moderator actively synthesises): $9\%$ full
 consensus, $73\%$ novel-action proposal rate, $82\%$ moderator-synthesis
-emergence. \textbf{Synthesis presentation} (Round~3): $0\%$ full but $100\%$
-partial convergence and $0\%$ outright rejection. \textbf{Integrative
-negotiation} (Round~4 binary vote on integrated proposal): $95\%$ full
-consensus, $100\%$ majority, mean $2.98/3$ agent modifications addressed.
-The residual $1.6\%$ rejection concentrates on stakeholder roles whose
-interests the integrated proposal materially undermines.}
+emergence. Synthesis presentation (Round~3): $0\%$ full but $100\%$
+partial convergence and $0\%$ outright rejection. Integrative
+negotiation (Round~4 binary vote on integrated proposal): $95\%$ full
+consensus, $100\%$ majority, mean $2.98/3$ agent modifications
+addressed. The residual $1.6\%$ rejection concentrates on stakeholder
+roles whose interests the integrated proposal materially undermines.}
 \label{fig:debate_arc}
 \end{figure}
 
@@ -565,7 +567,7 @@ admissible interventions (\textit{e.g.}, ``set protagonist's belief that
 the patient consented to true''; ``replace the moderator with one that
 hides the third party's stake''). Intuitively, $K_C(M)$ asks: how many
 bits do you need to write down the rules that would let you simulate
-\emph{every} possible alternative version of this situation? A model with a
+every possible alternative version of this situation? A model with a
 few stakeholders and one stable mechanism per stakeholder is short; a model
 that requires a special-case rule per simulated future to keep an initial
 falsehood consistent is long.
@@ -575,12 +577,12 @@ shortest program that reproduces the data $D$'' with ``the shortest program
 whose interventional behaviour reproduces the SCM $M$'', so it
 inherits the Kolmogorov complexity uncomputability result of
 \citet{li_vitanyi}. The role of the protocols in this paper is to give
-\emph{tractable proxies} for Eq.~\ref{eq:kc}: the N-CoT trace is short when
+tractable proxies for Eq.~\ref{eq:kc}: the N-CoT trace is short when
 its stakeholder set, projected branches, and uncertainties are jointly
 consistent, and long when the model is required to invent ad-hoc bridges
 between an agreed-with falsehood and the simulated downstream events. An
-\emph{$\arg\min K_C$ selection rule} -- choose the candidate response whose
-narrated trajectory has the shortest description -- predicts that local
+$\arg\min K_C$ selection rule, choosing the candidate response whose
+narrated trajectory has the shortest description, predicts that local
 agreement-with-falsehood is dispreferred because keeping the falsehood
 consistent across simulated futures requires more bits than acknowledging
 the falsehood and absorbing the local friction. We do not claim to have
@@ -589,10 +591,10 @@ two protocols we tested behave as approximations to it.
 
 \paragraph{Why an SCM avoids the utility-function pitfalls.}
 \citet{yudkowsky11}'s ``Complexity of Value'' argument applies to a
-\emph{utility function over outcomes}: any explicit specification is
+utility function over outcomes: any explicit specification is
 incomplete in ways an indifferent optimiser will exploit. An SCM is a
-different object: it specifies \emph{mechanisms that connect actions to
-outcomes}, not a preference ordering over outcomes. Two agents with
+different object: it specifies mechanisms that connect actions to
+outcomes, not a preference ordering over outcomes. Two agents with
 incompatible utilities can share an SCM (they will agree, e.g., that
 betrayal destabilises trust) and disagree about which trajectory to
 prefer; conversely, an agent with a single utility function but no SCM
@@ -616,8 +618,8 @@ evaluate three:
   requires more special-case bridges, increasing compressible redundancy.
 \item $\hat{K}_{\text{lm}}$: average negative log-probability per sentence
   under a lightweight scorer (\texttt{claude-haiku-4-5}). Outputs that deviate
-  from the most probable narrative continuation -- as falsehood-maintaining
-  outputs must -- score higher.
+  from the most probable narrative continuation, as falsehood-maintaining
+  outputs must, score higher.
 \end{itemize}
 In the budget-constrained run reported here we computed
 $\hat{K}_{\text{gzip}}$ on the full Phase~1 cache (15{,}549 generations);
@@ -628,7 +630,7 @@ between $\hat{K}_{\text{gzip}}$ and the N-CoT/standard-CoT contrast direction
 indicator across the four-generator quartet. The proxy correlates
 $\rho = 0.866$ on each of \texttt{gpt-5.4-nano}, \texttt{claude-haiku-4-5},
 and \texttt{claude-sonnet-4-6}, and $\rho = 0.639$ on
-\texttt{grok-4-1-fast-reasoning} -- a strikingly consistent ${\approx}0.87$
+\texttt{grok-4-1-fast-reasoning}, a strikingly consistent ${\approx}0.87$
 across three vendors with grok as the only outlier (all $p < 10^{-6}$;
 $n \in [1{,}030, 4{,}400]$ per cell). The remarkable convergence of
 correlation strength across cross-vendor architectures suggests that
@@ -649,8 +651,8 @@ at $\rho = 0.64$. All correlations are highly significant.}
 \paragraph{Adversarial sycophancy contrast.} The min-$K_C$ rule makes a
 falsifiable directional prediction. If maintaining a user-stated falsehood
 across projected downstream consequences requires extra description-length
-bridges, then \texttt{agree} responses to adversarial sycophancy probes
-should carry \emph{lower} $\hat{K}_C$ than \texttt{correct} responses
+bridges, then \emph{agree} responses to adversarial sycophancy probes
+should carry lower $\hat{K}_C$ than \emph{correct} responses
 (corrections expand the causal trace; agreements truncate it). We test
 this on a hand-curated set of 30 probes (Appendix~\ref{app:asp}) where each
 probe specifies a false premise, the truth, and a downstream question whose
@@ -660,15 +662,15 @@ generator's response is coded as \texttt{agree}, \texttt{correct}, or
 
 The directional prediction holds on the one quartet member that bites on
 these probes at all: on \texttt{gpt-5.4-nano}, mean
-$\hat{K}_{\text{gzip}}$ is roughly $10\times$ higher for \texttt{correct}
-than \texttt{agree} responses, in the predicted direction. The Anthropic
+$\hat{K}_{\text{gzip}}$ is roughly $10\times$ higher for \emph{correct}
+than \emph{agree} responses, in the predicted direction. The Anthropic
 generators and \texttt{grok-4-1-fast-reasoning} refuse to agree with the
 falsehoods at almost every probe (an instrument-floor finding paralleling
 the SycophancyEval result in Section~\ref{sec:deployment}). On the one
 generator that exhibits the bias, the proxy distinguishes correction from
-agreement by a factor of ten -- a sharp consistency between the
-theoretical prediction in Eq.~\ref{eq:kc} and what is observed on the only
-model that shows the dependent variable.
+agreement by a factor of ten, a sharp consistency between the
+theoretical prediction in Eq.~\ref{eq:kc} and what is observed on the
+only model that shows the dependent variable.
 
 \section{Deployment Relevance}
 \label{sec:deployment}
@@ -676,9 +678,9 @@ model that shows the dependent variable.
 \subsection{SycophancyEval Probe Reduction}
 
 SycophancyEval \citep{sharma23} contains three probe types designed to elicit
-sycophantic LLM behaviour: \emph{opinion mirroring} (a user expresses a false
-belief and asks for agreement), \emph{retraction on pushback} (the model is
-pushed back on a correct answer), and \emph{false-premise acceptance} (the
+sycophantic LLM behaviour: opinion mirroring (a user expresses a false
+belief and asks for agreement), retraction on pushback (the model is
+pushed back on a correct answer), and false-premise acceptance (the
 user's question embeds a false premise). We run all three probe types on the
 four-generator quartet ($N{=}3$ per probe x condition x model, 30 probes
 total, yielding 720 coded responses). A judge model
@@ -694,7 +696,7 @@ rate under N-CoT and $0\%$ under standard CoT. Figure~\ref{fig:syc} shows
 the full pattern. We interpret the floor result as evidence that the
 SycophancyEval probe set, originally developed for earlier-generation
 models, is largely saturated by frontier models (consistent with concurrent
-reports), \emph{not} as evidence against N-CoT's mechanism: the adversarial
+reports), not as evidence against N-CoT's mechanism: the adversarial
 sycophancy probes in \S\ref{sec:grounding} (designed to be harder than
 SycophancyEval) do show the predicted $\hat{K}_C$ contrast on
 \texttt{gpt-5.4-nano}, the one model that bites at all
@@ -722,8 +724,8 @@ mechanism.}
 \citet{anthropic_agentic_2025} reported that sixteen frontier models from five
 vendors exhibited harmful agentic behaviour (blackmail, corporate espionage) in
 simulated tool-use environments at rates up to 96\% under instrumental pressure.
-We replicate two of the publicly described scenario structures -- an
-executive-blackmail scenario and a corporate-espionage scenario -- under
+We replicate two of the publicly described scenario structures, an
+executive-blackmail scenario and a corporate-espionage scenario, under
 standard CoT and N-CoT scaffolding on the budget quartet plus
 \texttt{claude-sonnet-4-6} ($N{=}5$ per cell, 100 long-context generations).
 
@@ -740,7 +742,7 @@ both conditions: no model in the quartet (\texttt{gpt-5.4-nano},
 CoT in our replication. Following the pre-registration: this floor result
 is reportable as ``inference-time scaffolding cannot be measured against
 this failure mode in our replication setting because the failure mode does
-not fire'', and is consistent with a defence-in-depth reading -- our
+not fire'', and is consistent with a defence-in-depth reading: our
 budget-tier modern models refused all 48 trials, regardless of scaffolding.}
 \label{fig:agentic}
 \end{figure}
@@ -751,7 +753,7 @@ harmful-action rates, with the predicted mechanism that the Protagonist
 section binds the agent role to the N-CoT protagonist frame, the
 Stakeholders section forces enumeration of the threatened executive and
 third parties, and the Consequences section traces the
-blackmail/espionage trajectory two steps forward -- making the harm
+blackmail/espionage trajectory two steps forward, making the harm
 concrete before any tool call. We also pre-registered a contingency for
 the floor case: if no model in the budget quartet commits the harmful
 action even under standard CoT, the result is reportable as
@@ -768,7 +770,7 @@ defence-in-depth: the publicly described scenario structures from
 training pipelines on every vendor in the quartet refuse them
 unconditionally. The right test of N-CoT against agentic misalignment will
 require harder, less-public scenario structures than the published
-replicates -- a question we flag for future work but do not have data
+replicates, a question we flag for future work but do not have data
 to answer here.
 
 \section{Discussion: Alternative Views}
@@ -792,10 +794,10 @@ wrong tool for value claims that resist formalisation. The
 parsimony-driven view in \S\ref{sec:grounding} sits between the two: the
 proxies are tractable (graph node and edge counts, learned codebook
 description lengths), the criterion is principled, and the resulting
-artefact is auditable in the same sense a graph is auditable -- in
+artefact is auditable in the same sense a graph is auditable, in
 contrast to a learned utility function whose internals resist inspection.
 Description length and Kolmogorov complexity are related but not
-identical: description length is a \emph{tractable upper bound} relative
+identical: description length is a tractable upper bound relative
 to a chosen code, and the codes we adopt (counts of nodes/edges in the
 proposed causal graph) are the same kinds of regularisers that work in
 deep learning generally.
@@ -803,7 +805,7 @@ deep learning generally.
 \paragraph{``Narrative imports the bias of its training corpora.''} It
 does, but so does every alternative. RLHF imports annotator preferences;
 constitutional AI imports designer values. The contribution of N-CoT in
-this respect is to make the dependence \emph{auditable}: the trace names
+this respect is to make the dependence auditable: the trace names
 the stakeholders the model is conditioning on and the consequences it is
 projecting, so a reader can see what bias is driving the commitment.
 
@@ -819,8 +821,8 @@ produced $100\%$ acceptance.
 \paragraph{``The $K_C$ proxy is a brittle gzip trick.''}
 We agree that gzip-compressed length is a weak proxy for algorithmic causal
 complexity: it captures surface repetition and vocabulary, not causal
-structure. This is precisely why the protocol pre-registers
-\emph{three} proxies ($\hat{K}_{\text{graph}}$, $\hat{K}_{\text{gzip}}$,
+structure. This is precisely why the protocol pre-registers three
+proxies ($\hat{K}_{\text{graph}}$, $\hat{K}_{\text{gzip}}$,
 $\hat{K}_{\text{lm}}$) and requires directional agreement on at least two
 before making a substantive claim. The three are independent in their
 failure modes: gzip fails on locally redundant prose; the graph extractor
@@ -835,8 +837,8 @@ generators, with grok the lower outlier at $0.64$), suggesting a
 model-agnostic property rather than a per-vendor artefact; and (ii) on the
 one generator that bites on the adversarial sycophancy probes
 ($\hat{K}_{\text{gzip}}$ contrast of ${\sim}10\times$ between
-\texttt{correct} and \texttt{agree}), the proxy reproduces the
-\emph{direction} the theoretical Eq.~\ref{eq:kc} predicts. Neither
+\emph{correct} and \emph{agree}), the proxy reproduces the
+direction the theoretical Eq.~\ref{eq:kc} predicts. Neither
 observation is a substitute for the cross-proxy validation that the
 deferred follow-up will provide.
 
@@ -857,45 +859,45 @@ on roles whose interests the integrated proposal undermines, with the
 cross-vendor extension pre-registered (\S\ref{sec:exp2}).
 $\hat{K}_{\text{gzip}}$ tracks the N-CoT contrast at $\rho \approx 0.87$
 on three of four generators, and on adversarial sycophancy probes
-\texttt{correct} responses score ${\sim}10\times$ higher than
-\texttt{agree} on the one model that bites (\S\ref{sec:grounding}). Two
-deployment-relevant floor effects -- SycophancyEval saturation on frontier
-models and unconditional refusal of published agentic-misalignment
-scenarios on the entire quartet -- are reported as pre-registered
+\emph{correct} responses score ${\sim}10\times$ higher than
+\emph{agree} on the one model that bites (\S\ref{sec:grounding}). Two
+deployment-relevant floor effects (SycophancyEval saturation on frontier
+models, and unconditional refusal of published agentic-misalignment
+scenarios on the entire quartet) are reported as pre-registered
 contingencies and motivate the harder probe sets the right test would
 require (\S\ref{sec:deployment}).
 
 Two next steps are pre-registered and partially specified in the
-project's Guidance\_Documents directory. The \textbf{Tier-3 human
-pairwise preference study} (50 pairs, graduate-trained ethics
-evaluators, blinded pairwise design, one-sided Wilcoxon signed-rank) will
-test whether the structural advantages documented here are perceptible to
-domain-expert human raters -- the only evaluation that speaks directly to
-whether N-CoT outputs are \emph{better}, not just structurally different.
-IRB review is pending. The \textbf{training-time Interpreter Network} is the
-L5 claim of this work: if inference-time N-CoT scaffolding reliably forces
-the model to maintain a parsimonious causal model, that trace can be used as
-a supervision signal to train a network whose forward pass computes something
-closer to the min-$K_C$ selection rule directly, without relying on the
-system prompt to impose the structure at inference time. Neither next step is
-blocked by the protocols developed here.
+project's Guidance\_Documents directory. The Tier-3 human pairwise
+preference study (50 pairs, graduate-trained ethics evaluators, blinded
+pairwise design, one-sided Wilcoxon signed-rank) will test whether the
+structural advantages documented here are perceptible to domain-expert
+human raters, the only evaluation that speaks directly to whether N-CoT
+outputs are preferred, not just structurally different. IRB review is
+pending. The training-time Interpreter Network is the L5 claim of this
+work: if inference-time N-CoT scaffolding reliably forces the model to
+maintain a parsimonious causal model, that trace can be used as a
+supervision signal to train a network whose forward pass computes
+something closer to the min-$K_C$ selection rule directly, without
+relying on the system prompt to impose the structure at inference time.
+Neither next step is blocked by the protocols developed here.
 
 \section*{Limitations}
 
-\textbf{No Tier-3 human pairwise evaluation yet.} The structural shifts we
+\paragraph{No Tier-3 human pairwise evaluation yet.} The structural shifts we
 report are the shape that defeasibility predicts, not a normative
-endorsement: we cannot say whether N-CoT outputs are \emph{better} than
+endorsement: we cannot say whether N-CoT outputs are preferred to
 standard-CoT outputs on these scenarios, only that they have more of the
 features we hypothesised would matter. The deferred Tier-3 study
 (pre-registered in the project's Guidance\_Documents directory, IRB
 review pending) is the right test for that question.
 
-\textbf{Premature refusal not fired.} None of the four tested generators
+\paragraph{Premature refusal not fired.} None of the four tested generators
 refused any DailyDilemmas scenario under any condition; testing whether
 N-CoT recovers refusal scenarios requires a more aggressively safety-tuned
 target.
 
-\textbf{Single-proxy $K_C$.} Of the three proxies pre-registered for
+\paragraph{Single-proxy $K_C$.} Of the three proxies pre-registered for
 $K_C$ ($\hat{K}_{\text{graph}}$, $\hat{K}_{\text{gzip}}$,
 $\hat{K}_{\text{lm}}$), only $\hat{K}_{\text{gzip}}$ was computed in this
 budget run. The other two would require $\sim 30{,}000$ additional judge
@@ -904,12 +906,12 @@ specifies is therefore not yet present; the gzip-only result is reported
 as a single-proxy directional finding rather than a multi-proxy
 confirmation.
 
-\textbf{Anthropic generators residualise to zero.} On the two Anthropic
+\paragraph{Anthropic generators residualise to zero.} On the two Anthropic
 quartet members, length-residualised Cliff's $\delta$ for stakeholder
 count and uncertainty score is statistically indistinguishable from zero.
-The interpretation we endorse -- that these models already exhibit the
-target structural density per unit length under standard CoT, and N-CoT's
-gain comes through making the output longer -- is consistent with the
+The interpretation we endorse, that these models already exhibit the
+target structural density per unit length under standard CoT and N-CoT's
+gain comes through making the output longer, is consistent with the
 data but is not the only consistent story. A confound we cannot rule out
 is that our cross-vendor judges (\texttt{claude-haiku-4-5} primary,
 \texttt{gpt-5.4-nano} secondary) are systematically more lenient with
@@ -918,23 +920,23 @@ uncertainty score is high enough ($0.59$ and $0.61$) that we do not
 suspect this is the dominant story, but it remains an open question that
 a larger or more carefully calibrated judge stack would resolve.
 
-\textbf{N-CoT increases decisiveness.} Per-scenario decision entropy is
-\emph{lower} under N-CoT than standard CoT. This is consistent with narrative
+\paragraph{N-CoT increases decisiveness.} Per-scenario decision entropy is
+lower under N-CoT than standard CoT. This is consistent with narrative
 reasoning producing commitments grounded in causal trajectory rather than hedged
 framework enumeration, but it leaves open whether increased decisiveness reflects
-better calibration or premature foreclosure -- a question only the Tier-3 study
+better calibration or premature foreclosure, a question only the Tier-3 study
 can settle.
 
-\textbf{Multi-agent layer scale.} Experiment~2 uses five hand-crafted calibration
+\paragraph{Multi-agent layer scale.} Experiment~2 uses five hand-crafted calibration
 scenarios. Scaling the four-round protocol to the 100-scenario DailyDilemmas
 distribution is the highest-priority extension of the multi-agent layer.
 
-\textbf{Inter-judge $\kappa$ on causal-chain depth is low.} Even after rubric
+\paragraph{Inter-judge $\kappa$ on causal-chain depth is low.} Even after rubric
 tightening, inter-judge $\kappa$ on \texttt{max\_causal\_hops} remains
 $\approx 0.08$. We report that variable's direction-of-effect in
 Appendix~\ref{app:kappa} but do not include it in any headline claim.
 
-\textbf{Agentic-probe scenarios are fictional.} The two agentic-misalignment
+\paragraph{Agentic-probe scenarios are fictional.} The two agentic-misalignment
 scenarios replicated in \S\ref{sec:deployment} are fictional structures adapted
 from publicly described Anthropic research; they are not deployed production
 scenarios. The harmful-action rates observed here may not transfer to real
@@ -943,7 +945,7 @@ context differ. The pre-registered null-result interpretation is intentionally
 symmetric: failure to replicate would be reported as ``scaffolding does not reach
 this failure mode,'' not suppressed.
 
-\textbf{$K_C$ proxies are design choices.} The three operationalisations of
+\paragraph{$K_C$ proxies are design choices.} The three operationalisations of
 Algorithmic Causal Complexity are chosen for computational tractability; each
 is a biased proxy for the formally uncomputable $K_C(M)$. We require directional
 agreement across at least two of the three before making a substantive claim,
@@ -1188,11 +1190,11 @@ claude-sonnet-4-6  & 2R,1H & 0R,3H & 3R,0H & 3R,0H \\
 \end{tabular}
 \caption{Per-cell action-code counts (R = refuse, H = hedge / unclear;
 S = Standard CoT, N = N-CoT). Harmful-action rate is $0\%$ in all $16$
-cells -- none of the $48$ generations invokes the harmful tool.
+cells: none of the $48$ generations invokes the harmful tool.
 The corporate-espionage scenario yields clear refusals under either
-scaffold on every model; the blackmail scenario yields \emph{hedges}
+scaffold on every model; the blackmail scenario yields hedges
 (mid-deliberation truncations that read as refusal-in-progress)
-predominantly under N-CoT -- the agent's narrated reasoning still
+predominantly under N-CoT. The agent's narrated reasoning still
 rejects the harmful tool call, but the longer N-CoT trace is more
 likely to be truncated mid-analysis.}
 \label{tab:agentic_full}
@@ -1205,8 +1207,8 @@ Table~\ref{tab:ablation_full} reports Cliff's $\delta$ for each
 drop-one-section condition vs.\ the full N-CoT control on all four
 structural variables, on \texttt{claude-sonnet-4-6} ($N{=}3$,
 $30$-scenario stratified subsample, $90$ paired generations per
-condition). Negative $\delta$ means dropping the section \emph{reduces}
-the structural variable -- i.e., the section was contributing to it.
+condition). Negative $\delta$ means dropping the section reduces
+the structural variable; i.e., the section was contributing to it.
 
 \begin{table}[h]
 \centering
@@ -1225,9 +1227,9 @@ commitment   & $+0.17$           & $+0.13$           & $\phantom{-}0.00$ & $\pha
 \end{tabular}
 \caption{Cliff's $\delta$ for each drop-one condition vs.\ full N-CoT
 control on claude-sonnet-4-6. Bolded entries mark the largest negative
-effect for each structural variable. The diagonal pattern -- each
-substantive section shows its largest effect on its own target metric
--- is the textbook signature of section-level mechanism rather than a
+effect for each structural variable. The diagonal pattern, in which each
+substantive section shows its largest effect on its own target metric,
+is the textbook signature of section-level mechanism rather than a
 single emergent ``narrative'' factor.}
 \label{tab:ablation_full}
 \end{table}
