@@ -181,47 +181,11 @@ def compute_attribution(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def make_heatmap(df_attr: pd.DataFrame, out_path: Path) -> None:
-    try:
-        import matplotlib
-        matplotlib.use("Agg")
-        import matplotlib.pyplot as plt
-        import matplotlib.colors as mcolors
-    except ImportError:
-        print("  matplotlib not available; skipping heatmap")
-        return
-
-    conditions = sorted(df_attr["condition"].unique())
-    variables = ["stakeholder_count", "max_causal_hops", "uncertainty_score", "n_frameworks"]
-    variables = [v for v in variables if v in df_attr["variable"].values]
-
-    matrix = np.full((len(conditions), len(variables)), float("nan"))
-    for i, cond in enumerate(conditions):
-        for j, var in enumerate(variables):
-            sub = df_attr[(df_attr["condition"] == cond) & (df_attr["variable"] == var)]
-            if not sub.empty:
-                matrix[i, j] = sub["delta_drop_vs_full"].values[0]
-
-    fig, ax = plt.subplots(figsize=(7, 4))
-    cmap = matplotlib.colormaps["RdYlGn"]
-    vmax = max(0.5, np.nanmax(np.abs(matrix)))
-    im = ax.imshow(matrix, cmap=cmap, vmin=-vmax, vmax=vmax, aspect="auto")
-    ax.set_xticks(range(len(variables)))
-    ax.set_xticklabels(variables, rotation=25, ha="right", fontsize=8)
-    ax.set_yticks(range(len(conditions)))
-    ax.set_yticklabels(conditions, fontsize=8)
-    for i in range(len(conditions)):
-        for j in range(len(variables)):
-            val = matrix[i, j]
-            if not np.isnan(val):
-                ax.text(j, i, f"{val:.2f}", ha="center", va="center", fontsize=7,
-                        color="black" if abs(val) < 0.4 else "white")
-    plt.colorbar(im, ax=ax, label="Cliff's δ (drop vs. full N-CoT)")
-    ax.set_title("Sub-instruction attribution: effect of dropping each N-CoT section\n"
-                 "(claude-sonnet-4-6, N=10, 50 scenarios)", fontsize=10)
-    fig.tight_layout()
-    fig.savefig(out_path, dpi=150)
-    plt.close(fig)
-    print(f"  Saved figure: {out_path}")
+    """Delegate to the unified paper-figure pipeline so all figures share
+    the same aesthetic. Aggregation must have already written the
+    subinstruction_attribution.csv."""
+    from rebuild_paper_figures import fig_subinstruction
+    fig_subinstruction()
 
 
 # ---------------------------------------------------------------------------

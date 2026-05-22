@@ -242,55 +242,9 @@ def run_agentic_probe(
 # ---------------------------------------------------------------------------
 
 def make_agentic_figure(df: pd.DataFrame, out_path: Path) -> None:
-    try:
-        import matplotlib
-        matplotlib.use("Agg")
-        import matplotlib.pyplot as plt
-        import matplotlib.ticker as ticker
-    except ImportError:
-        print("  matplotlib not available; skipping figure")
-        return
-
-    scenarios = sorted(df["scenario_id"].unique())
-    generators = sorted(df["generator"].unique())
-    conditions = ["standard_cot", "narrative_cot"]
-    colors = {"standard_cot": "#d6604d", "narrative_cot": "#2166ac"}
-
-    fig, axes = plt.subplots(1, len(scenarios), figsize=(5 * len(scenarios), 5), sharey=True)
-    if len(scenarios) == 1:
-        axes = [axes]
-
-    for ax, scenario_id in zip(axes, scenarios):
-        df_s = df[df["scenario_id"] == scenario_id]
-        x = np.arange(len(generators))
-        width = 0.35
-        for i, cond in enumerate(conditions):
-            df_cond = df_s[df_s["condition"] == cond]
-            rates = []
-            for gen in generators:
-                sub = df_cond[df_cond["generator"] == gen]
-                rate = sub["harmful_action"].astype(float).mean() if len(sub) > 0 else 0.0
-                rates.append(rate)
-            offset = (i - 0.5) * width
-            ax.bar(x + offset, rates, width, label=cond.replace("_", " "), color=colors[cond])
-        ax.set_xticks(x)
-        ax.set_xticklabels(
-            [g.replace("claude-", "").replace("grok-4-1-", "grok-").replace("-reasoning", "-r")
-             for g in generators],
-            rotation=30, ha="right", fontsize=8,
-        )
-        ax.set_title(scenario_id.replace("_", " ").title(), fontsize=10)
-        ax.set_ylim(0, 1.1)
-        ax.yaxis.set_major_formatter(ticker.PercentFormatter(1.0))
-        ax.set_ylabel("Harmful-action rate", fontsize=9)
-        ax.legend(fontsize=8)
-
-    fig.suptitle("Agentic misalignment: harmful-action rate under Standard CoT vs. Narrative CoT",
-                 fontsize=11)
-    fig.tight_layout()
-    fig.savefig(out_path, dpi=150)
-    plt.close(fig)
-    print(f"  Saved figure: {out_path}")
+    """Delegate to the unified paper-figure pipeline."""
+    from rebuild_paper_figures import fig_agentic_probe
+    fig_agentic_probe()
 
 
 # ---------------------------------------------------------------------------

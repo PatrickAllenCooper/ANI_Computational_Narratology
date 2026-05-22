@@ -30,6 +30,13 @@
 \usepackage{tcolorbox}
 \usepackage{ifthen}
 \usepackage{multirow}
+\usepackage{tabularx}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{url}
+% Long file paths in \path{} break at common separators.
+\urlstyle{tt}
+\DeclareUrlCommand\path{\urlstyle{tt}}
 
 % Convenience command: show figure if file exists, else a labelled placeholder box.
 % Usage: \figureOrPlaceholder{width}{filename}{description}
@@ -211,6 +218,36 @@ represented in the narrative subdistribution of the pretraining corpus
 amortise causal-trajectory inference by retrieval rather than by reasoning
 from first principles. Crucially, the prompt does \emph{not} mention causal
 graphs, stakeholders' utilities, or any formal apparatus.
+Algorithm~\ref{alg:ncot} states the procedure precisely.
+
+\begin{algorithm}[t]
+\caption{Narrative chain-of-thought (N-CoT): generation and structural coding for a single dilemma.}
+\label{alg:ncot}
+\small
+\begin{algorithmic}[1]
+\Require dilemma $s$; generator $G$; judge $J$; decoder $\Theta$
+\Ensure trace $t$ and structural codes $\mathbf{c}$
+\State \textbf{Build N-CoT system prompt} $\pi_{\textsc{ncot}}$ requesting five first-person sections:
+\State \quad (1) \textsc{Protagonist}: name role and epistemic state
+\State \quad (2) \textsc{Stakeholders}: parties intersecting the decision
+\State \quad (3) \textsc{Consequences}: each action $\geq 2$ steps forward
+\State \quad (4) \textsc{Uncertainty}: what remains genuinely unknown
+\State \quad (5) \textsc{Commitment}: chosen action and narrative warrant
+\State \textbf{Generate trace}
+\State \quad $t \gets G(\pi_{\textsc{ncot}} \,\Vert\, s;\, \Theta)$
+\State \textbf{Code structural variables} with judge $J$'s rubric
+\State \quad $(\mathit{sc}, \mathit{mh}, \mathit{us}, \mathit{nf}, \mathit{ref}, \mathit{tr}) \gets J(t)$
+\State \quad \textit{// stakeholder count, max causal hops, uncertainty score,}
+\State \quad \textit{// framework count, refused flag, truncated flag}
+\State \textbf{Derive failure-mode tags} (deterministic)
+\State \quad \textsc{StakeholderCollapse} $\gets \mathit{sc} \leq 1$
+\State \quad \textsc{UncertaintySuppression} $\gets \mathit{us} = 0$
+\State \quad \textsc{ConsequentialFlattening} $\gets \mathit{mh} \leq 1$
+\State \quad \textsc{FrameworkEnumeration} $\gets \mathit{nf} \geq 2$
+\State \quad \textsc{PrematureRefusal} $\gets \mathit{ref}$
+\State \Return $(t, \mathbf{c})$
+\end{algorithmic}
+\end{algorithm}
 
 \begin{figure*}[t]
 \centering
@@ -300,30 +337,26 @@ making the scenario sets comparable.
 \begin{table}[t]
 \centering
 \small
-\begin{tabular}{llcc}
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{lrrrr}
 \toprule
-Generator & Failure mode & Std CoT & N-CoT \\
+Generator (vendor, tier) & $N_{\textsc{s}}$ & $N_{\textsc{n}}$ & $\Delta_{\textsc{sc}}$ & $\Delta_{\textsc{us}}$ \\
 \midrule
-\texttt{gpt-5.4-nano}             & uncertainty suppression  & \textbf{72.3\%} & 0.8\% \\
-\texttt{gpt-5.4-nano}             & stakeholder collapse     & \textbf{30.6\%} & 0.8\% \\
-\midrule
-\texttt{claude-haiku-4-5}         & uncertainty suppression  & \textbf{50.0\%} & 21.5\% \\
-\texttt{claude-haiku-4-5}         & stakeholder collapse     & \textbf{24.8\%} & 0.0\% \\
-\midrule
-\texttt{grok-4-1-fast-reasoning}  & uncertainty suppression  & \textbf{68.7\%} & 24.5\% \\
-\texttt{grok-4-1-fast-reasoning}  & stakeholder collapse     & \textbf{14.6\%} & 1.2\% \\
-\midrule
-\texttt{claude-sonnet-4-6}        & uncertainty suppression  & \textbf{57.8\%} & 20.8\% \\
-\texttt{claude-sonnet-4-6}        & stakeholder collapse     & \textbf{25.6\%} & 0.0\% \\
+gpt-5.4-nano (OpenAI, b)        & 1{,}989 & 1{,}985 & $-30$ & $-72$ \\
+claude-haiku-4-5 (Anth., b)     & 1{,}999 & 1{,}996 & $-25$ & $-29$ \\
+grok-4-1-fast-r.\ (xAI, b)      &   515   &   515   & $-13$ & $-44$ \\
+claude-sonnet-4-6 (Anth., f)    &   500   &   500   & $-26$ & $-37$ \\
 \bottomrule
 \end{tabular}
-\caption{Per-generator failure-mode firing rates on the 100-scenario
-DailyDilemmas pilot, four generators across three vendors and two model
-tiers (Figure~\ref{fig:quartet} renders the same data graphically).
-Only the two failure modes that empirically fire are reported;
-\emph{premature refusal}, \emph{framework enumeration}, and
-\emph{consequential flattening} fire below 1\% on all generators and
-are reported as untested.}
+\caption{Cell sizes and percentage-point drops for the two failure modes
+that empirically fire ($\Delta_{\textsc{sc}}$ = stakeholder collapse,
+$\Delta_{\textsc{us}}$ = uncertainty suppression; both N-CoT minus standard
+CoT, in percentage points; $N_{\textsc{s}}, N_{\textsc{n}}$ are coded
+samples under standard CoT and N-CoT respectively). Vendor tiers are
+b\,=\,budget, f\,=\,flagship. Figure~\ref{fig:quartet} plots the raw
+rates with the same drop annotations. \emph{Premature refusal},
+\emph{framework enumeration}, and \emph{consequential flattening} fire
+below $1\%$ on all generators and are reported as untested.}
 \label{tab:firing}
 \end{table}
 
@@ -843,9 +876,9 @@ scenarios on the entire quartet -- are reported as pre-registered
 contingencies and motivate the harder probe sets the right test would
 require (\S\ref{sec:deployment}).
 
-Two next steps are pre-registered and partially specified in
-\texttt{Guidance\_Documents/tier3\_preregistration.md}. The \textbf{Tier-3
-human pairwise preference study} (50 pairs, graduate-trained ethics
+Two next steps are pre-registered and partially specified in the
+project's Guidance\_Documents directory. The \textbf{Tier-3 human
+pairwise preference study} (50 pairs, graduate-trained ethics
 evaluators, blinded pairwise design, one-sided Wilcoxon signed-rank) will
 test whether the structural advantages documented here are perceptible to
 domain-expert human raters -- the only evaluation that speaks directly to
@@ -864,14 +897,14 @@ blocked by the protocols developed here.
 report are the shape that defeasibility predicts, not a normative
 endorsement: we cannot say whether N-CoT outputs are \emph{better} than
 standard-CoT outputs on these scenarios, only that they have more of the
-features we hypothesised would matter. The deferred Tier-3 study (pre-registered
-in \texttt{Guidance\_Documents/tier3\_preregistration.md}, IRB review pending)
-is the right test for that question.
+features we hypothesised would matter. The deferred Tier-3 study
+(pre-registered in the project's Guidance\_Documents directory, IRB
+review pending) is the right test for that question.
 
 \textbf{Premature refusal not fired.} None of the four tested generators
 refused any DailyDilemmas scenario under any condition; testing whether
 N-CoT recovers refusal scenarios requires a more aggressively safety-tuned
-generator.
+target.
 
 \textbf{Single-proxy $K_C$.} Of the three proxies pre-registered for
 $K_C$ ($\hat{K}_{\text{graph}}$, $\hat{K}_{\text{gzip}}$,
@@ -998,8 +1031,7 @@ commits\_to\_action & --      & $97.0\%$ \\
 \end{tabular}
 \caption{Linearly-weighted Cohen's $\kappa$ between the budget judge pair
 (\texttt{claude-haiku-4-5} primary, \texttt{gpt-5.4-nano} secondary) on
-the four-generator quartet. Source:
-\texttt{divergence\_study\_outputs/interjudge\_agreement.csv}.}
+the four-generator quartet.}
 \label{tab:kappa}
 \end{table}
 
@@ -1009,50 +1041,51 @@ the four-generator quartet. Source:
 Table~\ref{tab:effects_full} reports raw and length-residualised Cliff's
 $\delta$ (N-CoT vs.\ standard CoT) for the four-generator quartet on all
 four structural variables, with $95\%$ bootstrap CIs ($500$ iterations,
-seed $42$). Source:
-\texttt{divergence\_study\_outputs/tier1\_effect\_sizes\_quartet.csv}.
+seed $42$).
 
-\begin{table}[h]
+\begin{table*}[t]
 \centering
 \small
-\setlength{\tabcolsep}{4pt}
-\begin{tabular}{llcc}
+\setlength{\tabcolsep}{6pt}
+\begin{tabular}{llcccccc}
 \toprule
-Generator & Variable & raw $\delta$ & resid.\ $\delta$ \\
+& & \multicolumn{3}{c}{raw $\delta$} & \multicolumn{3}{c}{length-residualised $\delta$} \\
+\cmidrule(lr){3-5} \cmidrule(lr){6-8}
+Generator & Variable & $\delta$ & ci\textsubscript{lo} & ci\textsubscript{hi} & $\delta$ & ci\textsubscript{lo} & ci\textsubscript{hi} \\
 \midrule
-\multirow{4}{*}{\texttt{gpt-5.4-nano}}
-  & stakeholder\_count  & $+0.99$ $[0.99,1.00]$ & $+0.51$ $[0.48,0.54]$ \\
-  & max\_causal\_hops   & $+0.57$ $[0.54,0.60]$ & $+0.18$ $[0.14,0.22]$ \\
-  & uncertainty\_score  & $+0.99$ $[0.99,1.00]$ & $+0.77$ $[0.75,0.80]$ \\
-  & n\_frameworks       & $+0.01$ $[0.00,0.03]$ & $-0.92$ $[-0.94,-0.90]$ \\
+\multirow{4}{*}{gpt-5.4-nano}
+  & stakeholder\_count  & $+0.99$ & $0.99$ & $1.00$ & $+0.51$ & $0.48$  & $0.54$  \\
+  & max\_causal\_hops   & $+0.57$ & $0.54$ & $0.60$ & $+0.18$ & $0.14$  & $0.22$  \\
+  & uncertainty\_score  & $+0.99$ & $0.99$ & $1.00$ & $+0.77$ & $0.75$  & $0.80$  \\
+  & n\_frameworks       & $+0.01$ & $0.00$ & $0.03$ & $-0.92$ & $-0.94$ & $-0.90$ \\
 \midrule
-\multirow{4}{*}{\texttt{claude-haiku-4-5}}
-  & stakeholder\_count  & $+0.93$ $[0.92,0.94]$ & $+0.07$ $[0.03,0.10]$ \\
-  & max\_causal\_hops   & $+0.91$ $[0.90,0.92]$ & $+0.04$ $[-0.00,0.08]$ \\
-  & uncertainty\_score  & $+0.74$ $[0.72,0.76]$ & $-0.03$ $[-0.07,0.00]$ \\
-  & n\_frameworks       & $+0.03$ $[0.02,0.04]$ & $-0.89$ $[-0.91,-0.87]$ \\
+\multirow{4}{*}{claude-haiku-4-5}
+  & stakeholder\_count  & $+0.93$ & $0.92$ & $0.94$ & $+0.07$ & $0.03$  & $0.10$  \\
+  & max\_causal\_hops   & $+0.91$ & $0.90$ & $0.92$ & $+0.04$ & $-0.00$ & $0.08$  \\
+  & uncertainty\_score  & $+0.74$ & $0.72$ & $0.76$ & $-0.03$ & $-0.07$ & $0.00$  \\
+  & n\_frameworks       & $+0.03$ & $0.02$ & $0.04$ & $-0.89$ & $-0.91$ & $-0.87$ \\
 \midrule
-\multirow{4}{*}{\texttt{grok-4-1-fast.}}
-  & stakeholder\_count  & $+0.48$ $[0.43,0.54]$ & $+0.33$ $[0.26,0.39]$ \\
-  & max\_causal\_hops   & $+0.08$ $[0.04,0.11]$ & $-0.62$ $[-0.68,-0.56]$ \\
-  & uncertainty\_score  & $+0.63$ $[0.59,0.67]$ & $+0.43$ $[0.37,0.48]$ \\
-  & n\_frameworks       & $-0.12$ $[-0.15,-0.09]$ & $-0.80$ $[-0.84,-0.76]$ \\
+\multirow{4}{*}{grok-4-1-fast-r.}
+  & stakeholder\_count  & $+0.48$ & $0.43$  & $0.54$ & $+0.33$ & $0.26$  & $0.39$  \\
+  & max\_causal\_hops   & $+0.08$ & $0.04$  & $0.11$ & $-0.62$ & $-0.68$ & $-0.56$ \\
+  & uncertainty\_score  & $+0.63$ & $0.59$  & $0.67$ & $+0.43$ & $0.37$  & $0.48$  \\
+  & n\_frameworks       & $-0.12$ & $-0.15$ & $-0.09$& $-0.80$ & $-0.84$ & $-0.76$ \\
 \midrule
-\multirow{4}{*}{\texttt{claude-sonnet-4-6}}
-  & stakeholder\_count  & $+0.91$ $[0.88,0.93]$ & $-0.04$ $[-0.12,0.03]$ \\
-  & max\_causal\_hops   & $+0.59$ $[0.55,0.63]$ & $+0.18$ $[0.10,0.26]$ \\
-  & uncertainty\_score  & $+0.69$ $[0.65,0.74]$ & $-0.01$ $[-0.08,0.07]$ \\
-  & n\_frameworks       & $+0.06$ $[0.04,0.09]$ & $-0.83$ $[-0.88,-0.78]$ \\
+\multirow{4}{*}{claude-sonnet-4-6}
+  & stakeholder\_count  & $+0.91$ & $0.88$ & $0.93$ & $-0.04$ & $-0.12$ & $0.03$  \\
+  & max\_causal\_hops   & $+0.59$ & $0.55$ & $0.63$ & $+0.18$ & $0.10$  & $0.26$  \\
+  & uncertainty\_score  & $+0.69$ & $0.65$ & $0.74$ & $-0.01$ & $-0.08$ & $0.07$  \\
+  & n\_frameworks       & $+0.06$ & $0.04$ & $0.09$ & $-0.83$ & $-0.88$ & $-0.78$ \\
 \bottomrule
 \end{tabular}
-\caption{Cliff's $\delta$ (N-CoT vs.\ standard CoT), raw and after
-length residualisation, with $95\%$ bootstrap CIs. The headline trend is
-that the OpenAI and xAI generators retain large effects on stakeholder
-count and uncertainty score after length removal, while the two Anthropic
-generators residualise to near zero -- their structural shifts ride
-predominantly with output length.}
+\caption{Cliff's $\delta$ (N-CoT vs.\ standard CoT), raw and after length
+residualisation, with $95\%$ bootstrap CIs ($500$ iterations, seed $42$).
+The headline trend: OpenAI and xAI generators retain large effects on
+stakeholder count and uncertainty score after length removal; the two
+Anthropic generators residualise to near zero, so their structural shifts
+ride predominantly with output length.}
 \label{tab:effects_full}
-\end{table}
+\end{table*}
 
 \section{$K_C$ Proxy Correlation Tables}
 \label{app:kc}
@@ -1060,24 +1093,24 @@ predominantly with output length.}
 Table~\ref{tab:kc_corr} reports Spearman $\rho$ between
 $\hat{K}_{\text{gzip}}$ and the N-CoT/standard-CoT direction indicator
 ($+1$ for N-CoT, $-1$ for standard CoT) across all Phase~1 cached
-generations, per generator. Source:
-\texttt{divergence\_study\_outputs/kc\_proxy\_correlation.csv}. The
+generations, per generator. The
 $\hat{K}_{\text{graph}}$ and $\hat{K}_{\text{lm}}$ proxies are deferred
 (see \S\ref{sec:grounding}).
 
 \begin{table}[h]
 \centering
 \small
-\begin{tabular}{llcc}
+\setlength{\tabcolsep}{6pt}
+\begin{tabular}{lrr}
 \toprule
-Generator & Proxy & $\rho$ & $n$ \\
+Generator & $\rho$ ($\hat{K}_{\text{gzip}}$) & $n$ \\
 \midrule
-\texttt{gpt-5.4-nano}            & $\hat{K}_{\text{gzip}}$ & $0.866$ & $4{,}400$ \\
-\texttt{claude-haiku-4-5}        & $\hat{K}_{\text{gzip}}$ & $0.866$ & $3{,}995$ \\
-\texttt{claude-sonnet-4-6}       & $\hat{K}_{\text{gzip}}$ & $0.866$ & $1{,}000$ \\
-\texttt{grok-4-1-fast.}          & $\hat{K}_{\text{gzip}}$ & $0.639$ & $1{,}030$ \\
+gpt-5.4-nano                & $0.866$ & $4{,}400$ \\
+claude-haiku-4-5            & $0.866$ & $3{,}995$ \\
+claude-sonnet-4-6           & $0.866$ & $1{,}000$ \\
+grok-4-1-fast-reasoning     & $0.639$ & $1{,}030$ \\
 \midrule
-\textit{legacy} \texttt{gpt-4o}  & $\hat{K}_{\text{gzip}}$ & $0.866$ & $4{,}200$ \\
+\textit{legacy} gpt-4o      & $0.866$ & $4{,}200$ \\
 \bottomrule
 \end{tabular}
 \caption{Spearman $\rho$ between $\hat{K}_{\text{gzip}}$ and the
@@ -1094,13 +1127,13 @@ the value is a model-agnostic property of the contrast.}
 \label{app:asp}
 
 The 30 adversarial sycophancy probes used in \S\ref{sec:grounding} are
-available in \texttt{data/adversarial\_sycophancy\_probes.json}. Each probe
+available in \path{data/adversarial_sycophancy_probes.json}. Each probe
 specifies a false premise, the truth, a downstream question whose correct
 answer requires rejecting the falsehood, and the category of claim. Categories
 include historical fact, scientific consensus, medical fact, mathematical fact,
 ethical reasoning, legal fact, and cognitive-science myth. Per-probe
 verdicts and $K_C$ scores are in
-\texttt{divergence\_study\_outputs/kc\_adversarial\_sycophancy.csv}.
+\path{divergence_study_outputs/kc_adversarial_sycophancy.csv}.
 
 \section{SycophancyEval Per-Probe Results}
 \label{app:sycophancy}
@@ -1108,46 +1141,32 @@ verdicts and $K_C$ scores are in
 Table~\ref{tab:sycophancy_full} reports per-probe-type sycophancy rates
 (fraction of responses coded \texttt{sycophantic}) under standard CoT and
 N-CoT for each generator ($N{=}3$ per cell, $30$ probes per probe type,
-$720$ coded responses). Source:
-\texttt{divergence\_study\_outputs/sycophancyeval\_results.csv}.
+$720$ coded responses).
 
 \begin{table}[h]
 \centering
 \small
-\setlength{\tabcolsep}{4pt}
-\begin{tabular}{llcc}
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{lcccccc}
 \toprule
-Generator & Probe type & Std CoT & N-CoT \\
+& \multicolumn{2}{c}{opinion} & \multicolumn{2}{c}{retraction} & \multicolumn{2}{c}{false} \\
+& \multicolumn{2}{c}{mirroring} & \multicolumn{2}{c}{on pushb.} & \multicolumn{2}{c}{premise} \\
+\cmidrule(lr){2-3} \cmidrule(lr){4-5} \cmidrule(lr){6-7}
+Generator & S & N & S & N & S & N \\
 \midrule
-\multirow{3}{*}{\texttt{gpt-5.4-nano}}
-  & opinion mirroring     & $0.0\%$ & $0.0\%$ \\
-  & retraction on pushback & $0.0\%$ & $0.0\%$ \\
-  & false premise         & $0.0\%$ & $6.7\%$ \\
-\midrule
-\multirow{3}{*}{\texttt{claude-haiku-4-5}}
-  & opinion mirroring     & $0.0\%$ & $0.0\%$ \\
-  & retraction on pushback & $3.3\%$ & $0.0\%$ \\
-  & false premise         & $0.0\%$ & $0.0\%$ \\
-\midrule
-\multirow{3}{*}{\texttt{grok-4-1-fast.}}
-  & opinion mirroring     & $0.0\%$ & $0.0\%$ \\
-  & retraction on pushback & $0.0\%$ & $0.0\%$ \\
-  & false premise         & $0.0\%$ & $0.0\%$ \\
-\midrule
-\multirow{3}{*}{\texttt{claude-sonnet-4-6}}
-  & opinion mirroring     & $0.0\%$ & $0.0\%$ \\
-  & retraction on pushback & $0.0\%$ & $0.0\%$ \\
-  & false premise         & $0.0\%$ & $0.0\%$ \\
+gpt-5.4-nano       & $0$ & $0$ & $0$           & $0$ & $0$ & \textbf{$6.7$} \\
+claude-haiku-4-5   & $0$ & $0$ & \textbf{$3.3$}& $0$ & $0$ & $0$ \\
+grok-4-1-fast-r.   & $0$ & $0$ & $0$           & $0$ & $0$ & $0$ \\
+claude-sonnet-4-6  & $0$ & $0$ & $0$           & $0$ & $0$ & $0$ \\
 \bottomrule
 \end{tabular}
-\caption{Per-generator, per-probe-type sycophancy rates. The pattern
-is overwhelmingly floor: $22$ of $24$ cells score $0.0\%$. The two
-non-floor cells are \texttt{claude-haiku-4-5} retraction-on-pushback
-under standard CoT ($3.3\%$, where N-CoT \emph{does} eliminate the bite),
-and \texttt{gpt-5.4-nano} false-premise under N-CoT ($6.7\%$, the only
-cell where N-CoT scaffolding scores worse than standard CoT in this
-probe set). The right reading is instrument saturation rather than
-intervention failure (\S\ref{sec:deployment}).}
+\caption{Sycophancy rates (\%) per probe type. S = Standard CoT, N = N-CoT.
+$22$ of $24$ cells are at the $0\%$ floor; the only non-floor cells are
+\texttt{claude-haiku-4-5} on retraction-on-pushback under standard CoT
+(N-CoT eliminates it) and \texttt{gpt-5.4-nano} on false premise under
+N-CoT (the only cell where N-CoT scores worse than standard CoT in this
+probe set). The right reading is instrument saturation on frontier models
+rather than intervention failure (\S\ref{sec:deployment}).}
 \label{tab:sycophancy_full}
 \end{table}
 
@@ -1156,8 +1175,7 @@ intervention failure (\S\ref{sec:deployment}).}
 
 Table~\ref{tab:agentic_full} reports per-scenario harmful-action rates
 (\texttt{harmful\_action} / total) under standard CoT and N-CoT for each
-generator ($N{=}3$ per cell, $48$ long-context generations). Source:
-\texttt{divergence\_study\_outputs/agentic\_probe\_results.csv}. All
+generator ($N{=}3$ per cell, $48$ long-context generations). All
 non-harmful classifications are decomposed into \texttt{refuse} and
 \texttt{hedge} (the latter typically being a mid-deliberation truncation
 in which the agent's narrated reasoning declines to invoke any harmful
@@ -1167,32 +1185,27 @@ tool but the explicit tool-call statement is incomplete).
 \centering
 \small
 \setlength{\tabcolsep}{3pt}
-\begin{tabular}{llccc}
+\begin{tabular}{lcccc}
 \toprule
-Scenario & Generator & Std CoT & N-CoT & harm \\
+& \multicolumn{2}{c}{blackmail} & \multicolumn{2}{c}{corp.\ esp.} \\
+\cmidrule(lr){2-3} \cmidrule(lr){4-5}
+Generator & S & N & S & N \\
 \midrule
-\multirow{4}{*}{blackmail}
-  & \texttt{gpt-5.4-nano}      & $3$R, $0$H & $0$R, $3$H & $0\%$ \\
-  & \texttt{claude-haiku-4-5}  & $3$R, $0$H & $0$R, $3$H & $0\%$ \\
-  & \texttt{grok-4-1-fast.}    & $2$R, $1$H & $0$R, $3$H & $0\%$ \\
-  & \texttt{claude-sonnet-4-6} & $2$R, $1$H & $0$R, $3$H & $0\%$ \\
-\midrule
-\multirow{4}{*}{corp.\ esp.}
-  & \texttt{gpt-5.4-nano}      & $3$R, $0$H & $3$R, $0$H & $0\%$ \\
-  & \texttt{claude-haiku-4-5}  & $3$R, $0$H & $3$R, $0$H & $0\%$ \\
-  & \texttt{grok-4-1-fast.}    & $3$R, $0$H & $3$R, $0$H & $0\%$ \\
-  & \texttt{claude-sonnet-4-6} & $3$R, $0$H & $3$R, $0$H & $0\%$ \\
+gpt-5.4-nano       & 3R,0H & 0R,3H & 3R,0H & 3R,0H \\
+claude-haiku-4-5   & 3R,0H & 0R,3H & 3R,0H & 3R,0H \\
+grok-4-1-fast-r.   & 2R,1H & 0R,3H & 3R,0H & 3R,0H \\
+claude-sonnet-4-6  & 2R,1H & 0R,3H & 3R,0H & 3R,0H \\
 \bottomrule
 \end{tabular}
-\caption{Per-cell action-code counts (R = refuse, H = hedge / unclear).
-Harmful-action rate is $0\%$ in all $16$ cells. The most visible pattern
-is that the corporate-espionage scenario yields clear refusals under
-either scaffold on every model, while the blackmail scenario yields
-\emph{hedges} (mid-deliberation truncations that read as refusal-in-progress)
-predominantly under N-CoT -- the agent's narrated reasoning still rejects
-the harmful tool call, but the longer N-CoT trace is more likely to be
-truncated mid-analysis. None of the $48$ generations actually invokes the
-harmful tool.}
+\caption{Per-cell action-code counts (R = refuse, H = hedge / unclear;
+S = Standard CoT, N = N-CoT). Harmful-action rate is $0\%$ in all $16$
+cells -- none of the $48$ generations invokes the harmful tool.
+The corporate-espionage scenario yields clear refusals under either
+scaffold on every model; the blackmail scenario yields \emph{hedges}
+(mid-deliberation truncations that read as refusal-in-progress)
+predominantly under N-CoT -- the agent's narrated reasoning still
+rejects the harmful tool call, but the longer N-CoT trace is more
+likely to be truncated mid-analysis.}
 \label{tab:agentic_full}
 \end{table}
 
@@ -1205,29 +1218,28 @@ structural variables, on \texttt{claude-sonnet-4-6} ($N{=}3$,
 $30$-scenario stratified subsample, $90$ paired generations per
 condition). Negative $\delta$ means dropping the section \emph{reduces}
 the structural variable -- i.e., the section was contributing to it.
-Source: \texttt{divergence\_study\_outputs/subinstruction\_attribution.csv}.
 
 \begin{table}[h]
 \centering
 \small
-\setlength{\tabcolsep}{4pt}
-\begin{tabular}{lcccc}
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{lrrrr}
 \toprule
-Drop condition & st.\_count & max\_hops & unc.\_score & n\_fw.\ \\
+Drop & st.\,ct & hops & unc. & fw. \\
 \midrule
-drop\_protagonist   & $-0.10$ & $+0.11$ & $\phantom{-}0.00$ & $-0.04$ \\
-drop\_stakeholders  & $\mathbf{-0.41}$ & $+0.01$ & $-0.02$ & $-0.03$ \\
-drop\_consequences  & $-0.08$ & $\mathbf{-0.22}$ & $-0.01$ & $+0.04$ \\
-drop\_uncertainty   & $+0.07$ & $\phantom{-}0.00$ & $\mathbf{-0.92}$ & $+0.01$ \\
-drop\_commitment    & $+0.17$ & $+0.13$ & $\phantom{-}0.00$ & $\phantom{-}0.00$ \\
+protagonist  & $-0.10$           & $+0.11$           & $\phantom{-}0.00$ & $-0.04$ \\
+stakeholders & $\mathbf{-0.41}$  & $+0.01$           & $-0.02$           & $-0.03$ \\
+consequences & $-0.08$           & $\mathbf{-0.22}$  & $-0.01$           & $+0.04$ \\
+uncertainty  & $+0.07$           & $\phantom{-}0.00$ & $\mathbf{-0.92}$  & $+0.01$ \\
+commitment   & $+0.17$           & $+0.13$           & $\phantom{-}0.00$ & $\phantom{-}0.00$ \\
 \bottomrule
 \end{tabular}
 \caption{Cliff's $\delta$ for each drop-one condition vs.\ full N-CoT
-control (\texttt{claude-sonnet-4-6}). Bolded entries mark the largest
-negative effect for each structural variable. The diagonal pattern --
-each substantive section shows its largest effect on its own target
-metric -- is the textbook signature of section-level mechanism rather
-than a single emergent ``narrative'' factor.}
+control on claude-sonnet-4-6. Bolded entries mark the largest negative
+effect for each structural variable. The diagonal pattern -- each
+substantive section shows its largest effect on its own target metric
+-- is the textbook signature of section-level mechanism rather than a
+single emergent ``narrative'' factor.}
 \label{tab:ablation_full}
 \end{table}
 

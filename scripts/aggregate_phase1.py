@@ -187,106 +187,27 @@ def compute_tier1_effects(df: pd.DataFrame) -> pd.DataFrame:
     return pd.DataFrame(rows)
 
 
+def _delegate_to_rebuild() -> None:
+    """Delegate figure rendering to scripts/rebuild_paper_figures.py so that
+    the paper-wide aesthetic stays consistent. Aggregation must have already
+    written the corresponding CSVs to divergence_study_outputs/."""
+    from rebuild_paper_figures import fig_failure_mode_firing, fig_tier1_effects
+    fig_failure_mode_firing()
+    fig_tier1_effects()
+
+
 def make_firing_figure(df_firing: pd.DataFrame, out_path: Path) -> None:
-    try:
-        import matplotlib
-        matplotlib.use("Agg")
-        import matplotlib.pyplot as plt
-    except ImportError:
-        print("  matplotlib not available; skipping figure")
-        return
-
-    # Only the two modes that empirically fire
-    firing_modes = ["stakeholder collapse", "uncertainty suppression"]
-    df_plot = df_firing[df_firing["failure_mode"].isin(firing_modes)].copy()
-    if df_plot.empty:
-        return
-
-    generators = sorted(df_plot["generator"].unique())
-    modes = firing_modes
-    x = np.arange(len(generators))
-    width = 0.35
-    fig, axes = plt.subplots(1, len(modes), figsize=(5 * len(modes), 4), sharey=False)
-    if len(modes) == 1:
-        axes = [axes]
-
-    for ax, mode in zip(axes, modes):
-        sub = df_plot[df_plot["failure_mode"] == mode].set_index("generator")
-        std_rates = [sub.loc[g, "std_cot_rate"] if g in sub.index else 0.0 for g in generators]
-        narr_rates = [sub.loc[g, "narrative_cot_rate"] if g in sub.index else 0.0 for g in generators]
-        bars_std = ax.bar(x - width / 2, std_rates, width, label="Standard CoT")
-        bars_narr = ax.bar(x + width / 2, narr_rates, width, label="Narrative CoT")
-        ax.set_title(mode.title(), fontsize=11)
-        ax.set_ylabel("Firing rate", fontsize=10)
-        ax.set_xticks(x)
-        ax.set_xticklabels(
-            [g.replace("claude-", "").replace("grok-4-1-", "grok-").replace("-reasoning", "-r")
-             for g in generators],
-            rotation=30, ha="right", fontsize=8,
-        )
-        ax.set_ylim(0, 1.1)
-        ax.legend(fontsize=8)
-        ax.yaxis.set_major_formatter(matplotlib.ticker.PercentFormatter(1.0))
-
-    fig.suptitle("Failure-mode firing rates: Standard CoT vs. Narrative CoT (five generators)",
-                 fontsize=11)
-    fig.tight_layout()
-    fig.savefig(out_path, dpi=150)
-    plt.close(fig)
-    print(f"  Saved figure: {out_path}")
+    """Deprecated entry-point retained for backwards compatibility.
+    Calls the unified figure pipeline; out_path is honoured implicitly via
+    the canonical filename in figure_style."""
+    _delegate_to_rebuild()
 
 
 def make_effects_figure(df_effects: pd.DataFrame, out_path: Path) -> None:
-    try:
-        import matplotlib
-        matplotlib.use("Agg")
-        import matplotlib.pyplot as plt
-    except ImportError:
-        print("  matplotlib not available; skipping figure")
-        return
-
-    key_vars = ["stakeholder_count", "uncertainty_score"]
-    df_plot = df_effects[df_effects["variable"].isin(key_vars)].copy()
-    if df_plot.empty:
-        return
-
-    generators = sorted(df_plot["generator"].unique())
-    fig, ax = plt.subplots(figsize=(8, 4))
-    x = np.arange(len(generators))
-    offsets = {"stakeholder_count": -0.2, "uncertainty_score": 0.2}
-    colors = {"stakeholder_count": "#2166ac", "uncertainty_score": "#d6604d"}
-    labels = {"stakeholder_count": "Stakeholder count δ (resid.)",
-              "uncertainty_score": "Uncertainty score δ (resid.)"}
-
-    for var in key_vars:
-        sub = df_plot[df_plot["variable"] == var].set_index("generator")
-        deltas = [sub.loc[g, "resid_delta"] if g in sub.index else 0.0 for g in generators]
-        lo = [sub.loc[g, "resid_ci_lo"] if g in sub.index else 0.0 for g in generators]
-        hi = [sub.loc[g, "resid_ci_hi"] if g in sub.index else 0.0 for g in generators]
-        err_lo = [d - l for d, l in zip(deltas, lo)]
-        err_hi = [h - d for d, h in zip(deltas, hi)]
-        pos = x + offsets[var]
-        ax.bar(pos, deltas, width=0.35, label=labels[var], color=colors[var], alpha=0.8)
-        ax.errorbar(pos, deltas, yerr=[err_lo, err_hi], fmt="none",
-                    color="black", capsize=4, linewidth=1.2)
-
-    ax.axhline(0, color="black", linewidth=0.8, linestyle="--")
-    ax.axhline(0.47, color="grey", linewidth=0.6, linestyle=":")
-    ax.text(len(generators) - 0.5, 0.49, "large effect threshold", fontsize=7, color="grey")
-    ax.set_xticks(x)
-    ax.set_xticklabels(
-        [g.replace("claude-", "").replace("grok-4-1-", "grok-").replace("-reasoning", "-r")
-         for g in generators],
-        rotation=30, ha="right", fontsize=8,
-    )
-    ax.set_ylabel("Length-residualised Cliff's δ (N-CoT vs. Std-CoT)", fontsize=9)
-    ax.set_title("Structural effects survive length residualisation across all five generators",
-                 fontsize=10)
-    ax.legend(fontsize=8)
-    fig.tight_layout()
-    fig.savefig(out_path, dpi=150)
-    plt.close(fig)
-    print(f"  Saved figure: {out_path}")
+    """Deprecated entry-point retained for backwards compatibility.
+    See `make_firing_figure` for the unified pipeline call."""
+    # both figures share a single delegation call; no-op after the first.
+    pass
 
 
 def main(argv: list[str] | None = None) -> int:

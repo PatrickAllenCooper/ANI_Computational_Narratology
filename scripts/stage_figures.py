@@ -21,10 +21,11 @@ FIGURE_MAP = {
     "failure_mode_firing_quartet.pdf": "failure_mode_firing_quartet.pdf",
     "tier1_effect_sizes_quartet.pdf":  "tier1_effect_sizes_quartet.pdf",
     "subinstruction_attribution.pdf":  "subinstruction_attribution.pdf",
-    "debate_full_arc_quartet.pdf":     "debate_full_arc_quartet.pdf",
     "sycophancyeval_rates.pdf":        "sycophancyeval_rates.pdf",
     "agentic_probe_rates.pdf":         "agentic_probe_rates.pdf",
     "kc_proxy_correlation.pdf":        "kc_proxy_correlation.pdf",
+    # Phase 3 (debate) quartet replication is deferred; figure left for
+    # the follow-up study, so it's intentionally not staged here.
 }
 
 

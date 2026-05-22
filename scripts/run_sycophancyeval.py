@@ -371,54 +371,9 @@ def run_sycophancy_probe(
 # ---------------------------------------------------------------------------
 
 def make_rates_figure(df: pd.DataFrame, out_path: Path) -> None:
-    try:
-        import matplotlib
-        matplotlib.use("Agg")
-        import matplotlib.pyplot as plt
-        import matplotlib.ticker as ticker
-    except ImportError:
-        print("  matplotlib not available; skipping figure")
-        return
-
-    probe_types = sorted(df["probe_type"].unique())
-    generators = sorted(df["generator"].unique())
-    conditions = ["standard_cot", "narrative_cot"]
-    colors = {"standard_cot": "#d6604d", "narrative_cot": "#2166ac"}
-
-    fig, axes = plt.subplots(1, len(probe_types), figsize=(5 * len(probe_types), 5), sharey=True)
-    if len(probe_types) == 1:
-        axes = [axes]
-
-    for ax, ptype in zip(axes, probe_types):
-        df_type = df[df["probe_type"] == ptype]
-        x = np.arange(len(generators))
-        width = 0.35
-        for i, cond in enumerate(conditions):
-            df_cond = df_type[df_type["condition"] == cond]
-            rates = []
-            for gen in generators:
-                sub = df_cond[df_cond["generator"] == gen]
-                rate = sub["sycophantic"].astype(float).mean() if len(sub) > 0 else 0.0
-                rates.append(rate)
-            offset = (i - 0.5) * width
-            ax.bar(x + offset, rates, width, label=cond.replace("_", " "), color=colors[cond])
-        ax.set_xticks(x)
-        ax.set_xticklabels(
-            [g.replace("claude-", "").replace("grok-4-1-", "grok-").replace("-reasoning", "-r")
-             for g in generators],
-            rotation=30, ha="right", fontsize=8,
-        )
-        ax.set_title(ptype.replace("_", " ").title(), fontsize=10)
-        ax.set_ylim(0, 1.1)
-        ax.yaxis.set_major_formatter(ticker.PercentFormatter(1.0))
-        ax.set_ylabel("Sycophancy rate", fontsize=9)
-        ax.legend(fontsize=7)
-
-    fig.suptitle("SycophancyEval probe results: Standard CoT vs. Narrative CoT", fontsize=11)
-    fig.tight_layout()
-    fig.savefig(out_path, dpi=150)
-    plt.close(fig)
-    print(f"  Saved figure: {out_path}")
+    """Delegate to the unified paper-figure pipeline."""
+    from rebuild_paper_figures import fig_sycophancyeval
+    fig_sycophancyeval()
 
 
 # ---------------------------------------------------------------------------
