@@ -120,8 +120,21 @@ frontier models.
     flowbox, fill=ncotteal, text=white, draw=ncotteal,
     font=\scriptsize\bfseries, minimum height=5mm,
   },
-  fail/.style={font=\tiny, color=alarmred, align=left, inner sep=1pt},
-  good/.style={font=\tiny, color=ncottealdk, align=left, inner sep=1pt},
+  failbox/.style={
+    draw=alarmred!75, fill=alarmred!8, rounded corners=2pt,
+    line width=0.4pt, inner sep=3pt, text width=42mm,
+    align=left, font=\tiny, text=alarmred,
+  },
+  goodbox/.style={
+    draw=ncotteal!70, fill=ncotteal!8, rounded corners=2pt,
+    line width=0.4pt, inner sep=3pt, text width=42mm,
+    align=left, font=\tiny, text=ncottealdk,
+  },
+  goodboxwide/.style={
+    draw=ncotteal!70, fill=ncotteal!8, rounded corners=2pt,
+    line width=0.4pt, inner sep=3pt, text width=46mm,
+    align=center, font=\tiny, text=ncottealdk,
+  },
   arr/.style={->, line width=0.45pt, color=black!50},
   thinarr/.style={->, line width=0.35pt, color=black!40},
   panelhead/.style={font=\small\bfseries, align=center},
@@ -150,11 +163,12 @@ frontier models.
     (o1) {Terse answer};
   \draw[arr] (s3.south) -- (o1.north);
 
-  \node[fail, anchor=north west, text width=3.6cm] at (-2.0, -0.4) {%
-    \textbf{Failure modes that fire:}\\[1pt]
-    $\bullet$~stakeholder collapse\\
-    $\bullet$~uncertainty suppression%
+  \node[failbox, below=3.5mm of o1, anchor=north] (call1) {%
+    \textbf{On the four-generator quartet:}\\[2pt]
+    $\bullet$~stakeholder collapse on $15$--$31\%$ of items\\
+    $\bullet$~uncertainty suppression on $50$--$72\%$ of items%
   };
+  \draw[arr] (o1.south) -- (call1.north);
 \end{scope}
 
 % ===================================================================
@@ -180,11 +194,12 @@ frontier models.
   \node[result, below=3mm of n5] (o2) {Narrated commitment};
   \draw[arr] (n5.south) -- (o2.north);
 
-  \node[good, anchor=north west, text width=3.6cm] at (-2.0, -0.4) {%
-    \textbf{Mechanism, on the quartet:}\\[1pt]
-    $\bullet$~collapse drops to ${<}1\%$\\
-    $\bullet$~suppression drops to 1--24\%%
+  \node[goodbox, below=3.5mm of o2, anchor=north] (call2) {%
+    \textbf{On the same quartet:}\\[2pt]
+    $\bullet$~collapse drops to ${<}1\%$ of items\\
+    $\bullet$~suppression drops to $1$--$24\%$ of items%
   };
+  \draw[arr] (o2.south) -- (call2.north);
 \end{scope}
 
 % ===================================================================
@@ -234,19 +249,19 @@ frontier models.
     {Defeasible consensus};
   \draw[arr] (vote.south) -- (cons.north);
 
-  \node[good, anchor=north, text width=4.6cm, align=center]
-    at (0, -0.6) {%
-    \textbf{Across calibration scenarios:}\\[1pt]
-    $95\%$ full consensus,
+  \node[goodboxwide, below=3.5mm of cons, anchor=north] (call3) {%
+    \textbf{On the calibration scenarios:}\\[2pt]
+    $95\%$ full consensus,\\
     $1.6\%$ principled structural rejection%
   };
+  \draw[arr] (cons.south) -- (call3.north);
 \end{scope}
 
 % ===================================================================
 % Subtle vertical dividers between panels
 % ===================================================================
-\draw[divider] (2.95, 5.4) -- (2.95, -1.6);
-\draw[divider] (8.45, 5.4) -- (8.45, -1.6);
+\draw[divider] (2.95, 5.4) -- (2.95, -2.9);
+\draw[divider] (8.45, 5.4) -- (8.45, -2.9);
 
 \end{tikzpicture}
 \caption{One scaffold, three settings. \emph{Standard CoT} (left) lets one generator run a linear reasoning chain over the dilemma; the two failure modes diagnosed in \S\ref{sec:exp1} fire on this scaffold. \emph{Narrative CoT} (middle) keeps the single generator but forces the trace through five narrative primitives (protagonist, stakeholders, consequences, uncertainty, commitment) before any commit; on the four-generator quartet this drops stakeholder collapse to ${<}1\%$ and uncertainty suppression to $1$--$24\%$ of items. \emph{Multi-stakeholder N-CoT} (right) reuses N-CoT as the per-agent generator and adds three distinct stakeholder narrators (formal decider, primary affected party, third party) whose modification requests are integrated by a moderator and then put to a binary accept/reject vote; on the calibration scenarios this protocol yields $95\%$ full consensus with $1.6\%$ principled structural rejection (\S\ref{sec:exp2}). The same scaffold composes from one narrator to many.}

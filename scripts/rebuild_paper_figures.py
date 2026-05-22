@@ -379,8 +379,12 @@ def fig_agentic_probe() -> None:
     scenario_labels = {"blackmail": "Blackmail",
                        "corporate_espionage": "Corporate espionage"}
     generators = [g for g in GENERATOR_ORDER if g in df["generator"].unique().tolist()]
-    fig, axes, _ = panel_grid(len(scenario_order), panel_w=COL_WIDTH * 1.05,
-                              panel_h=2.85, sharey=True)
+    apply_paper_style()
+    fig_w = TEXT_WIDTH
+    fig_h = 3.2
+    fig, axes = plt.subplots(1, len(scenario_order), figsize=(fig_w, fig_h),
+                             sharey=True)
+    axes = list(axes)
     width = 0.34
     x = np.arange(len(generators))
     cls_palette = {
@@ -424,12 +428,27 @@ def fig_agentic_probe() -> None:
         mpatches.Patch(color=cls_palette["hedge"], label="Hedge / truncated"),
         mpatches.Patch(color=cls_palette["harm"], label="Harmful action"),
     ]
-    axes[-1].legend(handles=legend_handles, loc="lower right", frameon=False,
-                    handlelength=1.4, handletextpad=0.5,
-                    bbox_to_anchor=(1.0, 0.02))
+    # Reserve explicit margins so the legend sits cleanly below the x-axis
+    # labels rather than competing with the stacked-bar colours, and so the
+    # suptitle has room above the per-panel titles without overlap.
+    fig.subplots_adjust(left=0.07, right=0.99, top=0.78, bottom=0.22, wspace=0.12)
+    fig.legend(
+        handles=legend_handles,
+        loc="lower center",
+        ncol=3,
+        frameon=True,
+        framealpha=1.0,
+        edgecolor="#BFCDD5",
+        facecolor="white",
+        handlelength=1.6,
+        handletextpad=0.6,
+        columnspacing=2.4,
+        fontsize=9,
+        bbox_to_anchor=(0.5, 0.015),
+    )
     fig.suptitle("Zero harmful actions across the quartet under either scaffold "
                  "(S = Std CoT, N = N-CoT, paired per generator)",
-                 fontweight="semibold")
+                 fontweight="semibold", y=0.97, fontsize=10)
     save(fig, OUT / "agentic_probe_rates.pdf")
 
 
