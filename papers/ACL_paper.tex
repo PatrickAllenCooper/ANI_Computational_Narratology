@@ -458,21 +458,10 @@ articulation per unit length; on Anthropic models, the same per-unit
 density is already present under standard CoT and N-CoT's gain operates
 predominantly through additional length. The shifts are real and
 reproducible on every vendor; the residualisation cleanly identifies how
-each vendor's standard-CoT baseline differs. Full tables in
-Appendix~\ref{app:effects}; Figure~\ref{fig:tier1} plots all $\delta$s
-with bootstrap CIs.
-
-\begin{figure*}[t]
-\centering
-\figureOrPlaceholder{0.92\textwidth}{figures/tier1_effect_sizes_quartet.pdf}{tier-1 effect sizes across four generators}
-\caption{Tier-1 Cliff's $\delta$ effect sizes (N-CoT vs.\ standard CoT) on
-the four structural variables, with bootstrap $95\%$ CIs. All four
-generators show large positive $\delta$s on stakeholder count and
-uncertainty score; effect sizes are robust to length residualisation
-on the OpenAI and xAI generators, while shrinking toward zero on the two
-Anthropic generators.}
-\label{fig:tier1}
-\end{figure*}
+each vendor's standard-CoT baseline differs. The per-generator
+breakdown of all $\delta$s with bootstrap CIs is in
+Appendix~\ref{app:effects} (Table~\ref{tab:effects_full} and
+Figure~\ref{fig:tier1}).
 
 \paragraph{Finding 3: divergence concentrates where standard CoT had a clean
 deontic frame to lean on.} Tier-2 conclusion divergence (Jensen-Shannon
@@ -1111,6 +1100,19 @@ Anthropic generators residualise to near zero, so their structural shifts
 ride predominantly with output length.}
 \label{tab:effects_full}
 \end{table*}
+
+\begin{figure*}[t]
+\centering
+\figureOrPlaceholder{0.92\textwidth}{figures/tier1_effect_sizes_quartet.pdf}{tier-1 effect sizes across four generators}
+\caption{Visualisation of Table~\ref{tab:effects_full}. Tier-1 Cliff's
+$\delta$ effect sizes (N-CoT vs.\ standard CoT) on the four structural
+variables, with bootstrap $95\%$ CIs. All four generators show large
+positive $\delta$s on stakeholder count and uncertainty score; effect
+sizes are robust to length residualisation on the OpenAI and xAI
+generators, while shrinking toward zero on the two Anthropic
+generators.}
+\label{fig:tier1}
+\end{figure*}
 
 \section{$K_C$ Proxy Correlation Tables}
 \label{app:kc}
