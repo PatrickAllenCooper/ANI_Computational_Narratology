@@ -46,11 +46,14 @@ import matplotlib.ticker as mticker
 COL_WIDTH = 3.30
 TEXT_WIDTH = 6.95
 
-# Condition palette (primary contrast, used everywhere two conditions appear)
+# Condition palette (primary contrast, used everywhere two conditions appear).
+# Designed as a cool-slate baseline vs. jewel-teal intervention so the contrast
+# reads cleanly in greyscale, retains aesthetic warmth, and never competes with
+# the per-generator palette below for chromatic attention.
 CONDITION_COLORS = {
-    "standard_cot": "#6E5B5B",   # warm grey
-    "narrative_cot": "#1F6F77",  # deep teal
-    "baseline_io": "#B3B3B3",    # neutral grey for ablations
+    "standard_cot": "#94A3B8",   # cool slate (baseline, neutral)
+    "narrative_cot": "#0E7C7B",  # jewel teal (intervention, active)
+    "baseline_io": "#CBD5E1",    # pale slate (ablation reference)
 }
 CONDITION_LABELS = {
     "standard_cot": "Standard CoT",
@@ -58,20 +61,25 @@ CONDITION_LABELS = {
     "baseline_io": "Baseline I/O",
 }
 
-# Vendor palette (used wherever generators are compared on one axis)
+# Vendor palette (used wherever generators are compared on one axis). Each
+# vendor gets a distinct hue family that does not collide with the condition
+# palette: OpenAI = steel blue, Anthropic = warm sienna, xAI = plum violet.
 VENDOR_COLORS = {
-    "openai": "#3B3F8C",     # indigo
-    "anthropic": "#C66B2D",  # burnt orange
-    "xai": "#5A6E7A",        # slate
+    "openai": "#2E5EAA",     # steel blue
+    "anthropic": "#D67F47",  # warm sienna
+    "xai": "#7E57C2",        # plum violet
 }
 
-# Per-generator colour, derived from vendor with a per-tier lightening for budget.
+# Per-generator colour: a lighter shade of the vendor hue for the budget tier
+# and a deeper, more saturated shade for the flagship tier, so the within-vendor
+# ordering is legible at a glance. Hues are calibrated for print legibility
+# and remain distinct under common forms of dichromacy.
 GENERATOR_COLORS = {
-    "gpt-5.4-nano":              "#5A60B0",   # OpenAI budget (lighter indigo)
-    "gpt-4o":                    "#3B3F8C",   # OpenAI flagship (legacy)
-    "claude-haiku-4-5":          "#D9925F",   # Anthropic budget (lighter orange)
-    "claude-sonnet-4-6":         "#A75418",   # Anthropic flagship (deeper orange)
-    "grok-4-1-fast-reasoning":   "#5A6E7A",   # xAI (slate)
+    "gpt-5.4-nano":              "#3B82A8",   # OpenAI budget (soft steel blue)
+    "gpt-4o":                    "#1E4E8C",   # OpenAI flagship (legacy, deeper blue)
+    "claude-haiku-4-5":          "#E8995A",   # Anthropic budget (warm peach)
+    "claude-sonnet-4-6":         "#A8431F",   # Anthropic flagship (deep terracotta)
+    "grok-4-1-fast-reasoning":   "#7E57C2",   # xAI (plum violet)
 }
 
 # Order used everywhere generators appear on a categorical axis.

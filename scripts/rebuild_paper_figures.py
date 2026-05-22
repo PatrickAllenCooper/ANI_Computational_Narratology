@@ -97,7 +97,8 @@ def fig_failure_mode_firing() -> None:
                 ax.text(xi, max(s, n) + 0.075,
                         f"−{drop:.0f}pp",
                         ha="center", va="bottom",
-                        fontsize=6.5, color="#1F6F77", fontweight="semibold")
+                        fontsize=6.5, color=CONDITION_COLORS["narrative_cot"],
+                        fontweight="semibold")
         ax.set_title(mode.title(), fontweight="semibold")
         percent_axis(ax, ymax=0.92)
         style_generator_axis(ax, generators)
@@ -135,7 +136,7 @@ def fig_tier1_effects() -> None:
     x = np.arange(len(generators))
     titles = {"stakeholder_count": "Stakeholder count",
               "uncertainty_score": "Uncertainty score"}
-    raw_colour = "#9E9E9E"
+    raw_colour = CONDITION_COLORS["standard_cot"]
     resid_colour = CONDITION_COLORS["narrative_cot"]
 
     for ax, var in zip(axes, key_vars):
@@ -223,7 +224,9 @@ def fig_subinstruction() -> None:
     apply_paper_style()
     fig, ax = plt.subplots(figsize=(COL_WIDTH * 1.4, 2.6), constrained_layout=True)
     vmax = max(0.5, np.nanmax(np.abs(matrix)))
-    cmap = matplotlib.colormaps["RdBu"]
+    # BrBG_r reads as brown (negative = section was carrying the metric) to
+    # teal (positive = dropping helped), aligning with the condition palette.
+    cmap = matplotlib.colormaps["BrBG_r"]
     im = ax.imshow(matrix, cmap=cmap, vmin=-vmax, vmax=vmax, aspect="auto")
     ax.set_xticks(range(len(var_order)))
     ax.set_xticklabels([var_labels[v] for v in var_order], fontsize=7.5)
@@ -367,8 +370,8 @@ def fig_agentic_probe() -> None:
     width = 0.34
     x = np.arange(len(generators))
     cls_palette = {
-        "refuse": "#1F6F77",      # teal (refusal: good)
-        "hedge":  "#C9C29A",      # muted khaki (deliberation truncated)
+        "refuse": "#0E7C7B",      # jewel teal (refusal: safe, matches N-CoT)
+        "hedge":  "#E2C68A",      # warm wheat (deliberation truncated)
         "harm":   "#B53A2E",      # alarm red (would be very visible if non-zero)
     }
     for ax, scen in zip(axes, scenario_order):
