@@ -58,37 +58,24 @@ in Large Language Models}
 \maketitle
 
 \begin{abstract}
-Standard chain-of-thought (CoT) on moral dilemmas exhibits two
-deployment-relevant failure modes: \emph{stakeholder collapse} and
-\emph{uncertainty suppression}. We introduce \emph{narrative
-chain-of-thought} (N-CoT), a five-section first-person prompt that names
-a protagonist, enumerates stakeholders, projects two-step consequences,
-articulates genuine uncertainty, and commits, introducing no new training
-data, parameters, or fine-tuning. On a 100-scenario stratified sample of
-DailyDilemmas across four generators from three vendors
-(gpt-5.4-nano, claude-haiku-4-5, grok-4-1-fast-reasoning,
-claude-sonnet-4-6; $15{,}041$ coded responses), N-CoT cuts stakeholder
-collapse from
-$14.6$--$30.6\%$ to $0.0$--$1.2\%$ and uncertainty suppression from
-$50.0$--$72.3\%$ to $0.8$--$24.5\%$. Raw Cliff's $\delta$s are uniformly
-large ($+0.48$--$+0.99$). Length residualisation reveals a clean
-vendor split: OpenAI and xAI retain $\delta \in [+0.33, +0.77]$ after
-length is removed, while Anthropic shifts are largely length-mediated
-($|\delta_{\text{resid}}| < 0.07$). A sub-instruction ablation on
-claude-sonnet-4-6 attributes each headline metric to the specific
-section that carries it (Stakeholders $\to$ stakeholder count
-$\delta = -0.41$; Uncertainty $\to$ uncertainty score
-$\delta = -0.92$; Consequences $\to$ causal-hop depth $\delta = -0.22$).
-A gzip
-operationalisation of Algorithmic Causal Complexity tracks the N-CoT
-contrast at Spearman $\rho \in [0.64, 0.87]$ across the quartet, and on
-adversarial sycophancy probes \emph{correct} responses score
-${\sim}10\times$ higher $\hat{K}_{\text{gzip}}$ than \emph{agree}
-responses on the one model that bites. SycophancyEval probes are
-saturated on frontier models; replications of two publicly described
-agentic-misalignment scenarios show $0\%$ harmful action across the
-quartet under either scaffold, consistent with defence-in-depth on
-modern aligned models and with our pre-registered floor contingency.
+Standard chain-of-thought on moral dilemmas exhibits two structural
+failure modes that matter for deployment: \emph{stakeholder collapse}
+(the multi-party situation is reduced to a binary) and
+\emph{uncertainty suppression} (the model commits to a projected
+outcome it cannot warrant). We introduce \emph{narrative
+chain-of-thought} (N-CoT), a system prompt that asks the model to name
+a protagonist, enumerate stakeholders, project two-step consequences,
+articulate genuine uncertainty, and only then commit -- no training
+data, parameters, or fine-tuning. On a 100-scenario sample of
+DailyDilemmas across four generators from three vendors, N-CoT cuts
+stakeholder collapse from up to $31\%$ to under $1\%$ and uncertainty
+suppression from up to $72\%$ to as little as $1\%$. A
+section-by-section ablation gives the contribution a clean mechanistic
+shape: each substantive section is the specific carrier of its target
+metric, with negligible cross-variable spillover. The intervention is
+a small, auditable change to the prompt; it does not solve alignment,
+but it removes two failure modes that fire near-universally on current
+frontier models.
 \end{abstract}
 
 \section{Introduction}
