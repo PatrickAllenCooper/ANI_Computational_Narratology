@@ -78,6 +78,13 @@ but it removes two failure modes that fire near-universally on current
 frontier models.
 \end{abstract}
 
+\begin{figure*}[!t]
+\centering
+\figureOrPlaceholder{\textwidth}{figures/hero_mechanism.pdf}{hero schematic: standard CoT vs Narrative CoT vs the multi-stakeholder extension}
+\caption{Mechanism intuition for Narrative Chain-of-Thought. Standard CoT (left) runs a linear reasoning chain over the dilemma; on the DailyDilemmas corpus this scaffold empirically suppresses articulated uncertainty on $50$--$72\%$ of items and collapses the stakeholder set on $15$--$31\%$ (\S\ref{sec:exp1}). N-CoT (right) is a prompt-only re-scaffold that requires the model to narrate the same dilemma through five primitives, protagonist, stakeholders, consequences, uncertainty, commitment, before any commit; the structural variables rise and the two failure modes drop to ${<}1\%$ and $1$--$24\%$ respectively, replicated across four generators from three vendors. The multi-stakeholder extension (\S\ref{sec:exp2}) reuses N-CoT as the per-agent generator and adds a moderator-integrated proposal plus binary vote, yielding defeasible consensus on $95\%$ of calibration scenarios with a $1.6\%$ rate of principled structural rejection.}
+\label{fig:hero}
+\end{figure*}
+
 \section{Introduction}
 \label{sec:intro}
 
@@ -103,7 +110,10 @@ model to narrate the same dilemma, by naming a protagonist, enumerating
 stakeholders, projecting two-step consequences, and surfacing genuine
 uncertainty before committing, elicits a causally richer trace because
 it puts the model on the manifold of human narrative its pretraining
-corpus most heavily samples. The methodological move is the one
+corpus most heavily samples. Figure~\ref{fig:hero} states the mechanism
+intuition: the same dilemma flows through two different scaffolds, and
+the one that requires the model to narrate before committing eliminates
+both failure modes prompt-side. The methodological move is the one
 \citet{gottweis25} make for scientific discovery and
 \citet{lu24_aiscientist} extend to end-to-end research workflows: scaffold
 LLM reasoning into the primitives of the target domain rather than
