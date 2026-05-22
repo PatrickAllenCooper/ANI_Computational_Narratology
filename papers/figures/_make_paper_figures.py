@@ -75,17 +75,18 @@ def make_debate_arc_figure() -> None:
 
     fig, ax = plt.subplots(figsize=(TEXT_WIDTH, 3.1))
 
-    # Both generators are OpenAI; use the two assigned blue shades plus
-    # different markers to keep them visually distinct while staying inside
-    # the unified vendor palette.
+    # Two overlapping line series need maximum hue contrast within the
+    # aquatic palette to read cleanly, so override the per-generator colours
+    # used elsewhere: the current pilot model takes the jewel teal of the
+    # active intervention; the legacy cache takes the abyssal navy.
     gen_styles = {
         "gpt-5.4-nano": dict(
-            color=GENERATOR_COLORS["gpt-5.4-nano"],
+            color="#0E7C7B",  # jewel teal (current pilot)
             marker="o",
             label="gpt-5.4-nano",
         ),
         "gpt-4o": dict(
-            color=GENERATOR_COLORS["gpt-4o"],
+            color="#0A3B5C",  # deep navy (legacy)
             marker="s",
             label="gpt-4o  (legacy)",
         ),

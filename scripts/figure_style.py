@@ -46,14 +46,16 @@ import matplotlib.ticker as mticker
 COL_WIDTH = 3.30
 TEXT_WIDTH = 6.95
 
+# Single coherent aquatic palette across every figure: cool blue-grey for the
+# neutral baseline, jewel teal for the active intervention, and a graded
+# steel-blue -> teal -> sea-green spectrum for distinguishing generators
+# without leaving the blue-green family. No warm hues anywhere.
+
 # Condition palette (primary contrast, used everywhere two conditions appear).
-# Designed as a cool-slate baseline vs. jewel-teal intervention so the contrast
-# reads cleanly in greyscale, retains aesthetic warmth, and never competes with
-# the per-generator palette below for chromatic attention.
 CONDITION_COLORS = {
-    "standard_cot": "#94A3B8",   # cool slate (baseline, neutral)
+    "standard_cot": "#7E9AAB",   # cool blue-grey (baseline, neutral)
     "narrative_cot": "#0E7C7B",  # jewel teal (intervention, active)
-    "baseline_io": "#CBD5E1",    # pale slate (ablation reference)
+    "baseline_io": "#BFD0DA",    # pale blue-grey (ablation reference)
 }
 CONDITION_LABELS = {
     "standard_cot": "Standard CoT",
@@ -61,26 +63,31 @@ CONDITION_LABELS = {
     "baseline_io": "Baseline I/O",
 }
 
-# Vendor palette (used wherever generators are compared on one axis). Each
-# vendor gets a distinct hue family that does not collide with the condition
-# palette: OpenAI = steel blue, Anthropic = warm sienna, xAI = plum violet.
+# Vendor palette (used wherever a vendor needs a single colour, e.g. the
+# multi-agent panel of the hero figure). All three live in the blue-green
+# family and are ordered by hue: steel-teal -> deep teal -> sea green.
 VENDOR_COLORS = {
-    "openai": "#2E5EAA",     # steel blue
-    "anthropic": "#D67F47",  # warm sienna
-    "xai": "#7E57C2",        # plum violet
+    "openai":    "#2E7DA0",   # steel-teal
+    "anthropic": "#0E5C5B",   # deep teal
+    "xai":       "#5BB0A8",   # sea green
 }
 
-# Per-generator colour: a lighter shade of the vendor hue for the budget tier
-# and a deeper, more saturated shade for the flagship tier, so the within-vendor
-# ordering is legible at a glance. Hues are calibrated for print legibility
-# and remain distinct under common forms of dichromacy.
+# Per-generator colour: a graded blue-green spectrum so the four generators
+# (plus the legacy gpt-4o cache) read as five distinguishable shades in the
+# same family. Ordered roughly by hue from steel-blue through teal to sea-green
+# so adjacent generators are easy to tell apart.
 GENERATOR_COLORS = {
-    "gpt-5.4-nano":              "#3B82A8",   # OpenAI budget (soft steel blue)
-    "gpt-4o":                    "#1E4E8C",   # OpenAI flagship (legacy, deeper blue)
-    "claude-haiku-4-5":          "#E8995A",   # Anthropic budget (warm peach)
-    "claude-sonnet-4-6":         "#A8431F",   # Anthropic flagship (deep terracotta)
-    "grok-4-1-fast-reasoning":   "#7E57C2",   # xAI (plum violet)
+    "gpt-5.4-nano":              "#2E7DA0",   # steel-teal
+    "gpt-4o":                    "#0A3B5C",   # deep navy (legacy)
+    "claude-haiku-4-5":          "#5BB0A8",   # sea green
+    "claude-sonnet-4-6":         "#0E5C5B",   # deep teal
+    "grok-4-1-fast-reasoning":   "#3F8C84",   # medium kelp green
 }
+
+# Alarm colour for harmful actions / failure indicators. Kept inside the
+# blue-green family by going to deep navy: dark enough to read as grave
+# against the rest of the palette without introducing warm reds or oranges.
+ALARM_COLOR = "#1A3B6E"  # deep navy
 
 # Order used everywhere generators appear on a categorical axis.
 GENERATOR_ORDER = [

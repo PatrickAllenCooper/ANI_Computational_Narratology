@@ -224,9 +224,23 @@ def fig_subinstruction() -> None:
     apply_paper_style()
     fig, ax = plt.subplots(figsize=(COL_WIDTH * 1.4, 2.6), constrained_layout=True)
     vmax = max(0.5, np.nanmax(np.abs(matrix)))
-    # BrBG_r reads as brown (negative = section was carrying the metric) to
-    # teal (positive = dropping helped), aligning with the condition palette.
-    cmap = matplotlib.colormaps["BrBG_r"]
+    # Custom blue-green diverging colormap so the heatmap stays inside the
+    # paper-wide aquatic palette. Deep teal marks the negative cells (the
+    # section that, when dropped, hurts this metric the most) and deep navy
+    # marks the positive cells (the few sections that helped when dropped).
+    from matplotlib.colors import LinearSegmentedColormap
+    cmap = LinearSegmentedColormap.from_list(
+        "AquaDiverging",
+        [
+            (0.00, "#0E5C5B"),  # deep teal (most negative)
+            (0.25, "#5BA8A0"),  # sea green
+            (0.45, "#C9E1DC"),  # pale aqua
+            (0.50, "#F5F7F9"),  # near-white center
+            (0.55, "#C9D7E6"),  # pale steel-blue
+            (0.75, "#5B91BF"),  # mid steel-blue
+            (1.00, "#1A3B6E"),  # deep navy (most positive)
+        ],
+    )
     im = ax.imshow(matrix, cmap=cmap, vmin=-vmax, vmax=vmax, aspect="auto")
     ax.set_xticks(range(len(var_order)))
     ax.set_xticklabels([var_labels[v] for v in var_order], fontsize=7.5)
@@ -371,8 +385,8 @@ def fig_agentic_probe() -> None:
     x = np.arange(len(generators))
     cls_palette = {
         "refuse": "#0E7C7B",      # jewel teal (refusal: safe, matches N-CoT)
-        "hedge":  "#E2C68A",      # warm wheat (deliberation truncated)
-        "harm":   "#B53A2E",      # alarm red (would be very visible if non-zero)
+        "hedge":  "#9DCFC9",      # pale aqua (deliberation truncated)
+        "harm":   "#1A3B6E",      # deep navy (would read as grave if non-zero)
     }
     for ax, scen in zip(axes, scenario_order):
         d = df[df["scenario_id"] == scen]

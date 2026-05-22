@@ -32,21 +32,23 @@
 \usetikzlibrary{positioning, arrows.meta, calc, fit, shapes.geometric, backgrounds}
 \usepackage{ifthen}
 
-% Project-wide palette mirrored from scripts/figure_style.py so that the
-% TikZ hero figure uses the same colors as every matplotlib figure.
-\definecolor{stdgrey}{HTML}{94A3B8}
-\definecolor{ncotteal}{HTML}{0E7C7B}
-\definecolor{ncottealdk}{HTML}{0A5C5B}
-\definecolor{vendorblue}{HTML}{2E5EAA}
-\definecolor{vendorsienna}{HTML}{D67F47}
-\definecolor{vendorplum}{HTML}{7E57C2}
-\definecolor{alarmred}{HTML}{B53A2E}
-\definecolor{paleslate}{HTML}{EEF2F6}
-\definecolor{paleteal}{HTML}{D9ECEB}
-\definecolor{paleblue}{HTML}{D9E4F2}
-\definecolor{palesienna}{HTML}{F7E1CD}
-\definecolor{paleplum}{HTML}{E5DAF3}
-\definecolor{palealarm}{HTML}{F5D9D5}
+% Project-wide aquatic palette mirrored from scripts/figure_style.py: a single
+% blue-green family across every figure, with no warm hues anywhere. Generic
+% role names are kept so the TikZ hero file does not need to be retouched if
+% individual shades are later retuned.
+\definecolor{stdgrey}{HTML}{7E9AAB}      % cool blue-grey (standard CoT baseline)
+\definecolor{ncotteal}{HTML}{0E7C7B}     % jewel teal (narrative CoT)
+\definecolor{ncottealdk}{HTML}{0A5C5B}   % darker teal (text accent on light teal)
+\definecolor{vendorblue}{HTML}{2E7DA0}   % steel-teal (multi-agent role A)
+\definecolor{vendorsienna}{HTML}{0E5C5B} % deep teal (multi-agent role B)
+\definecolor{vendorplum}{HTML}{5BB0A8}   % sea green (multi-agent role C)
+\definecolor{alarmred}{HTML}{1A3B6E}     % deep navy (failure indicators)
+\definecolor{paleslate}{HTML}{E2EAF0}    % pale blue-grey
+\definecolor{paleteal}{HTML}{D9ECEB}     % pale teal
+\definecolor{paleblue}{HTML}{D6E5EE}     % pale steel-teal
+\definecolor{palesienna}{HTML}{C9E1DC}   % pale deep-teal tint
+\definecolor{paleplum}{HTML}{DCEEEB}     % pale sea-green
+\definecolor{palealarm}{HTML}{C9D7E6}    % pale navy
 
 \usepackage{multirow}
 \usepackage{tabularx}
