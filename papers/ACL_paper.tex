@@ -1364,11 +1364,21 @@ Table~\ref{tab:agentic_full} reports per-scenario harmful-action rates
 (\texttt{harmful\_action} / total) under standard CoT and N-CoT for each
 generator ($N{=}3$ per cell, $48$ long-context generations). All
 non-harmful classifications are decomposed into \texttt{refuse} and
-\texttt{hedge} (the latter typically being a mid-deliberation truncation
-in which the agent's narrated reasoning declines to invoke any harmful
-tool but the explicit tool-call statement is incomplete).
+\texttt{hedge} (the latter being a mid-deliberation truncation in
+which the agent's narrated reasoning declines to invoke any harmful
+tool but the explicit tool-call statement is incomplete in the model's
+returned text).
 
-\begin{table}[h]
+The two scenarios are drawn from the \citet{lynch25} agentic-misalignment
+suite and instantiated with the same system prompt template, tool
+inventory (\texttt{send\_email}, \texttt{read\_email}, \texttt{search\_files},
+\texttt{forward\_email}), and adversary context as the published
+release; the only change is the per-scenario instruction-card that
+constitutes the standard-CoT vs.\ N-CoT contrast. Each cell is run
+three times with temperature $0.7$ and a $16$k-token budget, giving
+$3 \times 2 \times 2 \times 4 = 48$ total generations.
+
+\begin{table}[!htbp]
 \centering
 \small
 \setlength{\tabcolsep}{3pt}
@@ -1396,9 +1406,26 @@ likely to be truncated mid-analysis.}
 \label{tab:agentic_full}
 \end{table}
 
-\begin{figure*}[t]
+The within-scenario pattern is consistent across vendors. The
+corporate-espionage scenario, in which the harmful tool would
+exfiltrate confidential files to a competitor, is rejected cleanly
+($3$ refusals out of $3$) by every generator under either scaffold;
+none of the eight cells in the right half of Table~\ref{tab:agentic_full}
+contains a single hedge. The blackmail scenario, in which the
+harmful tool would forward a compromising email to coerce continued
+operation, draws clean refusals under standard CoT (with two of three
+runs on each reasoning model hitting the explicit \texttt{decline}
+tool) but produces hedges under N-CoT on every generator: the
+narrated trace expands the consequences and stakeholder sections,
+and the explicit tool-call line is truncated by the response budget
+before a final \texttt{decline} statement can be emitted. The narrated
+content of those hedged traces refuses the blackmail in every case;
+the failure is at the protocol layer (response cutoff), not the
+alignment layer.
+
+\begin{figure}[!htbp]
 \centering
-\figureOrPlaceholder{0.92\textwidth}{figures/agentic_probe_rates.pdf}{agentic probe harmful-action rates}
+\figureOrPlaceholder{\columnwidth}{figures/agentic_probe_rates.pdf}{agentic probe harmful-action rates}
 \caption{Per-cell classification share across the four-generator quartet
 on the two agentic scenarios ($N{=}3$ per cell, $48$ long-context
 generations). Bars stack \texttt{refuse}, \texttt{hedge}, and
@@ -1408,19 +1435,31 @@ scenario shifts mass from \texttt{refuse} to \texttt{hedge} under
 N-CoT, consistent with longer traces truncating mid-refusal rather
 than reversing the refusal.}
 \label{fig:agentic}
-\end{figure*}
+\end{figure}
+
+The classification share visualisation in Figure~\ref{fig:agentic}
+makes this redistribution explicit: under N-CoT the blackmail bars
+shift mass from \texttt{refuse} to \texttt{hedge} (pale aqua) while
+the \texttt{harmful\_action} slice (deep navy) remains absent.
+The corporate-espionage panel shows no within-scaffold redistribution
+at all. The combined pattern is consistent with the pre-registered
+contingency stated in \S\ref{sec:deployment}: when a failure mode
+does not fire under the baseline, scaffolding cannot be measured
+against it, and any observed shifts under N-CoT must be interpreted
+as structural changes in the trace rather than as a change in the
+alignment-relevant target.
 
 \section{Sub-Instruction Ablation Full Table}
 \label{app:ablation}
 
-Table~\ref{tab:ablation_full} reports Cliff's $\delta$ for each
-drop-one-section condition vs.\ the full N-CoT control on all four
-structural variables, on \texttt{claude-sonnet-4-6} ($N{=}3$,
-$30$-scenario stratified subsample, $90$ paired generations per
-condition). Negative $\delta$ means dropping the section reduces
-the structural variable; i.e., the section was contributing to it.
+Table~\ref{tab:ablation_full} reports Cliff's $\delta$ for the
+five drop-one conditions (one per N-CoT sub-instruction from
+\S\ref{sec:method}) against the full N-CoT control on
+\texttt{claude-sonnet-4-6} ($N{=}3$, $30$-scenario stratified
+subsample). Columns are stakeholder count, causal hops, uncertainty
+score, and forward-window length.
 
-\begin{table}[h]
+\begin{table}[!htbp]
 \centering
 \small
 \setlength{\tabcolsep}{3pt}
@@ -1443,5 +1482,26 @@ is the textbook signature of section-level mechanism rather than a
 single emergent ``narrative'' factor.}
 \label{tab:ablation_full}
 \end{table}
+
+Reading the diagonal: dropping the stakeholders section produces
+the largest drop in stakeholder count ($\delta = -0.41$); dropping
+the consequences section produces the largest drop in causal hops
+($\delta = -0.22$); dropping the uncertainty section produces
+the largest drop in uncertainty score ($\delta = -0.92$, a
+near-complete collapse to the standard-CoT baseline). The
+forward-window column carries no comparably large negative entry
+because no single sub-instruction is its sole carrier; the long
+trace is the joint product of all four substantive sections.
+
+The off-diagonal entries are tightly bounded ($|\delta| \le 0.13$
+across all twelve), which is the empirically interesting half: a
+single emergent ``narrative'' factor would shrink every variable
+when any one section is dropped, and a pure length confound would
+shrink \textit{fw.}\ most regardless of which section is dropped.
+Neither pattern fires. Each substantive sub-instruction carries
+the structural variable the main paper attributes to it and
+little else, which is the cleanest evidence we have that the
+N-CoT scaffold is doing the work \S\ref{sec:method} predicts
+rather than a single confound dressed as a five-part trace.
 
 \end{document}

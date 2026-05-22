@@ -380,10 +380,13 @@ def fig_agentic_probe() -> None:
                        "corporate_espionage": "Corporate espionage"}
     generators = [g for g in GENERATOR_ORDER if g in df["generator"].unique().tolist()]
     apply_paper_style()
-    fig_w = TEXT_WIDTH
-    fig_h = 3.2
-    fig, axes = plt.subplots(1, len(scenario_order), figsize=(fig_w, fig_h),
-                             sharey=True)
+    # Single-column vertical stack: 2 rows x 1 col fits inside one ACL column,
+    # which lets the figure flow inline with the appendix prose rather than
+    # waiting for a full-width float slot at the top of a page.
+    fig_w = COL_WIDTH
+    fig_h = 3.6
+    fig, axes = plt.subplots(len(scenario_order), 1, figsize=(fig_w, fig_h),
+                             sharex=True, sharey=True)
     axes = list(axes)
     width = 0.34
     x = np.arange(len(generators))
@@ -416,22 +419,21 @@ def fig_agentic_probe() -> None:
             for xx in xpos:
                 tag = "S" if cond == "standard_cot" else "N"
                 ax.text(xx, 1.04, tag, ha="center", va="bottom",
-                        fontsize=6.5, color="#666666")
-        ax.set_title(scenario_labels[scen], fontweight="semibold", pad=14)
+                        fontsize=6.0, color="#666666")
+        ax.set_title(scenario_labels[scen], fontweight="semibold",
+                     pad=10, fontsize=8.5, loc="left")
         ax.set_ylim(0, 1.05)
         ax.yaxis.set_major_formatter(mticker.PercentFormatter(1.0))
-        style_generator_axis(ax, generators)
-        if ax is axes[0]:
-            ax.set_ylabel("classification share")
+        ax.set_ylabel("classification share", fontsize=7.5)
+    # Only the bottom panel keeps generator tick labels (shared x).
+    style_generator_axis(axes[-1], generators)
+    axes[0].tick_params(axis="x", labelbottom=False)
     legend_handles = [
         mpatches.Patch(color=cls_palette["refuse"], label="Refuse"),
         mpatches.Patch(color=cls_palette["hedge"], label="Hedge / truncated"),
         mpatches.Patch(color=cls_palette["harm"], label="Harmful action"),
     ]
-    # Reserve explicit margins so the legend sits cleanly below the x-axis
-    # labels rather than competing with the stacked-bar colours, and so the
-    # suptitle has room above the per-panel titles without overlap.
-    fig.subplots_adjust(left=0.07, right=0.99, top=0.78, bottom=0.22, wspace=0.12)
+    fig.subplots_adjust(left=0.16, right=0.98, top=0.92, bottom=0.18, hspace=0.32)
     fig.legend(
         handles=legend_handles,
         loc="lower center",
@@ -440,15 +442,12 @@ def fig_agentic_probe() -> None:
         framealpha=1.0,
         edgecolor="#BFCDD5",
         facecolor="white",
-        handlelength=1.6,
-        handletextpad=0.6,
-        columnspacing=2.4,
-        fontsize=9,
-        bbox_to_anchor=(0.5, 0.015),
+        handlelength=1.2,
+        handletextpad=0.45,
+        columnspacing=1.4,
+        fontsize=7.5,
+        bbox_to_anchor=(0.5, 0.005),
     )
-    fig.suptitle("Zero harmful actions across the quartet under either scaffold "
-                 "(S = Std CoT, N = N-CoT, paired per generator)",
-                 fontweight="semibold", y=0.97, fontsize=10)
     save(fig, OUT / "agentic_probe_rates.pdf")
 
 
