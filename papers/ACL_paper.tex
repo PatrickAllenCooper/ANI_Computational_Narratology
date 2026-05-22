@@ -103,7 +103,17 @@ model to narrate the same dilemma, by naming a protagonist, enumerating
 stakeholders, projecting two-step consequences, and surfacing genuine
 uncertainty before committing, elicits a causally richer trace because
 it puts the model on the manifold of human narrative its pretraining
-corpus most heavily samples.
+corpus most heavily samples. The methodological move is the one
+\citet{gottweis25} make for scientific discovery and
+\citet{lu24_aiscientist} extend to end-to-end research workflows: scaffold
+LLM reasoning into the primitives of the target domain rather than
+treat the model as a monolithic question-answerer. The primitives we
+reify are the primitives of human ethical reflection (named agents,
+stakeholders, projected consequences, uncertainty, commitment), and at
+the multi-agent layer we replace the AI co-scientist's meta-review
+role with a moderator that integrates competing stakeholder positions
+into a single proposal and then asks each stakeholder to vote on it
+(\S\ref{sec:exp2}).
 
 \paragraph{Contributions.}
 We diagnose two cross-vendor failure modes that empirically fire on
@@ -184,6 +194,39 @@ the underlying inference scheme, has a long lineage in moral philosophy
 \S\ref{sec:exp2} stacks defeasibility on top of N-CoT and asks whether
 present-day models can be elicited to revise narrated commitments under
 narrated counter-evidence.
+
+\paragraph{Multi-agent LLM systems for scientific discovery.}
+A growing line of work scaffolds LLM reasoning into the primitives of a
+target domain rather than treating the model as a monolithic
+question-answerer. The AI co-scientist of \citet{gottweis25} casts
+hypothesis generation, peer review, ranking, evolution, and meta-review
+(the primitive moves of the scientific method) as specialised agents
+whose interactions, including a Generate-Debate-Evolve loop and an
+Elo-style ranking tournament, drive iterative quality improvement,
+yielding experimentally validated drug-repurposing and target-discovery
+proposals. The AI Scientist \citep{lu24_aiscientist} closes the loop
+end-to-end (ideation, coding, experimentation, manuscript drafting,
+automated peer review). Domain-specific instantiations include
+Coscientist \citep{boiko23} and ChemCrow \citep{bran24_chemcrow} for
+chemistry, Agent Laboratory \citep{schmidgall25} for ML research
+workflows, and the Virtual Lab \citep{swanson25_virtuallab} for
+interdisciplinary biomedical design with experimental validation. The
+common move across this family is to identify the activity that human
+experts already perform in the domain (hypothesise, critique, rank,
+integrate) and reify each activity as a co-operating LLM agent, with
+the meta-review or principal-investigator role synthesising across
+agents. Our two protocols ask the analogous question one level down:
+what are the primitives of human ethical reflection, and can a scaffold
+that reifies them as a structured trace (protagonist, stakeholders,
+projected consequences, uncertainty, commitment) and as multi-narrator
+deliberation (statement, rebuttal, integrated proposal, binary vote)
+deliver the same kind of inference-time quality lift on moral
+reasoning that the scientific-method scaffolds deliver on hypothesis
+generation? The multi-stakeholder protocol in \S\ref{sec:exp2} is
+particularly direct in this analogy: the moderator's Round-4
+integrated-proposal step is structurally the meta-review of
+\citet{gottweis25}, applied to value-laden stakeholder positions
+instead of competing scientific hypotheses.
 
 \section{Narrative Chain-of-Thought}
 \label{sec:method}
@@ -304,6 +347,25 @@ least one generator. The protocol's core hypothesis is that the integration
 step in Round~4 makes \emph{defeasibility} measurable: an agent who continues
 to reject a proposal that addresses its modifications is signalling a
 structurally non-negotiable concern, not procedural friction.
+
+The architectural debt is to the multi-agent systems for scientific
+discovery surveyed in \S\ref{sec:related}. The AI co-scientist of
+\citet{gottweis25} reifies the activities of hypothesis generation,
+peer review, ranking, evolution, and meta-review, the primitive moves
+of the scientific method, as distinct agents whose interactions raise
+the quality of the joint output. Our protocol takes the
+same compositional move and applies it to ethical reflection rather
+than scientific discovery: stakeholder narrators replace hypothesis
+generators, narrated rebuttal replaces the reflection agent, and the
+moderator's integrated-proposal-plus-binary-vote step (Round~4) plays
+the role of meta-review, but against value-laden positions rather than
+competing scientific hypotheses. The motivation for treating ethical
+reflection as a multi-agent activity is that values that look
+incompatible from a single protagonist's vantage often have an
+integration the protagonists themselves can endorse once each side's
+non-negotiable stake is on the table, the same way the AI co-scientist's
+ranked-and-evolved hypotheses converge on candidates no single
+generator agent would have produced.
 
 \section{Experiment 1: N-CoT at Scale}
 \label{sec:exp1}
