@@ -87,16 +87,21 @@ outcome it cannot warrant). We introduce \emph{narrative
 chain-of-thought} (N-CoT), a system prompt that asks the model to name
 a protagonist, enumerate stakeholders, project two-step consequences,
 articulate genuine uncertainty, and only then commit. The protocol
-adds no training data, parameters, or fine-tuning. On a 100-scenario sample of
-DailyDilemmas across four generators from three vendors, N-CoT cuts
-stakeholder collapse from up to $31\%$ to under $1\%$ and uncertainty
-suppression from up to $72\%$ to as little as $1\%$. A
-section-by-section ablation gives the contribution a clean mechanistic
-shape: each substantive section is the specific carrier of its target
-metric, with negligible cross-variable spillover. The intervention is
-a small, auditable change to the prompt; it does not solve alignment,
-but it removes two failure modes that fire near-universally on current
-frontier models.
+adds no training data, parameters, or fine-tuning. On a 100-scenario
+sample of DailyDilemmas across four generators from three vendors,
+N-CoT cuts stakeholder collapse from up to $31\%$ to under $1\%$ and
+uncertainty suppression from up to $72\%$ to $1$--$24\%$; under length
+residualisation the effect remains large on the OpenAI and xAI
+generators but is length-mediated on both Anthropic generators (Cliff's
+$\delta$ confidence intervals span zero). A section-by-section ablation
+gives the prompt-side contribution a clean mechanistic shape: each
+substantive section is the specific carrier of its target metric, with
+negligible cross-variable spillover. A panel of seven length-invariant
+compression and entropy proxies fails to validate the underlying
+parsimony hypothesis at inference time, an honest negative result we
+report rather than read past. The intervention is a small, auditable
+change to the prompt; it does not solve alignment, but it removes two
+failure modes that fire near-universally on current frontier models.
 \end{abstract}
 
 \begin{figure*}[!t]
@@ -311,23 +316,29 @@ into a single proposal and then asks each stakeholder to vote on it
 \paragraph{Contributions.}
 We diagnose two cross-vendor failure modes that empirically fire on
 standard CoT and replicate across the quartet with no single-vendor
-escape (\S\ref{sec:exp1}). We show that N-CoT eliminates both modes,
-length-controlled on the OpenAI and xAI generators and length-mediated
-on the Anthropic generators; a sub-instruction ablation on the flagship
-attributes each headline metric to the specific N-CoT section that
-carries it (\S\ref{sec:exp1-ablation}). We operationalise the
-underlying parsimony intuition with a gzip proxy for Algorithmic Causal
-Complexity that tracks the N-CoT contrast at $\rho \in [0.64, 0.87]$
-and reproduces the adversarial-sycophancy direction on the one model
-that bites (\S\ref{sec:grounding}). Two deployment-relevant floor
+escape (\S\ref{sec:exp1}). We show that N-CoT eliminates both modes
+on the OpenAI and xAI generators under length residualisation, and
+that the effect on the two Anthropic generators is length-mediated
+(the length-residualised Cliff's $\delta$ confidence interval spans
+zero on stakeholder count and on uncertainty score); a sub-instruction
+ablation on the flagship attributes each headline metric to the
+specific N-CoT section that carries it (\S\ref{sec:exp1-ablation}).
+We stress-test the underlying parsimony intuition with a panel of
+seven length-invariant proxies for Algorithmic Causal Complexity, and
+report that every one of them collapses under length control
+(\S\ref{sec:grounding}). We read this as falsification of the
+inference-time gzip claim rather than as confirmation, and frame the
+$K_C$ apparatus as theoretical scaffolding for the training-time
+Interpreter Network (\S\ref{sec:conclusion}) where the supervision-
+signal claim can actually be tested. Two deployment-relevant floor
 effects are reported honestly: SycophancyEval is saturated on frontier
 models, and two agentic-misalignment replicates yield $0\%$ harmful
 action across the quartet under either scaffold
 (\S\ref{sec:deployment}), consistent with the pre-registered
 contingency that scaffolding cannot be measured against a failure mode
 that does not fire. Two next steps are pre-registered: a Tier-3 human
-pairwise preference study (IRB pending) and a training-time Interpreter
-Network (\S\ref{sec:conclusion}).
+pairwise preference study (IRB pending) and the training-time
+Interpreter Network referenced above.
 
 A pragmatic note. We are not claiming that N-CoT solves alignment, nor
 that it removes the need for training-time work. We are claiming that a
@@ -750,125 +761,100 @@ transfer through to the multi-agent integration step.
 
 The two protocols are specific operationalisations of a more general
 view: that ethical reasoning is well-modelled as inferring a parsimonious
-\emph{structural causal model} (SCM) of a situation
-\citep{pearl09, pearl95} and selecting actions that minimise the
-complexity of the future trajectories the chosen action induces. Treating
-$M = (\mathcal{V}, \mathcal{E}, \mathcal{F})$ as a computational object,
-we define its \emph{algorithmic causal complexity} as the length of the
-shortest program that reproduces all interventional behaviour:
-\begin{equation}
-K_C(M) = \min_{p}\bigl\{|p| : \forall i \in \mathcal{I},\; U(p, i) = M(i)\bigr\},
-\label{eq:kc}
-\end{equation}
-where $U$ is a universal Turing machine and $\mathcal{I}$ is the set of
-admissible interventions (\textit{e.g.}, ``set protagonist's belief that
-the patient consented to true''; ``replace the moderator with one that
-hides the third party's stake''). Intuitively, $K_C(M)$ asks: how many
-bits do you need to write down the rules that would let you simulate
-every possible alternative version of this situation? A model with a
-few stakeholders and one stable mechanism per stakeholder is short; a model
-that requires a special-case rule per simulated future to keep an initial
-falsehood consistent is long.
+structural causal model (SCM) of a situation \citep{pearl09, pearl95}
+and selecting actions that minimise the complexity of the future
+trajectories the chosen action induces. We refer to the
+description-length of the candidate SCM as \emph{algorithmic causal
+complexity}, $K_C$; the formal definition, the relation to Kolmogorov
+complexity, the $\arg\min K_C$ selection rule, and the argument that
+SCMs sidestep the ``Complexity of Value'' pitfalls
+\citep{yudkowsky11, li_vitanyi} are given in Appendix~\ref{app:kc}.
+The N-CoT scaffold is intended as an inference-time approximation of
+this rule: shorter, jointly consistent traces are preferred over
+sycophantic agreements that require special-case bridges to keep an
+initial falsehood consistent across projected futures.
 
-The relation to Kolmogorov complexity is direct: $K_C(M)$ replaces ``the
-shortest program that reproduces the data $D$'' with ``the shortest program
-whose interventional behaviour reproduces the SCM $M$'', so it
-inherits the Kolmogorov complexity uncomputability result of
-\citet{li_vitanyi}. The role of the protocols in this paper is to give
-tractable proxies for Eq.~\ref{eq:kc}: the N-CoT trace is short when
-its stakeholder set, projected branches, and uncertainties are jointly
-consistent, and long when the model is required to invent ad-hoc bridges
-between an agreed-with falsehood and the simulated downstream events. An
-$\arg\min K_C$ selection rule, choosing the candidate response whose
-narrated trajectory has the shortest description, predicts that local
-agreement-with-falsehood is dispreferred because keeping the falsehood
-consistent across simulated futures requires more bits than acknowledging
-the falsehood and absorbing the local friction. We do not claim to have
-empirically verified this selection rule in this paper; we claim that the
-two protocols we tested behave as approximations to it.
+\paragraph{Can a length-invariant proxy detect $K_C$ from the surface
+trace?} The min-$K_C$ rule is uncomputable, so we registered three
+tractable proxies and one stress test on the cheapest of them. The
+cheapest is the gzip description length, $\hat{K}_{\text{gzip}}$:
+gzip-compressed byte length of the response. The two more expensive
+proxies ($\hat{K}_{\text{graph}}$ over extracted causal triples and
+$\hat{K}_{\text{lm}}$ from a judge-LM scorer) would require ${\sim}30{,}000$
+additional judge calls and are deferred; the gzip proxy was computed on
+the full Phase~1 cache. Naively, $\hat{K}_{\text{gzip}}$ correlates with
+the N-CoT vs.\ standard-CoT contrast indicator at $\rho \approx 0.87$ on
+three of four generators (grok-4-1-fast-reasoning $\rho = 0.64$;
+$n \in [1{,}030, 4{,}400]$ per cell). This is the result we initially
+reported. It is, on its own, indistinguishable from a length confound.
 
-\paragraph{Why an SCM avoids the utility-function pitfalls.}
-\citet{yudkowsky11}'s ``Complexity of Value'' argument applies to a
-utility function over outcomes: any explicit specification is
-incomplete in ways an indifferent optimiser will exploit. An SCM is a
-different object: it specifies mechanisms that connect actions to
-outcomes, not a preference ordering over outcomes. Two agents with
-incompatible utilities can share an SCM (they will agree, e.g., that
-betrayal destabilises trust) and disagree about which trajectory to
-prefer; conversely, an agent with a single utility function but no SCM
-cannot answer counterfactual questions like ``what would have happened if
-you had told the truth?''. Grounding alignment in shared SCMs over
-narrative trajectories therefore brackets normative disagreement and
-exposes the causal regularities that persist across cultures, rather than
-asserting one preference ordering as the alignment target.
+\paragraph{The proxy panel falsifies the headline.} N-CoT outputs are
+$4$--$5{\times}$ longer than standard-CoT outputs for three of four
+generators ($1.55{\times}$ for grok). Because gzip-compressed byte length
+grows with raw length, a contrast indicator that is $+1$ on the longer
+condition and $-1$ on the shorter cannot be separated from a pure
+length effect by the raw $\rho$. We ran the stress test by computing,
+for each generation, six additional length-invariant proxies
+(compression \emph{ratios} from gzip, lzma, zstd-22, and brotli-11; and
+$3$-gram and $5$-gram character entropy; plus moving-average
+type-token ratio MATTR), and re-ran the correlation after regressing
+each proxy on $\log(\text{length})$ and taking residuals.
 
-\paragraph{Operationalisation of $K_C$.} The min-$K_C$ selection rule
-(prefer the response whose narrated causal trajectory requires fewest bits
-to describe) is formally uncomputable but admits tractable proxies. We
-evaluate three:
-\begin{itemize}
-\item $\hat{K}_{\text{graph}}$: a relation-extraction prompt extracts causal
-  triples from the output; the score is $n_{\text{nodes}} + n_{\text{edges}}
-  + \bar{d}$ where $\bar{d}$ is mean node degree. Denser graphs indicate more
-  causal structure is being tracked.
-\item $\hat{K}_{\text{gzip}}$: gzip-compressed byte length. A sycophantic
-  agreement that must maintain a falsehood across projected future states
-  requires more special-case bridges, increasing compressible redundancy.
-\item $\hat{K}_{\text{lm}}$: average negative log-probability per sentence
-  under a lightweight scorer (\texttt{claude-haiku-4-5}). Outputs that deviate
-  from the most probable narrative continuation, as falsehood-maintaining
-  outputs must, score higher.
-\end{itemize}
-In the budget-constrained run reported here we computed
-$\hat{K}_{\text{gzip}}$ on the full Phase~1 cache (15{,}549 generations);
-$\hat{K}_{\text{graph}}$ and $\hat{K}_{\text{lm}}$ would require an
-additional ${\sim}30{,}000$ judge-model API calls and are deferred to a
-follow-up study. Figure~\ref{fig:kcproxy} reports the Spearman correlation
-between $\hat{K}_{\text{gzip}}$ and the N-CoT/standard-CoT contrast direction
-indicator across the four-generator quartet. The proxy correlates
-$\rho = 0.866$ on each of \texttt{gpt-5.4-nano}, \texttt{claude-haiku-4-5},
-and \texttt{claude-sonnet-4-6}, and $\rho = 0.639$ on
-\texttt{grok-4-1-fast-reasoning}, a strikingly consistent ${\approx}0.87$
-across three vendors with grok as the only outlier (all $p < 10^{-6}$;
-$n \in [1{,}030, 4{,}400]$ per cell). The remarkable convergence of
-correlation strength across cross-vendor architectures suggests that
-$\hat{K}_{\text{gzip}}$ is picking up a genuine model-agnostic property of
-the N-CoT versus standard-CoT contrast, rather than an artefact of any one
-generator's idiom.
-
-\begin{figure}[t]
+\begin{figure}[!htbp]
 \centering
-\figureOrPlaceholder{\columnwidth}{figures/kc_proxy_correlation.pdf}{gzip K_C proxy correlation across four generators}
-\caption{Spearman correlation between gzip $\hat{K}_C$ and the N-CoT
-contrast indicator across the four-generator quartet. Three of four
-generators show $\rho \approx 0.87$, with \texttt{grok-4-1-fast-reasoning}
-at $\rho = 0.64$. All correlations are highly significant.}
+\figureOrPlaceholder{\columnwidth}{figures/kc_proxy_correlation.pdf}{K_C proxy panel: every length-invariant proxy collapses under length control}
+\caption{Pooled $|\rho|$ between each proxy and the N-CoT vs.\ standard-CoT
+contrast indicator. The grey bars are raw correlations; the teal bars are
+length-residualised correlations (proxy $\perp \log(\text{length})$, then
+Spearman with contrast). Every proxy we tested, including stronger
+compressors than gzip and two entropy estimators, collapses below
+$|\rho| = 0.21$ once length is removed. On the one generator with a
+small length ratio (grok, $1.55{\times}$) the surviving residual signal
+points the opposite direction $K_C$ predicts (N-CoT outputs are more
+compressible per byte and have lower per-character entropy). The dotted
+line marks $|\rho| = 0.1$.}
 \label{fig:kcproxy}
 \end{figure}
 
-\paragraph{Adversarial sycophancy contrast.} The min-$K_C$ rule makes a
-falsifiable directional prediction. If maintaining a user-stated falsehood
-across projected downstream consequences requires extra description-length
-bridges, then \emph{agree} responses to adversarial sycophancy probes
-should carry lower $\hat{K}_C$ than \emph{correct} responses
-(corrections expand the causal trace; agreements truncate it). We test
-this on a hand-curated set of 30 probes (Appendix~\ref{app:asp}) where each
-probe specifies a false premise, the truth, and a downstream question whose
-answer requires rejecting the falsehood. For each probe, a budget
-generator's response is coded as \texttt{agree}, \texttt{correct}, or
-\texttt{hedge}, and $\hat{K}_{\text{gzip}}$ is computed.
+The pooled length-residualised $|\rho|$ is $\le 0.21$ on every proxy
+(per-generator values, including the sign flips on the Anthropic
+generators, are in Appendix~\ref{app:kc_panel}). We read this as a
+clean negative result: the surface causal signal that $\hat{K}_{\text{gzip}}$
+appeared to track is dominated by length, and no stronger compressor
+or entropy estimator rescues it. The min-$K_C$ rule is a coherent
+theoretical hypothesis about why N-CoT helps; the proxy panel does not
+empirically validate it on the inference-time trace.
 
-The directional prediction holds on the one quartet member that bites on
-these probes at all: on \texttt{gpt-5.4-nano}, mean
-$\hat{K}_{\text{gzip}}$ is roughly $10\times$ higher for \emph{correct}
-than \emph{agree} responses, in the predicted direction. The Anthropic
-generators and \texttt{grok-4-1-fast-reasoning} refuse to agree with the
-falsehoods at almost every probe (an instrument-floor finding paralleling
-the SycophancyEval result in Section~\ref{sec:deployment}). On the one
-generator that exhibits the bias, the proxy distinguishes correction from
-agreement by a factor of ten, a sharp consistency between the
-theoretical prediction in Eq.~\ref{eq:kc} and what is observed on the
-only model that shows the dependent variable.
+\paragraph{Adversarial sycophancy: same confound.} The min-$K_C$ rule
+predicts that \emph{correct} responses to adversarial sycophancy probes
+should carry higher $\hat{K}_C$ than \emph{agree} responses, because
+keeping a falsehood consistent across projected futures requires more
+bridges. On a hand-curated set of 30 probes (Appendix~\ref{app:asp}),
+on the one generator that exhibits any \texttt{agree} behaviour at all
+(\texttt{gpt-5.4-nano}, $n_{\text{agree}}{=}15$, $n_{\text{correct}}{=}151$),
+the raw $\hat{K}_{\text{gzip}}$ ratio is $9{\times}$ in the predicted
+direction. The raw \emph{length} ratio between the same two response
+classes is $15.8{\times}$ in the same direction, and gzip per byte is
+\emph{lower} on corrections than on agreements ($0.47$ vs.\ $0.82$),
+i.e., corrections are more compressible per byte, not less. The $9{\times}$
+gzip differential is therefore fully explained by length, and the
+length-normalised signal points the opposite direction the theory
+predicts. We mark the adversarial-sycophancy $\hat{K}_{\text{gzip}}$
+contrast as not informative under length control.
+
+\paragraph{What this leaves intact, and what it does not.} The
+hypothesis that N-CoT helps because the scaffold elicits a more
+parsimonious SCM remains coherent but unverified at inference time.
+Two readings are compatible with the data we have: (i) N-CoT is doing
+$K_C$-relevant work that no length-invariant compressor we tested is
+sensitive enough to detect; or (ii) the structural-variable shifts
+\S\ref{sec:exp1} measures are largely prompt compliance plus length,
+and the SCM story is empirically unsupported. Distinguishing these
+requires (a) richer proxies (relation-extracted causal graphs, LM
+scorers), and (b) the training-time Interpreter Network sketched in
+\S\ref{sec:conclusion}, in which $K_C$ enters as an auxiliary
+supervision signal where the claim can actually be tested rather than
+read off a single forward trace.
 
 \section{Deployment Relevance}
 \label{sec:deployment}
@@ -989,48 +975,42 @@ integrated proposal materially undermines. A pliable system would have
 produced $100\%$ acceptance.
 
 \paragraph{``The $K_C$ proxy is a brittle gzip trick.''}
-We agree that gzip-compressed length is a weak proxy for algorithmic causal
-complexity: it captures surface repetition and vocabulary, not causal
-structure. This is precisely why the protocol pre-registers three
-proxies ($\hat{K}_{\text{graph}}$, $\hat{K}_{\text{gzip}}$,
-$\hat{K}_{\text{lm}}$) and requires directional agreement on at least two
-before making a substantive claim. The three are independent in their
-failure modes: gzip fails on locally redundant prose; the graph extractor
-fails on implicit causation; the LM scorer is sensitive to idiomatic
-register. The budget reported here computed only $\hat{K}_{\text{gzip}}$
-on the full Phase~1 cache; we explicitly flag this as a single-proxy
-result and defer the two-of-three confirmation to follow-up work. Two
-empirical observations partially mitigate the single-proxy concern
-in this report: (i) the correlation strength is remarkably consistent
-across three different vendors ($\rho \approx 0.87$ on three of four
-generators, with grok the lower outlier at $0.64$), suggesting a
-model-agnostic property rather than a per-vendor artefact; and (ii) on the
-one generator that bites on the adversarial sycophancy probes
-($\hat{K}_{\text{gzip}}$ contrast of ${\sim}10\times$ between
-\emph{correct} and \emph{agree}), the proxy reproduces the
-direction the theoretical Eq.~\ref{eq:kc} predicts. Neither
-observation is a substitute for the cross-proxy validation that the
-deferred follow-up will provide.
+On the data we have, this objection is correct. The raw
+$\hat{K}_{\text{gzip}}$ correlation of ${\approx}0.87$ collapses under
+length residualisation, and a panel of six additional length-invariant
+proxies (lzma, zstd-22, brotli-11 compression ratios; char $3$- and
+$5$-gram entropy; MATTR) all collapse to pooled $|\rho| \le 0.21$ once
+length is removed. On grok-4-1-fast-reasoning, where the length ratio
+is only $1.55\times$, the surviving residual signal points the
+opposite direction $K_C$ predicts. We treat the K\_C apparatus as
+theoretical scaffolding for the training-time Interpreter Network
+(\S\ref{sec:conclusion}), in which $K_C$ enters as an auxiliary
+supervision signal that can be tested directly, rather than as a
+validated inference-time measurement read off a single forward trace.
 
 \section{Conclusion}
 \label{sec:conclusion}
 
 Across the four-generator quartet, two CoT failure modes fire on
-$14.6$--$72.3\%$ of standard-CoT outputs and N-CoT cuts both to floor on
-every model (\S\ref{sec:exp1}); a sub-instruction ablation on
-claude-sonnet-4-6 attributes each headline metric to the specific section
-that carries it: dropping the Stakeholders section costs $\delta=-0.41$
-on stakeholder count, dropping Uncertainty costs $\delta=-0.92$ on
-uncertainty score, and dropping Consequences costs $\delta=-0.22$ on
-causal-hop depth (\S\ref{sec:exp1-ablation}). The structural
+$14.6$--$72.3\%$ of standard-CoT outputs; N-CoT cuts both to floor
+prompt-side on every model, and the effect survives length
+residualisation on the OpenAI and xAI generators while reducing to
+near-zero on the two Anthropic generators (\S\ref{sec:exp1}). A
+sub-instruction ablation on claude-sonnet-4-6 attributes each
+structural metric to the specific section that carries it: dropping
+Stakeholders costs $\delta = -0.41$ on stakeholder count, dropping
+Uncertainty costs $\delta = -0.92$ on uncertainty score, and dropping
+Consequences costs $\delta = -0.22$ on causal-hop depth
+(\S\ref{sec:exp1-ablation}). The structural
 shifts carry forward into a multi-stakeholder debate that converts a $6\%$
 standoff into $95\%$ consensus while preserving $1.6\%$ structural rejection
 on roles whose interests the integrated proposal undermines, with the
 cross-vendor extension pre-registered (\S\ref{sec:exp2}).
-$\hat{K}_{\text{gzip}}$ tracks the N-CoT contrast at $\rho \approx 0.87$
-on three of four generators, and on adversarial sycophancy probes
-\emph{correct} responses score ${\sim}10\times$ higher than
-\emph{agree} on the one model that bites (\S\ref{sec:grounding}). Two
+A panel of seven length-invariant compression and entropy proxies for
+$K_C$ all collapse below pooled $|\rho|{=}0.21$ once length is
+removed; the raw $\hat{K}_{\text{gzip}}$ correlation of ${\approx}0.87$
+is dominated by length, as is the apparent $10\times$ contrast on the
+adversarial sycophancy probes (\S\ref{sec:grounding}). Two
 deployment-relevant floor effects (SycophancyEval saturation on frontier
 models, and unconditional refusal of published agentic-misalignment
 scenarios on the entire quartet) are reported as pre-registered
@@ -1261,39 +1241,117 @@ generators.}
 \label{fig:tier1}
 \end{figure*}
 
-\section{$K_C$ Proxy Correlation Tables}
+\section{$K_C$: Formalism and Proxy Panel}
 \label{app:kc}
 
-Table~\ref{tab:kc_corr} reports Spearman $\rho$ between
-$\hat{K}_{\text{gzip}}$ and the N-CoT/standard-CoT direction indicator
-($+1$ for N-CoT, $-1$ for standard CoT) across all Phase~1 cached
-generations, per generator. The
-$\hat{K}_{\text{graph}}$ and $\hat{K}_{\text{lm}}$ proxies are deferred
-(see \S\ref{sec:grounding}).
+\subsection{Definition and selection rule}
+
+Treating an SCM $M = (\mathcal{V}, \mathcal{E}, \mathcal{F})$ as a
+computational object, we define its \emph{algorithmic causal complexity}
+as the length of the shortest program that reproduces all interventional
+behaviour:
+\begin{equation}
+K_C(M) = \min_{p}\bigl\{|p| : \forall i \in \mathcal{I},\; U(p, i) = M(i)\bigr\},
+\label{eq:kc}
+\end{equation}
+where $U$ is a universal Turing machine and $\mathcal{I}$ is the set of
+admissible interventions (\textit{e.g.}, ``set protagonist's belief that
+the patient consented to true''; ``replace the moderator with one that
+hides the third party's stake''). Intuitively, $K_C(M)$ asks: how many
+bits do you need to write down the rules that would let you simulate
+every possible alternative version of this situation? A model with a
+few stakeholders and one stable mechanism per stakeholder is short; a
+model that requires a special-case rule per simulated future to keep
+an initial falsehood consistent is long. Eq.~\ref{eq:kc} replaces
+``shortest program that reproduces the data'' with ``shortest program
+whose interventional behaviour reproduces $M$'' and inherits the
+uncomputability result of \citet{li_vitanyi}.
+
+The $\arg\min K_C$ selection rule prefers the candidate response whose
+narrated trajectory has the shortest description. Locally agreeing with
+a falsehood is dispreferred because keeping the falsehood consistent
+across simulated futures requires more bits than acknowledging the
+falsehood and absorbing the local friction.
+
+\paragraph{Why an SCM avoids the utility-function pitfalls.}
+\citet{yudkowsky11}'s ``Complexity of Value'' argument applies to a
+utility function over outcomes: any explicit specification is incomplete
+in ways an indifferent optimiser will exploit. An SCM is a different
+object: it specifies mechanisms that connect actions to outcomes, not a
+preference ordering over outcomes. Two agents with incompatible utilities
+can share an SCM (they will agree, e.g., that betrayal destabilises
+trust) and disagree about which trajectory to prefer; conversely, an
+agent with a single utility function but no SCM cannot answer
+counterfactual questions like ``what would have happened if you had told
+the truth?''. Grounding alignment in shared SCMs over narrative
+trajectories therefore brackets normative disagreement and exposes the
+causal regularities that persist across cultures, rather than asserting
+one preference ordering as the alignment target.
+
+\subsection{Proxy panel: raw vs length-residualised}
+\label{app:kc_panel}
+
+Table~\ref{tab:kc_corr} reports the per-generator raw and
+length-residualised Spearman $\rho$ between each tested proxy and the
+N-CoT/standard-CoT direction indicator ($+1$ for N-CoT, $-1$ for
+standard CoT) on the Phase~1 cache, restricted to the two contrast
+conditions. Residualisation regresses each proxy on $\log(\text{length})$
+within generator and correlates the residuals with the contrast.
 
 \begin{table}[h]
 \centering
-\small
-\setlength{\tabcolsep}{6pt}
-\begin{tabular}{lrr}
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{llrr}
 \toprule
-Generator & $\rho$ ($\hat{K}_{\text{gzip}}$) & $n$ \\
+Proxy & Generator & $\rho_{\text{raw}}$ & $\rho_{\text{resid}}$ \\
 \midrule
-gpt-5.4-nano                & $0.866$ & $4{,}400$ \\
-claude-haiku-4-5            & $0.866$ & $3{,}995$ \\
-claude-sonnet-4-6           & $0.866$ & $1{,}000$ \\
-grok-4-1-fast-reasoning     & $0.639$ & $1{,}030$ \\
+gzip ratio       & gpt-5.4-nano              & $-0.87$ & $-0.02$ \\
+                 & claude-haiku-4-5          & $-0.87$ & $-0.06$ \\
+                 & claude-sonnet-4-6         & $-0.87$ & $+0.04$ \\
+                 & grok-4-1-fast-reasoning   & $-0.79$ & $-0.44$ \\
 \midrule
-\textit{legacy} gpt-4o      & $0.866$ & $4{,}200$ \\
+lzma ratio       & gpt-5.4-nano              & $-0.87$ & $+0.08$ \\
+                 & claude-haiku-4-5          & $-0.87$ & $-0.09$ \\
+                 & claude-sonnet-4-6         & $-0.86$ & $+0.03$ \\
+                 & grok-4-1-fast-reasoning   & $-0.78$ & $-0.33$ \\
+\midrule
+zstd-22 ratio    & gpt-5.4-nano              & $-0.87$ & $-0.03$ \\
+                 & claude-haiku-4-5          & $-0.87$ & $-0.07$ \\
+                 & claude-sonnet-4-6         & $-0.86$ & $+0.04$ \\
+                 & grok-4-1-fast-reasoning   & $-0.80$ & $-0.50$ \\
+\midrule
+brotli-11 ratio  & gpt-5.4-nano              & $-0.84$ & $+0.06$ \\
+                 & claude-haiku-4-5          & $-0.86$ & $-0.00$ \\
+                 & claude-sonnet-4-6         & $-0.83$ & $+0.07$ \\
+                 & grok-4-1-fast-reasoning   & $-0.73$ & $-0.27$ \\
+\midrule
+char 3-gram $H$  & gpt-5.4-nano              & $+0.86$ & $-0.19$ \\
+                 & claude-haiku-4-5          & $+0.87$ & $-0.01$ \\
+                 & claude-sonnet-4-6         & $+0.86$ & $+0.05$ \\
+                 & grok-4-1-fast-reasoning   & $+0.25$ & $-0.60$ \\
+\midrule
+char 5-gram $H$  & gpt-5.4-nano              & $+0.87$ & $-0.09$ \\
+                 & claude-haiku-4-5          & $+0.87$ & $+0.02$ \\
+                 & claude-sonnet-4-6         & $+0.86$ & $+0.07$ \\
+                 & grok-4-1-fast-reasoning   & $+0.58$ & $-0.46$ \\
+\midrule
+MATTR (w=200)    & gpt-5.4-nano              & $-0.17$ & $-0.08$ \\
+                 & claude-haiku-4-5          & $-0.40$ & $-0.06$ \\
+                 & claude-sonnet-4-6         & $-0.42$ & $-0.06$ \\
+                 & grok-4-1-fast-reasoning   & $-0.66$ & $-0.44$ \\
 \bottomrule
 \end{tabular}
-\caption{Spearman $\rho$ between $\hat{K}_{\text{gzip}}$ and the
-N-CoT/standard-CoT direction. All correlations $p < 10^{-6}$. Three of
-four active quartet members converge to $\rho \approx 0.866$; grok is the
-single low outlier. Legacy \texttt{gpt-4o} (computed on cached generations
-from a prior pilot but excluded from active analysis per the
-``no-\texttt{gpt-4o}'' protocol) reproduces the $0.866$ value, suggesting
-the value is a model-agnostic property of the contrast.}
+\caption{Per-generator raw and length-residualised Spearman $\rho$ for
+seven length-invariant proxies of $K_C$ against the N-CoT vs.\
+standard-CoT contrast. Every raw correlation above $|\rho|{=}0.7$
+collapses below $|\rho|{=}0.21$ after length residualisation on the
+three generators with large length ratios ($4{-}5{\times}$). On
+\texttt{grok-4-1-fast-reasoning} (length ratio $1.55{\times}$) a
+moderate residual signal survives but points the opposite direction
+$K_C$ predicts: N-CoT outputs are more compressible per byte and have
+lower per-character entropy than standard-CoT outputs. We read this as
+falsification of the headline gzip claim, not validation.}
 \label{tab:kc_corr}
 \end{table}
 
@@ -1369,7 +1427,7 @@ which the agent's narrated reasoning declines to invoke any harmful
 tool but the explicit tool-call statement is incomplete in the model's
 returned text).
 
-The two scenarios are drawn from the \citet{lynch25} agentic-misalignment
+The two scenarios are drawn from the \citet{anthropic_agentic_2025} agentic-misalignment
 suite and instantiated with the same system prompt template, tool
 inventory (\texttt{send\_email}, \texttt{read\_email}, \texttt{search\_files},
 \texttt{forward\_email}), and adversary context as the published

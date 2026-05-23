@@ -11,7 +11,10 @@ Outputs (all under divergence_study_outputs/):
   failure_mode_firing_quartet.pdf   -- Section 4 headline figure
   tier1_effect_sizes_quartet.pdf    -- Section 4 effect sizes
   subinstruction_attribution.pdf    -- Section 4.1 ablation heatmap
-  kc_proxy_correlation.pdf          -- Section 6 K_C proxy figure
+  kc_proxy_correlation.pdf          -- Section 6 K_C proxy panel:
+                                       raw vs length-residualized |rho|
+                                       over seven proxies. Consumes
+                                       kc_proxy_panel_residualized.csv.
   sycophancyeval_rates.pdf          -- Section 7 sycophancy panel
   agentic_probe_rates.pdf           -- Section 7 agentic panel
 """
@@ -275,34 +278,65 @@ def fig_subinstruction() -> None:
 # ---------------------------------------------------------------------------
 
 def fig_kc_proxy() -> None:
-    src = OUT / "kc_proxy_correlation.csv"
+    """Headline figure for the revised Section 6: every length-invariant
+    K_C proxy we tested has a raw correlation with the N-CoT vs Std CoT
+    contrast that COLLAPSES under length residualization. This is a clean
+    negative empirical result, not a positive one.
+
+    For each proxy we plot pooled raw |rho| vs pooled length-residualized
+    |rho| as a side-by-side pair. The contrast between the two bars in
+    each pair IS the visual headline.
+    """
+    src = OUT / "kc_proxy_panel_residualized.csv"
     if not src.exists():
         print(f"skip: missing {src}")
         return
-    df = pd.read_csv(src)
-    df = df[df["generator"] != "gpt-4o"].copy()
-    df["generator"] = pd.Categorical(df["generator"], GENERATOR_ORDER, ordered=True)
-    df = df.sort_values("generator")
+    panel = pd.read_csv(src)
+    # Pool by simple mean of per-generator |rho| (gives every generator
+    # equal weight regardless of n; the per-generator values are in the
+    # appendix table for full transparency).
+    pooled = (panel.assign(abs_raw=panel["rho_raw"].abs(),
+                           abs_resid=panel["rho_residualized"].abs())
+                   .groupby(["proxy","proxy_label"], as_index=False)
+                   .agg(rho_raw=("abs_raw","mean"),
+                        rho_resid=("abs_resid","mean")))
+    # Order proxies by raw correlation (descending) so the visual reads top-down
+    pooled = pooled.sort_values("rho_raw", ascending=False).reset_index(drop=True)
 
-    fig, ax = single_panel(width=COL_WIDTH, height=2.4)
-    gens = df["generator"].astype(str).tolist()
-    rhos = df["spearman_rho"].astype(float).tolist()
-    ns = df["n"].astype(int).tolist()
-    colors = [GENERATOR_COLORS.get(g, "#444444") for g in gens]
-    bars = ax.bar(range(len(gens)), rhos, color=colors,
-                  edgecolor="white", linewidth=0.4)
-    for b, n in zip(bars, ns):
-        ax.text(b.get_x() + b.get_width() / 2, b.get_height() + 0.018,
-                f"n={n:,}", ha="center", fontsize=6.8, color="#444444")
-        ax.text(b.get_x() + b.get_width() / 2, b.get_height() / 2,
-                f"{b.get_height():.2f}", ha="center", va="center",
-                fontsize=8, color="white", fontweight="bold")
-    style_generator_axis(ax, gens)
-    ax.set_ylim(0, 1.0)
-    ax.set_ylabel(r"Spearman $\rho$")
-    ax.set_title(r"$\hat{K}_{\mathrm{gzip}}$ tracks the N-CoT contrast across vendors",
+    apply_paper_style()
+    fig, ax = plt.subplots(figsize=(COL_WIDTH, 3.2))
+    y = np.arange(len(pooled))
+    bar_h = 0.36
+    raw_color = "#7E9AAB"     # cool blue-grey (raw, baseline reading)
+    res_color = "#0E7C7B"     # jewel teal   (length-controlled reading)
+    b_raw = ax.barh(y - bar_h/2, pooled["rho_raw"], bar_h,
+                    color=raw_color, edgecolor="white", linewidth=0.4,
+                    label="raw $|\\rho|$")
+    b_res = ax.barh(y + bar_h/2, pooled["rho_resid"], bar_h,
+                    color=res_color, edgecolor="white", linewidth=0.4,
+                    label="length-residualized $|\\rho|$")
+    for bars in (b_raw, b_res):
+        for b in bars:
+            ax.text(b.get_width() + 0.012, b.get_y() + b.get_height()/2,
+                    f"{b.get_width():.2f}",
+                    va="center", ha="left", fontsize=7.0, color="#333333")
+    ax.set_yticks(y)
+    ax.set_yticklabels(pooled["proxy_label"], fontsize=8)
+    ax.invert_yaxis()
+    ax.set_xlim(0, 1.0)
+    ax.set_xlabel(r"$|\rho|$ with N-CoT vs Std CoT contrast")
+    ax.set_title("Every proxy's correlation collapses under length control",
                  fontweight="semibold")
-    ax.axhline(0.8, color="#999999", linewidth=0.4, linestyle=":")
+    ax.axvline(0.1, color="#999999", linewidth=0.4, linestyle=":")
+    # Place the legend below the axes so it never competes with the
+    # number annotations on the bars.
+    fig.subplots_adjust(left=0.28, right=0.95, top=0.92, bottom=0.22)
+    fig.legend(handles=[b_raw, b_res],
+               loc="lower center", ncol=2,
+               frameon=True, framealpha=1.0, edgecolor="#BFCDD5",
+               facecolor="white", fontsize=8.0,
+               handlelength=1.4, handletextpad=0.5, columnspacing=2.0,
+               bbox_to_anchor=(0.5, 0.0))
     save(fig, OUT / "kc_proxy_correlation.pdf")
 
 
