@@ -1016,7 +1016,7 @@ projecting, so a reader can see what bias is driving the commitment.
 The Round~4 binary vote was added precisely to discriminate the two: it
 strips the \texttt{ACCEPT\_WITH\_MODIFICATION} escape valve, forces an
 unambiguous accept-or-reject choice, and asks whether agents will refuse an
-integrated proposal that fails to honour their stake. They do, in $4/250$
+integrated proposal that fails to honour their stake. They do, in $4/246$
 ($1.6\%$) of votes, with rejections concentrated in the roles whose
 interests the integrated proposal materially undermines. The pattern is
 the shape a defeasibility-respecting protocol should produce, but with
@@ -1253,14 +1253,16 @@ the failure-mode rubric will be released with the camera-ready version.
 
 \subsection*{A.1~~Budget judge pair (Experiment~1 primary analysis)}
 
-Table~\ref{tab:kappa} reports linearly-weighted Cohen's $\kappa$
-\citep{cohen60} per structural variable, computed on the
-\texttt{gpt-5.4-nano} pilot ($300$ paired ratings; $5$ scenarios $\times$
-$3$ conditions $\times$ $20$ samples). Values are
-computed between the primary judge (\texttt{claude-haiku-4-5}) and the
-secondary judge (\texttt{gpt-5.4-nano}) on the budget-tier judge stack
-adopted for this study. \texttt{max\_causal\_hops} falls well below the
-$0.40$ moderate-agreement threshold; it is reported for completeness but
+Table~\ref{tab:kappa} reports quadratic-weighted Cohen's $\kappa$
+\citep{cohen60} per structural variable, computed on the full
+Experiment~1 DailyDilemmas corpus ($n = 3{,}726$ paired ratings across
+$100$ scenarios $\times$ $3$ headline conditions $\times$ $3$ generators:
+\texttt{claude-haiku-4-5}, \texttt{grok-4-1-fast-reasoning},
+\texttt{claude-sonnet-4-6}). Values are computed between the primary
+judge (\texttt{claude-haiku-4-5}) and the secondary judge
+(\texttt{gpt-5.4-nano}) on the budget-tier judge stack adopted for this
+study. \texttt{max\_causal\_hops} falls marginally below the $0.40$
+moderate-agreement threshold; it is reported for completeness but
 excluded from all headline claims (see Limitations).
 
 \begin{table}[h]
@@ -1268,17 +1270,17 @@ excluded from all headline claims (see Limitations).
 \small
 \begin{tabular}{lcc}
 \toprule
-Variable & weighted $\kappa$ & exact agree \\
+Variable & quadratic $\kappa$ & exact agree \\
 \midrule
-stakeholder\_count  & $0.595$ & $46.0\%$ \\
-max\_causal\_hops   & $0.076$ & $30.3\%$ \\
-uncertainty\_score  & $0.605$ & $60.7\%$ \\
-commits\_to\_action & --      & $97.0\%$ \\
+stakeholder\_count  & $0.722$ & $55.7\%$ \\
+max\_causal\_hops   & $0.391$ & $34.6\%$ \\
+uncertainty\_score  & $0.566$ & $41.2\%$ \\
+commits\_to\_action & --      & $89.1\%$ \\
 \bottomrule
 \end{tabular}
-\caption{Linearly-weighted Cohen's $\kappa$ between the budget judge pair
+\caption{Quadratic-weighted Cohen's $\kappa$ between the budget judge pair
 (\texttt{claude-haiku-4-5} primary, \texttt{gpt-5.4-nano} secondary) on
-the \texttt{gpt-5.4-nano} pilot.}
+the full Experiment~1 DailyDilemmas corpus ($n = 3{,}726$).}
 \label{tab:kappa}
 \end{table}
 
@@ -1293,13 +1295,11 @@ generators at all three conditions ($N{=}1$ per cell;
 $30 \times 2 \times 3 = 180$ generation outputs). Table~\ref{tab:kappa3}
 reports pairwise quadratic-weighted $\kappa$ across all three judges on
 the $177$ cells where complete triples were available.
-The higher agreement relative to A.1 reflects three structural differences
-in the subsample: only two generators are covered (\texttt{grok-4-1-fast-reasoning}
-and \texttt{claude-sonnet-4-6}, models that produce denser structured outputs
-than the budget pair), all cells use $N{=}1$ (eliminating within-cell
-pooling variance), and the 30-scenario selection skews toward scenarios
-with unambiguous stakeholder configurations, all of which mechanically
-narrow the rating range and raise $\kappa$.
+Both A.1 and A.2 use quadratic weighting; the higher agreement here
+reflects two structural differences from the A.1 analysis: the subsample
+covers only two generators ($30 \times 2 \times 3 = 180$ cells vs\
+$3{,}726$ in A.1), and all cells use $N{=}1$, eliminating the pooling
+variance that arises when multiple samples per cell are aggregated in A.1.
 
 \begin{table}[h]
 \centering
@@ -1361,8 +1361,14 @@ Total                 & $36/40$ & $44/50$ \\
 \end{tabular}
 \caption{Full-consensus count by scenario under within-vendor and
 cross-vendor moderation. Within-vendor cells have unequal $n$ because
-four debates with no synthesis emergence were excluded from the original
-Round-3 analysis. The \texttt{av\_engineer} scenario shows the largest
+ten of the $50$ designed debates produced no synthesis in Round~2 and
+were therefore excluded from Round~3 onward; the cross-vendor arm
+re-ran all $50$ designed debates from scratch through the full
+Round~3--4 pipeline, so its denominator is $50$ while the within-vendor
+denominator is $40$. Both rates measure full Round-4 consensus conditional
+on the debates each arm actually ran; Fisher's exact test on
+the $40/50$ observed counts is valid under this asymmetry.
+The \texttt{av\_engineer} scenario shows the largest
 cross-vendor reduction, consistent with its structurally harder
 stakeholder conflict.}
 \label{tab:xmod}
