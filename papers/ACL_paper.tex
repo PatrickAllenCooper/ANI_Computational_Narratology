@@ -558,7 +558,7 @@ per generator before the cross-judge coding stage. Coded sample sizes
 slightly smaller because the rubric drops generations where the judge
 could not extract a coded variable. Outputs are coded by two cross-vendor judges
 (\texttt{claude-haiku-4-5} primary, \texttt{gpt-5.4-nano} secondary) on a
-six-variable rubric with linearly-weighted Cohen's $\kappa$ \citep{cohen60}
+six-variable rubric with quadratic-weighted Cohen's $\kappa$ \citep{cohen60}
 per variable. The scenario pool is a 100-scenario stratified sample of
 DailyDilemmas \citep{chiu24}, spanning 18 topic groups; the same
 deterministic stratified sample (seed 42) is used for all four generators,
@@ -752,6 +752,13 @@ $82 \times 3 = 246$ individual binary votes) (Wilson
 $95\%$ CI for full consensus $[88.1, 98.1]\%$; for rejection
 $[0.6, 4.1]\%$), with the integrated proposal addressing a mean of
 $2.98$ of the $3$ agent modifications per debate.
+The per-generator breakdown is: \texttt{gpt-5.4-nano} $36/40 = 90\%$
+(Wilson $[76.9, 96.0]\%$) and \texttt{gpt-4o} $42/42 = 100\%$
+(Wilson $[91.6, 100]\%$). The \texttt{gpt-4o} unanimity rate cannot be
+distinguished from compliance on this evidence alone; all four
+rejections in Finding~5 come from \texttt{gpt-5.4-nano} debates.
+The conservative per-pilot estimate is therefore $90\%$; the $95\%$
+pooled figure is the headline and is presented with this caveat.
 
 \paragraph{Finding 5: $4/246$ structurally interpretable rejections,
 underpowered for a defeasibility claim.} The integrated-proposal vote
@@ -1076,8 +1083,10 @@ A partial cross-vendor check---substituting \texttt{claude-sonnet-4-6} as
 moderator over the same cached \texttt{gpt-5.4-nano} agent traces---yields
 $88\%$ consensus ($44/50$; Fisher's exact, $p = 1.0$ vs.\ the $90\%$
 within-vendor rate on the same \texttt{gpt-5.4-nano} subpopulation, $36/40$),
-ruling out within-vendor moderator familiarity as the driver of the headline
-result; the full-experiment rate of $95\%$ includes both generators
+reducing the likelihood that within-vendor moderator familiarity is the driver
+of the headline result (the comparison is across non-identical debate sets, so
+it is evidence against, not a refutation);
+the full-experiment rate of $95\%$ includes both generators
 (\texttt{gpt-4o} and \texttt{gpt-5.4-nano}) and is the headline claim;
 the full quartet replication remains pre-registered (\S\ref{sec:exp2}).
 A panel of seven length-invariant compression and entropy proxies for
@@ -1255,13 +1264,17 @@ the failure-mode rubric will be released with the camera-ready version.
 
 Table~\ref{tab:kappa} reports quadratic-weighted Cohen's $\kappa$
 \citep{cohen60} per structural variable, computed on the full
-Experiment~1 DailyDilemmas corpus ($n = 3{,}726$ paired ratings across
-$100$ scenarios $\times$ $3$ headline conditions $\times$ $3$ generators:
-\texttt{claude-haiku-4-5}, \texttt{grok-4-1-fast-reasoning},
-\texttt{claude-sonnet-4-6}). Values are computed between the primary
-judge (\texttt{claude-haiku-4-5}) and the secondary judge
-(\texttt{gpt-5.4-nano}) on the budget-tier judge stack adopted for this
-study. \texttt{max\_causal\_hops} falls marginally below the $0.40$
+Experiment~1 DailyDilemmas corpus ($n = 3{,}726$ complete pairs out of
+$3{,}770$ designed cells). The three generators covered are
+\texttt{claude-haiku-4-5} ($13$ scenarios $\times$ $N{=}20$ per cell),
+\texttt{grok-4-1-fast-reasoning} ($100$ scenarios $\times$ $N{=}5$),
+and \texttt{claude-sonnet-4-6} ($100$ scenarios $\times$ $N{=}5$),
+across $3$ headline conditions. \texttt{gpt-5.4-nano} is excluded from
+this reliability estimate because it also serves as the secondary judge;
+its cross-judge agreement cannot be computed independently.
+Values are computed between the primary judge (\texttt{claude-haiku-4-5})
+and the secondary judge (\texttt{gpt-5.4-nano}).
+\texttt{max\_causal\_hops} falls marginally below the $0.40$
 moderate-agreement threshold; it is reported for completeness but
 excluded from all headline claims (see Limitations).
 
@@ -1318,8 +1331,8 @@ the 30-scenario subsample ($n = 177$ complete triples). j1 =
 \texttt{claude-haiku-4-5}, j2 = \texttt{gpt-5.4-nano}, j3 =
 \texttt{grok-4-1-fast-reasoning} (held-out). All pairwise pairs exceed
 $0.40$ on \texttt{stakeholder\_count} and \texttt{uncertainty\_score};
-\texttt{max\_causal\_hops} improves substantially over the full-quartet
-pair but remains cautionary.}
+\texttt{max\_causal\_hops} improves modestly over the A.1 estimate
+but remains cautionary.}
 \label{tab:kappa3}
 \end{table}
 
