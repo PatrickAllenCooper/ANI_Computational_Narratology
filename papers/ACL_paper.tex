@@ -512,10 +512,16 @@ slightly smaller because the rubric drops generations where the judge
 could not extract a coded variable. Outputs are coded by two cross-vendor judges
 (\texttt{claude-haiku-4-5} primary, \texttt{gpt-5.4-nano} secondary) on a
 six-variable rubric with quadratic-weighted Cohen's $\kappa$ \citep{cohen60}
-per variable. The scenario pool is a 100-scenario stratified sample of
-DailyDilemmas \citep{chiu24}, spanning 18 topic groups; the same
-deterministic stratified sample (seed 42) is used for all four generators,
-making the scenario sets comparable.
+per variable. The scenario pool is a 100-scenario stratified sample of DailyDilemmas
+\citep{chiu24} drawn deterministically (seed 42) so all four generators
+see identical scenarios, with stratification spanning all 18 topic groups
+in the source corpus. At up to $N{=}20$ samples per (scenario, condition,
+generator) cell, the per-cell coded sample sizes of $500$ to $2{,}000$
+(Table~\ref{tab:firing}) are what drive bootstrap confidence intervals
+on the effect sizes; statistical power on the per-cell contrast follows
+from $N$ rather than from scenario count alone, and the stratification
+controls the distributional confound that a smaller unstratified pool
+would carry.
 
 \begin{table}[t]
 \centering
