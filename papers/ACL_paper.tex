@@ -96,9 +96,13 @@ Extended to a four-round multi-stakeholder protocol with a moderator-built
 integrated proposal and a binary accept/reject vote, the same scaffold
 converts a $6\%$ debate standoff into $95\%$ full consensus while preserving
 a small fraction of principled structural rejections in the roles whose
-stake the integrated proposal materially undermines. The intervention is a
-small, auditable change to the prompt that removes two failure modes firing
-near-universally on current frontier models.
+stake the integrated proposal materially undermines. The intervention is a small
+change to the prompt that removes two failure modes firing near-universally
+on current frontier models. The resulting traces externalise the
+stakeholders, projected consequences, and uncertainty that ground each
+commitment, and the multi-agent extension preserves principled dissent
+under integrated proposals, providing an auditable substrate for
+dependable agentic-workflow deployment.
 \end{abstract}
 
 \begin{figure*}[!t]
@@ -312,13 +316,18 @@ four-round multi-stakeholder protocol with an integrated-proposal vote, the
 scaffold converts a $6\%$ debate standoff into $95\%$ full consensus while
 preserving a small $1.6\%$ structural-rejection rate concentrated in roles
 whose stake the integrated proposal undermines (\S\ref{sec:exp2}). The
-intervention is a small auditable prompt change. It does not solve
-alignment, and it does not by itself reduce the saturated downstream
-deployment probes that motivated the diagnosis (Appendix~\ref{app:deploy}).
-What it does is remove two failure modes that fire near-universally on
-current frontier models, and produce defeasible multi-agent commitments
-that revise under counter-evidence yet hold firm where revision would harm
-a stakeholder.
+intervention is a small auditable prompt change that adds no weights or
+training data. The resulting trace externalises the stakeholders, the
+projected consequences, and the uncertainty that ground each commitment,
+and the multi-agent extension preserves principled dissent rather than
+collapsing into uniform agreement. We read the combination as evidence
+that a dependable, inspectable substrate for ethical reasoning is
+recoverable from current pretrained models by inference-time scaffolding
+alone, a property well-suited to agentic-workflow deployments where
+auditable rationale matters as much as the chosen action. The saturated
+downstream deployment probes that motivated the diagnosis remain
+saturated under either scaffold (Appendix~\ref{app:deploy}); harder
+probe sets are pre-registered as future work.
 
 \section{Background and Related Work}
 \label{sec:related}
@@ -650,10 +659,14 @@ and \texttt{third\_party} agent roles, on debates where honouring one
 stakeholder's modification structurally undermines another's stake
 (\texttt{pharma\_whistleblower} on the senior colleague role,
 \texttt{av\_engineer} on the future-pedestrian role). This is the
-structural shape a defeasibility-respecting protocol should produce.
-With $N{=}4$ rejections the qualitative pattern is suggestive rather
-than statistically confirmatory, and the full-quartet replication is
-pre-registered as the actual test.
+structural shape a defeasibility-respecting protocol should produce,
+and is the property that distinguishes a dependable multi-agent
+consensus from uniform compliance: a downstream auditor of an
+agentic-workflow vote sees not just the winning proposal but also
+which stakeholders refused and why. With $N{=}4$ rejections the
+qualitative pattern is suggestive rather than statistically
+confirmatory, and the full-quartet replication is pre-registered as the
+actual test.
 
 \paragraph{Scope.} The convergence arc is established on the
 \texttt{gpt-5.4-nano} pilot; replicating the four-round protocol on the
@@ -711,7 +724,14 @@ concentrated in the roles whose stake the integrated proposal undermines.
 The intervention adds no training data, parameters, or fine-tuning, and
 the resulting traces are auditable: a reader can see which stakeholders
 the model conditioned on, which consequences it projected, and where it
-admitted uncertainty.
+admitted uncertainty. The same auditability extends to the multi-agent
+layer, where the integrated-proposal vote produces a consensus that
+preserves principled dissent rather than collapsing into uniform
+agreement. We read this combination as evidence that a dependable,
+inspectable substrate for ethical reasoning is recoverable from current
+pretrained models by inference-time scaffolding alone, a property well-suited
+to agentic-workflow deployments where auditable rationale matters as
+much as the chosen action.
 
 Two next steps are pre-registered. A Tier-3 human pairwise preference
 study (50 pairs, blinded pairwise design, one-sided Wilcoxon signed-rank,
