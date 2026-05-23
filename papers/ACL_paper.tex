@@ -305,17 +305,28 @@ misalignment \citep{yan2025rim,sharma23}.
 
 We introduce narrative chain-of-thought (N-CoT), a system prompt that puts
 the model on the manifold of human narrative its pretraining corpus most
-heavily samples. The model is asked, in first person, to name a protagonist,
-enumerate stakeholders, project two-step consequences, articulate
-uncertainty, and only then commit. Figure~\ref{fig:hero} states the
-mechanism. The methodological move is the one \citet{gottweis25} make for
-scientific discovery and \citet{lu24_aiscientist} extend to end-to-end
-research workflows: scaffold LLM reasoning into the primitives of the
-target domain. The primitives we reify are the primitives of human ethical
-reflection. At the multi-agent layer we replace the AI co-scientist's
-meta-review role with a moderator that integrates competing stakeholder
-positions into a single proposal and asks each stakeholder to vote
-(\S\ref{sec:exp2}).
+heavily samples. The model is asked, in first person, to name a
+protagonist, enumerate stakeholders, project two-step consequences,
+articulate uncertainty, and only then commit. Figure~\ref{fig:hero} states
+the mechanism.
+
+What we borrow from the multi-agent systems for scientific discovery of
+\citet{gottweis25} and \citet{lu24_aiscientist} is one methodological move:
+scaffold LLM reasoning into the primitives of the target domain, then
+integrate across primitives with a meta-review step at the top of the
+hierarchy. Three things distinguish our application of that move. The
+primitives we reify are narrative rather than scientific (protagonist,
+stakeholders, consequences, uncertainty, commitment), so the artefact a
+reader inspects is a coherent story rather than a ranked candidate list.
+The single-agent layer is a contribution in its own right:
+\S\ref{sec:exp1} shows that reifying these primitives inside one generator
+already eliminates two cross-vendor failure modes of standard CoT, before
+any multi-agent composition is invoked. And because ethics has no
+experimental-falsification oracle, the success criterion that replaces
+hypothesis ranking is consensus that preserves principled dissent,
+evaluated in \S\ref{sec:exp2} via a binary integrated-proposal vote whose
+residual rejections concentrate in the roles whose stake the proposal
+materially undermines.
 
 This paper reports three results. First, on a 100-scenario DailyDilemmas
 sample across the four-generator quartet, N-CoT cuts both failure modes to
