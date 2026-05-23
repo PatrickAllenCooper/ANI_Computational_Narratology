@@ -1185,16 +1185,15 @@ can settle.
 scenarios. Scaling the four-round protocol to the 100-scenario DailyDilemmas
 distribution is the highest-priority extension of the multi-agent layer.
 
-\paragraph{Inter-judge $\kappa$ on causal-chain depth is low.} Even
-after rubric tightening, inter-judge $\kappa$ on
-\texttt{max\_causal\_hops} remains $\approx 0.08$, essentially chance.
-We report that variable's direction-of-effect in Appendix~\ref{app:kappa}
-but do not include it in any headline claim, and we explicitly do not
-treat it as load-bearing for \S\ref{sec:grounding}'s $K_C$ discussion:
-a variable that judges disagree on at chance cannot itself support a
-theoretical narrative about parsimony of the underlying causal
-trace, even when the panel of length-invariant proxies is brought to
-bear (which, separately, falsifies the gzip-only claim regardless).
+\paragraph{Inter-judge $\kappa$ on causal-chain depth is borderline.} Even
+after rubric tightening, inter-judge quadratic-weighted $\kappa$ on
+\texttt{max\_causal\_hops} is $0.391$ (Appendix~\ref{app:kappa}),
+marginally below the $0.40$ moderate-agreement threshold.
+We report that variable's direction-of-effect but keep it out of all
+headline claims as a conservative choice given the borderline reliability;
+we do not treat it as load-bearing for \S\ref{sec:grounding}'s $K_C$
+discussion, which is falsified independently by the length-residualisation
+panel regardless of causal-hop coding.
 
 \paragraph{Agentic-probe scenarios are fictional.} The two agentic-misalignment
 scenarios replicated in \S\ref{sec:deployment} are fictional structures adapted
@@ -1265,11 +1264,15 @@ the failure-mode rubric will be released with the camera-ready version.
 Table~\ref{tab:kappa} reports quadratic-weighted Cohen's $\kappa$
 \citep{cohen60} per structural variable, computed on the full
 Experiment~1 DailyDilemmas corpus ($n = 3{,}726$ complete pairs out of
-$3{,}770$ designed cells). The three generators covered are
-\texttt{claude-haiku-4-5} ($13$ scenarios $\times$ $N{=}20$ per cell),
-\texttt{grok-4-1-fast-reasoning} ($100$ scenarios $\times$ $N{=}5$),
-and \texttt{claude-sonnet-4-6} ($100$ scenarios $\times$ $N{=}5$),
-across $3$ headline conditions. \texttt{gpt-5.4-nano} is excluded from
+$3{,}780$ designed cells: \texttt{claude-haiku-4-5} $13 \times 20 \times 3 = 780$;
+\texttt{grok-4-1-fast-reasoning} $100 \times 5 \times 3 = 1{,}500$;
+\texttt{claude-sonnet-4-6} $100 \times 5 \times 3 = 1{,}500$).
+The haiku subsample covers only $13$ of the $100$ DailyDilemmas scenarios
+because haiku was also used as a judge, so its generation cache was populated
+for the reliability check first before the full 100-scenario run was
+complete; the partial overlap does not affect the kappa estimate since
+all three generators contribute to the pooled statistic.
+The three generators are covered across $3$ headline conditions. \texttt{gpt-5.4-nano} is excluded from
 this reliability estimate because it also serves as the secondary judge;
 its cross-judge agreement cannot be computed independently.
 Values are computed between the primary judge (\texttt{claude-haiku-4-5})
