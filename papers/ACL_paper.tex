@@ -277,20 +277,31 @@ dependable agentic-workflow deployment.
 \section{Introduction}
 \label{sec:intro}
 
-A frontier LLM asked to think step by step about an everyday moral dilemma
-frequently produces a trace that does not look like ethical reasoning. On
-the DailyDilemmas corpus \citep{chiu24}, four frontier generators spanning
-three vendors (OpenAI, Anthropic, xAI) and two model tiers suppress
-articulated uncertainty on $50$--$72\%$ of standard-CoT outputs and collapse
-the stakeholder set on $15$--$31\%$. This is a structural deficit of the
-trace itself: the model commits to a projected outcome it cannot warrant,
-and it does so against a flattened picture of who is affected. The same
-shape of deficit is coherent with deployment-relevant failures reported
+Consider a familiar family question. An aging parent has had two minor
+accidents in the past year and refuses to give up driving. Should the
+family insist? A frontier LLM prompted to think step by step on this
+scenario typically picks a side within a few sentences, projects a
+confident downstream outcome (``safety first''; ``they will adjust''),
+and rarely names the people whose lives the decision actually touches:
+the parent's autonomy and social access, the pedestrians on familiar
+routes, the relatives who will inherit the conflict, the friends who
+depend on the parent for rides. The model is not necessarily wrong; the
+trace it produced does not look like the kind of reasoning the decision
+warrants.
+
+The pattern is not specific to one dilemma. On the DailyDilemmas corpus
+\citep{chiu24}, four frontier generators spanning three vendors (OpenAI,
+Anthropic, xAI) and two model tiers suppress articulated uncertainty on
+$50$--$72\%$ of standard-CoT outputs and collapse the stakeholder set on
+$15$--$31\%$. This is a structural deficit of the trace itself: the
+model commits to a projected outcome it cannot warrant, and it does so
+against a flattened picture of who is affected. The same shape of
+deficit is coherent with deployment-relevant failures reported
 elsewhere, including the GPT-4o sycophancy rollback
 \citep{openai_sycophancy_2025, openai_sycophancy_expand_2025},
-agentic-misalignment blackmail rates up to $96\%$ in simulated deployments
-\citep{anthropic_agentic_2025}, and reasoning-induced misalignment
-\citep{yan2025rim,sharma23}.
+agentic-misalignment blackmail rates up to $96\%$ in simulated
+deployments \citep{anthropic_agentic_2025}, and reasoning-induced
+misalignment \citep{yan2025rim,sharma23}.
 
 We introduce narrative chain-of-thought (N-CoT), a system prompt that puts
 the model on the manifold of human narrative its pretraining corpus most
