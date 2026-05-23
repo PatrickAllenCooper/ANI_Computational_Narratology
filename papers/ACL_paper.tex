@@ -276,24 +276,32 @@ failure modes that fire near-universally on current frontier models.
 \section{Introduction}
 \label{sec:intro}
 
-Large language models that pass policy filters can still produce outputs that
-flatter users into harm. OpenAI rolled back a GPT-4o update in April 2025 after
-the model began validating ``problematic ideas'', endorsing impulsive choices,
-and reinforcing emotional over-reliance \citep{openai_sycophancy_2025,
-openai_sycophancy_expand_2025}. In simulated agentic deployments, sixteen
-frontier models from five vendors blackmailed an executive at rates up to 96\%
-when continued operation required it \citep{anthropic_agentic_2025}. Both
-patterns are instances of locally rewarded behaviour with predictably
-bad downstream consequences, a structural property of optimising
-immediate feedback signals \citep{sharma23, malmqvist24}.
+A frontier LLM asked to think step by step about an everyday moral
+dilemma frequently produces a trace that does not look like ethical
+reasoning at all. When asked ``think step by step'' on the
+DailyDilemmas corpus \citep{chiu24}, four frontier generators spanning
+three vendors (OpenAI, Anthropic, xAI) and two model tiers suppress
+articulated uncertainty on $50$--$72\%$ of scenarios and collapse the
+stakeholder set on $15$--$31\%$ of scenarios. This is a structural
+deficit of the trace, not a labelled safety violation, and the
+deployment-relevant failures that have been reported elsewhere
+(GPT-4o sycophancy roll-back \citep{openai_sycophancy_2025,
+openai_sycophancy_expand_2025}, agentic-misalignment blackmail rates
+up to $96\%$ in simulated deployments \citep{anthropic_agentic_2025},
+reasoning-induced misalignment \citep{yan2025rim}) are coherent with
+the same underlying picture of optimising locally rewarded behaviour
+without articulating downstream consequences
+\citep{sharma23, malmqvist24}. We do not claim N-CoT
+\emph{reduces} these deployment-relevant failures on the current
+deployment-relevant benchmarks: SycophancyEval is saturated on the
+quartet and the two replicated agentic scenarios refuse
+unconditionally on every model under either scaffold (full results
+\S\ref{sec:deployment}). The contribution this paper makes is on the
+upstream trace, not on the saturated downstream probes; the hypothesis
+that fixing the upstream trace propagates to harder, less-public
+deployment scenarios is registered as future work.
 
-The intuition we develop in this paper is that the same surface failures are
-visible in something simpler than agentic blackmail: how a model reasons
-through an everyday moral dilemma. When asked ``think step by step'' on the
-DailyDilemmas corpus \citep{chiu24}, four frontier generators spanning three
-vendors (OpenAI, Anthropic, xAI) and two model tiers suppress articulated
-uncertainty on $50$--$72\%$ of scenarios and collapse the stakeholder set on
-$15$--$31\%$ of scenarios. The hypothesis we test is that asking the
+The hypothesis we test on the upstream trace is that asking the
 model to narrate the same dilemma, by naming a protagonist, enumerating
 stakeholders, projecting two-step consequences, and surfacing genuine
 uncertainty before committing, elicits a causally richer trace because
@@ -311,7 +319,13 @@ stakeholders, projected consequences, uncertainty, commitment), and at
 the multi-agent layer we replace the AI co-scientist's meta-review
 role with a moderator that integrates competing stakeholder positions
 into a single proposal and then asks each stakeholder to vote on it
-(\S\ref{sec:exp2}).
+(\S\ref{sec:exp2}). The analogy is methodological and partial:
+hypothesis tournaments in scientific discovery can be ranked against a
+ground-truth signal (experimental falsification), whereas
+multi-stakeholder value standoffs do not have an equivalent ranking
+oracle, which is precisely why we report the integrated-proposal
+acceptance pattern and the residual structural rejections rather than
+a single ``winning'' value position.
 
 \paragraph{Contributions.}
 We diagnose two cross-vendor failure modes that empirically fire on
@@ -536,7 +550,13 @@ Four generators are tested: \texttt{gpt-5.4-nano} ($N{=}20$) from the
 original pilot, plus three new generators spanning two additional vendors:
 \texttt{claude-haiku-4-5} ($N{=}20$), \texttt{grok-4-1-fast-reasoning}
 ($N{=}5$), and the flagship \texttt{claude-sonnet-4-6} ($N{=}5$,
-cost-controlled). Outputs are coded by two cross-vendor judges
+cost-controlled). Here $N$ is the number of independent samples per
+(scenario, condition, generator) cell drawn at temperature 1; with the
+100-scenario sample and three conditions this yields $300N$ generations
+per generator before the cross-judge coding stage. Coded sample sizes
+($N_{\textsc{s}}, N_{\textsc{n}}$ in Table~\ref{tab:firing}) are
+slightly smaller because the rubric drops generations where the judge
+could not extract a coded variable. Outputs are coded by two cross-vendor judges
 (\texttt{claude-haiku-4-5} primary, \texttt{gpt-5.4-nano} secondary) on a
 six-variable rubric with linearly-weighted Cohen's $\kappa$ \citep{cohen60}
 per variable. The scenario pool is a 100-scenario stratified sample of
@@ -727,19 +747,21 @@ full consensus across all five scenarios and both generators, with the
 integrated proposal addressing a mean of $2.98$ of the $3$ agent
 modifications per debate.
 
-\paragraph{Finding 5: the residual $1.6\%$ rejection is signal, not noise.}
-The four binary-vote rejections that survive the four-round protocol are
-concentrated in the \texttt{primary\_affected} and \texttt{third\_party}
-agent roles, on debates where honouring one stakeholder's modification
-request structurally undermines another's stake (\texttt{pharma\_whistleblower}
-on the senior colleague role; \texttt{av\_engineer} on the future-pedestrian
-role). The protocol does not paper over irreconcilable concerns; it
-surfaces them. This is the operational signature of defeasibility:
-positions are revised through narrated stakeholder reasoning where revision
-is supportable, and held where the underlying concern is structurally
-non-negotiable. A protocol that produced $100\%$ acceptance under
-integration would be the indictment, not the endorsement; it would suggest
-the agents are sycophantic toward the moderator.
+\paragraph{Finding 5: $4/250$ structurally interpretable rejections,
+underpowered for a defeasibility claim.} The integrated-proposal vote
+in Round~4 produces $4$ rejections out of $250$ binary votes
+($1.6\%$). All four concentrate in the \texttt{primary\_affected} and
+\texttt{third\_party} agent roles, on debates where honouring one
+stakeholder's modification request structurally undermines another's
+stake (\texttt{pharma\_whistleblower} on the senior colleague role;
+\texttt{av\_engineer} on the future-pedestrian role). This pattern is
+the structural shape we would expect from a defeasibility-respecting
+protocol, but with $N{=}4$ rejections it is not statistically
+distinguishable from chance role-assignment noise; we report the
+qualitative pattern as suggestive of the operational signature of
+defeasibility, and pre-register the full-quartet scaling
+(Finding~6) as the actual test. We do not treat the four-vote pattern
+as confirmation of the defeasibility construct on its own.
 
 \paragraph{Finding 6: scope of claim and a deferred cross-vendor extension.}
 The convergence arc reported above runs the full four-round protocol on the
@@ -969,10 +991,30 @@ projecting, so a reader can see what bias is driving the commitment.
 The Round~4 binary vote was added precisely to discriminate the two: it
 strips the \texttt{ACCEPT\_WITH\_MODIFICATION} escape valve, forces an
 unambiguous accept-or-reject choice, and asks whether agents will refuse an
-integrated proposal that fails to honour their stake. They do, in $1.6\%$
-of votes, with rejections concentrated in the roles whose interests the
-integrated proposal materially undermines. A pliable system would have
-produced $100\%$ acceptance.
+integrated proposal that fails to honour their stake. They do, in $4/250$
+($1.6\%$) of votes, with rejections concentrated in the roles whose
+interests the integrated proposal materially undermines. The pattern is
+the shape a defeasibility-respecting protocol should produce, but with
+$N{=}4$ rejections it is suggestive rather than confirmatory; we treat
+the cross-vendor scaling in Finding~6 as the actual test.
+
+\paragraph{``N-CoT just makes outputs longer and more committal, not better.''}
+This is a serious alternative reading and the present results do not
+rule it out. The decisiveness shift (per-scenario decision entropy
+drops under N-CoT, Limitations) and the agentic-probe pattern
+(N-CoT systematically converts clean refusals into truncated hedge
+tool-call traces, Table~\ref{tab:agentic_full},
+Figure~\ref{fig:agentic}) are both consistent with ``longer and more
+committal but no better''. The structural ablation
+(\S\ref{sec:exp1-ablation}) rules out the simplest version of this
+reading by showing that each substantive sub-instruction carries its
+own target metric specifically, with $|\delta| \le 0.13$ off-diagonal;
+that is what a length-only confound would not produce. It does not
+rule out a more interesting version, in which the prompt elicits both
+the structural variable \emph{and} a separate decisiveness shift, with
+the latter being a regression rather than an improvement. The Tier-3
+human pairwise study is the right test of which way that net effect
+falls.
 
 \paragraph{``The $K_C$ proxy is a brittle gzip trick.''}
 On the data we have, this objection is correct. The raw
@@ -1047,28 +1089,40 @@ refused any DailyDilemmas scenario under any condition; testing whether
 N-CoT recovers refusal scenarios requires a more aggressively safety-tuned
 target.
 
-\paragraph{Single-proxy $K_C$.} Of the three proxies pre-registered for
-$K_C$ ($\hat{K}_{\text{graph}}$, $\hat{K}_{\text{gzip}}$,
-$\hat{K}_{\text{lm}}$), only $\hat{K}_{\text{gzip}}$ was computed in this
-budget run. The other two would require $\sim 30{,}000$ additional judge
-calls and are deferred. The cross-proxy validation that the protocol
-specifies is therefore not yet present; the gzip-only result is reported
-as a single-proxy directional finding rather than a multi-proxy
-confirmation.
+\paragraph{The proxy panel did not validate $K_C$ at inference time.}
+We registered three proxies for $K_C$ and computed the cheapest one
+($\hat{K}_{\text{gzip}}$) on the full Phase~1 cache. The raw correlation
+of ${\approx}0.87$ collapses under length residualisation, as does every
+member of a stress-test panel of six additional length-invariant proxies
+(\S\ref{sec:grounding}). The remaining two registered proxies
+($\hat{K}_{\text{graph}}$, $\hat{K}_{\text{lm}}$) require ${\sim}30{,}000$
+additional judge calls and are deferred to follow-up work; on the
+evidence we have so far, the inference-time gzip claim does not stand.
 
-\paragraph{Anthropic generators residualise to zero.} On the two Anthropic
-quartet members, length-residualised Cliff's $\delta$ for stakeholder
-count and uncertainty score is statistically indistinguishable from zero.
-The interpretation we endorse, that these models already exhibit the
-target structural density per unit length under standard CoT and N-CoT's
-gain comes through making the output longer, is consistent with the
-data but is not the only consistent story. A confound we cannot rule out
-is that our cross-vendor judges (\texttt{claude-haiku-4-5} primary,
-\texttt{gpt-5.4-nano} secondary) are systematically more lenient with
-shorter Anthropic-style outputs. The $\kappa$ on stakeholder count and
-uncertainty score is high enough ($0.59$ and $0.61$) that we do not
-suspect this is the dominant story, but it remains an open question that
-a larger or more carefully calibrated judge stack would resolve.
+\paragraph{Anthropic generators residualise to zero.} On the two
+Anthropic quartet members, length-residualised Cliff's $\delta$ for
+stakeholder count and uncertainty score is statistically indistinguishable
+from zero. The interpretation we endorse, that these models already
+exhibit the target structural density per unit length under standard
+CoT and N-CoT's gain comes through making the output longer, is
+consistent with the data but is not the only consistent story.
+
+\paragraph{Judge circularity.} \texttt{claude-haiku-4-5} and
+\texttt{gpt-5.4-nano} appear both as generators in the quartet and as
+the two judges that produce the coded structural variables. This is a
+genuine validity threat beyond the leniency confound noted above:
+self- and sibling-judging could bias structural-variable counts
+upward on those generators' own outputs. We mitigate by always using
+the \emph{non-self} sibling as the primary judge for any given
+generator, by reporting both judges' values in the cached coded outputs
+(\path{coded_results_judge1.csv}, \path{coded_results_judge2.csv}), and
+by carrying weighted Cohen's $\kappa$ across all headline analyses;
+but a held-out or non-LLM judge on a subsample is the cleaner test and
+is folded into the deferred Tier-3 protocol. We do not claim the
+present judge stack discharges the concern; we claim only that the
+direction-of-effect agreement across the two judges with non-zero
+$\kappa$ on the headline variables is harder to explain by judge
+collusion than by a real structural shift.
 
 \paragraph{N-CoT increases decisiveness.} Per-scenario decision entropy is
 lower under N-CoT than standard CoT. This is consistent with narrative
@@ -1081,10 +1135,16 @@ can settle.
 scenarios. Scaling the four-round protocol to the 100-scenario DailyDilemmas
 distribution is the highest-priority extension of the multi-agent layer.
 
-\paragraph{Inter-judge $\kappa$ on causal-chain depth is low.} Even after rubric
-tightening, inter-judge $\kappa$ on \texttt{max\_causal\_hops} remains
-$\approx 0.08$. We report that variable's direction-of-effect in
-Appendix~\ref{app:kappa} but do not include it in any headline claim.
+\paragraph{Inter-judge $\kappa$ on causal-chain depth is low.} Even
+after rubric tightening, inter-judge $\kappa$ on
+\texttt{max\_causal\_hops} remains $\approx 0.08$, essentially chance.
+We report that variable's direction-of-effect in Appendix~\ref{app:kappa}
+but do not include it in any headline claim, and we explicitly do not
+treat it as load-bearing for \S\ref{sec:grounding}'s $K_C$ discussion:
+a variable that judges disagree on at chance cannot itself support a
+theoretical narrative about parsimony of the underlying causal
+trace, even when the panel of length-invariant proxies is brought to
+bear (which, separately, falsifies the gzip-only claim regardless).
 
 \paragraph{Agentic-probe scenarios are fictional.} The two agentic-misalignment
 scenarios replicated in \S\ref{sec:deployment} are fictional structures adapted
@@ -1095,14 +1155,16 @@ context differ. The pre-registered null-result interpretation is intentionally
 symmetric: failure to replicate would be reported as ``scaffolding does not reach
 this failure mode,'' not suppressed.
 
-\paragraph{$K_C$ proxies are design choices.} The three operationalisations of
-Algorithmic Causal Complexity are chosen for computational tractability; each
-is a biased proxy for the formally uncomputable $K_C(M)$. We require directional
-agreement across at least two of the three before making a substantive claim,
-but this requirement is itself a design decision. Alternative proxy choices
-(e.g., minimum-description-length compression under a neural code rather than
-gzip, or automated theorem-proving for causal consistency) remain unexplored
-and may produce stronger or weaker signals.
+\paragraph{$K_C$ proxies are design choices.} The proxies we tested
+(\S\ref{sec:grounding} headline panel; full per-generator table in
+Appendix~\ref{app:kc_panel}) are all surface-level descriptors of the
+returned text. Alternative proxy choices that we have not implemented,
+in particular relation-extracted causal-graph descriptors
+($\hat{K}_{\text{graph}}$) and an LM-coder $\hat{K}_{\text{lm}}$ that
+prices the trace against a neural language model, could in principle
+detect structure that surface compressors and character $n$-gram
+entropy cannot see. We note this as a real residual possibility, not
+as a defence of the current empirical leg.
 
 \section*{Ethics Statement}
 
