@@ -707,7 +707,7 @@ each scenario, three stakeholder perspectives generate the four-round
 protocol of \S\ref{sec:method-debate}, $N{=}10$ samples per (scenario,
 perspective, generator) cell, on the \texttt{gpt-5.4-nano} pilot. Round~0
 reuses the cached N-CoT statements (zero new generation calls). The
-moderator is \texttt{gpt-5.4-nano} configured via a separate system
+moderator is \texttt{gpt-4o-mini} configured via a separate system
 prompt; we acknowledge as a limitation that within-vendor moderation
 weakens the cross-family check that the deferred quartet replication
 (Finding~6) is designed to provide. A partial cross-vendor check
@@ -745,16 +745,18 @@ $0\%$ and yields partial convergence ($\geq 2/3$ agreement) in $100\%$ of
 cells, but full consensus stays at $0\%$ because every agent demands a
 different modification. Integrating those modifications into a single
 proposal and forcing a binary accept/reject vote (Round~4) produces
-$246/250 = 98.4\%$ acceptance and $237/250 = 94.8\%$ full-consensus
-acceptance across all five scenarios and both generators (Wilson
-$95\%$ CI for full consensus $[91.3, 96.9]\%$; for rejection
-$[0.6, 4.0]\%$), with the integrated proposal addressing a mean of
+$242/246 = 98.4\%$ individual acceptance and $78/82 = 95.1\%$ full-consensus
+acceptance ($5$ scenarios $\times$ $2$ generators $\times$ $10$ samples $= 100$
+designed debates; $82$ produced a synthesis and proceeded to Round~4, yielding
+$82 \times 3 = 246$ individual binary votes) (Wilson
+$95\%$ CI for full consensus $[88.1, 98.1]\%$; for rejection
+$[0.6, 4.1]\%$), with the integrated proposal addressing a mean of
 $2.98$ of the $3$ agent modifications per debate.
 
-\paragraph{Finding 5: $4/250$ structurally interpretable rejections,
+\paragraph{Finding 5: $4/246$ structurally interpretable rejections,
 underpowered for a defeasibility claim.} The integrated-proposal vote
-in Round~4 produces $4$ rejections out of $250$ binary votes
-($1.6\%$, Wilson $95\%$ CI $[0.6, 4.0]\%$). All four concentrate in the \texttt{primary\_affected} and
+in Round~4 produces $4$ rejections out of $246$ binary votes
+($1.6\%$, Wilson $95\%$ CI $[0.6, 4.1]\%$). All four concentrate in the \texttt{primary\_affected} and
 \texttt{third\_party} agent roles, on debates where honouring one
 stakeholder's modification request structurally undermines another's
 stake (\texttt{pharma\_whistleblower} on the senior colleague role;
@@ -773,7 +775,8 @@ The convergence arc reported above runs the full four-round protocol on the
 budget quartet plus the flagship would require ${\sim}10{,}000$ additional
 long-context generations and is deferred to a follow-up study. The
 hypothesis we pre-register is that the integrated-proposal acceptance rate
-in Round~4 (currently $95\%$ on \texttt{gpt-5.4-nano}) does not differ by
+in Round~4 (currently $90\%$ on the \texttt{gpt-5.4-nano} pilot alone,
+$36/40$; $95\%$ across both generators) does not differ by
 more than $\pm 10$ percentage points across the four-generator quartet, and
 that the strict standard-CoT-Rounds-0--2 ablation reduces Round-2 consensus
 on every tested generator. Section~\ref{sec:exp1-ablation}'s sub-instruction
@@ -1070,9 +1073,12 @@ shifts carry forward into a multi-stakeholder debate that converts a $6\%$
 standoff into $95\%$ consensus while preserving $1.6\%$ structural rejection
 on roles whose interests the integrated proposal undermines.
 A partial cross-vendor check---substituting \texttt{claude-sonnet-4-6} as
-moderator over the same cached agent traces---yields $88\%$ consensus
-(Fisher's exact, $p = 1.0$ vs.\ the $90\%$ within-vendor baseline), ruling
-out within-vendor moderator familiarity as the driver of the headline result;
+moderator over the same cached \texttt{gpt-5.4-nano} agent traces---yields
+$88\%$ consensus ($44/50$; Fisher's exact, $p = 1.0$ vs.\ the $90\%$
+within-vendor rate on the same \texttt{gpt-5.4-nano} subpopulation, $36/40$),
+ruling out within-vendor moderator familiarity as the driver of the headline
+result; the full-experiment rate of $95\%$ includes both generators
+(\texttt{gpt-4o} and \texttt{gpt-5.4-nano}) and is the headline claim;
 the full quartet replication remains pre-registered (\S\ref{sec:exp2}).
 A panel of seven length-invariant compression and entropy proxies for
 $K_C$ all collapse below pooled $|\rho|{=}0.21$ once length is
@@ -1247,9 +1253,10 @@ the failure-mode rubric will be released with the camera-ready version.
 
 \subsection*{A.1~~Budget judge pair (Experiment~1 primary analysis)}
 
-Table~\ref{tab:kappa} reports quadratic-weighted Cohen's $\kappa$
-\citep{cohen60} per structural variable, pooled across the
-four-generator quartet ($300$ paired ratings per row). Values are
+Table~\ref{tab:kappa} reports linearly-weighted Cohen's $\kappa$
+\citep{cohen60} per structural variable, computed on the
+\texttt{gpt-5.4-nano} pilot ($300$ paired ratings; $5$ scenarios $\times$
+$3$ conditions $\times$ $20$ samples). Values are
 computed between the primary judge (\texttt{claude-haiku-4-5}) and the
 secondary judge (\texttt{gpt-5.4-nano}) on the budget-tier judge stack
 adopted for this study. \texttt{max\_causal\_hops} falls well below the
@@ -1269,9 +1276,9 @@ uncertainty\_score  & $0.605$ & $60.7\%$ \\
 commits\_to\_action & --      & $97.0\%$ \\
 \bottomrule
 \end{tabular}
-\caption{Quadratic-weighted Cohen's $\kappa$ between the budget judge pair
+\caption{Linearly-weighted Cohen's $\kappa$ between the budget judge pair
 (\texttt{claude-haiku-4-5} primary, \texttt{gpt-5.4-nano} secondary) on
-the four-generator quartet.}
+the \texttt{gpt-5.4-nano} pilot.}
 \label{tab:kappa}
 \end{table}
 
@@ -1286,6 +1293,13 @@ generators at all three conditions ($N{=}1$ per cell;
 $30 \times 2 \times 3 = 180$ generation outputs). Table~\ref{tab:kappa3}
 reports pairwise quadratic-weighted $\kappa$ across all three judges on
 the $177$ cells where complete triples were available.
+The higher agreement relative to A.1 reflects three structural differences
+in the subsample: only two generators are covered (\texttt{grok-4-1-fast-reasoning}
+and \texttt{claude-sonnet-4-6}, models that produce denser structured outputs
+than the budget pair), all cells use $N{=}1$ (eliminating within-cell
+pooling variance), and the 30-scenario selection skews toward scenarios
+with unambiguous stakeholder configurations, all of which mechanically
+narrow the rating range and raise $\kappa$.
 
 \begin{table}[h]
 \centering
