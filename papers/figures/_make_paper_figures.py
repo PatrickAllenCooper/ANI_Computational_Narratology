@@ -60,10 +60,10 @@ def make_debate_arc_figure() -> None:
     df = pd.read_csv(DATA_DIR / "debate_full_arc.csv")
 
     stages = [
-        "Closed\n(Sec.\u00a013)",
-        "Open\n(Sec.\u00a014)",
-        "Synthesis\n(Sec.\u00a015)",
-        "Integrated\n(Sec.\u00a016)",
+        "Closed\n(Rounds 0\u20132)",
+        "Open\n(Round 2+)",
+        "Synthesis\n(Round 3)",
+        "Integrated\n(Round 4)",
     ]
     full_cols = ["sec13_consensus", "sec14_consensus", "sec15_full", "sec16_full"]
     partial_cols = [
@@ -166,7 +166,7 @@ def make_debate_arc_figure() -> None:
         (1, 0.09, "9%", 0, 12, "center", "bottom", INK, None),
         (2, 0.0, "0%", 0, 12, "center", "bottom", INK, None),
         (2, 1.0, "100%", -8, 6, "right", "bottom", INK, None),
-        (3, 0.96, "95% full", -8, -6, "right", "top", INK, None),
+        (3, 0.951, "95% full\n(90% nano, 100% gpt-4o)", -8, -6, "right", "top", INK, None),
         (3, 1.0, "100% majority", -8, 6, "right", "bottom", MUTED, None),
         (
             2.55, 0.22,
