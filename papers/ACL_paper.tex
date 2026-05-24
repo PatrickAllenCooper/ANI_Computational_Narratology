@@ -678,15 +678,17 @@ CIs are in Appendix~\ref{app:effects}.
 
 \paragraph{Length is a cost, not a substitute for the prompt.} A
 sceptical reading of the $5$--$7\times$ token premium is that the
-paper just spends more compute. The residualisation rules this out:
-at matched length, N-CoT still dominates standard CoT on the
-structural variables, so a ``longer standard CoT'' prompt spending the
-same token budget would not recover them. The cost sits on inference
-tokens, the cheapest scaling axis (no training, parameters, or
-fine-tuning), and is a small premium relative to interventions that
-match these structural targets at lower per-call cost (fine-tuning,
-reward modelling) but carry orders-of-magnitude higher fixed cost. A
-matched-budget standard-CoT condition is pre-registered.
+paper just spends more compute. Residualisation rules this out
+indirectly: at matched length, N-CoT still dominates standard CoT on
+the structural variables, so a ``longer standard CoT'' at the same
+budget should not recover them. The direct test (a verbose
+standard-CoT prompt instructed to ``think step by step in detail,'' run
+to N-CoT's median token budget on the same scenarios) is pre-registered:
+if structural density still rises only under N-CoT, length is ruled
+out as the mechanism. Inference tokens are also the cheapest scaling
+axis (no training, parameters, or fine-tuning), small relative to
+fine-tuning or reward modelling whose fixed costs are
+orders-of-magnitude higher.
 
 \subsection{Sub-Instruction Ablation}
 \label{sec:exp1-ablation}
