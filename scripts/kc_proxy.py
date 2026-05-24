@@ -192,6 +192,61 @@ def kc_lm(
 
 
 # ---------------------------------------------------------------------------
+# kc_graph_mdl and kc_struct_entropy (E7 SCM-level proxies)
+# ---------------------------------------------------------------------------
+
+def kc_graph_mdl(n_nodes: int, n_edges: int, text_len: int) -> dict:
+    """Minimum-description-length proxy over an extracted SCM.
+
+    MDL = log2(n_nodes) + log2(n_edges + 1), normalised by log2(text_len + 1)
+    so that longer texts don't trivially score higher.
+
+    Returns a dict with keys:
+      kc_graph_mdl: the MDL score (higher = more complex causal model)
+      mdl_raw: unnormalised MDL
+    """
+    import math
+    mdl_raw = math.log2(n_nodes + 1) + math.log2(n_edges + 1)
+    normaliser = math.log2(text_len + 1) if text_len > 0 else 1.0
+    mdl_norm = mdl_raw / normaliser if normaliser > 0 else 0.0
+    return {
+        "kc_graph_mdl": round(mdl_norm, 6),
+        "mdl_raw": round(mdl_raw, 4),
+    }
+
+
+def kc_struct_entropy(triples: list[list[str]]) -> dict:
+    """Shannon entropy of the row-normalised adjacency distribution over extracted triples.
+
+    Treats each (subject, object) pair as a graph edge. Computes the out-degree
+    distribution of the subject nodes, normalises to a probability distribution,
+    and returns its Shannon entropy (nats). Higher entropy = more branching causal
+    structure = higher structural complexity.
+
+    Returns a dict with keys:
+      kc_struct_entropy: entropy in nats
+      n_subjects: number of unique subject nodes
+    """
+    import math, collections
+    out_degree: dict = collections.Counter()
+    for t in triples:
+        if len(t) >= 3:
+            out_degree[t[0]] += 1
+    if not out_degree:
+        return {"kc_struct_entropy": 0.0, "n_subjects": 0}
+    total = sum(out_degree.values())
+    entropy = -sum(
+        (cnt / total) * math.log(cnt / total)
+        for cnt in out_degree.values()
+        if cnt > 0
+    )
+    return {
+        "kc_struct_entropy": round(entropy, 6),
+        "n_subjects": len(out_degree),
+    }
+
+
+# ---------------------------------------------------------------------------
 # Batch scorer
 # ---------------------------------------------------------------------------
 

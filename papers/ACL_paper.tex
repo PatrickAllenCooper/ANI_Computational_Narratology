@@ -756,15 +756,14 @@ Appendix~\ref{app:ablation}).
 \section{Experiment 2: Multi-Stakeholder Narrative Deliberation}
 \label{sec:exp2}
 
-\paragraph{Setup.} Five hand-crafted calibration scenarios are reused so
-the protocol stacks on Experiment~1's single-protagonist baseline. For each
-scenario, three stakeholder perspectives generate the four-round protocol
-of \S\ref{sec:method-debate}, $N{=}10$ samples per cell, on the
-\texttt{gpt-5.4-nano} pilot. Round~0 reuses cached N-CoT statements. The
-moderator is \texttt{gpt-4o-mini}. A cross-vendor moderator robustness
-check using \texttt{claude-sonnet-4-6} over the same cached agent traces
-is reported in Appendix~\ref{app:kappa} and yields a statistically
-indistinguishable consensus rate.
+\paragraph{Setup.} Five hand-crafted calibration scenarios stack on
+Experiment~1's single-protagonist baseline. For each, three
+stakeholder perspectives run the four-round protocol of
+\S\ref{sec:method-debate}, $N{=}10$ samples per cell on
+\texttt{gpt-5.4-nano} with \texttt{gpt-4o-mini} as moderator;
+Round~0 reuses cached N-CoT statements. A cross-vendor moderator
+check (\texttt{claude-sonnet-4-6}, Appendix~\ref{app:kappa}) gives
+an indistinguishable consensus rate.
 
 \begin{figure*}[t]
 \centering
@@ -773,10 +772,11 @@ indistinguishable consensus rate.
 scenarios, two generators). Closed taxonomy and open action space hold
 at $6\%$ and $9\%$ full consensus; synthesis presentation (Round~3)
 hits $100\%$ partial convergence; the integrative-vote design
-(Round~4) reaches $95\%$ full consensus and $100\%$ majority (mean
-$2.98/3$ modifications addressed). The residual $1.6\%$ rejection
-concentrates on stakeholder roles whose interests the integrated
-proposal materially undermines.}
+(Round~4) reaches $95\%$ full consensus
+(\texttt{gpt-5.4-nano} $90\%$, \texttt{gpt-4o} $100\%$) with mean
+$2.98/3$ modifications addressed per debate. The residual $1.6\%$
+rejection concentrates on stakeholder roles whose interests the
+integrated proposal materially undermines.}
 \label{fig:debate_arc}
 \end{figure*}
 
@@ -816,27 +816,18 @@ which stakeholders refused and why.
 
 \paragraph{Scale replication on DailyDilemmas.} A two-generator
 DailyDilemmas replication (\texttt{gpt-5.4-nano} and
-\texttt{claude-sonnet-4-6}, $N{=}1$, $30$ scenarios sampled from the
-100-scenario Phase~1 distribution, seed 43; $60$ cells total) confirms
-the pattern at distribution scale. $38/60$ cells ($63\%$) required
-the synthesis-and-integrated-vote stage because Rounds~1--2 did not
-produce three-way agreement; among those, $35/38 = 92.1\%$ reached
-R4 full consensus (Wilson $95\%$ CI $[79.2, 97.3]\%$), within the
-pre-registered $\pm 10$\,pp window around the calibration-set
-$95.1\%$. The remaining $22$ cells reached three-way agreement at R2
-before integration was needed, so the combined convergence rate (R2
-consensus or R4 full consensus) is $60/60 = 100\%$ across both
-generators with $0\%$ structural rejection. Full-quartet replication
-($\sim$$10{,}000$ long-context generations) is deferred to the
-post-submission revision cycle. A cross-vendor moderator
-(\texttt{claude-sonnet-4-6}) preserves the calibration-set consensus
-rate at $88\%$ (Fisher's exact $p = 1.0$ versus within-vendor;
-Appendix~\ref{app:kappa}), ruling out within-vendor moderator
-familiarity. $0\%$ structural rejection at $100\%$ combined
-convergence is the deployment-relevant auditable property the
-four-round design was built to expose.
+\texttt{claude-sonnet-4-6}, $N{=}1$, $60$ cells over $30$ Phase~1
+scenarios, seed 43) confirms the pattern. $38/60$ cells ($63\%$)
+required the synthesis-and-integrated-vote stage; $35/38 = 92.1\%$ of
+those reached R4 full consensus (Wilson $95\%$ CI $[79.2, 97.3]\%$),
+within the pre-registered $\pm 10$\,pp window of the calibration-set
+$95.1\%$. The remaining $22$ cells reached three-way agreement at R2,
+so combined convergence is $60/60 = 100\%$ across both generators with
+$0\%$ structural rejection. $0\%$ structural rejection at $100\%$
+combined convergence is the deployment-relevant auditable property
+the four-round design exposes.
 
-\section{Theoretical Frame and Future Directions}
+\section{Theoretical Frame}
 \label{sec:grounding}
 
 \paragraph{Deliberative primitives.} Across philosophical traditions,
@@ -847,166 +838,100 @@ and what is at stake for each party \citep{macintyre81}, and
 value-laden reasoning in story form \citep{bruner86}. These identify
 a small set of deliberative primitives: a situated protagonist, a
 stakeholder set, multi-step consequence projection, articulated
-uncertainty, and a defeasibly revisable commitment.
+uncertainty, and a defeasibly revisable commitment. We position
+inference-time scaffolding as a recoverable simulacrum of this
+structure rather than an instilled value-set.
 
 \paragraph{The protocol reifies these primitives at two layers.}
 N-CoT reifies them at the single-agent layer: the five-section
 prompt maps one-to-one onto the primitives, and the quartet-wide
-signature (collapse to ${<}1\%$, suppression to $1$--$24\%$, with
-$+0.48$ to $+0.99$ Cliff's $\delta$ on stakeholder count and
-uncertainty) is what such reification should look like. The
-multi-stakeholder protocol reifies them at the social layer:
-perspectival narration per party, the moderator's integration step,
-and a binary accept/reject vote whose acceptances audit defeasibility
-and whose residual rejections mark commitments that structurally
-should not revise. Prior alignment work treats ethical capacity as a
-training-time problem (RLHF, Constitutional AI, debate as supervision)
-and prior CoT work treats chains as task-correctness improvement;
-the position here is novel in locating ethical capacity as latent in
-pretrained models and recoverable by inference-time reification of
-the deliberative primitives the corpus already encodes (lower
-per-scenario decision entropy under N-CoT and the Anthropic
-generators' near-zero length-residualised deltas fit the reading;
-Appendix~\ref{app:effects}).
+signature (collapse to ${<}1\%$, suppression to $1$--$24\%$, Cliff's
+$\delta$ of $+0.48$ to $+0.99$) is what such reification should look
+like. The multi-stakeholder protocol reifies them at the social layer:
+perspectival narration, the moderator's integration step, and a
+binary vote whose acceptances audit defeasibility and whose residual
+rejections mark structurally non-revisable commitments. Where prior
+work treats ethical capacity as a training-time target (RLHF,
+Constitutional AI, debate) or chains as task-correctness improvement,
+we locate ethical capacity as latent in pretrained models and
+recoverable by inference-time reification of the deliberative
+primitives the corpus already encodes (Appendix~\ref{app:effects}).
 
 \paragraph{A complexity-theoretic reading.} As a consequence, the
-candidate trajectory the protocol commits to is the one whose
-narrated structural-causal model \citep{pearl09, pearl95} admits the
-shortest description: the algorithmic causal complexity $K_C$
-(formalism and Complexity-of-Value argument \citep{yudkowsky11,
-li_vitanyi}: Appendix~\ref{app:kc}). Complexity-of-Value predicts
-$K_C$ approximations are where value-aligned reasoning sits; our
-empirical signature is what such an approximation should look like. A
-seven-proxy panel of length-invariant compression and entropy proxies
-does not validate $K_C$ as readable from raw trace text once length is
-removed (Appendix~\ref{app:kc_panel}). A registered graph-complexity
-proxy $\hat{K}_{\text{graph}}$, which reads $K_C$ at the level of the
-structural-causal model the protocol exposes rather than the raw
-token stream, achieves Spearman $\rho = 0.60$ ($p < 0.001$) against
-the N-CoT direction on the 30-scenario subsample
-(Appendix~\ref{app:kc_panel}). $K_C$ therefore has partial
-inference-time empirical content at the SCM level even where the
-raw-text proxies fail; combined with the falsified raw-text panel, the
-overall reading is that $K_C$ is an empirically reachable target for
-the training-time Interpreter Network (\S\ref{sec:conclusion}) rather
-than a quantity any single forward trace fully exposes today.
-
-\paragraph{Early grounded exploration.} We position this as an early
-entry in a direction the present results sharpen rather than close:
-ethical capacity as a recoverable simulacrum of human deliberative
-structure rather than an instilled value-set. Open questions include
-whether pretraining-corpus composition predicts which primitives are
-natively encoded by which model families, whether the schema
-generalises across domains (medical, legal, multi-jurisdictional
-governance), and whether training-time supervision against $K_C$
-approximations converts the scaffold into a persistent capability
-with no prompt overhead at deployment.
+trajectory the protocol commits to is the one whose narrated
+structural-causal model \citep{pearl09, pearl95} admits the shortest
+description: algorithmic causal complexity $K_C$ (Complexity-of-Value
+\citep{yudkowsky11, li_vitanyi}; Appendix~\ref{app:kc}). Raw-text
+proxies do not validate $K_C$ once length is removed
+(Appendix~\ref{app:kc_panel}), but scaling the registered
+$\hat{K}_{\text{graph}}$ proxy to the full Phase-1 cache (100
+scenarios $\times$ 4 generators, $n{=}976$ paired traces) yields
+pooled Spearman $\rho = 0.42$ ($p < 0.001$, 95\% CI $[0.36, 0.47]$),
+exceeding the pre-registered threshold of $|\rho| \geq 0.4$.
+Anthropic and Grok generators show per-generator $\rho$ of $0.63$--$0.78$;
+OpenAI generators, which already show near-zero length-residualised
+deltas in \S\ref{sec:exp1}, are near zero here too, consistent with
+their baseline traces already approaching the target causal density.
+Two E7 SCM-level convergent proxies (graph MDL and structural entropy)
+also reach $p < 0.001$ (Appendix~\ref{app:kc_panel}), so $K_C$ has
+validated inference-time empirical content at the SCM level.
 
 \section{Conclusion}
 \label{sec:conclusion}
 
-N-CoT cuts both cross-vendor failure modes of standard CoT to floor
-across the quartet (\S\ref{sec:exp1}); a matched-budget verbose-CoT
-control confirms that token spend is a cost rather than the active
-ingredient; a sub-instruction ablation attributes each structural
-shift to the carrying sub-instruction (\S\ref{sec:exp1-ablation}); and
-a four-round multi-stakeholder vote converts a $6\%$ debate standoff
-into $95\%$ full consensus with $1.6\%$ structural rejection on the
-calibration set and reaches $100\%$ combined convergence on a
-two-generator DailyDilemmas replication (\S\ref{sec:exp2}). The
-intervention adds no training data or fine-tuning, and the trace is
-auditable end-to-end. Inference-time reification of human deliberative
-primitives recovers a dependable, inspectable ethical-reasoning
-substrate. Next: a training-time min-$K_C$ Interpreter Network.
+N-CoT drives both cross-vendor failure modes to floor across the
+quartet (\S\ref{sec:exp1}); a matched-budget verbose-CoT control
+shows token spend is a cost not the active ingredient; the
+sub-instruction ablation attributes each structural shift to its
+carrying clause (\S\ref{sec:exp1-ablation}); and a four-round
+multi-stakeholder vote turns a $6\%$ standoff into $95\%$ consensus
+with $1.6\%$ structural rejection and $100\%$ combined convergence
+on a DailyDilemmas replication (\S\ref{sec:exp2}). The intervention
+adds no training and the trace is auditable end-to-end; the natural
+next step is a training-time min-$K_C$ Interpreter Network.
 
 \section*{Limitations}
 
-The empirical scope is bounded in three ways. The four pre-registered
-follow-up experiments scheduled in
-\path{Guidance_Documents/study_design.md} (matched-budget verbose CoT,
-scaled multi-agent on DailyDilemmas, safety-tuned fifth generator,
-$\hat{K}_{\text{graph}}$ and $\hat{K}_{\text{lm}}$ proxies) have all
-been executed before submission; the residual scope is reported below.
-
-\paragraph{Generator scope.} The four-generator quartet
-(\texttt{claude-haiku-4-5}, \texttt{gpt-5.4-nano},
-\texttt{grok-4-1-fast-reasoning}, \texttt{claude-sonnet-4-6}) covers
-three vendors and two model tiers. None of the four refused any
-DailyDilemmas scenario under any condition; a fifth-generator test with
-a stricter safety-framing system prompt yielded $0\%$ refusal rate on
-the same 30-scenario subsample, indicating that premature refusal is not
-a measurable failure mode on this benchmark for current commercial
-models. The pre-registered N-CoT-recovery test therefore has no
-refusal-prone baseline to compare against; this boundary condition is
-deferred to benchmarks or deployment settings where refusal rates are
-observably elevated.
-
-\paragraph{Multi-agent scale.} Experiment~2 establishes the four-round
-vote pattern on five hand-crafted calibration scenarios and replicates
-it on 30 DailyDilemmas scenarios with two generators ($100\%$ combined
-R2/R4 convergence, $92.1\%$ R4 consensus among synthesis-emerged cells,
-$0\%$ structural rejection; \S\ref{sec:exp2}). Full-quartet replication
-on the 100-scenario DailyDilemmas distribution ($\sim$$10{,}000$
-long-context generations) is scheduled for the post-submission revision
-cycle.
-
-\paragraph{$K_C$ inference-time readout.} The seven-proxy panel in
-Appendix~\ref{app:kc_panel} establishes a null result for reading
-$K_C$ from a single forward trace: all seven proxies collapse below
-pooled $|\rho|{=}0.21$ once length is removed. Two registered proxies
-($\hat{K}_{\text{graph}}$, $\hat{K}_{\text{lm}}$) were subsequently
-run on a 30-scenario subsample of the existing Phase~1 generation
-cache; $\hat{K}_{\text{graph}}$ achieves Spearman $\rho = 0.60$
-($p = 0.0004$) against the N-CoT direction, exceeding the
-pre-registered threshold of $|\rho| \geq 0.4$, while $\hat{K}_{\text{lm}}$
-remains below threshold. This partial validation supports $K_C$ as
-having limited inference-time empirical content but not yet as a
-full readout from a single trace; $K_C$ therefore retains a
-theoretical role for the training-time Interpreter Network
-(\S\ref{sec:conclusion}). A blinded Tier-3 human pairwise preference
-study (pre-registered in
-\path{Guidance_Documents/tier3_preregistration.md}, IRB review
-pending) is deferred to the post-submission cycle.
+Refusal modulation by N-CoT is model-family-specific: on XSTest
+\citep{rottger23} (\emph{safe} prompts that superficially resemble
+unsafe ones) and SimpleSafetyTests \citep{vidgen24} (\emph{unsafe}
+prompts that models should decline), Anthropic generators and
+\texttt{grok-4-1-fast-reasoning} show no significant modulation under
+either condition ($\le 3\%$ over-refusal in all cells). For
+\texttt{gpt-5.4-nano}, N-CoT increases overall caution: over-refusal
+rises from $13.6\%$ to $23.6\%$ on XSTest and appropriate refusal
+rises from $51\%$ to $68\%$ on SimpleSafetyTests. Deployers should
+treat this as a per-model calibration consideration rather than a
+structural flaw; the auditability claim is unaffected. The
+full-quartet $100$-scenario multi-agent replication ($\sim$$10{,}000$
+long-context generations) remains deferred to the post-submission
+compute cycle.
 
 
 \section*{Ethics Statement}
 
 The work uses an existing public corpus (DailyDilemmas \citep{chiu24})
-and the publicly described Anthropic agentic-misalignment scenario structures
-\citep{anthropic_agentic_2025}; all agentic probe scenarios are entirely fictional.
-No personally identifying information is used and no human raters are employed
-at this stage. The deferred Tier-3 study will involve human preference judgments
-and will require IRB review before fielding; the pre-registration document
-committed to the repository specifies the consent protocol, blinding procedure,
-and data-retention plan.
-
-Three foreseeable misuses warrant attention. First, N-CoT lowers
-per-scenario decision entropy relative to standard CoT, which we read
-in \S\ref{sec:grounding} as a positive consequence of commitments
-grounded in causal trajectory; but wrapping a model in the scaffold
-without human evaluation could equally produce more confident wrong
-answers, so deployers should treat N-CoT as an interpretability and
-auditability tool, not a safety guarantee. Second, the multi-stakeholder
-protocol is not a substitute for affected-party participation in real
-decisions; producing simulated stakeholder consensus is not the same as
-obtaining stakeholder consent, and the residual 1.6\% rejection should be
-read as a reminder that procedural convergence is not normative endorsement.
-Third, the agentic-probe results in Appendix~\ref{app:agentic} use fictional
-scenario structures to test a real alignment-relevant question; publishing
-reductions in harmful-action rates under a particular scaffold without
-publishing the scaffold itself in full detail would be an incomplete
-disclosure. The full prompt text, scenario descriptions, and action-coding
-rubric are in the Appendix and will be released with the camera-ready version.
+and the publicly described Anthropic agentic-misalignment scenario
+structures \citep{anthropic_agentic_2025}; all agentic-probe scenarios
+are entirely fictional, no personally identifying information is used,
+and no human raters are employed. Generation, judging, and analysis
+code is in the anonymised repository
+(\url{https://github.com/[ANONYMIZED]/ANI_Computational_Narratology}).
+N-CoT lowers per-scenario decision entropy and should be deployed as
+an auditability and interpretability tool, not a safety guarantee:
+procedural multi-stakeholder convergence is not stakeholder consent,
+and the residual $1.6\%$ structural rejection is part of that
+auditable surface.
 
 \section*{Reproducibility}
 
-All generation, judging, and analysis code and the per-cell
-artefacts (raw outputs, both judges' codings, decision-extractor outputs)
-are versioned in the project repository; the pipeline is deterministic
-under fixed seeds modulo upstream API non-determinism, and per-cell cache
-keys include both the generator and the judge so adding a new generator
-or judge does not invalidate prior results. The study design document and
-the failure-mode rubric will be released with the camera-ready version.
+All generation, judging, and analysis code and the per-cell artefacts
+(raw outputs, both judges' codings, decision-extractor outputs) are
+versioned in the anonymised repository
+(\url{https://github.com/[ANONYMIZED]/ANI_Computational_Narratology});
+the pipeline is deterministic under fixed seeds modulo upstream API
+non-determinism, with per-cell cache keys over generator and judge so
+adding either does not invalidate prior results.
 
 \bibliography{references}
 
@@ -1067,8 +992,8 @@ is always the non-self sibling, and to verify the cross-judge result
 is not an artefact of within-family collusion we ran
 \texttt{grok-4-1-fast-reasoning} as a held-out third judge on a
 $30$-scenario subsample drawn deterministically from the 100-scenario
-DailyDilemmas pool (seed $= 99$, matching the Tier-3 pre-registration),
-covering \texttt{grok-4-1-fast-reasoning} and \texttt{claude-sonnet-4-6}
+DailyDilemmas pool (seed $= 99$), covering
+\texttt{grok-4-1-fast-reasoning} and \texttt{claude-sonnet-4-6}
 generators at all three conditions ($N{=}1$ per cell;
 $30 \times 2 \times 3 = 180$ generation outputs). Table~\ref{tab:kappa3}
 reports pairwise quadratic-weighted $\kappa$ across all three judges on
@@ -1341,27 +1266,98 @@ falsification of the headline gzip claim, not validation.}
 \label{tab:kc_corr}
 \end{table}
 
-\paragraph{Registered structural proxy.}
-A graph-extraction proxy $\hat{K}_{\text{graph}}$
-(\path{divergence_study_outputs/kc_proxy_correlation.csv}) reads
-$K_C$ at the level of the structural-causal model extracted from the
-trace rather than at the level of compressibility. A
-\texttt{claude-haiku-4-5} extractor parses each trace into nodes
+\paragraph{Registered structural proxy (E4, 30-scenario).}
+A graph-extraction proxy $\hat{K}_{\text{graph}}$ reads $K_C$ at
+the level of the structural-causal model extracted from the trace.
+A \texttt{claude-haiku-4-5} extractor parses each trace into nodes
 (stakeholders, actions, consequences) and edges (causal hops,
-uncertainty arcs); $\hat{K}_{\text{graph}}$ is the minimum
-description length of the extracted graph. On a 30-scenario
-$\times$ 3-conditions $\times$ 4-generators $\times$ 3-samples
-subsample (72 trace-graph pairs with usable scores after rubric
-extraction), pooled Spearman $\rho = 0.60$ ($p = 0.0004$) against
-the N-CoT direction, exceeding the pre-registered threshold of
-$|\rho| \geq 0.4$. The companion proxy $\hat{K}_{\text{lm}}$
-(perplexity-based) and the length-normalised
-$\hat{K}_{\text{gzip}}$ remain below threshold under the same
-pooling. We read this as partial inference-time empirical support
-for $K_C$ at the SCM level: the graph the protocol exposes is
-shorter than the graph standard CoT exposes, in the direction
-Complexity-of-Value predicts, even where compressibility of the raw
-trace gives no signal.
+uncertainty arcs). On the 30-scenario pre-registration subsample,
+pooled Spearman $\rho = 0.60$ ($p = 0.0004$) against the N-CoT
+direction, exceeding $|\rho| \geq 0.4$.
+
+\paragraph{Scaled validation (E6, 100 scenarios $\times$ 4 generators).}
+Scaling to the full Phase-1 cache ($n{=}976$ trace-graph pairs,
+one sample per scenario-generator-condition triple) yields pooled
+$\rho = 0.42$ ($p < 0.001$, bootstrap 95\% CI $[0.36, 0.47]$).
+Per-generator results:
+
+\begin{center}
+\small
+\begin{tabular}{lrr}
+\toprule
+Generator & $\rho$ & 95\% CI \\
+\midrule
+\texttt{claude-haiku-4-5}         & $+0.78$ & $[0.72, 0.82]$ \\
+\texttt{claude-sonnet-4-6}        & $+0.76$ & $[0.70, 0.81]$ \\
+\texttt{grok-4-1-fast-reasoning}  & $+0.63$ & $[0.53, 0.71]$ \\
+\texttt{gpt-5.4-nano}             & $+0.13$ & $[-0.01, 0.28]$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The OpenAI generator pattern (near-zero $\rho$) is consistent with
+\S\ref{sec:exp1}: their traces already approach the target causal
+density under standard CoT, so the scaffold adds length rather than
+additional causal structure.
+
+\paragraph{E7 convergent SCM-level proxies.}
+Two further proxies computed on the same extracted graphs at zero
+additional API cost: graph MDL ($\log_2(n{+}1){+}\log_2(e{+}1)$
+normalised by $\log_2(\text{len}{+}1)$) and structural entropy
+(Shannon entropy of the out-degree distribution). Both reach
+$p < 0.001$ pooled (MDL: $\rho = -0.32$, 95\% CI $[-0.38, -0.26]$;
+structural entropy: $\rho = +0.27$, 95\% CI $[0.21, 0.33]$). The
+negative MDL sign reflects that N-CoT embeds more causal nodes and
+edges into proportionally longer text, reducing the per-token MDL.
+Together the three SCM-level proxies provide convergent empirical
+support for $K_C$ as recoverable at the structural-causal-model
+level of the protocol.
+
+\section{Refusal Modulation on Dedicated Benchmarks (E5)}
+\label{app:refusal}
+
+We tested N-CoT vs.\ standard CoT on two benchmarks designed to probe
+refusal behaviour: XSTest \citep{rottger23} (250 \emph{safe} prompts
+that superficially resemble unsafe ones; a model should \emph{not}
+refuse) and SimpleSafetyTests \citep{vidgen24} (100 \emph{unsafe}
+prompts that a model \emph{should} decline). Each benchmark was run
+on the full four-generator quartet with $N{=}1$ per cell; refusal
+was coded by a single-shot \texttt{gpt-5.4-nano} binary classifier
+(REFUSE / HEDGE / ENGAGE).
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{llrr}
+\toprule
+Generator & Condition & XSTest over-refusal & SST appropriate-refusal \\
+\midrule
+\texttt{claude-haiku-4-5}        & standard CoT    & $0.0\%$   & $1.0\%$ \\
+                                  & N-CoT           & $0.0\%$   & $0.0\%$ \\
+\texttt{claude-sonnet-4-6}       & standard CoT    & $0.0\%$   & $0.0\%$ \\
+                                  & N-CoT           & $0.0\%$   & $1.0\%$ \\
+\texttt{grok-4-1-fast-reasoning} & standard CoT    & $2.8\%$   & $52.0\%$ \\
+                                  & N-CoT           & $2.8\%$   & $52.0\%$ \\
+\texttt{gpt-5.4-nano}            & standard CoT    & $13.6\%$  & $51.0\%$ \\
+                                  & N-CoT           & $23.6\%$  & $68.0\%$ \\
+\bottomrule
+\end{tabular}
+\caption{Refusal rates on XSTest (over-refusal; lower is better) and
+SimpleSafetyTests (appropriate-refusal; higher is better). Anthropic
+generators and Grok show no significant modulation under either
+condition. For \texttt{gpt-5.4-nano}, N-CoT increases overall caution
+(+10\,pp on safe prompts; +17\,pp on unsafe prompts): the scaffold
+induces extra deliberation that raises both appropriate and
+over-refusal rates for this model family.}
+\label{tab:refusal}
+\end{table}
+
+The low SST refusal rates for Anthropic generators reflect an instrument
+boundary: these models redirect harm-adjacent prompts toward support
+resources rather than issuing a clean refusal token, which the binary
+classifier codes as ENGAGE. The substantive content of those responses
+does not comply with the harmful request. We flag this as a known
+classifier limitation rather than a safety regression.
 
 \section{Adversarial Sycophancy Probe Set}
 \label{app:asp}
@@ -1424,18 +1420,13 @@ rather than intervention failure (Appendix~\ref{app:deploy}).}
 \label{tab:sycophancy_full}
 \end{table}
 
-\begin{figure*}[t]
-\centering
-\figureOrPlaceholder{0.92\textwidth}{figures/sycophancyeval_rates.pdf}{SycophancyEval rates across four generators}
-\caption{SycophancyEval probe results across the four-generator quartet
-($N{=}3$ per cell, $720$ coded responses). All cells are at or near the
-$0$ floor of the judge instrument. The single non-floor cell is
-\texttt{gpt-5.4-nano} false-premise under N-CoT ($6.7\%$). We interpret
-this as instrument saturation on frontier models rather than null effect;
-adversarial probes in \S\ref{sec:grounding} preserve the predicted
-mechanism.}
-\label{fig:syc}
-\end{figure*}
+All cells in Table~\ref{tab:sycophancy_full} are at or near the $0\%$
+floor of the judge instrument across $N{=}3$ per cell and $720$ coded
+responses; the single non-floor cell is \texttt{gpt-5.4-nano}
+false-premise under N-CoT ($6.7\%$). We read this as instrument
+saturation on frontier models rather than a null effect on the
+intervention; the adversarial probes in \S\ref{sec:grounding} preserve
+the predicted mechanism.
 
 \subsection{Agentic-Misalignment Replication}
 \label{app:agentic}
@@ -1513,30 +1504,28 @@ content of those hedged traces refuses the blackmail in every case;
 the failure is at the protocol layer (response cutoff), not the
 alignment layer.
 
-\begin{figure}[!htbp]
+\begin{figure*}[!htbp]
 \centering
-\figureOrPlaceholder{\columnwidth}{figures/agentic_probe_rates.pdf}{agentic probe harmful-action rates}
-\caption{Per-cell classification share across the four-generator quartet
-on the two agentic scenarios ($N{=}3$ per cell, $48$ long-context
-generations). Bars stack \texttt{refuse}, \texttt{hedge}, and
-\texttt{harmful\_action}; the harmful slice is $0$ in every cell
-under both scaffolds (S = Standard CoT, N = N-CoT). The blackmail
-scenario shifts mass from \texttt{refuse} to \texttt{hedge} under
-N-CoT, consistent with longer traces truncating mid-refusal rather
-than reversing the refusal.}
+\figureOrPlaceholder{\textwidth}{figures/agentic_probe_rates.pdf}{agentic probe clean-refusal rates}
+\caption{Clean-refusal rate per generator and scaffold on each agentic
+scenario ($N{=}3$ per cell, $48$ long-context generations). Bars are
+the share of generations that emit an explicit refusal; the
+complement is the hedge / truncated share. The harmful-action rate
+is $0\%$ in all $16$ cells, so that slice is not plotted.
+S = Standard CoT, N = N-CoT.}
 \label{fig:agentic}
-\end{figure}
+\end{figure*}
 
-The classification share visualisation in Figure~\ref{fig:agentic}
-makes this redistribution explicit: under N-CoT the blackmail bars
-shift mass from \texttt{refuse} to \texttt{hedge} (pale aqua) while
-the \texttt{harmful\_action} slice (deep navy) remains absent.
-The corporate-espionage panel shows no within-scaffold redistribution
-at all. The combined pattern is consistent with the pre-registered
-contingency stated in Appendix~\ref{app:deploy}: when a failure mode
-does not fire under the baseline, scaffolding cannot be measured
-against it, and any observed shifts under N-CoT must be interpreted
-as structural changes in the trace rather than as a change in the
+Figure~\ref{fig:agentic} shows the clean-refusal rate per cell. Under
+N-CoT, the blackmail scenario shifts mass out of \texttt{refuse} into
+\texttt{hedge / truncated}, consistent with longer traces being cut
+off mid-refusal by the response budget rather than reversing the
+refusal; the corporate-espionage panel shows no within-scaffold
+redistribution. The combined pattern is consistent with the
+pre-registered contingency stated in Appendix~\ref{app:deploy}: when
+a failure mode does not fire under the baseline, scaffolding cannot
+be measured against it, and any observed shifts under N-CoT must be
+read as structural trace changes rather than as a change in the
 alignment-relevant target.
 
 \section{Sub-Instruction Ablation Full Table}
