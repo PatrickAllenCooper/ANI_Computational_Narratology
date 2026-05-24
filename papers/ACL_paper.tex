@@ -408,10 +408,20 @@ debate improves factual reasoning. Both target task-correctness, not
 stakeholder-divergent value standoffs. Defeasible reasoning, the property that
 conclusions can be revised in light of new information without abandoning
 the underlying inference scheme, has a long lineage in moral philosophy
-\citep{pollock87, macintyre81}. The protocol we evaluate in
-\S\ref{sec:exp2} stacks defeasibility on top of N-CoT and asks whether
-present-day models can be elicited to revise narrated commitments under
-narrated counter-evidence.
+\citep{pollock87, macintyre81}. The protocol we evaluate in \S\ref{sec:exp2} makes defeasibility a
+measurable behaviour rather than a posture. Each agent emits an N-CoT
+commitment, observes the other stakeholders' narrated positions, and
+then votes accept or reject on an integrated proposal that absorbs
+the cross-agent modifications. Acceptance audits whether commitments
+are in fact revisable under narrated counter-evidence; the residual,
+structurally interpretable rejections audit the lower bound, the
+cases where a defeasibility-respecting agent should decline to
+revise. No off-the-shelf benchmark targets stakeholder-divergent
+narrated revision in this form, so the protocol itself is the audit
+instrument, and we read the joint pattern of high revision rate with
+a small structurally interpretable refusal rate as a behavioural test
+of defeasibility rather than a check on the underlying inference
+scheme.
 
 \paragraph{Multi-agent LLM systems for scientific discovery.}
 A growing line of work scaffolds LLM reasoning into the primitives of a
