@@ -635,27 +635,32 @@ hypothesised failure modes (premature refusal, framework enumeration,
 consequential flattening) fire below $1\%$ across all cells under either
 condition and are reported as untested.
 
-\paragraph{The effect on rates is matched by a large effect on the
-underlying structural metrics.} N-CoT outputs carry positive Cliff's $\delta$
-\citep{cliff93} on stakeholder count ($+0.48$ to $+0.99$ across the
-quartet) and uncertainty score ($+0.63$ to $+0.99$). N-CoT outputs are
-also $5$--$7\times$ longer than standard-CoT outputs, so length is the
-parsimonious null: the simplest competing explanation is that a longer
-output mechanically has more room to name stakeholders and to hedge,
-without any genuine shift in reasoning behind it. After regressing each
-metric on $\log(\text{output length})$
-pooled across conditions and re-evaluating $\delta$ on residuals, the
-structural shift survives length removal on the OpenAI and xAI generators
-(\texttt{gpt-5.4-nano} $\delta_{\text{resid}} = +0.51$ on stakeholder count
-and $+0.77$ on uncertainty score; \texttt{grok-4-1-fast-reasoning} $+0.33$
-and $+0.43$; all CIs strictly above zero). On the two Anthropic generators
-the residualised effect is statistically indistinguishable from zero, which
-we read as those models already exhibiting the target structural density
-per unit length under standard CoT, so the prompt-side gain there
-operates through additional length rather than additional per-unit
-density. Per-generator $\delta$s with bootstrap CIs are in
-Appendix~\ref{app:effects} (Table~\ref{tab:effects_full},
-Figure~\ref{fig:tier1}).
+\paragraph{The shift is large, distribution-wide, and not a length
+artefact.} The firing rates in Table~\ref{tab:firing} are binary
+thresholds; one might worry N-CoT only nudges borderline cases across
+the cutoff. Cliff's $\delta$ \citep{cliff93} on the continuous coded
+variables settles that worry: $\delta = +0.48$ means an N-CoT output
+exceeds the matched standard-CoT output in $74\%$ of pairs,
+$\delta = +0.99$ in $99.5\%$. N-CoT outputs carry $\delta$ of $+0.48$
+to $+0.99$ on stakeholder count and $+0.63$ to $+0.99$ on uncertainty
+score, large-to-near-maximal effects that rule out threshold-gaming.
+A second cheap alternative is length, since N-CoT outputs are
+$5$--$7\times$ longer than standard-CoT outputs and length is the
+parsimonious null (the simplest competing explanation: more text
+mechanically has more room to name stakeholders and to hedge). After
+regressing each metric on $\log(\text{output length})$ pooled across
+conditions and re-evaluating $\delta$ on residuals, the structural
+shift survives length removal on the OpenAI and xAI generators
+(\texttt{gpt-5.4-nano} $\delta_{\text{resid}} = +0.51$ on stakeholder
+count and $+0.77$ on uncertainty score; \texttt{grok-4-1-fast-reasoning}
+$+0.33$ and $+0.43$; all CIs strictly above zero), ruling out length
+as the sole mechanism where the firing-rate drops were largest. On
+the Anthropic generators the residualised effect is indistinguishable
+from zero, which we read as those models already exhibiting the target
+structural density per unit length under standard CoT, so the
+prompt-side gain there operates through additional length rather than
+additional per-unit density. Per-generator $\delta$s with bootstrap
+CIs are in Appendix~\ref{app:effects}.
 
 \subsection{Sub-Instruction Ablation}
 \label{sec:exp1-ablation}
@@ -760,22 +765,17 @@ structural shape a defeasibility-respecting protocol should produce,
 and is the property that distinguishes a dependable multi-agent
 consensus from uniform compliance: a downstream auditor of an
 agentic-workflow vote sees not just the winning proposal but also
-which stakeholders refused and why. With $N{=}4$ rejections the
-qualitative pattern is suggestive rather than statistically
-confirmatory, and the full-quartet replication is pre-registered as the
-actual test.
+which stakeholders refused and why. The full-quartet replication is
+pre-registered as the statistically confirmatory test.
 
-\paragraph{Scope.} The convergence arc is established on the
-\texttt{gpt-5.4-nano} pilot; replicating the four-round protocol on the
-full quartet would require ${\sim}10{,}000$ additional long-context
-generations and is deferred. Per-generator and cross-vendor-moderator
-breakdowns are in Appendix~\ref{app:kappa}: the consensus rate is
-preserved at $88\%$ under a cross-vendor (\texttt{claude-sonnet-4-6})
-moderator, statistically indistinguishable from the within-vendor rate
-(Fisher's exact $p = 1.0$), which rules out within-vendor moderator
-familiarity as the driver. The pre-registered hypothesis is that
-integrated-proposal acceptance does not differ by more than $\pm 10$
-percentage points across the quartet.
+\paragraph{Scope.} The arc is established on the \texttt{gpt-5.4-nano}
+pilot; full-quartet replication ($\sim$$10{,}000$ long-context
+generations) is deferred and the pre-registered hypothesis is
+$\pm 10$ percentage points on integrated-proposal acceptance across
+the quartet. A cross-vendor moderator (\texttt{claude-sonnet-4-6})
+preserves the consensus rate at $88\%$ (Fisher's exact $p = 1.0$
+versus within-vendor; Appendix~\ref{app:kappa}), ruling out
+within-vendor moderator familiarity as the driver.
 
 \section{Theoretical Frame and Deployment Scope}
 \label{sec:grounding}
