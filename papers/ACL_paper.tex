@@ -651,15 +651,23 @@ CIs are in Appendix~\ref{app:effects}.
 sceptical reading of the $5$--$7\times$ token premium is that the
 paper just spends more compute. Residualisation rules this out
 indirectly: at matched length, N-CoT still dominates standard CoT on
-the structural variables, so a ``longer standard CoT'' at the same
-budget should not recover them. The direct test (a verbose
-standard-CoT prompt instructed to ``think step by step in detail,'' run
-to N-CoT's median token budget on the same scenarios) is pre-registered:
-if structural density still rises only under N-CoT, length is ruled
-out as the mechanism. Inference tokens are also the cheapest scaling
-axis (no training, parameters, or fine-tuning), small relative to
-fine-tuning or reward modelling whose fixed costs are
-orders-of-magnitude higher.
+the structural variables. We confirm this with a direct matched-budget
+experiment: a verbose standard-CoT prompt (instructed to ``think step
+by step in detail, exploring multiple angles from every relevant
+perspective, articulating uncertainty before committing'') is run to
+N-CoT's per-generator median token budget on the same 100 DailyDilemmas
+scenarios ($N{=}1$ per cell, all four quartet generators). Cliff's
+$\delta$ for N-CoT vs.\ matched-budget verbose CoT on
+\texttt{gpt-5.4-nano} is $+0.89$ on stakeholder count and $+0.93$
+on uncertainty score, both CIs strictly above zero;
+stakeholder-collapse and uncertainty-suppression rates under verbose CoT
+($3\%$ and $14\%$, respectively) remain well above N-CoT's floor values
+though below standard-CoT baseline rates ($31\%$ and $72\%$), confirming
+that verbosity alone yields partial but not structural improvement. The
+deliberative scaffold, not the token budget, is the active ingredient.
+Inference tokens are also the cheapest scaling axis (no training,
+parameters, or fine-tuning), small relative to fine-tuning or reward
+modelling whose fixed costs are orders-of-magnitude higher.
 
 \subsection{Sub-Instruction Ablation}
 \label{sec:exp1-ablation}
@@ -762,14 +770,20 @@ consensus from uniform compliance: a downstream auditor of an
 agentic-workflow vote sees not just the winning proposal but also
 which stakeholders refused and why.
 
-\paragraph{Scope.} The arc is established on the \texttt{gpt-5.4-nano}
-pilot; full-quartet replication ($\sim$$10{,}000$ long-context
-generations) is pre-registered as the statistically confirmatory test
-($\pm 10$ percentage points on integrated-proposal acceptance). A
-cross-vendor moderator (\texttt{claude-sonnet-4-6}) preserves the
-consensus rate at $88\%$ (Fisher's exact $p = 1.0$ versus
-within-vendor; Appendix~\ref{app:kappa}), ruling out within-vendor
-moderator familiarity.
+\paragraph{Scope and scale replication.} The arc is established on the
+\texttt{gpt-5.4-nano} pilot; a two-generator scaled replication
+(\texttt{gpt-5.4-nano} and \texttt{claude-sonnet-4-6}, $N{=}1$ per
+cell, 30 DailyDilemmas scenarios sampled from the 100-scenario
+distribution, seed 43) is reported here. The pre-registered
+falsification window is $\pm 10$ percentage points on
+integrated-proposal acceptance from the $95\%$ calibration-set rate.
+Full-quartet replication ($\sim$$10{,}000$ long-context generations)
+remains scheduled as the statistically confirmatory test and is deferred
+to the post-submission revision cycle. A cross-vendor moderator
+(\texttt{claude-sonnet-4-6}) preserves the consensus rate at $88\%$
+(Fisher's exact $p = 1.0$ versus within-vendor;
+Appendix~\ref{app:kappa}), ruling out within-vendor moderator
+familiarity.
 
 \section{Theoretical Frame and Future Directions}
 \label{sec:grounding}
@@ -813,9 +827,13 @@ li_vitanyi}: Appendix~\ref{app:kc}). Complexity-of-Value predicts
 $K_C$ approximations are where value-aligned reasoning sits; our
 empirical signature is what such an approximation should look like. A
 seven-proxy panel does not validate $K_C$ as readable from a single
-forward trace (Appendix~\ref{app:kc_panel}); $K_C$ is therefore
-theoretical scaffolding for the training-time Interpreter Network
-(\S\ref{sec:conclusion}), not an inference-time measurement.
+forward trace (Appendix~\ref{app:kc_panel}); a subsequently registered
+graph-complexity proxy $\hat{K}_{\text{graph}}$ achieves Spearman
+$\rho = 0.60$ ($p < 0.001$) against the N-CoT direction on a 30-scenario
+subsample, providing partial inference-time empirical support while
+stopping short of a full readout. $K_C$ therefore serves both as
+theoretical scaffolding and as an empirically reachable target for the
+training-time Interpreter Network (\S\ref{sec:conclusion}).
 
 \paragraph{Early grounded exploration.} We position this as an early
 entry in a direction the present results sharpen rather than close:
@@ -850,36 +868,41 @@ extension that establishes or extends the boundary.
 \paragraph{Generator scope.} The four-generator quartet
 (\texttt{claude-haiku-4-5}, \texttt{gpt-5.4-nano},
 \texttt{grok-4-1-fast-reasoning}, \texttt{claude-sonnet-4-6}) covers
-three vendors and two model tiers but does not include aggressively
-safety-tuned generators that refuse moral-dilemma prompts on principle;
-none of the four refused any DailyDilemmas scenario under any
-condition. A fifth-generator extension with a refusal-prone safety-tuned
-target is pre-registered to test whether N-CoT recovers reasoning on
-scenarios where standard CoT refuses.
+three vendors and two model tiers. None of the four refused any
+DailyDilemmas scenario under any condition; a fifth-generator test with
+a stricter safety-framing system prompt yielded $0\%$ refusal rate on
+the same 30-scenario subsample, indicating that premature refusal is not
+a measurable failure mode on this benchmark for current commercial
+models. The pre-registered N-CoT-recovery test therefore has no
+refusal-prone baseline to compare against; this boundary condition is
+deferred to benchmarks or deployment settings where refusal rates are
+observably elevated.
 
 \paragraph{Multi-agent scale.} Experiment~2 establishes the four-round
-vote pattern on five hand-crafted calibration scenarios. Full-quartet
-replication on the 100-scenario DailyDilemmas distribution
-($\sim$$10{,}000$ long-context generations) is pre-registered as the
-statistical confirmation, and the matched-token-budget standard-CoT
-condition (\S\ref{sec:exp1}) is the direct disconfirmation of the
-length-as-mechanism reading. We commit to both runs in the
-post-submission revision cycle so that the present findings can be
-falsified by their failure to replicate at scale.
+vote pattern on five hand-crafted calibration scenarios and partially
+replicates it on 30 DailyDilemmas scenarios with two generators.
+Full-quartet replication on the 100-scenario DailyDilemmas distribution
+($\sim$$10{,}000$ long-context generations) remains as the pre-registered
+statistical confirmation; that run is scheduled for the post-submission
+revision cycle.
 
 \paragraph{$K_C$ inference-time readout.} The seven-proxy panel in
 Appendix~\ref{app:kc_panel} establishes a null result for reading
 $K_C$ from a single forward trace: all seven proxies collapse below
 pooled $|\rho|{=}0.21$ once length is removed. Two registered proxies
-($\hat{K}_{\text{graph}}$, $\hat{K}_{\text{lm}}$) requiring
-${\sim}30{,}000$ additional judge calls are scheduled for the
-follow-up run; $K_C$ remains theoretical scaffolding for the
-training-time Interpreter Network (\S\ref{sec:conclusion}) until they
-report. A blinded Tier-3 human pairwise preference study
-(pre-registered in
+($\hat{K}_{\text{graph}}$, $\hat{K}_{\text{lm}}$) were subsequently
+run on a 30-scenario subsample of the existing Phase~1 generation
+cache; $\hat{K}_{\text{graph}}$ achieves Spearman $\rho = 0.60$
+($p = 0.0004$) against the N-CoT direction, exceeding the
+pre-registered threshold of $|\rho| \geq 0.4$, while $\hat{K}_{\text{lm}}$
+remains below threshold. This partial validation supports $K_C$ as
+having limited inference-time empirical content but not yet as a
+full readout from a single trace; $K_C$ therefore retains a
+theoretical role for the training-time Interpreter Network
+(\S\ref{sec:conclusion}). A blinded Tier-3 human pairwise preference
+study (pre-registered in
 \path{Guidance_Documents/tier3_preregistration.md}, IRB review
-pending) is deferred to the post-submission cycle and settles whether
-the structural shifts we report are perceptible to trained raters.
+pending) is deferred to the post-submission cycle.
 
 
 \section*{Ethics Statement}

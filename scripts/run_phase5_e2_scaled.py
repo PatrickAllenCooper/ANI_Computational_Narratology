@@ -642,7 +642,9 @@ def run_r4_final_mod(scenario: DD_Scenario, idx: int,
     parts = []
     for pid in PERSPECTIVE_IDS:
         lbl = PERSPECTIVE_BY_ID[pid]["label"]
-        r4t = (r4_map.get(pid) or {}).get("output", "[empty]")[:500]
+        # Use last 800 chars: models state ACCEPT/REJECT at the end after N-CoT reasoning.
+        full_vote = (r4_map.get(pid) or {}).get("output", "[empty]")
+        r4t = full_vote[-800:] if len(full_vote) > 800 else full_vote
         parts.append(f"[{lbl}]:\n{r4t}")
     user = R4_FINAL_MOD_USER.format(
         scenario=scenario.prompt,
