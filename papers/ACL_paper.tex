@@ -95,7 +95,7 @@ ingredient, with N-CoT retaining a Cliff's $\delta$ advantage of $+0.79$
 to $+0.93$ on the continuous structural variables for three of four
 generators. A section-by-section ablation attributes each structural shift
 to the specific sub-instruction that carries it, with negligible
-cross-variable spillover. Extended to a four-round multi-stakeholder
+cross-variable spillover. Extended to a five-round multi-stakeholder
 protocol with a moderator-built integrated proposal and a binary
 accept/reject vote, the same scaffold converts a $6\%$ debate standoff
 into $95\%$ full consensus on the calibration set and reaches $100\%$
@@ -312,33 +312,35 @@ deployments \citep{anthropic_agentic_2025}, and reasoning-induced
 misalignment \citep{yan2025rim,sharma23}.
 
 We introduce narrative chain-of-thought (N-CoT), a system prompt that
-puts the model on the manifold of human narrative its pretraining
-corpus most heavily samples. Concretely, N-CoT is a single change to
-the system-prompt slot of an unmodified pretrained model, with no
-weight updates and no training data: in place of the standard ``think
-step by step'' instruction, the model is asked, in first person, to
-name a protagonist, enumerate stakeholders, project two-step
-consequences, articulate uncertainty, and commit inside the final
-narrative section rather than as a separate verdict.
+steers the model into the densely sampled narrative subdistribution of
+its pretraining corpus rather than the sparser abstract-reasoning
+subdistribution standard CoT elicits. Concretely, N-CoT is a single
+change to the system-prompt slot of an unmodified pretrained model,
+with no weight updates and no training data: in place of the standard
+``think step by step'' instruction, the model is asked, in first
+person, to name a protagonist, enumerate stakeholders, project
+two-step consequences, articulate uncertainty, and commit inside the
+final narrative section rather than as a separate verdict.
 Figure~\ref{fig:hero} states the mechanism.
 
 What we borrow from the multi-agent systems for scientific discovery of
-\citet{gottweis25} and \citet{lu24_aiscientist} is one methodological move:
-scaffold LLM reasoning into the primitives of the target domain, then
-integrate across primitives with a meta-review step at the top of the
-hierarchy. Three things distinguish our application of that move. The
+\citet{gottweis25} and \citet{lu24_aiscientist} is one methodological
+move: scaffold LLM reasoning into the primitives of the target domain,
+then integrate across those primitives with a higher-level moderator
+that synthesises a single artefact from the per-agent outputs. Three
+things distinguish our application of that move. The
 primitives we reify are narrative rather than scientific (protagonist,
 stakeholders, consequences, uncertainty, commitment), so the artefact a
 reader inspects is a coherent story rather than a ranked candidate list.
 The single-agent layer is a contribution in its own right:
 \S\ref{sec:exp1} shows that reifying these primitives inside one generator
 already eliminates two cross-vendor failure modes of standard CoT, before
-any multi-agent composition is invoked. And because ethics has no
-experimental-falsification oracle, the success criterion that replaces
-hypothesis ranking is consensus that preserves principled dissent,
-evaluated in \S\ref{sec:exp2} via a binary integrated-proposal vote whose
-residual rejections concentrate in the roles whose stake the proposal
-materially undermines.
+any multi-agent composition is invoked. And because ethics has no ground-truth experiment that can falsify a
+moral claim the way an experiment can falsify a scientific hypothesis,
+the success criterion that replaces hypothesis ranking is consensus
+that preserves principled dissent, evaluated in \S\ref{sec:exp2} via
+a binary integrated-proposal vote whose residual rejections concentrate
+in the roles whose stake the proposal materially undermines.
 
 This paper reports four results. First, on a 100-scenario
 DailyDilemmas sample across the four-generator quartet, N-CoT cuts
@@ -349,19 +351,24 @@ scaffold rather than additional tokens (\S\ref{sec:exp1}). Second, a
 sub-instruction ablation on \texttt{claude-sonnet-4-6} attributes each
 structural shift to the carrying N-CoT sub-instruction, with negligible
 cross-variable spillover (\S\ref{sec:exp1-ablation}). Third, extended
-to a four-round multi-stakeholder protocol with an integrated-proposal
+to a five-round multi-stakeholder protocol with an integrated-proposal
 vote, the scaffold converts a $6\%$ debate standoff into $95\%$ full
 consensus while preserving a small $1.6\%$ structural-rejection rate;
 the pattern replicates on a 30-scenario DailyDilemmas sample with two
 generators at $100\%$ combined convergence and $0\%$ structural
-rejection (\S\ref{sec:exp2}). Fourth, a graph-complexity proxy of $K_C$ achieves pooled Spearman
-$\rho{=}0.42$ ($p{<}0.001$, $n{=}976$ traces) against the N-CoT
-direction, confirmed by two further SCM-level proxies
-(\S\ref{sec:grounding}), giving empirical content to the
-complexity-theoretic reading of why the scaffold works. The resulting
-trace externalises stakeholders, consequences, and uncertainties in an
-auditable, rule-governed form; the deliberative-primitives framing that
-motivates the design is developed in \S\ref{sec:grounding}.
+rejection (\S\ref{sec:exp2}). Fourth, a graph-complexity proxy of algorithmic causal complexity
+$K_C$ (the description length of the trace's underlying
+structural-causal model, SCM) achieves pooled Spearman $\rho{=}0.42$
+($p{<}0.001$, $n{=}976$ traces) against the N-CoT direction, confirmed
+by two further SCM-level proxies (\S\ref{sec:grounding}), giving
+empirical content to the complexity-theoretic reading of why the
+scaffold works. The resulting trace externalises stakeholders,
+consequences, and uncertainties in an auditable, rule-governed form;
+the deliberative-primitives framing that motivates the design is
+developed in \S\ref{sec:grounding}, and the downstream-probe sets
+that motivated the diagnosis (sycophancy, agentic misalignment)
+saturate under either scaffold on the current quartet
+(Appendix~\ref{app:deploy}).
 
 \section{Background and Related Work}
 \label{sec:related}
@@ -408,9 +415,10 @@ multi-agent debate improves factual reasoning. Both target
 task-correctness, not stakeholder-divergent value standoffs. Defeasible
 reasoning \citep{pollock87, macintyre81} has a long lineage in moral
 philosophy; the protocol of \S\ref{sec:exp2} converts the property
-into a measurable behaviour, with acceptance auditing revisability and
-residual structural rejections auditing the lower bound. No
-off-the-shelf benchmark targets stakeholder-divergent narrated
+into a measurable behaviour. Acceptance of the integrated proposal
+demonstrates revisability under new information; residual rejections,
+when they occur, mark commitments that no amount of revision absorbs.
+No off-the-shelf benchmark targets stakeholder-divergent narrated
 revision in this form, so the protocol itself is the audit
 instrument.
 
@@ -421,8 +429,8 @@ bran24_chemcrow, schmidgall25, swanson25_virtuallab}. Our protocols
 ask the analogous question one level down: can a scaffold that reifies
 the primitives of human ethical deliberation deliver the same kind of
 inference-time quality lift on moral reasoning that scientific-method
-scaffolds deliver on hypothesis generation? Because ethics has no
-experimental-falsification oracle, the moderator's
+scaffolds deliver on hypothesis generation? Because ethics offers no
+experimental ground truth to rank competing positions, the moderator's
 integration-then-veto step replaces the ranking-then-selection of
 those systems, and the residual veto pattern itself becomes the
 measurement of interest.
@@ -466,15 +474,11 @@ from first principles. Algorithm~\ref{alg:ncot} states the procedure.
 \State \textbf{Generate trace}
 \State \quad $t \gets G(\pi_{\textsc{ncot}} \,\Vert\, s;\, \Theta)$
 \State \textbf{Code structural variables} with judge $J$'s rubric
-\State \quad $(\mathit{sc}, \mathit{mh}, \mathit{us}, \mathit{nf}, \mathit{ref}, \mathit{tr}) \gets J(t)$
-\State \quad \textit{// stakeholder count, max causal hops, uncertainty score,}
-\State \quad \textit{// framework count, refused flag, truncated flag}
+\State \quad $(\mathit{sc}, \mathit{mh}, \mathit{us}) \gets J(t)$
+\State \quad \textit{// stakeholder count, max causal hops, uncertainty score}
 \State \textbf{Derive failure-mode tags} (deterministic)
 \State \quad \textsc{StakeholderCollapse} $\gets \mathit{sc} \leq 1$
 \State \quad \textsc{UncertaintySuppression} $\gets \mathit{us} = 0$
-\State \quad \textsc{ConsequentialFlattening} $\gets \mathit{mh} \leq 1$
-\State \quad \textsc{FrameworkEnumeration} $\gets \mathit{nf} \geq 2$
-\State \quad \textsc{PrematureRefusal} $\gets \mathit{ref}$
 \State \Return $(t, \mathbf{c})$
 \end{algorithmic}
 \end{algorithm}
@@ -484,7 +488,7 @@ from first principles. Algorithm~\ref{alg:ncot} states the procedure.
 
 A single N-CoT trace commits one protagonist to a position; many real
 decisions involve multiple narrators with conflicting stakes. We extend
-N-CoT into a four-round protocol that re-uses N-CoT as the per-agent
+N-CoT into a five-round protocol (Rounds 0--4) that re-uses N-CoT as the per-agent
 generator. For each scenario, three stakeholder perspectives (formal
 decider, primary affected party, third party) each produce an N-CoT
 statement (Round~0), exchange rebuttals (Round~1), restate a final position
@@ -593,9 +597,7 @@ $\Delta_{\textsc{us}}$ = uncertainty suppression; both N-CoT minus standard
 CoT, in percentage points; $N_{\textsc{s}}, N_{\textsc{n}}$ are coded
 samples under standard CoT and N-CoT respectively). Vendor tiers are
 b\,=\,budget, f\,=\,flagship. Figure~\ref{fig:quartet} plots the raw
-rates with the same drop annotations. Premature refusal,
-framework enumeration, and consequential flattening fire
-below $1\%$ on all generators and are reported as untested.}
+rates with the same drop annotations.}
 \label{tab:firing}
 \end{table}
 
@@ -611,21 +613,20 @@ points and stakeholder collapse drops to near zero on every model.}
 \label{fig:quartet}
 \end{figure*}
 
-\paragraph{N-CoT eliminates both failure modes on every model.}
-Uncertainty suppression fires on $50.0$--$72.3\%$ of standard-CoT outputs
-across the quartet (Table~\ref{tab:firing}); stakeholder collapse on
-$14.6$--$30.6\%$. Both collapse under N-CoT: stakeholder collapse to
-$0.0$--$1.2\%$, uncertainty suppression to $0.8$--$24.5\%$
-(Figure~\ref{fig:quartet}). Figure~\ref{fig:example} shows what a
-single instance of this transition looks like at the trace level. The reduction is largest where the
-standard-CoT rate is largest, and the pattern is cross-vendor: no single
-vendor escapes the baseline, and no single vendor escapes the intervention.
-\texttt{gpt-5.4-nano} collapses both modes to ${<}1\%$. The two Anthropic
-generators retain a $20$--$25\%$ residual on uncertainty suppression that
-the prompt-side intervention does not reach. The three additional
-hypothesised failure modes (premature refusal, framework enumeration,
-consequential flattening) fire below $1\%$ across all cells under either
-condition and are reported as untested.
+\paragraph{N-CoT cuts both failure modes on every model.}
+Uncertainty suppression fires on $50.0$--$72.3\%$ of standard-CoT
+outputs across the quartet (Table~\ref{tab:firing}); stakeholder
+collapse on $14.6$--$30.6\%$. Both drop sharply under N-CoT:
+stakeholder collapse to $0.0$--$1.2\%$ and uncertainty suppression to
+$0.8$--$24.5\%$ (Figure~\ref{fig:quartet}). Figure~\ref{fig:example}
+shows what a single instance of the transition looks like at the trace
+level. The reduction is largest where the standard-CoT rate is largest,
+and the pattern is cross-vendor: no single vendor escapes the baseline,
+and no single vendor escapes the intervention. \texttt{gpt-5.4-nano}
+drops both modes to ${<}1\%$. The two Anthropic generators retain a
+$20$--$25\%$ residual on uncertainty suppression that the prompt-side
+intervention does not reach, indicating a complementary training-time
+component rather than a residual prompt-side gap.
 
 \paragraph{The shift is large, distribution-wide, and not a length
 artefact.} The firing rates in Table~\ref{tab:firing} are binary
@@ -749,27 +750,34 @@ Appendix~\ref{app:ablation}).
 \section{Experiment 2: Multi-Stakeholder Narrative Deliberation}
 \label{sec:exp2}
 
-\paragraph{Setup.} Five hand-crafted calibration scenarios stack on
-Experiment~1's single-protagonist baseline. For each, three
-stakeholder perspectives run the four-round protocol of
+\paragraph{Setup.} A small calibration set of five hand-crafted
+multi-stakeholder scenarios (designed to stress-test the protocol
+before scaling) stacks on Experiment~1's single-protagonist baseline. For each, three
+stakeholder perspectives run the five-round protocol of
 \S\ref{sec:method-debate}, $N{=}10$ samples per cell on
 \texttt{gpt-5.4-nano} with \texttt{gpt-4o-mini} as moderator;
-Round~0 reuses cached N-CoT statements. A cross-vendor moderator
-check (\texttt{claude-sonnet-4-6}, Appendix~\ref{app:kappa}) gives
-an indistinguishable consensus rate.
+Round~0 reuses cached N-CoT statements. Swapping the moderator for \texttt{claude-sonnet-4-6} on the same
+debates leaves the full-consensus rate within sampling noise of the
+\texttt{gpt-4o-mini} result (Appendix~\ref{app:kappa}), so the
+consensus signal is not moderator-specific.
 
 \begin{figure*}[t]
 \centering
 \figureOrPlaceholder{0.92\textwidth}{figures/debate_full_arc.pdf}{debate convergence arc (original two generators)}
-\caption{Convergence across four debate-protocol designs (five
-scenarios, two generators). Closed taxonomy and open action space hold
-at $6\%$ and $9\%$ full consensus; synthesis presentation (Round~3)
-hits $100\%$ partial convergence; the integrative-vote design
-(Round~4) reaches $95\%$ full consensus
-(\texttt{gpt-5.4-nano} $90\%$, \texttt{gpt-4o} $100\%$) with mean
-$2.98/3$ modifications addressed per debate. The residual $1.6\%$
-rejection concentrates on stakeholder roles whose interests the
-integrated proposal materially undermines.}
+\caption{Consensus rates across four progressively more structured
+debate designs (five scenarios, two generators). \emph{Closed taxonomy}
+(agents must choose from a fixed action list) and \emph{open action
+space} (agents may propose novel actions) hold at $6\%$ and $9\%$ full
+consensus. Adding a moderator-built synthesis presented back to the
+agents (\emph{synthesis presentation}, Round~3) reaches $100\%$ partial
+convergence ($\geq 2/3$ agreement). The full protocol, which integrates
+the three agents' modification requests into a single proposal and
+forces a binary accept/reject vote (\emph{integrative vote}, Round~4),
+reaches $95\%$ full consensus (\texttt{gpt-5.4-nano} $90\%$,
+\texttt{gpt-4o} $100\%$) with mean $2.98$ of $3$ modifications
+addressed per debate. The residual $1.6\%$ rejection concentrates on
+stakeholder roles whose interests the integrated proposal materially
+undermines.}
 \label{fig:debate_arc}
 \end{figure*}
 
@@ -810,14 +818,14 @@ which stakeholders refused and why.
 \paragraph{Scale replication on DailyDilemmas.} A two-generator
 DailyDilemmas replication (\texttt{gpt-5.4-nano} and
 \texttt{claude-sonnet-4-6}, $N{=}1$, 30 scenarios, seed 43) confirms
-the pattern. $38/60$ cells ($63\%$) required the
-synthesis-and-integrated-vote stage; $35/38 = 92.1\%$ of those reached
-full consensus at the final integrated-proposal vote (Wilson $95\%$ CI
-$[79.2, 97.3]\%$), within $\pm 10$\,pp of the calibration-set $95.1\%$.
-The remaining $22$ cells reached three-way agreement at the rebuttal
-stage, so combined convergence (full consensus at either stage) is
-$60/60 = 100\%$ across both generators with $0\%$ structural rejection:
-every debate resolves, and no structural rejection survives.
+the pattern. Of the $60$ scenario--generator debates, $38$ ($63\%$)
+required the synthesis-and-integrated-vote stage; $35$ of those $38$
+($92.1\%$) reached full consensus at the integrated-proposal vote
+(Wilson $95\%$ CI $[79.2, 97.3]\%$), within $\pm 10$\,pp of the
+calibration-set $95.1\%$. The remaining $22$ debates reached three-way
+agreement before integration was needed, so combined convergence (full
+consensus either before or after the integration step) is $60/60 =
+100\%$ across both generators with $0\%$ structural rejection.
 
 \section{Theoretical Frame}
 \label{sec:grounding}
@@ -835,8 +843,8 @@ commitments. A further consequence follows: because N-CoT forces the
 model to name stakeholders, trace multi-step consequences, and
 articulate uncertainty before committing, the trajectory it selects is
 the one whose narrated causal model \citep{pearl09, pearl95} has the
-shortest description --- lowest algorithmic causal complexity $K_C$
-\citep{yudkowsky11, li_vitanyi}. Scaling the registered graph proxy to
+shortest description, that is, the lowest algorithmic causal
+complexity $K_C$ \citep{yudkowsky11, li_vitanyi}. Scaling the registered graph proxy to
 $n{=}976$ traces yields pooled Spearman $\rho = 0.42$ ($p < 0.001$),
 confirmed by SCM-level proxies (Appendix~\ref{app:kc_panel}).
 
@@ -847,22 +855,23 @@ N-CoT eliminates stakeholder collapse (${<}1\%$) and cuts uncertainty
 suppression by $28$--$72$\,pp across the quartet (\S\ref{sec:exp1});
 a matched-budget control rules out token spend as the active ingredient;
 the sub-instruction ablation attributes each shift to its carrying clause
-(\S\ref{sec:exp1-ablation}); and a four-round vote turns a $6\%$
+(\S\ref{sec:exp1-ablation}); and a five-round vote turns a $6\%$
 standoff into $95\%$ full consensus with $1.6\%$ principled rejection
 and $100\%$ combined convergence on a DailyDilemmas replication
 (\S\ref{sec:exp2}). The intervention adds no training and the trace is
-auditable end-to-end; the natural extension is domain-transfer
-evaluation and a training-time min-$K_C$ Interpreter Network.
+auditable end-to-end; the natural extensions are domain-transfer
+evaluation and pushing the same complexity-minimisation objective
+into training-time interpretability components.
 
 \section*{Limitations}
 
 All experiments use the DailyDilemmas ethics corpus \citep{chiu24}, a
 collection of everyday personal and civic dilemmas. How far the
-structural gains transfer to domains with harder technical prerequisites
---- clinical triage, legal analysis, multi-party policy review --- is
-an open empirical question; those domains may place different demands on
-the protagonist framing and the consequence-projection step than
-everyday dilemmas do.
+structural gains transfer to domains with harder technical
+prerequisites (for example clinical triage, legal analysis, or
+multi-party policy review) is an open empirical question; those
+domains may place different demands on the protagonist framing and the
+consequence-projection step than everyday dilemmas do.
 
 Refusal behaviour is the one dimension where N-CoT produces a
 model-family-specific effect. On XSTest \citep{rottger23} (prompts that
@@ -1327,18 +1336,6 @@ classifier codes as ENGAGE. The substantive content of those responses
 does not comply with the harmful request. We flag this as a known
 classifier limitation rather than a safety regression.
 
-\section{Adversarial Sycophancy Probe Set}
-\label{app:asp}
-
-The 30 adversarial sycophancy probes used in \S\ref{sec:grounding} are
-available in \path{data/adversarial_sycophancy_probes.json}. Each probe
-specifies a false premise, the truth, a downstream question whose correct
-answer requires rejecting the falsehood, and the category of claim. Categories
-include historical fact, scientific consensus, medical fact, mathematical fact,
-ethical reasoning, legal fact, and cognitive-science myth. Per-probe
-verdicts and $K_C$ scores are in
-\path{divergence_study_outputs/kc_adversarial_sycophancy.csv}.
-
 \section{Deployment-Relevance Probes}
 \label{app:deploy}
 
@@ -1393,8 +1390,7 @@ floor of the judge instrument across $N{=}3$ per cell and $720$ coded
 responses; the single non-floor cell is \texttt{gpt-5.4-nano}
 false-premise under N-CoT ($6.7\%$). We read this as instrument
 saturation on frontier models rather than a null effect on the
-intervention; the adversarial probes in \S\ref{sec:grounding} preserve
-the predicted mechanism.
+intervention.
 
 \subsection{Agentic-Misalignment Replication}
 \label{app:agentic}
