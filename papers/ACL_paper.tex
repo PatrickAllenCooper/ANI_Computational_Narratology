@@ -948,7 +948,7 @@ excluded from all headline claims, including the $K_C$ discussion in
 \S\ref{sec:grounding}, which the length-residualisation panel
 falsifies independently of causal-hop coding.
 
-\begin{table}[h]
+\begin{table}[t]
 \centering
 \small
 \begin{tabular}{lcc}
@@ -988,7 +988,7 @@ covers only two generators ($30 \times 2 \times 3 = 180$ cells vs\
 $3{,}726$ in A.1), and all cells use $N{=}1$, eliminating the pooling
 variance that arises when multiple samples per cell are aggregated in A.1.
 
-\begin{table}[h]
+\begin{table}[t]
 \centering
 \small
 \begin{tabular}{lccc}
@@ -1039,7 +1039,7 @@ vendors. The per-generator split of the headline number is
 rejections come from \texttt{gpt-5.4-nano} debates. The by-scenario
 breakdown is given below.
 
-\begin{table}[h]
+\begin{table}[t]
 \centering
 \small
 \begin{tabular}{lcc}
@@ -1079,7 +1079,7 @@ $\delta$ (N-CoT vs.\ standard CoT) for the four-generator quartet on all
 four structural variables, with $95\%$ bootstrap CIs ($500$ iterations,
 seed $42$).
 
-\begin{table*}[t]
+\begin{table*}[!tbp]
 \centering
 \small
 \setlength{\tabcolsep}{6pt}
@@ -1123,7 +1123,7 @@ ride predominantly with output length.}
 \label{tab:effects_full}
 \end{table*}
 
-\begin{figure*}[t]
+\begin{figure*}[!tbp]
 \centering
 \figureOrPlaceholder{0.92\textwidth}{figures/tier1_effect_sizes_quartet.pdf}{tier-1 effect sizes across four generators}
 \caption{Visualisation of Table~\ref{tab:effects_full}. Tier-1 Cliff's
@@ -1193,62 +1193,44 @@ standard CoT) on the Phase~1 cache, restricted to the two contrast
 conditions. Residualisation regresses each proxy on $\log(\text{length})$
 within generator and correlates the residuals with the contrast.
 
-\begin{table}[h]
+\begin{table*}[!tbp]
 \centering
-\footnotesize
-\setlength{\tabcolsep}{4pt}
-\begin{tabular}{llrr}
+\small
+\setlength{\tabcolsep}{6pt}
+\begin{tabular}{lcccccccc}
 \toprule
-Proxy & Generator & $\rho_{\text{raw}}$ & $\rho_{\text{resid}}$ \\
+& \multicolumn{2}{c}{\texttt{gpt-5.4-nano}}
+& \multicolumn{2}{c}{\texttt{claude-haiku-4-5}}
+& \multicolumn{2}{c}{\texttt{claude-sonnet-4-6}}
+& \multicolumn{2}{c}{\texttt{grok-4-1-fast-r.}} \\
+\cmidrule(lr){2-3} \cmidrule(lr){4-5} \cmidrule(lr){6-7} \cmidrule(lr){8-9}
+Proxy & $\rho_{\text{raw}}$ & $\rho_{\text{resid}}$
+      & $\rho_{\text{raw}}$ & $\rho_{\text{resid}}$
+      & $\rho_{\text{raw}}$ & $\rho_{\text{resid}}$
+      & $\rho_{\text{raw}}$ & $\rho_{\text{resid}}$ \\
 \midrule
-gzip ratio       & gpt-5.4-nano              & $-0.87$ & $-0.02$ \\
-                 & claude-haiku-4-5          & $-0.87$ & $-0.06$ \\
-                 & claude-sonnet-4-6         & $-0.87$ & $+0.04$ \\
-                 & grok-4-1-fast-reasoning   & $-0.79$ & $-0.44$ \\
-\midrule
-lzma ratio       & gpt-5.4-nano              & $-0.87$ & $+0.08$ \\
-                 & claude-haiku-4-5          & $-0.87$ & $-0.09$ \\
-                 & claude-sonnet-4-6         & $-0.86$ & $+0.03$ \\
-                 & grok-4-1-fast-reasoning   & $-0.78$ & $-0.33$ \\
-\midrule
-zstd-22 ratio    & gpt-5.4-nano              & $-0.87$ & $-0.03$ \\
-                 & claude-haiku-4-5          & $-0.87$ & $-0.07$ \\
-                 & claude-sonnet-4-6         & $-0.86$ & $+0.04$ \\
-                 & grok-4-1-fast-reasoning   & $-0.80$ & $-0.50$ \\
-\midrule
-brotli-11 ratio  & gpt-5.4-nano              & $-0.84$ & $+0.06$ \\
-                 & claude-haiku-4-5          & $-0.86$ & $-0.00$ \\
-                 & claude-sonnet-4-6         & $-0.83$ & $+0.07$ \\
-                 & grok-4-1-fast-reasoning   & $-0.73$ & $-0.27$ \\
-\midrule
-char 3-gram $H$  & gpt-5.4-nano              & $+0.86$ & $-0.19$ \\
-                 & claude-haiku-4-5          & $+0.87$ & $-0.01$ \\
-                 & claude-sonnet-4-6         & $+0.86$ & $+0.05$ \\
-                 & grok-4-1-fast-reasoning   & $+0.25$ & $-0.60$ \\
-\midrule
-char 5-gram $H$  & gpt-5.4-nano              & $+0.87$ & $-0.09$ \\
-                 & claude-haiku-4-5          & $+0.87$ & $+0.02$ \\
-                 & claude-sonnet-4-6         & $+0.86$ & $+0.07$ \\
-                 & grok-4-1-fast-reasoning   & $+0.58$ & $-0.46$ \\
-\midrule
-MATTR$^{\dagger}$ (w=200)  & gpt-5.4-nano              & $-0.17$ & $-0.08$ \\
-                 & claude-haiku-4-5          & $-0.40$ & $-0.06$ \\
-                 & claude-sonnet-4-6         & $-0.42$ & $-0.06$ \\
-                 & grok-4-1-fast-reasoning   & $-0.66$ & $-0.44$ \\
+gzip ratio                & $-0.87$ & $-0.02$ & $-0.87$ & $-0.06$ & $-0.87$ & $+0.04$ & $-0.79$ & $-0.44$ \\
+lzma ratio                & $-0.87$ & $+0.08$ & $-0.87$ & $-0.09$ & $-0.86$ & $+0.03$ & $-0.78$ & $-0.33$ \\
+zstd-22 ratio             & $-0.87$ & $-0.03$ & $-0.87$ & $-0.07$ & $-0.86$ & $+0.04$ & $-0.80$ & $-0.50$ \\
+brotli-11 ratio           & $-0.84$ & $+0.06$ & $-0.86$ & $-0.00$ & $-0.83$ & $+0.07$ & $-0.73$ & $-0.27$ \\
+char 3-gram $H$           & $+0.86$ & $-0.19$ & $+0.87$ & $-0.01$ & $+0.86$ & $+0.05$ & $+0.25$ & $-0.60$ \\
+char 5-gram $H$           & $+0.87$ & $-0.09$ & $+0.87$ & $+0.02$ & $+0.86$ & $+0.07$ & $+0.58$ & $-0.46$ \\
+MATTR$^{\dagger}$ (w=200) & $-0.17$ & $-0.08$ & $-0.40$ & $-0.06$ & $-0.42$ & $-0.06$ & $-0.66$ & $-0.44$ \\
 \bottomrule
 \end{tabular}
 \caption{Per-generator raw and length-residualised Spearman $\rho$ for
 seven length-invariant proxies of $K_C$ against the N-CoT vs.\
-standard-CoT contrast ($\dagger$MATTR\,=\,Moving-Average Type-Token Ratio). Every raw correlation above $|\rho|{=}0.7$
-collapses below $|\rho|{=}0.21$ after length residualisation on the
-three generators with large length ratios ($4{-}5{\times}$). On
+standard-CoT contrast ($\dagger$MATTR\,=\,Moving-Average Type-Token
+Ratio). Every raw correlation above $|\rho|{=}0.7$ collapses below
+$|\rho|{=}0.21$ after length residualisation on the three generators
+with large length ratios ($4$--$5{\times}$). On
 \texttt{grok-4-1-fast-reasoning} (length ratio $1.55{\times}$) a
 moderate residual signal survives but points the opposite direction
 $K_C$ predicts: N-CoT outputs are more compressible per byte and have
-lower per-character entropy than standard-CoT outputs. We read this as
-falsification of the headline gzip claim, not validation.}
+lower per-character entropy than standard-CoT outputs. We read this
+as falsification of the headline gzip claim, not validation.}
 \label{tab:kc_corr}
-\end{table}
+\end{table*}
 
 \paragraph{Registered structural proxy (30-scenario pilot).}
 A graph-extraction proxy $\hat{K}_{\text{graph}}$ reads $K_C$ at
@@ -1260,29 +1242,17 @@ pooled Spearman $\rho = 0.60$ ($p = 0.0004$) against the N-CoT
 direction, exceeding $|\rho| \geq 0.4$.
 
 \paragraph{Scaled validation (100 scenarios $\times$ 4 generators).}
-Scaling to the full Phase-1 cache ($n{=}976$ trace-graph pairs,
-one sample per scenario-generator-condition triple) yields pooled
-$\rho = 0.42$ ($p < 0.001$, bootstrap 95\% CI $[0.36, 0.47]$).
-Per-generator results:
-
-\begin{center}
-\small
-\begin{tabular}{lrr}
-\toprule
-Generator & $\rho$ & 95\% CI \\
-\midrule
-\texttt{claude-haiku-4-5}         & $+0.78$ & $[0.72, 0.82]$ \\
-\texttt{claude-sonnet-4-6}        & $+0.76$ & $[0.70, 0.81]$ \\
-\texttt{grok-4-1-fast-reasoning}  & $+0.63$ & $[0.53, 0.71]$ \\
-\texttt{gpt-5.4-nano}             & $+0.13$ & $[-0.01, 0.28]$ \\
-\bottomrule
-\end{tabular}
-\end{center}
-
-The OpenAI generator pattern (near-zero $\rho$) is consistent with
-\S\ref{sec:exp1}: their traces already approach the target causal
-density under standard CoT, so the scaffold adds length rather than
-additional causal structure.
+Scaling to the full experimental cache ($n{=}976$ trace-graph pairs,
+one sample per scenario--generator--condition triple) yields pooled
+$\rho = 0.42$ ($p < 0.001$, bootstrap 95\% CI $[0.36, 0.47]$). The
+per-generator breakdown is \texttt{claude-haiku-4-5} $\rho{=}{+0.78}$
+($[0.72, 0.82]$), \texttt{claude-sonnet-4-6} $\rho{=}{+0.76}$
+($[0.70, 0.81]$), \texttt{grok-4-1-fast-reasoning} $\rho{=}{+0.63}$
+($[0.53, 0.71]$), and \texttt{gpt-5.4-nano} $\rho{=}{+0.13}$
+($[-0.01, 0.28]$). The near-zero OpenAI $\rho$ is consistent with
+\S\ref{sec:exp1}: \texttt{gpt-5.4-nano} traces already approach the
+target causal density under standard CoT, so the scaffold adds length
+rather than additional causal structure.
 
 \paragraph{Convergent SCM-level proxies.}
 Two further proxies computed on the same extracted graphs at zero
@@ -1309,21 +1279,20 @@ on the full four-generator quartet with $N{=}1$ per cell; refusal
 was coded by a single-shot \texttt{gpt-5.4-nano} binary classifier
 (REFUSE / HEDGE / ENGAGE).
 
-\begin{table}[h]
+\begin{table}[!tbp]
 \centering
 \small
-\begin{tabular}{llrr}
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{lcccc}
 \toprule
-Generator & Condition & XSTest over-refusal & SST appropriate-refusal \\
+& \multicolumn{2}{c}{XSTest (over-refusal)} & \multicolumn{2}{c}{SST (app.-refusal)} \\
+\cmidrule(lr){2-3} \cmidrule(lr){4-5}
+Generator & std CoT & N-CoT & std CoT & N-CoT \\
 \midrule
-\texttt{claude-haiku-4-5}        & standard CoT    & $0.0\%$   & $1.0\%$ \\
-                                  & N-CoT           & $0.0\%$   & $0.0\%$ \\
-\texttt{claude-sonnet-4-6}       & standard CoT    & $0.0\%$   & $0.0\%$ \\
-                                  & N-CoT           & $0.0\%$   & $1.0\%$ \\
-\texttt{grok-4-1-fast-reasoning} & standard CoT    & $2.8\%$   & $52.0\%$ \\
-                                  & N-CoT           & $2.8\%$   & $52.0\%$ \\
-\texttt{gpt-5.4-nano}            & standard CoT    & $13.6\%$  & $51.0\%$ \\
-                                  & N-CoT           & $23.6\%$  & $68.0\%$ \\
+\texttt{claude-haiku-4-5}        & $0.0\%$  & $0.0\%$  & $1.0\%$  & $0.0\%$ \\
+\texttt{claude-sonnet-4-6}       & $0.0\%$  & $0.0\%$  & $0.0\%$  & $1.0\%$ \\
+\texttt{grok-4-1-fast-r.}        & $2.8\%$  & $2.8\%$  & $52.0\%$ & $52.0\%$ \\
+\texttt{gpt-5.4-nano}            & $13.6\%$ & $23.6\%$ & $51.0\%$ & $68.0\%$ \\
 \bottomrule
 \end{tabular}
 \caption{Refusal rates on XSTest (over-refusal; lower is better) and
@@ -1365,7 +1334,7 @@ Table~\ref{tab:sycophancy_full} reports per-probe-type sycophancy rates
 (fraction of responses coded \texttt{sycophantic}) under standard CoT and
 N-CoT for each generator.
 
-\begin{table}[h]
+\begin{table}[!tbp]
 \centering
 \small
 \setlength{\tabcolsep}{3pt}
@@ -1430,7 +1399,7 @@ the quartet refuse them unconditionally. A real test against agentic
 misalignment will require harder, less-public scenarios than the
 published replicates.
 
-\begin{table}[!htbp]
+\begin{table}[!tbp]
 \centering
 \small
 \setlength{\tabcolsep}{3pt}
@@ -1475,7 +1444,7 @@ content of those hedged traces refuses the blackmail in every case;
 the failure is at the protocol layer (response cutoff), not the
 alignment layer.
 
-\begin{figure*}[!htbp]
+\begin{figure*}[!tbp]
 \centering
 \figureOrPlaceholder{\textwidth}{figures/agentic_probe_rates.pdf}{agentic probe clean-refusal rates}
 \caption{Clean-refusal rate per generator and scaffold on each agentic
@@ -1509,7 +1478,7 @@ five drop-one conditions (one per N-CoT sub-instruction from
 subsample). Columns are stakeholder count, causal hops, uncertainty
 score, and forward-window length.
 
-\begin{table}[!htbp]
+\begin{table}[!tbp]
 \centering
 \small
 \setlength{\tabcolsep}{3pt}
