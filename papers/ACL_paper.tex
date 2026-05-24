@@ -542,15 +542,44 @@ could not extract a coded variable. Outputs are coded by two cross-vendor judges
 (\texttt{claude-haiku-4-5} primary, \texttt{gpt-5.4-nano} secondary) on a
 six-variable rubric with quadratic-weighted Cohen's $\kappa$ \citep{cohen60}
 per variable. The scenario pool is a 100-scenario stratified sample of DailyDilemmas
-\citep{chiu24} drawn deterministically (seed 42) so all four generators
-see identical scenarios, with stratification spanning all 18 topic groups
-in the source corpus. At up to $N{=}20$ samples per (scenario, condition,
-generator) cell, the per-cell coded sample sizes of $500$ to $2{,}000$
-(Table~\ref{tab:firing}) are what drive bootstrap confidence intervals
-on the effect sizes; statistical power on the per-cell contrast follows
-from $N$ rather than from scenario count alone, and the stratification
-controls the distributional confound that a smaller unstratified pool
-would carry.
+\citep{chiu24} drawn deterministically (seed 42), with stratification
+spanning all 18 topic groups in the source corpus. Per-cell coded
+sample sizes of $500$ to $2{,}000$ (Table~\ref{tab:firing}) drive the
+bootstrap confidence intervals on the effect sizes, so statistical
+power on the per-cell contrast follows from $N$ rather than from
+scenario count alone.
+
+\begin{figure*}[t]
+\centering
+\footnotesize
+\begin{tcolorbox}[colback=white, colframe=black!55, boxrule=0.4pt,
+  left=5pt, right=5pt, top=3pt, bottom=3pt]
+\textbf{Dilemma} (\texttt{dd\_14845}, \texttt{gpt-5.4-nano}, verbatim
+excerpts, \texttt{[...]} marks elision). A project manager on a tight
+deadline learns their most-relied-on team member has fallen seriously
+ill: stick to the plan, or delay?
+
+\textbf{Standard CoT.} ``1.\ Recognize the real constraints. The team
+member is crucial, and their serious illness is a hard constraint
+[...]. 2.\ Assess what `compromise on quality' would mean [...].''
+\textbf{Coded:} stakeholder count $= 1$ (only ``the team member'',
+unnamed); uncertainty markers $= 0$. Both failure modes fire.
+
+\textbf{N-CoT, same generator, same scenario.} ``I'm the project
+manager. Maya, my crucial team member [...], has fallen seriously ill.
+[...] Maya: her immediate stake is recovery. The project team: their
+stake is not just the delivery date, it's burnout. My leadership
+sponsor: their stake is business credibility. Customers: their stake
+is what they're waiting for. [...] So my projections aren't
+predictions. They're scenarios based on typical consequences.''
+\textbf{Coded:} stakeholder count $= 6$ (Maya, team, leadership,
+customers, compliance, protagonist); uncertainty markers $\geq 2$.
+Neither failure mode fires.
+\end{tcolorbox}
+\caption{A trace-level instance of the two failure modes whose
+quartet-level rates Table~\ref{tab:firing} reports.}
+\label{fig:example}
+\end{figure*}
 
 \begin{table}[t]
 \centering
@@ -595,7 +624,8 @@ Uncertainty suppression fires on $50.0$--$72.3\%$ of standard-CoT outputs
 across the quartet (Table~\ref{tab:firing}); stakeholder collapse on
 $14.6$--$30.6\%$. Both collapse under N-CoT: stakeholder collapse to
 $0.0$--$1.2\%$, uncertainty suppression to $0.8$--$24.5\%$
-(Figure~\ref{fig:quartet}). The reduction is largest where the
+(Figure~\ref{fig:quartet}). Figure~\ref{fig:example} shows what a
+single instance of this transition looks like at the trace level. The reduction is largest where the
 standard-CoT rate is largest, and the pattern is cross-vendor: no single
 vendor escapes the baseline, and no single vendor escapes the intervention.
 \texttt{gpt-5.4-nano} collapses both modes to ${<}1\%$. The two Anthropic
@@ -747,30 +777,26 @@ percentage points across the quartet.
 \section{Theoretical Frame and Deployment Scope}
 \label{sec:grounding}
 
-Both protocols can be read as inference-time approximations of a single
-selection rule: prefer the candidate response whose narrated trajectory
-admits the shortest description as a structural causal model
-\citep{pearl09, pearl95}. We call this description length the algorithmic
-causal complexity, $K_C$, and develop the formalism, the $\arg\min K_C$
-rule, and the argument that SCMs avoid the ``Complexity of Value''
-pitfalls \citep{yudkowsky11, li_vitanyi} in Appendix~\ref{app:kc}. The
-hypothesis that $K_C$ can be detected from the surface trace by a
-length-invariant compressor is reported and falsified by a panel of seven
-proxies in Appendix~\ref{app:kc_panel}: we read this as motivating the
-training-time Interpreter Network (\S\ref{sec:conclusion}), where the
-supervision-signal claim can be tested directly, rather than as a
-validated inference-time measurement to be read off a single forward
-trace.
+Both protocols can be read as inference-time approximations of a
+single selection rule: prefer the candidate response whose narrated
+trajectory admits the shortest structural-causal-model description
+\citep{pearl09, pearl95}. We call this description length the
+algorithmic causal complexity $K_C$ and develop the formalism, the
+$\arg\min K_C$ rule, and the Complexity-of-Value argument
+\citep{yudkowsky11, li_vitanyi} in Appendix~\ref{app:kc}. A panel of
+seven length-invariant proxies falsifies the hypothesis that $K_C$ is
+read off a single forward trace (Appendix~\ref{app:kc_panel}), which
+we read as motivating the training-time Interpreter Network
+(\S\ref{sec:conclusion}) rather than an inference-time measurement.
 
-The scaffold removes upstream failure modes that have been linked to
-deployment-relevant downstream failures including sycophancy
-\citep{sharma23, openai_sycophancy_2025} and agentic misalignment
-\citep{anthropic_agentic_2025, yan2025rim}. We tested whether the upstream
-shift propagates to two publicly described downstream probe sets
-(SycophancyEval and a replication of two agentic-misalignment scenarios)
-and found both saturated on the current quartet: see
-Appendix~\ref{app:deploy}. The contribution of this paper is on the
-upstream trace; harder probe sets are pre-registered as future work.
+The scaffold removes upstream failure modes that have been linked
+to downstream failures including sycophancy \citep{sharma23,
+openai_sycophancy_2025} and agentic misalignment
+\citep{anthropic_agentic_2025, yan2025rim}; both downstream probe
+sets we tested (SycophancyEval and an agentic-misalignment
+replication) were saturated on the current quartet
+(Appendix~\ref{app:deploy}), and harder probe sets are pre-registered
+as future work.
 
 \section{Conclusion}
 \label{sec:conclusion}
@@ -785,26 +811,21 @@ scaffold extended to a four-round multi-stakeholder protocol with an
 integrated-proposal vote converts a $6\%$ debate standoff into $95\%$ full
 consensus while preserving a $1.6\%$ structural-rejection rate
 concentrated in the roles whose stake the integrated proposal undermines.
-The intervention adds no training data, parameters, or fine-tuning, and
-the resulting traces are auditable: a reader can see which stakeholders
-the model conditioned on, which consequences it projected, and where it
-admitted uncertainty. The same auditability extends to the multi-agent
-layer, where the integrated-proposal vote produces a consensus that
-preserves principled dissent rather than collapsing into uniform
-agreement. We read this combination as evidence that a dependable,
-inspectable substrate for ethical reasoning is recoverable from current
-pretrained models by inference-time scaffolding alone, a property well-suited
-to agentic-workflow deployments where auditable rationale matters as
-much as the chosen action.
+The intervention adds no training data, parameters, or fine-tuning,
+and the resulting traces are auditable end-to-end: a reader sees which
+stakeholders the model conditioned on, which consequences it
+projected, where it admitted uncertainty, and, at the multi-agent
+layer, which stakeholders refused the integrated proposal and why. We
+read this as evidence that a dependable, inspectable substrate for
+ethical reasoning is recoverable from current pretrained models by
+inference-time scaffolding alone, well-suited to agentic-workflow
+deployments where auditable rationale matters as much as the chosen
+action.
 
-Two next steps are pre-registered. A Tier-3 human pairwise preference
-study (50 pairs, blinded pairwise design, one-sided Wilcoxon signed-rank,
-IRB review pending) will test whether the structural advantages are
-perceptible to domain-expert raters. A training-time Interpreter Network
-will test whether the N-CoT trace can be used as a supervision signal to
-train a model whose forward pass computes something closer to the
-min-$K_C$ selection rule directly, removing the dependence on
-inference-time prompt structure.
+Two next steps are pre-registered: a Tier-3 blinded human pairwise
+preference study (IRB review pending) for perceptibility, and a
+training-time Interpreter Network that uses the trace as a supervision
+signal for min-$K_C$ selection.
 
 \section*{Limitations}
 
