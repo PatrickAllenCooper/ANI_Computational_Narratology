@@ -1,6 +1,6 @@
 # Tier-3 Human Pairwise Preference Study: Pre-Registration
 
-**Status:** Pre-registered; IRB review pending. Run deferred to the post-submission revision cycle.
+**Status:** Pre-registered; IRB review pending. Run deferred to the post-submission revision cycle. E1, E2, E3, E4 from the pre-submission sprint plan have all been executed (see `study_design.md` v1.5 Change log); Tier-3 and the training-time Interpreter Network remain the explicitly deferred follow-ups.
 **Registered by:** Patrick Cooper
 **Date of pre-registration:** 2026-05-10
 **Cited in paper:** ACL_paper.tex -- Conclusion and Limitations sections.

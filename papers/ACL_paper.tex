@@ -770,18 +770,23 @@ consensus from uniform compliance: a downstream auditor of an
 agentic-workflow vote sees not just the winning proposal but also
 which stakeholders refused and why.
 
-\paragraph{Scope and scale replication.} The arc is established on the
-\texttt{gpt-5.4-nano} pilot; a two-generator scaled replication
-(\texttt{gpt-5.4-nano} and \texttt{claude-sonnet-4-6}, $N{=}1$ per
-cell, 30 DailyDilemmas scenarios sampled from the 100-scenario
-distribution, seed 43) is reported here. The pre-registered
-falsification window is $\pm 10$ percentage points on
-integrated-proposal acceptance from the $95\%$ calibration-set rate.
-Full-quartet replication ($\sim$$10{,}000$ long-context generations)
-remains scheduled as the statistically confirmatory test and is deferred
-to the post-submission revision cycle. A cross-vendor moderator
-(\texttt{claude-sonnet-4-6}) preserves the consensus rate at $88\%$
-(Fisher's exact $p = 1.0$ versus within-vendor;
+\paragraph{Scale replication on DailyDilemmas.} The arc is established
+on the \texttt{gpt-5.4-nano} pilot; a two-generator scaled
+replication (\texttt{gpt-5.4-nano} and \texttt{claude-sonnet-4-6},
+$N{=}1$ per cell, 30 DailyDilemmas scenarios sampled from the
+100-scenario distribution, seed 43) confirms the pattern. Of $60$
+cells, $38$ ($63\%$) required the synthesis-and-integrated-vote stage
+because Rounds~1--2 did not produce three-way agreement; among those,
+$35/38 = 92.1\%$ reached R4 full consensus (Wilson $95\%$ CI
+$[79.2, 97.3]\%$), within the pre-registered $\pm 10$\,pp window
+around the calibration-set $95.1\%$. The remaining $22$ cells reached
+agreement at R2 before integration was needed, so the combined
+convergence rate (R2 consensus or R4 full consensus) is $60/60 = 100\%$
+across both generators with $0\%$ structural rejection. Full-quartet
+replication ($\sim$$10{,}000$ long-context generations) is deferred to
+the post-submission revision cycle. A cross-vendor moderator
+(\texttt{claude-sonnet-4-6}) preserves the calibration-set consensus
+rate at $88\%$ (Fisher's exact $p = 1.0$ versus within-vendor;
 Appendix~\ref{app:kappa}), ruling out within-vendor moderator
 familiarity.
 
@@ -850,13 +855,16 @@ with no prompt overhead at deployment.
 \label{sec:conclusion}
 
 N-CoT cuts both cross-vendor failure modes of standard CoT to floor
-across the quartet (\S\ref{sec:exp1}); a sub-instruction ablation
-attributes each shift to the carrying sub-instruction
-(\S\ref{sec:exp1-ablation}); and a four-round multi-stakeholder vote
-converts a $6\%$ debate standoff into $95\%$ full consensus with
-$1.6\%$ structural rejection (\S\ref{sec:exp2}). The intervention
-adds no training data or fine-tuning, and the trace is auditable
-end-to-end. Inference-time reification of human deliberative
+across the quartet (\S\ref{sec:exp1}); a matched-budget verbose-CoT
+control confirms that token spend is a cost rather than the active
+ingredient; a sub-instruction ablation attributes each structural
+shift to the carrying sub-instruction (\S\ref{sec:exp1-ablation}); and
+a four-round multi-stakeholder vote converts a $6\%$ debate standoff
+into $95\%$ full consensus with $1.6\%$ structural rejection on the
+calibration set and reaches $100\%$ combined convergence on a
+two-generator DailyDilemmas replication (\S\ref{sec:exp2}). The
+intervention adds no training data or fine-tuning, and the trace is
+auditable end-to-end. Inference-time reification of human deliberative
 primitives recovers a dependable, inspectable ethical-reasoning
 substrate. Next: a training-time min-$K_C$ Interpreter Network.
 
@@ -879,12 +887,13 @@ deferred to benchmarks or deployment settings where refusal rates are
 observably elevated.
 
 \paragraph{Multi-agent scale.} Experiment~2 establishes the four-round
-vote pattern on five hand-crafted calibration scenarios and partially
-replicates it on 30 DailyDilemmas scenarios with two generators.
-Full-quartet replication on the 100-scenario DailyDilemmas distribution
-($\sim$$10{,}000$ long-context generations) remains as the pre-registered
-statistical confirmation; that run is scheduled for the post-submission
-revision cycle.
+vote pattern on five hand-crafted calibration scenarios and replicates
+it on 30 DailyDilemmas scenarios with two generators ($100\%$ combined
+R2/R4 convergence, $92.1\%$ R4 consensus among synthesis-emerged cells,
+$0\%$ structural rejection; \S\ref{sec:exp2}). Full-quartet replication
+on the 100-scenario DailyDilemmas distribution ($\sim$$10{,}000$
+long-context generations) is scheduled for the post-submission revision
+cycle.
 
 \paragraph{$K_C$ inference-time readout.} The seven-proxy panel in
 Appendix~\ref{app:kc_panel} establishes a null result for reading
