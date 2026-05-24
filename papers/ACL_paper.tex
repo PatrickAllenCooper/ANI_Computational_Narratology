@@ -305,12 +305,16 @@ agentic-misalignment blackmail rates up to $96\%$ in simulated
 deployments \citep{anthropic_agentic_2025}, and reasoning-induced
 misalignment \citep{yan2025rim,sharma23}.
 
-We introduce narrative chain-of-thought (N-CoT), a system prompt that puts
-the model on the manifold of human narrative its pretraining corpus most
-heavily samples. The model is asked, in first person, to name a
-protagonist, enumerate stakeholders, project two-step consequences,
-articulate uncertainty, and only then commit. Figure~\ref{fig:hero} states
-the mechanism.
+We introduce narrative chain-of-thought (N-CoT), a system prompt that
+puts the model on the manifold of human narrative its pretraining
+corpus most heavily samples. Concretely, N-CoT is a single change to
+the system-prompt slot of an unmodified pretrained model, with no
+weight updates and no training data: in place of the standard ``think
+step by step'' instruction, the model is asked, in first person, to
+name a protagonist, enumerate stakeholders, project two-step
+consequences, articulate uncertainty, and commit inside the final
+narrative section rather than as a separate verdict.
+Figure~\ref{fig:hero} states the mechanism.
 
 What we borrow from the multi-agent systems for scientific discovery of
 \citet{gottweis25} and \citet{lu24_aiscientist} is one methodological move:
@@ -349,18 +353,16 @@ deployments where actions touch multiple parties and downstream trust
 depends on a reviewer being able to see what was considered, who
 consented, and who refused, the rule-governed trace this protocol
 produces is the kind of context-complete audit artefact accountability
-requires. The intervention is a small auditable prompt change that adds
-no weights or training data. The resulting trace externalises the stakeholders, the
-projected consequences, and the uncertainty that ground each commitment,
-and the multi-agent extension preserves principled dissent rather than
-collapsing into uniform agreement. We read the combination as evidence
-that a dependable, inspectable substrate for ethical reasoning is
-recoverable from current pretrained models by inference-time scaffolding
-alone, a property well-suited to agentic-workflow deployments where
-auditable rationale matters as much as the chosen action. The saturated
-downstream deployment probes that motivated the diagnosis remain
+requires. The trace externalises which stakeholders, consequences,
+and uncertainties grounded each commitment, and the multi-agent
+extension reuses the same scaffold on each stakeholder agent and at
+the moderator, so principled dissent surfaces as a structurally
+interpretable rejection rather than collapsing into uniform agreement. We read this as evidence that a dependable,
+inspectable substrate for ethical reasoning is recoverable by
+inference-time scaffolding alone, suited to agentic-workflow
+deployment. The downstream probes that motivated the diagnosis remain
 saturated under either scaffold (Appendix~\ref{app:deploy}); harder
-probe sets are pre-registered as future work.
+probe sets are pre-registered.
 
 \section{Background and Related Work}
 \label{sec:related}
