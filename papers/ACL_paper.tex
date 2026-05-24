@@ -993,7 +993,7 @@ variance that arises when multiple samples per cell are aggregated in A.1.
 \small
 \begin{tabular}{lccc}
 \toprule
-Variable & $\kappa$(j1,j2) & $\kappa$(j1,j3) & $\kappa$(j2,j3) \\
+Variable & $\kappa(j_1,j_2)$ & $\kappa(j_1,j_3)$ & $\kappa(j_2,j_3)$ \\
 \midrule
 stakeholder\_count & $0.846$ & $0.872$ & $0.819$ \\
 max\_causal\_hops  & $0.421$ & $0.459$ & $0.625$ \\
@@ -1001,9 +1001,9 @@ uncertainty\_score & $0.576$ & $0.756$ & $0.488$ \\
 \bottomrule
 \end{tabular}
 \caption{Pairwise quadratic-weighted $\kappa$ across the three judges on
-the 30-scenario subsample ($n = 177$ complete triples). j1 =
-\texttt{claude-haiku-4-5}, j2 = \texttt{gpt-5.4-nano}, j3 =
-\texttt{grok-4-1-fast-reasoning} (held-out). All pairwise pairs exceed
+the 30-scenario subsample ($n = 177$ complete triples). $j_1 =
+\texttt{claude-haiku-4-5}$, $j_2 = \texttt{gpt-5.4-nano}$, $j_3 =
+\texttt{grok-4-1-fast-reasoning}$ (held-out). All pairwise pairs exceed
 $0.40$ on \texttt{stakeholder\_count} and \texttt{uncertainty\_score};
 \texttt{max\_causal\_hops} improves modestly over the A.1 estimate
 but remains cautionary.}
@@ -1013,12 +1013,12 @@ but remains cautionary.}
 \paragraph{Direction-of-effect under held-out judge.}
 When \texttt{grok-4-1-fast-reasoning} is used as the primary judge on the
 same $30$-scenario subsample, the direction-of-effect matches all three
-headline variables in the same direction as j1 and j2:
+headline variables in the same direction as $j_1$ and $j_2$:
 \texttt{stakeholder\_count} narr$=5.13 >$ std$=3.08 >$ base$=2.67$;
 \texttt{max\_causal\_hops} narr$=4.43 >$ std$=3.10 >$ base$=2.38$;
 \texttt{uncertainty\_score} narr$=2.93 >$ std$=2.18 >$ base$=1.52$.
 All three direction-of-effect comparisons (narrative CoT $>$ baseline)
-agree across j1, j2, and j3.
+agree across $j_1$, $j_2$, and $j_3$.
 
 \subsection*{A.3~~Cross-vendor moderator (Experiment~2)}
 
