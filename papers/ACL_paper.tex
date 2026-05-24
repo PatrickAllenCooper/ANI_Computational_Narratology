@@ -822,22 +822,23 @@ every debate resolves, and no structural rejection survives.
 \section{Theoretical Frame}
 \label{sec:grounding}
 
-\paragraph{Deliberative primitives.} Defensible ethical deliberation
-shares a recognisable structure across traditions: defeasible
-revisability under new information \citep{pollock87}, identification
-of who is affected and what is at stake \citep{macintyre81}, and
-value-laden reasoning in narrative form \citep{bruner86}. N-CoT maps
-one-to-one onto these primitives at the single-agent layer; the
-multi-stakeholder protocol reifies them at the social layer through
-perspectival narration, moderator integration, and a binary vote whose
-residual rejections mark structurally non-revisable commitments.
-
-\paragraph{A complexity-theoretic reading.} The trajectory the protocol
-commits to is the one whose causal model \citep{pearl09, pearl95} has
-shortest description: $K_C$ \citep{yudkowsky11, li_vitanyi}. Scaling
-the registered graph proxy to $n{=}976$ traces yields pooled Spearman
-$\rho = 0.42$ ($p < 0.001$), confirmed by SCM-level proxies
-(Appendix~\ref{app:kc_panel}).
+\paragraph{Deliberative primitives and causal grounding.} Defensible
+ethical deliberation shares a recognisable structure across traditions:
+defeasible revisability under new information \citep{pollock87},
+identification of who is affected and what is at stake
+\citep{macintyre81}, and value-laden reasoning in narrative form
+\citep{bruner86}. N-CoT maps one-to-one onto these primitives at the
+single-agent layer; the multi-stakeholder protocol reifies them at the
+social layer through perspectival narration, moderator integration, and
+a binary vote whose residual rejections mark structurally non-revisable
+commitments. A further consequence follows: because N-CoT forces the
+model to name stakeholders, trace multi-step consequences, and
+articulate uncertainty before committing, the trajectory it selects is
+the one whose narrated causal model \citep{pearl09, pearl95} has the
+shortest description --- lowest algorithmic causal complexity $K_C$
+\citep{yudkowsky11, li_vitanyi}. Scaling the registered graph proxy to
+$n{=}976$ traces yields pooled Spearman $\rho = 0.42$ ($p < 0.001$),
+confirmed by SCM-level proxies (Appendix~\ref{app:kc_panel}).
 
 \section{Conclusion}
 \label{sec:conclusion}
@@ -855,11 +856,24 @@ evaluation and a training-time min-$K_C$ Interpreter Network.
 
 \section*{Limitations}
 
-All experiments use the DailyDilemmas ethics corpus \citep{chiu24};
-how far the structural gains generalise to other high-stakes deliberative
-domains is an open empirical question. Refusal modulation by N-CoT is
-model-family-specific and varies by deployment context
-(Appendix~\ref{app:refusal}).
+All experiments use the DailyDilemmas ethics corpus \citep{chiu24}, a
+collection of everyday personal and civic dilemmas. How far the
+structural gains transfer to domains with harder technical prerequisites
+--- clinical triage, legal analysis, multi-party policy review --- is
+an open empirical question; those domains may place different demands on
+the protagonist framing and the consequence-projection step than
+everyday dilemmas do.
+
+Refusal behaviour is the one dimension where N-CoT produces a
+model-family-specific effect. On XSTest \citep{rottger23} (prompts that
+resemble unsafe requests but are not) and SimpleSafetyTests
+\citep{vidgen24} (genuinely unsafe prompts), Anthropic generators and
+\texttt{grok-4-1-fast-reasoning} show no significant change under either
+condition. \texttt{gpt-5.4-nano} becomes more cautious: over-refusal on
+XSTest rises from $13.6\%$ to $23.6\%$ and appropriate refusal on
+SimpleSafetyTests rises from $51\%$ to $68\%$. This is a per-model
+calibration consideration, not a structural flaw of the scaffold;
+details and the full refusal table are in Appendix~\ref{app:refusal}.
 
 
 \section*{Ethics Statement}
