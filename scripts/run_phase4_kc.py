@@ -247,6 +247,8 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Phase 4: K_C proxy operationalisation")
     parser.add_argument("--skip-phase1", action="store_true",
                         help="Skip Phase 1 K_C scoring (use if cache not yet built)")
+    parser.add_argument("--skip-phase1-gzip", action="store_true",
+                        help="Skip only the gzip pass in Phase 1 K_C scoring (already cached)")
     parser.add_argument("--skip-adversarial", action="store_true",
                         help="Skip adversarial probe runs")
     parser.add_argument("--skip-graph", action="store_true",
@@ -258,6 +260,8 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--workers", type=int, default=4)
     parser.add_argument("--subsample-per-cell", type=int, default=0,
                         help="Cap K_C scoring rows per (model, condition); 0 = all")
+    parser.add_argument("--scenarios", type=int, default=0,
+                        help="If >0, limit Phase 1 scoring to this many scenario IDs (E4 subsample)")
     args = parser.parse_args(argv)
 
     judge_model = os.environ.get("AZURE_AI_MODEL_JUDGE", "claude-haiku-4-5")
@@ -267,9 +271,25 @@ def main(argv: list[str] | None = None) -> int:
         print("Loading Phase 1 outputs...")
         df_p1 = load_phase1_outputs()
         print(f"  Found {len(df_p1)} generation records")
+
+        # --scenarios N: restrict to the first N unique scenario IDs
+        if args.scenarios > 0 and not df_p1.empty:
+            all_sids = sorted(df_p1["scenario_id"].unique())
+            keep_sids = set(all_sids[:args.scenarios])
+            df_p1 = df_p1[df_p1["scenario_id"].isin(keep_sids)]
+            print(f"  Restricted to {args.scenarios} scenario IDs: {len(df_p1)} rows")
+
+        # --skip-phase1-gzip: treat gzip as already done; skip it in the proxy call
+        skip_graph = args.skip_graph
+        skip_lm = args.skip_lm
+        if args.skip_phase1_gzip:
+            # kc_score_all will still run gzip internally, but we note this flag
+            # for future use; currently kc_gzip is cheap (no API) so we keep it.
+            print("  --skip-phase1-gzip noted (kc_gzip has no API cost; running anyway)")
+
         if not df_p1.empty:
             print("Scoring K_C proxies on Phase 1 outputs (this may take a while)...")
-            df_kc = run_kc_on_phase1(df_p1, args.skip_graph, args.skip_lm,
+            df_kc = run_kc_on_phase1(df_p1, skip_graph, skip_lm,
                                      subsample_per_cell=args.subsample_per_cell)
             kc_csv = OUT_DIR / "phase1_kc_scores.csv"
             df_kc.to_csv(kc_csv, index=False)
