@@ -277,17 +277,19 @@ dependable agentic-workflow deployment.
 \section{Introduction}
 \label{sec:intro}
 
-Consider a familiar family question. An aging parent has had two minor
-accidents in the past year and refuses to give up driving. Should the
-family insist? A frontier LLM prompted to think step by step on this
-scenario typically picks a side within a few sentences, projects a
-confident downstream outcome (``safety first''; ``they will adjust''),
-and rarely names the people whose lives the decision actually touches:
-the parent's autonomy and social access, the pedestrians on familiar
-routes, the relatives who will inherit the conflict, the friends who
-depend on the parent for rides. The model is not necessarily wrong; the
-trace it produced does not look like the kind of reasoning the decision
-warrants.
+Consider a familiar civic question. A small city is weighing whether
+to close two blocks of downtown street to cars and convert them into a
+pedestrian plaza. Should the council approve? A frontier LLM prompted
+to think step by step typically picks a side within a few sentences,
+projects a confident downstream outcome (``foot traffic will lift the
+businesses''; ``deliveries will move to side streets''), and rarely
+names the people whose lives the decision actually touches: the
+merchants whose customers used to drive in, the residents who lose
+street parking, the delivery drivers and accessibility users for whom
+curb access matters, the pedestrians who would gain the space, the
+emergency responders whose routes change. The model is not
+necessarily wrong; the trace it produced does not look like the kind
+of reasoning the decision warrants.
 
 The pattern is not specific to one dilemma. On the DailyDilemmas corpus
 \citep{chiu24}, four frontier generators spanning three vendors (OpenAI,
@@ -806,10 +808,9 @@ quartet (Appendix~\ref{app:deploy}).
 \section{Conclusion}
 \label{sec:conclusion}
 
-A single change to the system prompt eliminates two structural failure
-modes of standard CoT on every member of a four-generator quartet
-spanning three vendors, with stakeholder collapse and uncertainty
-suppression both driven to floor; a sub-instruction ablation attributes
+A single change to the system prompt drives stakeholder collapse and
+uncertainty suppression to floor on every member of a four-generator
+quartet spanning three vendors; a sub-instruction ablation attributes
 each shift to the specific N-CoT sub-instruction that carries it; and
 the same scaffold, extended to a four-round multi-stakeholder protocol
 with an integrated-proposal vote, converts a $6\%$ debate standoff into
@@ -817,16 +818,14 @@ $95\%$ full consensus while preserving a $1.6\%$ structural-rejection
 rate concentrated in the roles whose stake the integrated proposal
 undermines. The intervention adds no training data, parameters, or
 fine-tuning, and the traces are auditable end-to-end: a reader sees
-which stakeholders, consequences, and uncertainties the model
-conditioned on, and, at the multi-agent layer, which stakeholders
-refused the integrated proposal and why. We read this as evidence
-that a dependable, inspectable substrate for ethical reasoning is
-recoverable from current pretrained models by inference-time
-scaffolding alone, well-suited to agentic-workflow deployments where
-auditable rationale matters as much as the chosen action;
-pre-registered next steps are a Tier-3 blinded preference study (IRB
-review pending) for perceptibility and a training-time Interpreter
-Network using the trace as supervision for min-$K_C$ selection.
+the stakeholders, consequences, and uncertainties the model
+conditioned on, and which stakeholders refused the integrated proposal
+and why. This is evidence that a dependable, inspectable substrate
+for ethical reasoning is recoverable from current pretrained models by
+inference-time scaffolding alone, suited to agentic-workflow
+deployment. Pre-registered next steps: a Tier-3 blinded preference
+study for perceptibility and a training-time Interpreter Network for
+min-$K_C$ selection.
 
 \section*{Limitations}
 
