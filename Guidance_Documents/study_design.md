@@ -65,7 +65,7 @@ Reported with means by condition, Mann-Whitney U p-values, and **Cliff's delta w
 
 1. **Inter-judge agreement.** Cohen's kappa (linearly weighted for ordinal codes) per variable between the primary and secondary judge. Variables with kappa < 0.5 are flagged UNRELIABLE in the headline summary; their effect sizes are reported but caveated.
 2. **Cross-judge directional check.** Per-judge Cliff's delta is reported side by side. Even when kappa is low, both judges may agree on the *direction* of the narrative-vs-standard effect; this is reported separately so a noisy variable can still support a qualitative claim.
-3. **Length residualization.** Each structural variable is regressed on `log(output_len)` pooled across conditions, and Cliff's delta is recomputed on the residuals. Variables whose effect shrinks to near zero or flips sign are flagged LENGTH-CONFOUND. This guards against the most parsimonious null model: that narrative-CoT effects are just artifacts of longer outputs.
+3. **Length residualization.** Each structural variable is regressed on `log(output_len)` pooled across conditions, and Cliff's delta is recomputed on the residuals. Variables whose effect shrinks to near zero or flips sign are flagged LENGTH-CONFOUND. This guards against the most parsimonious null model: that narrative-CoT effects are just artifacts of longer outputs. Reviewer-facing implication: a "longer standard CoT" prompt at the same token budget is not a substitute for the N-CoT prompt on the budget generators where the residualized delta survives. A matched-token-budget standard-CoT condition is pre-registered as the direct confirmatory test.
 
 ### Tier 2 — Conclusion divergence
 

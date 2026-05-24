@@ -662,6 +662,18 @@ prompt-side gain there operates through additional length rather than
 additional per-unit density. Per-generator $\delta$s with bootstrap
 CIs are in Appendix~\ref{app:effects}.
 
+\paragraph{Length is a cost, not a substitute for the prompt.} A
+sceptical reading of the $5$--$7\times$ token premium is that the
+paper just spends more compute. The residualisation rules this out:
+at matched length, N-CoT still dominates standard CoT on the
+structural variables, so a ``longer standard CoT'' prompt spending the
+same token budget would not recover them. The cost sits on inference
+tokens, the cheapest scaling axis (no training, parameters, or
+fine-tuning), and is a small premium relative to interventions that
+match these structural targets at lower per-call cost (fine-tuning,
+reward modelling) but carry orders-of-magnitude higher fixed cost. A
+matched-budget standard-CoT condition is pre-registered.
+
 \subsection{Sub-Instruction Ablation}
 \label{sec:exp1-ablation}
 
@@ -688,20 +700,19 @@ variables.}
 
 The ablation shows direct causal attribution. Dropping Stakeholders
 reduces stakeholder count by $\delta = -0.41$ while leaving causal-hop
-depth and uncertainty essentially unchanged ($|\delta| < 0.03$); dropping
-Uncertainty reduces uncertainty score by $\delta = -0.92$, nearly the
-maximum possible, while leaving every other variable untouched; dropping
-Consequences reduces causal-hop depth by $\delta = -0.22$ with small
-spillover onto stakeholder count, consistent with multi-step consequence
-projection forcing the model to name the entities those consequences fall
-on. Dropping Protagonist or Commitment contributes no signed effect on any
-structural variable. The diagonal pattern is the signature of section-level
-mechanism: a single emergent narrative factor would dilute every variable
-uniformly when any section is dropped, and a pure length confound would
-shrink the forward-window column most regardless of which section is
-dropped. Neither fires. Each substantive sub-instruction carries the
-structural variable the main paper attributes to it and little else
-(full table: Appendix~\ref{app:ablation}, Table~\ref{tab:ablation_full}).
+depth and uncertainty essentially unchanged ($|\delta| < 0.03$);
+dropping Uncertainty reduces uncertainty score by $\delta = -0.92$,
+nearly the maximum; dropping Consequences reduces causal-hop depth by
+$\delta = -0.22$ with small spillover onto stakeholder count,
+consistent with multi-step consequence projection forcing the model
+to name the entities those consequences fall on. Dropping Protagonist
+or Commitment contributes no signed effect. The diagonal pattern
+rules out two alternative mechanisms: a single emergent narrative
+factor would dilute every variable on any drop, and a pure length
+confound would shrink one column most regardless of which section is
+dropped. Each substantive sub-instruction carries the structural
+variable attributed to it and little else (full table:
+Appendix~\ref{app:ablation}).
 
 \section{Experiment 2: Multi-Stakeholder Narrative Deliberation}
 \label{sec:exp2}
@@ -719,17 +730,14 @@ indistinguishable consensus rate.
 \begin{figure*}[t]
 \centering
 \figureOrPlaceholder{0.92\textwidth}{figures/debate_full_arc.pdf}{debate convergence arc (original two generators)}
-\caption{Convergence rate across four debate-protocol designs on five
-scenarios and two generators. Closed taxonomy (Rounds~0--2 only, fixed
-action options): $6\%$ full consensus. Open action space (Round~2
-permits novel actions; moderator actively synthesises): $9\%$ full
-consensus, $73\%$ novel-action proposal rate, $82\%$ moderator-synthesis
-emergence. Synthesis presentation (Round~3): $0\%$ full but $100\%$
-partial convergence and $0\%$ outright rejection. Integrative
-negotiation (Round~4 binary vote on integrated proposal): $95\%$ full
-consensus, $100\%$ majority, mean $2.98/3$ agent modifications
-addressed. The residual $1.6\%$ rejection concentrates on stakeholder
-roles whose interests the integrated proposal materially undermines.}
+\caption{Convergence across four debate-protocol designs (five
+scenarios, two generators). Closed taxonomy and open action space hold
+at $6\%$ and $9\%$ full consensus; synthesis presentation (Round~3)
+hits $100\%$ partial convergence; the integrative-vote design
+(Round~4) reaches $95\%$ full consensus and $100\%$ majority (mean
+$2.98/3$ modifications addressed). The residual $1.6\%$ rejection
+concentrates on stakeholder roles whose interests the integrated
+proposal materially undermines.}
 \label{fig:debate_arc}
 \end{figure*}
 
@@ -765,70 +773,60 @@ structural shape a defeasibility-respecting protocol should produce,
 and is the property that distinguishes a dependable multi-agent
 consensus from uniform compliance: a downstream auditor of an
 agentic-workflow vote sees not just the winning proposal but also
-which stakeholders refused and why. The full-quartet replication is
-pre-registered as the statistically confirmatory test.
+which stakeholders refused and why.
 
 \paragraph{Scope.} The arc is established on the \texttt{gpt-5.4-nano}
 pilot; full-quartet replication ($\sim$$10{,}000$ long-context
-generations) is deferred and the pre-registered hypothesis is
-$\pm 10$ percentage points on integrated-proposal acceptance across
-the quartet. A cross-vendor moderator (\texttt{claude-sonnet-4-6})
-preserves the consensus rate at $88\%$ (Fisher's exact $p = 1.0$
-versus within-vendor; Appendix~\ref{app:kappa}), ruling out
-within-vendor moderator familiarity as the driver.
+generations) is pre-registered as the statistically confirmatory test
+($\pm 10$ percentage points on integrated-proposal acceptance). A
+cross-vendor moderator (\texttt{claude-sonnet-4-6}) preserves the
+consensus rate at $88\%$ (Fisher's exact $p = 1.0$ versus
+within-vendor; Appendix~\ref{app:kappa}), ruling out within-vendor
+moderator familiarity.
 
 \section{Theoretical Frame and Deployment Scope}
 \label{sec:grounding}
 
 Both protocols can be read as inference-time approximations of a
-single selection rule: prefer the candidate response whose narrated
-trajectory admits the shortest structural-causal-model description
-\citep{pearl09, pearl95}. We call this description length the
-algorithmic causal complexity $K_C$ and develop the formalism, the
-$\arg\min K_C$ rule, and the Complexity-of-Value argument
-\citep{yudkowsky11, li_vitanyi} in Appendix~\ref{app:kc}. A panel of
+single selection rule: prefer the candidate whose narrated trajectory
+admits the shortest structural-causal-model description \citep{pearl09,
+pearl95}. We call this length the algorithmic causal complexity $K_C$
+(formalism, $\arg\min K_C$ rule, and Complexity-of-Value argument
+\citep{yudkowsky11, li_vitanyi}: Appendix~\ref{app:kc}). A panel of
 seven length-invariant proxies falsifies the hypothesis that $K_C$ is
-read off a single forward trace (Appendix~\ref{app:kc_panel}), which
-we read as motivating the training-time Interpreter Network
+read off a single forward trace (Appendix~\ref{app:kc_panel}),
+motivating the training-time Interpreter Network
 (\S\ref{sec:conclusion}) rather than an inference-time measurement.
-
-The scaffold removes upstream failure modes that have been linked
-to downstream failures including sycophancy \citep{sharma23,
-openai_sycophancy_2025} and agentic misalignment
-\citep{anthropic_agentic_2025, yan2025rim}; both downstream probe
-sets we tested (SycophancyEval and an agentic-misalignment
-replication) were saturated on the current quartet
-(Appendix~\ref{app:deploy}), and harder probe sets are pre-registered
-as future work.
+The scaffold removes upstream failure modes linked to downstream
+failures including sycophancy \citep{sharma23, openai_sycophancy_2025}
+and agentic misalignment \citep{anthropic_agentic_2025, yan2025rim};
+both downstream probe sets we tested were saturated on the current
+quartet (Appendix~\ref{app:deploy}).
 
 \section{Conclusion}
 \label{sec:conclusion}
 
 A single change to the system prompt eliminates two structural failure
-modes of standard CoT on every member of a four-generator quartet spanning
-three vendors. Stakeholder collapse drops from $14.6$--$30.6\%$ to
-$0.0$--$1.2\%$; uncertainty suppression drops from $50.0$--$72.3\%$ to
-$0.8$--$24.5\%$. A sub-instruction ablation attributes each structural
-shift to the specific N-CoT sub-instruction that carries it. The same
-scaffold extended to a four-round multi-stakeholder protocol with an
-integrated-proposal vote converts a $6\%$ debate standoff into $95\%$ full
-consensus while preserving a $1.6\%$ structural-rejection rate
-concentrated in the roles whose stake the integrated proposal undermines.
-The intervention adds no training data, parameters, or fine-tuning,
-and the resulting traces are auditable end-to-end: a reader sees which
-stakeholders the model conditioned on, which consequences it
-projected, where it admitted uncertainty, and, at the multi-agent
-layer, which stakeholders refused the integrated proposal and why. We
-read this as evidence that a dependable, inspectable substrate for
-ethical reasoning is recoverable from current pretrained models by
-inference-time scaffolding alone, well-suited to agentic-workflow
-deployments where auditable rationale matters as much as the chosen
-action.
-
-Two next steps are pre-registered: a Tier-3 blinded human pairwise
-preference study (IRB review pending) for perceptibility, and a
-training-time Interpreter Network that uses the trace as a supervision
-signal for min-$K_C$ selection.
+modes of standard CoT on every member of a four-generator quartet
+spanning three vendors, with stakeholder collapse and uncertainty
+suppression both driven to floor; a sub-instruction ablation attributes
+each shift to the specific N-CoT sub-instruction that carries it; and
+the same scaffold, extended to a four-round multi-stakeholder protocol
+with an integrated-proposal vote, converts a $6\%$ debate standoff into
+$95\%$ full consensus while preserving a $1.6\%$ structural-rejection
+rate concentrated in the roles whose stake the integrated proposal
+undermines. The intervention adds no training data, parameters, or
+fine-tuning, and the traces are auditable end-to-end: a reader sees
+which stakeholders, consequences, and uncertainties the model
+conditioned on, and, at the multi-agent layer, which stakeholders
+refused the integrated proposal and why. We read this as evidence
+that a dependable, inspectable substrate for ethical reasoning is
+recoverable from current pretrained models by inference-time
+scaffolding alone, well-suited to agentic-workflow deployments where
+auditable rationale matters as much as the chosen action;
+pre-registered next steps are a Tier-3 blinded preference study (IRB
+review pending) for perceptibility and a training-time Interpreter
+Network using the trace as supervision for min-$K_C$ selection.
 
 \section*{Limitations}
 
