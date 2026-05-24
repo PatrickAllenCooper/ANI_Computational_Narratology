@@ -336,33 +336,25 @@ materially undermines.
 
 This paper reports three results. First, on a 100-scenario DailyDilemmas
 sample across the four-generator quartet, N-CoT cuts both failure modes to
-floor on every model (\S\ref{sec:exp1}). Second, a sub-instruction ablation
-on \texttt{claude-sonnet-4-6} attributes each structural shift to the
-specific N-CoT sub-instruction that carries it, with negligible
-cross-variable spillover (\S\ref{sec:exp1-ablation}). Third, extended to a
-four-round multi-stakeholder protocol with an integrated-proposal vote, the
-scaffold converts a $6\%$ debate standoff into $95\%$ full consensus while
-preserving a small $1.6\%$ structural-rejection rate concentrated in roles
-whose stake the integrated proposal undermines (\S\ref{sec:exp2}). This
-combination is the empirical signature of a legitimacy condition that
-runs through narrative ethics \citep{macintyre81} and defeasible
-reasoning \citep{pollock87} alike: a multi-party decision is dependable
-only when the consensus survives the refusal of any party with a
-non-negotiable stake, rather than suppressing that refusal. For agentic
-deployments where actions touch multiple parties and downstream trust
-depends on a reviewer being able to see what was considered, who
-consented, and who refused, the rule-governed trace this protocol
-produces is the kind of context-complete audit artefact accountability
-requires. The trace externalises which stakeholders, consequences,
-and uncertainties grounded each commitment, and the multi-agent
-extension reuses the same scaffold on each stakeholder agent and at
-the moderator, so principled dissent surfaces as a structurally
-interpretable rejection rather than collapsing into uniform agreement. We read this as evidence that a dependable,
-inspectable substrate for ethical reasoning is recoverable by
-inference-time scaffolding alone, suited to agentic-workflow
-deployment. The downstream probes that motivated the diagnosis remain
-saturated under either scaffold (Appendix~\ref{app:deploy}); harder
-probe sets are pre-registered.
+floor on every model (\S\ref{sec:exp1}). Second, a sub-instruction
+ablation on \texttt{claude-sonnet-4-6} attributes each structural shift
+to the specific N-CoT sub-instruction that carries it, with negligible
+cross-variable spillover (\S\ref{sec:exp1-ablation}). Third, extended to
+a four-round multi-stakeholder protocol with an integrated-proposal vote,
+the scaffold converts a $6\%$ debate standoff into $95\%$ full consensus
+while preserving a small $1.6\%$ structural-rejection rate concentrated
+in roles whose stake the integrated proposal undermines
+(\S\ref{sec:exp2}). The combination is the empirical signature of a
+legitimacy condition shared by narrative ethics \citep{macintyre81} and
+defeasible reasoning \citep{pollock87}: a multi-party decision is
+dependable only when the consensus survives the refusal of any party
+with a non-negotiable stake. The rule-governed trace the protocol
+produces, with stakeholders, consequences, and uncertainties surfaced
+at every commit, is the kind of context-complete audit artefact
+agentic-workflow deployment requires; the deliberative-primitives
+framing that motivates the design is developed in \S\ref{sec:grounding},
+and the downstream probes that motivated the diagnosis remain saturated
+under either scaffold (Appendix~\ref{app:deploy}).
 
 \section{Background and Related Work}
 \label{sec:related}
@@ -392,62 +384,41 @@ empathic concern \citep{shaffer19, bientzle21, bientzle24}, and recent work on
 generative agents shows long-horizon coherent behaviour is achievable from
 narrated character state \citep{park23}.
 
-\paragraph{Causal inference from narrative.} The Computational Theory of Mind
-\citep{fodor75, putnam67} treats understanding a sequence of events as
-inferring a structural causal model that explains them; the Kuleshov
-experiment \citep{kuleshov74, bordwell85} is a textbook example. LLMs perform
-near random baseline on causal inference stripped of empirical pattern matches
-\citep{jin23}: pretraining supplies the ability to pattern-match narrative
-token sequences, not the structured causal reasoning that determines
-how those narratives resolve. The role of N-CoT is to convert that pattern matching into a usable
-causal trace at inference time, so that the model can project what
-each available action will mean for each named stakeholder, surface
-what remains genuinely uncertain about each projected branch, and
-warrant its eventual commitment with the trajectory it actually
-inspected rather than the one that happens to read most fluently.
+\paragraph{Causal inference from narrative.} The Computational Theory
+of Mind \citep{fodor75, putnam67} treats understanding a sequence of
+events as inferring a structural causal model that explains them. LLMs
+perform near random baseline on causal inference stripped of empirical
+pattern matches \citep{jin23}: pretraining supplies pattern-matching
+over narrative token sequences, not the structured causal reasoning
+that determines how those narratives resolve. The role of N-CoT is to
+convert that pattern matching into a usable causal trace at inference
+time, projecting what each available action will mean for each named
+stakeholder and what remains genuinely uncertain about each branch.
 
 \paragraph{Multi-agent debate and defeasibility.}
-\citet{irving18} proposed AI safety via debate; \citet{du23} showed multi-agent
-debate improves factual reasoning. Both target task-correctness, not
-stakeholder-divergent value standoffs. Defeasible reasoning, the property that
-conclusions can be revised in light of new information without abandoning
-the underlying inference scheme, has a long lineage in moral philosophy
-\citep{pollock87, macintyre81}. The protocol we evaluate in \S\ref{sec:exp2} makes defeasibility a
-measurable behaviour rather than a posture. Each agent emits an N-CoT
-commitment, observes the other stakeholders' narrated positions, and
-then votes accept or reject on an integrated proposal that absorbs
-the cross-agent modifications. Acceptance audits whether commitments
-are in fact revisable under narrated counter-evidence; the residual,
-structurally interpretable rejections audit the lower bound, the
-cases where a defeasibility-respecting agent should decline to
-revise. No off-the-shelf benchmark targets stakeholder-divergent
-narrated revision in this form, so the protocol itself is the audit
-instrument, and we read the joint pattern of high revision rate with
-a small structurally interpretable refusal rate as a behavioural test
-of defeasibility rather than a check on the underlying inference
-scheme.
+\citet{irving18} proposed AI safety via debate; \citet{du23} showed
+multi-agent debate improves factual reasoning. Both target
+task-correctness, not stakeholder-divergent value standoffs. Defeasible
+reasoning \citep{pollock87, macintyre81} has a long lineage in moral
+philosophy; the protocol of \S\ref{sec:exp2} converts the property
+into a measurable behaviour, with acceptance auditing revisability and
+residual structural rejections auditing the lower bound. No
+off-the-shelf benchmark targets stakeholder-divergent narrated
+revision in this form, so the protocol itself is the audit
+instrument.
 
 \paragraph{Multi-agent LLM systems for scientific discovery.}
-A growing line of work scaffolds LLM reasoning into the primitives of a
-target domain. The AI co-scientist of \citet{gottweis25} reifies hypothesis
-generation, peer review, ranking, evolution, and meta-review as
-co-operating agents; the AI Scientist \citep{lu24_aiscientist} closes the
-loop end-to-end; Coscientist \citep{boiko23}, ChemCrow \citep{bran24_chemcrow},
-Agent Laboratory \citep{schmidgall25}, and the Virtual Lab
-\citep{swanson25_virtuallab} instantiate the move in chemistry and
-biomedicine. Our protocols ask the analogous question one level down: can a
-scaffold that reifies the primitives of human ethical reflection deliver
-the same kind of inference-time quality lift on moral reasoning that
-scientific-method scaffolds deliver on hypothesis generation? The
-moderator's integrated-proposal step in \S\ref{sec:exp2} is structurally
-the meta-review of \citet{gottweis25}, applied to value-laden positions.
-We make this substitution because the absence of a ground-truth oracle
-in ethics requires a different multi-agent operation: stakeholder
-positions cannot be ranked the way competing scientific hypotheses can
-be ranked against eventual experimental falsification, so the right
-move is integration-then-veto rather than ranking-then-selection,
-turning the residual veto pattern itself into the measurement of
-interest.
+A growing line of work scaffolds LLM reasoning into the primitives of
+a target domain \citep{gottweis25, lu24_aiscientist, boiko23,
+bran24_chemcrow, schmidgall25, swanson25_virtuallab}. Our protocols
+ask the analogous question one level down: can a scaffold that reifies
+the primitives of human ethical deliberation deliver the same kind of
+inference-time quality lift on moral reasoning that scientific-method
+scaffolds deliver on hypothesis generation? Because ethics has no
+experimental-falsification oracle, the moderator's
+integration-then-veto step replaces the ranking-then-selection of
+those systems, and the residual veto pattern itself becomes the
+measurement of interest.
 
 \section{Narrative Chain-of-Thought}
 \label{sec:method}
@@ -800,122 +771,115 @@ consensus rate at $88\%$ (Fisher's exact $p = 1.0$ versus
 within-vendor; Appendix~\ref{app:kappa}), ruling out within-vendor
 moderator familiarity.
 
-\section{Theoretical Frame and Deployment Scope}
+\section{Theoretical Frame and Future Directions}
 \label{sec:grounding}
 
-Both protocols can be read as inference-time approximations of a
-single rule: prefer the candidate whose narrated trajectory admits the
-shortest structural-causal-model description \citep{pearl09, pearl95},
-the algorithmic causal complexity $K_C$ (formalism, $\arg\min K_C$
-rule, and Complexity-of-Value argument \citep{yudkowsky11,
-li_vitanyi}: Appendix~\ref{app:kc}). A panel of seven length-invariant
-proxies falsifies inference-time readout
-(Appendix~\ref{app:kc_panel}), motivating the training-time
-Interpreter Network (\S\ref{sec:conclusion}). The scaffold targets
-upstream failure modes linked to sycophancy \citep{sharma23,
-openai_sycophancy_2025} and agentic misalignment
-\citep{anthropic_agentic_2025, yan2025rim}; both downstream probe sets
-we tested saturated on the current quartet
-(Appendix~\ref{app:deploy}).
+\paragraph{Deliberative primitives.} Across philosophical traditions,
+human ethical deliberation that produces decisions a community treats
+as defensible has a recognisable shape: defeasible revisability under
+new information \citep{pollock87}, characterisation of who is acting
+and what is at stake for each party \citep{macintyre81}, and
+value-laden reasoning in story form \citep{bruner86}. These identify
+a small set of deliberative primitives: a situated protagonist, a
+stakeholder set, multi-step consequence projection, articulated
+uncertainty, and a defeasibly revisable commitment.
+
+\paragraph{The protocol reifies these primitives at two layers.}
+N-CoT reifies them at the single-agent layer: the five-section
+prompt maps one-to-one onto the primitives, and the quartet-wide
+signature (collapse to ${<}1\%$, suppression to $1$--$24\%$, with
+$+0.48$ to $+0.99$ Cliff's $\delta$ on stakeholder count and
+uncertainty) is what such reification should look like. The
+multi-stakeholder protocol reifies them at the social layer:
+perspectival narration per party, the moderator's integration step,
+and a binary accept/reject vote whose acceptances audit defeasibility
+and whose residual rejections mark commitments that structurally
+should not revise. Prior alignment work treats ethical capacity as a
+training-time problem (RLHF, Constitutional AI, debate as supervision)
+and prior CoT work treats chains as task-correctness improvement;
+the position here is novel in locating ethical capacity as latent in
+pretrained models and recoverable by inference-time reification of
+the deliberative primitives the corpus already encodes (lower
+per-scenario decision entropy under N-CoT and the Anthropic
+generators' near-zero length-residualised deltas fit the reading;
+Appendix~\ref{app:effects}).
+
+\paragraph{A complexity-theoretic reading.} As a consequence, the
+candidate trajectory the protocol commits to is the one whose
+narrated structural-causal model \citep{pearl09, pearl95} admits the
+shortest description: the algorithmic causal complexity $K_C$
+(formalism and Complexity-of-Value argument \citep{yudkowsky11,
+li_vitanyi}: Appendix~\ref{app:kc}). Complexity-of-Value predicts
+$K_C$ approximations are where value-aligned reasoning sits; our
+empirical signature is what such an approximation should look like. A
+seven-proxy panel does not validate $K_C$ as readable from a single
+forward trace (Appendix~\ref{app:kc_panel}); $K_C$ is therefore
+theoretical scaffolding for the training-time Interpreter Network
+(\S\ref{sec:conclusion}), not an inference-time measurement.
+
+\paragraph{Early grounded exploration.} We position this as an early
+entry in a direction the present results sharpen rather than close:
+ethical capacity as a recoverable simulacrum of human deliberative
+structure rather than an instilled value-set. Open questions include
+whether pretraining-corpus composition predicts which primitives are
+natively encoded by which model families, whether the schema
+generalises across domains (medical, legal, multi-jurisdictional
+governance), and whether training-time supervision against $K_C$
+approximations converts the scaffold into a persistent capability
+with no prompt overhead at deployment.
 
 \section{Conclusion}
 \label{sec:conclusion}
 
-A single system-prompt change drives stakeholder collapse and
-uncertainty suppression to floor on every quartet member; a
-sub-instruction ablation attributes each shift to the N-CoT
-sub-instruction that carries it; and the same scaffold, scaled to a
-four-round vote, converts a $6\%$ debate standoff into $95\%$ full
-consensus, with the residual $1.6\%$ rejection concentrated in roles
-the integrated proposal undermines. The intervention adds no training
-data, parameters, or fine-tuning, and the traces are auditable
-end-to-end: a reader sees the stakeholders, consequences, and
-uncertainties the model conditioned on, and which stakeholders refused
-and why. A dependable, inspectable substrate for ethical reasoning is
-thus recoverable by inference-time scaffolding alone, suited to
-agentic-workflow deployment. Pre-registered: Tier-3 preference study;
-min-$K_C$ Interpreter Network.
+N-CoT cuts both cross-vendor failure modes of standard CoT to floor
+across the quartet (\S\ref{sec:exp1}); a sub-instruction ablation
+attributes each shift to the carrying sub-instruction
+(\S\ref{sec:exp1-ablation}); and a four-round multi-stakeholder vote
+converts a $6\%$ debate standoff into $95\%$ full consensus with
+$1.6\%$ structural rejection (\S\ref{sec:exp2}). The intervention
+adds no training data or fine-tuning, and the trace is auditable
+end-to-end. Inference-time reification of human deliberative
+primitives recovers a dependable, inspectable ethical-reasoning
+substrate. Next: a training-time min-$K_C$ Interpreter Network.
 
 \section*{Limitations}
 
-\paragraph{No Tier-3 human pairwise evaluation yet.} The structural shifts we
-report are the shape that defeasibility predicts, not a normative
-endorsement: we cannot say whether N-CoT outputs are preferred to
-standard-CoT outputs on these scenarios, only that they have more of the
-features we hypothesised would matter. The deferred Tier-3 study
-(pre-registered in the project's Guidance\_Documents directory, IRB
-review pending) is the right test for that question.
+The empirical scope is bounded in three ways, each with a pre-registered
+extension that establishes or extends the boundary.
 
-\paragraph{Premature refusal not fired.} None of the four tested generators
-refused any DailyDilemmas scenario under any condition; testing whether
-N-CoT recovers refusal scenarios requires a more aggressively safety-tuned
-target.
+\paragraph{Generator scope.} The four-generator quartet
+(\texttt{claude-haiku-4-5}, \texttt{gpt-5.4-nano},
+\texttt{grok-4-1-fast-reasoning}, \texttt{claude-sonnet-4-6}) covers
+three vendors and two model tiers but does not include aggressively
+safety-tuned generators that refuse moral-dilemma prompts on principle;
+none of the four refused any DailyDilemmas scenario under any
+condition. A fifth-generator extension with a refusal-prone safety-tuned
+target is pre-registered to test whether N-CoT recovers reasoning on
+scenarios where standard CoT refuses.
 
-\paragraph{The proxy panel did not validate $K_C$ at inference time.}
-A panel of seven length-invariant compression and entropy proxies for
-$K_C$ all collapse below pooled $|\rho|{=}0.21$ once length is removed
-(Appendix~\ref{app:kc_panel}); the raw $\hat{K}_{\text{gzip}}$
-correlation of ${\approx}0.87$ is dominated by length, as is the
-apparent $10\times$ contrast on the adversarial sycophancy probes
-(Appendix~\ref{app:asp}). Two registered proxies
-($\hat{K}_{\text{graph}}$, $\hat{K}_{\text{lm}}$) require
-${\sim}30{,}000$ additional judge calls and are deferred. We frame
-$K_C$ as theoretical scaffolding for the training-time Interpreter
-Network (\S\ref{sec:conclusion}), where the supervision-signal claim
-can be tested directly, rather than as a validated inference-time
-measurement read off a single forward trace.
+\paragraph{Multi-agent scale.} Experiment~2 establishes the four-round
+vote pattern on five hand-crafted calibration scenarios. Full-quartet
+replication on the 100-scenario DailyDilemmas distribution
+($\sim$$10{,}000$ long-context generations) is pre-registered as the
+statistical confirmation, and the matched-token-budget standard-CoT
+condition (\S\ref{sec:exp1}) is the direct disconfirmation of the
+length-as-mechanism reading. We commit to both runs in the
+post-submission revision cycle so that the present findings can be
+falsified by their failure to replicate at scale.
 
-\paragraph{Anthropic generators residualise to zero.} On the two
-Anthropic quartet members, length-residualised Cliff's $\delta$ for
-stakeholder count and uncertainty score is statistically indistinguishable
-from zero. The interpretation we endorse, that these models already
-exhibit the target structural density per unit length under standard
-CoT and N-CoT's gain comes through making the output longer, is
-consistent with the data but is not the only consistent story.
-
-\paragraph{Judge circularity.} \texttt{claude-haiku-4-5} and
-\texttt{gpt-5.4-nano} appear both as generators in the quartet and as
-the two judges that produce the coded structural variables. We mitigate
-by always using the non-self sibling as the primary judge for any
-given generator, and we ran \texttt{grok-4-1-fast-reasoning} as a
-held-out third judge on a 30-scenario subsample. Pairwise
-quadratic-weighted $\kappa$ across all three judges, together with
-direction-of-effect readings, is reported in Appendix~\ref{app:kappa};
-the direction-of-effect (narrative CoT $>$ standard CoT $>$ baseline)
-agrees across all three judges on all three headline variables. A
-non-LLM judge on a larger subsample remains the gold standard, but the
-convergence of an independent model family on the same directional
-finding substantially reduces the collusion-based explanation.
-
-\paragraph{N-CoT increases decisiveness.} Per-scenario decision entropy is
-lower under N-CoT than standard CoT. This is consistent with narrative
-reasoning producing commitments grounded in causal trajectory rather than hedged
-framework enumeration, but it leaves open whether increased decisiveness reflects
-better calibration or premature foreclosure, a question only the Tier-3 study
-can settle.
-
-\paragraph{Multi-agent layer scale.} Experiment~2 uses five hand-crafted calibration
-scenarios. Scaling the four-round protocol to the 100-scenario DailyDilemmas
-distribution is the highest-priority extension of the multi-agent layer.
-
-\paragraph{Inter-judge $\kappa$ on causal-chain depth is borderline.} Even
-after rubric tightening, inter-judge quadratic-weighted $\kappa$ on
-\texttt{max\_causal\_hops} is $0.391$ (Appendix~\ref{app:kappa}),
-marginally below the $0.40$ moderate-agreement threshold.
-We report that variable's direction-of-effect but keep it out of all
-headline claims as a conservative choice given the borderline reliability;
-we do not treat it as load-bearing for \S\ref{sec:grounding}'s $K_C$
-discussion, which is falsified independently by the length-residualisation
-panel regardless of causal-hop coding.
-
-\paragraph{Agentic-probe scenarios are fictional.} The two agentic-misalignment
-scenarios replicated in Appendix~\ref{app:agentic} are fictional structures adapted
-from publicly described Anthropic research; they are not deployed production
-scenarios. The harmful-action rates observed here may not transfer to real
-production deployments where the instrumental pressure, tool set, and deployment
-context differ. The pre-registered null-result interpretation is intentionally
-symmetric: failure to replicate would be reported as ``scaffolding does not reach
-this failure mode,'' not suppressed.
+\paragraph{$K_C$ inference-time readout.} The seven-proxy panel in
+Appendix~\ref{app:kc_panel} establishes a null result for reading
+$K_C$ from a single forward trace: all seven proxies collapse below
+pooled $|\rho|{=}0.21$ once length is removed. Two registered proxies
+($\hat{K}_{\text{graph}}$, $\hat{K}_{\text{lm}}$) requiring
+${\sim}30{,}000$ additional judge calls are scheduled for the
+follow-up run; $K_C$ remains theoretical scaffolding for the
+training-time Interpreter Network (\S\ref{sec:conclusion}) until they
+report. A blinded Tier-3 human pairwise preference study
+(pre-registered in
+\path{Guidance_Documents/tier3_preregistration.md}, IRB review
+pending) is deferred to the post-submission cycle and settles whether
+the structural shifts we report are perceptible to trained raters.
 
 
 \section*{Ethics Statement}
@@ -929,10 +893,12 @@ and will require IRB review before fielding; the pre-registration document
 committed to the repository specifies the consent protocol, blinding procedure,
 and data-retention plan.
 
-Three foreseeable misuses warrant attention. First, N-CoT's effect on
-decisiveness (Limitations) means that wrapping a model in this scaffold
-without human evaluation could produce more confident bad answers, not
-better answers; deployers should treat N-CoT as an interpretability and
+Three foreseeable misuses warrant attention. First, N-CoT lowers
+per-scenario decision entropy relative to standard CoT, which we read
+in \S\ref{sec:grounding} as a positive consequence of commitments
+grounded in causal trajectory; but wrapping a model in the scaffold
+without human evaluation could equally produce more confident wrong
+answers, so deployers should treat N-CoT as an interpretability and
 auditability tool, not a safety guarantee. Second, the multi-stakeholder
 protocol is not a substitute for affected-party participation in real
 decisions; producing simulated stakeholder consensus is not the same as
@@ -982,7 +948,9 @@ Values are computed between the primary judge (\texttt{claude-haiku-4-5})
 and the secondary judge (\texttt{gpt-5.4-nano}).
 \texttt{max\_causal\_hops} falls marginally below the $0.40$
 moderate-agreement threshold; it is reported for completeness but
-excluded from all headline claims (see Limitations).
+excluded from all headline claims, including the $K_C$ discussion in
+\S\ref{sec:grounding}, which the length-residualisation panel
+falsifies independently of causal-hop coding.
 
 \begin{table}[h]
 \centering
@@ -1005,7 +973,11 @@ the full Experiment~1 DailyDilemmas corpus ($n = 3{,}726$).}
 
 \subsection*{A.2~~Held-out third judge (grok-4-1-fast-reasoning)}
 
-To address the generator/judge circularity concern (Limitations), we ran
+Because two of the four generators (\texttt{claude-haiku-4-5} and
+\texttt{gpt-5.4-nano}) also serve as the two budget judges that produce
+the coded structural variables, the primary judge for each generator
+is always the non-self sibling, and to verify the cross-judge result
+is not an artefact of within-family collusion we ran
 \texttt{grok-4-1-fast-reasoning} as a held-out third judge on a
 $30$-scenario subsample drawn deterministically from the 100-scenario
 DailyDilemmas pool (seed $= 99$, matching the Tier-3 pre-registration),

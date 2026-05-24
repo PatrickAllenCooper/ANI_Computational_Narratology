@@ -356,6 +356,176 @@ Two existing observations are suggestive but not dispositive that narrative is d
 
 Both signals are consistent with narrative scaffolding contributing structurally to the convergence arc, but neither demonstrates that contribution. The strict ablation is recorded here as outstanding rather than implicit.
 
+## Remaining Experimental Commitments (post-submission revision cycle)
+
+The ACL submission claims an empirical scope that four pre-registered
+extensions establish or extend. These four experiments are committed for
+the post-submission revision cycle. The Tier-3 human pairwise preference
+study (`tier3_preregistration.md`) and the training-time Interpreter
+Network for min-K_C selection are framed as longer-arc follow-ups and are
+not in this list.
+
+### E1. Matched-token-budget standard-CoT condition
+
+**What it tests.** Whether N-CoT's structural-variable gain over standard
+CoT survives at matched token budget, refuting "you're just throwing more
+compute at the problem".
+
+**Status.** Pre-registered (Section 4 of the paper); not run.
+
+**Design.** A fourth prompting condition added to the existing
+Experiment 1 pipeline: standard CoT with a verbosity instruction
+("Think step by step in detail, exploring multiple angles before
+committing"), `max_tokens` and `reasoning_effort` set to match N-CoT's
+median output length on the same generator. Same 100-scenario
+DailyDilemmas sample. Same two judges. Same headline coding rubric.
+
+**Falsification criterion.** If length-residualised Cliff's delta on
+stakeholder count and uncertainty score is statistically indistinguishable
+from zero across the OpenAI and xAI generators (i.e., matches what we
+already see on Anthropic generators), the claim "length is not the
+mechanism" is rejected for the budget generators too, and N-CoT's gain is
+attributed to additional length rather than to the deliberative-primitives
+prompt.
+
+**Predicted outcome.** N-CoT still dominates the matched-budget standard
+CoT on per-unit structural density (because the residualisation analysis
+already rules length out indirectly), with effect size comparable to the
+current N-CoT vs. standard-CoT contrast.
+
+**Compute estimate.** ~3,000 generations + 6,000 judge calls; ~1-2 days
+wall-clock; ~$30-50 in API spend.
+
+**Priority.** Highest. Cheapest experiment; directly addresses the most
+common reviewer objection.
+
+### E2. Full-quartet multi-agent on 100-scenario DailyDilemmas
+
+**What it tests.** Whether the four-round consensus arc demonstrated on
+five hand-crafted calibration scenarios (Experiment 2) replicates across
+the full DailyDilemmas distribution.
+
+**Status.** Pre-registered (Section 5 of the paper); not run.
+
+**Design.** The four-round multi-stakeholder protocol (closed taxonomy ->
+open action space -> synthesis -> integrative vote) run on all 100
+DailyDilemmas scenarios across all four generators, with the cross-vendor
+moderator (claude-sonnet-4-6) on a held-out subsample. Headline outcomes
+match the calibration-set analysis: full-consensus rate, partial-
+convergence rate, residual-rejection rate with role-concentration
+breakdown, and mean modifications-addressed per integrated proposal.
+
+**Falsification criterion.** Plus/minus 10 percentage points on
+integrated-proposal acceptance is the pre-registered band; if the
+full-quartet replication falls outside that band, the headline
+"6% standoff to 95% consensus" claim is downgraded to "calibration-set
+result that does not generalise" and the multi-agent extension becomes
+exploratory rather than confirmatory.
+
+**Predicted outcome.** Acceptance rate within +/- 10 percentage points of
+95%, with residual-rejection role-concentration matching the calibration
+pattern (concentrated in `primary_affected` and `third_party` roles
+whose stake is materially undermined by the integrated proposal).
+
+**Compute estimate.** ~10,000 long-context generations; ~1-2 weeks wall-
+clock at current Anthropic and xAI rate limits; ~$500-2,000 in API spend
+depending on per-token costs at run time.
+
+**Priority.** High. Largest single empirical commitment; the multi-agent
+claim is the boldest in the paper.
+
+### E3. Safety-tuned fifth-generator extension
+
+**What it tests.** Whether N-CoT recovers reasoning on scenarios where
+standard CoT refuses (`premature_refusal` failure mode), which the
+current quartet does not exhibit.
+
+**Status.** Pre-registered (Limitations / Generator scope, Section
+"Limitations"); not run.
+
+**Design.** Add one refusal-prone safety-tuned generator to the
+Experiment 1 pipeline. Candidate models (in order of preference based on
+public refusal rates on moral-dilemma corpora): (1) `gpt-5-instruct`
+with a strict refusal-tuned system fingerprint, (2) Anthropic's
+`claude-opus-4-1` with the safety-tuned policy stack, (3) a Llama-Guard-
+augmented open-weight model with hard refusal gating. Pick whichever
+exhibits refusal on at least 15% of the 100-scenario DailyDilemmas sample
+under standard CoT.
+
+**Falsification criterion.** If N-CoT does not reduce the per-scenario
+refusal rate by at least 50% relative to standard CoT on the same
+generator, the claim "N-CoT addresses premature-refusal failures" is
+rejected; the framework is then scope-bounded to non-refusing generators
+explicitly.
+
+**Predicted outcome.** N-CoT reduces refusal rate substantially because
+the protagonist + stakeholder + consequence sections supply the
+narrative grounding that lets the model engage rather than reach for a
+policy-style refusal.
+
+**Compute estimate.** ~1,500 generations + 3,000 judge calls; ~3-5 days
+wall-clock; ~$100-300 in API spend.
+
+**Priority.** Medium-high. Closes a real scope gap and adds a fifth
+generator without requiring vendor-side capacity reservation.
+
+### E4. Registered K_C proxies: K_graph and K_lm
+
+**What it tests.** Whether the two judge-call-heavy K_C proxies (graph-
+structural compression and a held-out LM compression-rate proxy) can
+recover the K_C signal that the seven length-invariant proxies of
+Appendix C.2 do not.
+
+**Status.** Pre-registered (Limitations / K_C inference-time readout);
+deferred to the follow-up run.
+
+**Design.** K_graph: for each trace, the judge extracts a structural
+causal model (named stakeholders as nodes, projected consequences as
+directed edges, uncertainty markers as edge weights); K_graph is the
+minimum-description-length encoding of that graph. K_lm: a held-out
+language model (`gpt-4o-mini`, never used as a generator or judge in the
+present paper) computes the log-loss of each candidate trace; K_lm is
+the negative log-likelihood normalised by trace length.
+
+**Falsification criterion.** Either proxy with pooled
+`|spearman_rho|` >= 0.4 against the headline structural variables (after
+length residualisation, bootstrap 95% CI excluding zero) is reported as
+a partial validation of K_C as inference-time-readable. If both stay
+below 0.2 after residualisation, K_C remains theoretical scaffolding
+for the training-time Interpreter Network (Section 7 of the paper) with
+no inference-time empirical content.
+
+**Predicted outcome.** K_graph correlates more strongly than the
+existing seven proxies because it operates on the structural-causal-
+graph extracted by the judge rather than on surface compression of the
+text; K_lm remains a length proxy in disguise.
+
+**Compute estimate.** ~30,000 judge calls (graph extraction for every
+generation across the full Experiment 1 quartet at all three
+conditions); ~1-2 weeks wall-clock at current Anthropic rate limits;
+~$200-400 in API spend.
+
+**Priority.** Medium. K_C is theoretical scaffolding in the current
+paper; validating it inference-time would strengthen Section 6 but is
+not load-bearing for any headline empirical claim.
+
+### Execution order
+
+1. E1 (matched-budget standard CoT) -- run first; cheapest, highest
+   reviewer leverage, directly addresses the most common objection.
+2. E3 (safety-tuned generator) -- modest compute, fits inside existing
+   Experiment 1 pipeline, closes a real scope gap.
+3. E4 (K_C registered proxies) -- moderate compute, only weakly load-
+   bearing now that the panel is acknowledged as not validating, but
+   strengthens Section 6 if it succeeds.
+4. E2 (full-quartet multi-agent) -- largest compute commitment; run
+   last so that any pipeline issues surfaced by E1/E3 are fixed before
+   the long run.
+
+Tier-3 human pairwise preference and the training-time Interpreter
+Network are out of scope for the revision cycle and remain explicitly
+deferred (see `tier3_preregistration.md` for Tier-3 rationale).
+
 ## Change log
 
 - v0.1 through v0.7: see above.
@@ -365,6 +535,7 @@ Both signals are consistent with narrative scaffolding contributing structurally
 - v1.1 -- Demonstration II scope-of-claim paragraph added to `papers/position_paper.tex` and Section 13--16 guidance, addressing the missing non-narrative-CoT debate baseline (the strict ablation that holds the four-round integration protocol constant and replaces narrative scaffolding in Rounds 0-2 with standard chain-of-thought). The arc shows the integration step is the proximate cause of the 9% to 95% jump given narrative inputs; whether narrative is necessary is recorded as outstanding rather than implicit. Conclusion future-work list updated to call out this baseline as the priority Demonstration II follow-up, with two suggestive (not dispositive) observations sourced from `debate_v3_r3_decisions.csv` and `debate_v4_r4_votes.csv`: stakeholder-grounded modification language across rounds and the role-concentration of the four R4 rejections.
 - v1.2 -- NeurIPS-style position draft moved to `papers/archive/position_paper.tex`. Primary LaTeX draft for ACL-style review is `papers/ACL_paper.tex` (official `acl.sty` / `acl_natbib.bst`, `references.bib`). Submission path is Association for Computational Linguistics Rolling Review (ARR): submit to ARR first; commit to a venue (e.g. ACL 2026 main conference) only after reviews and meta-review, per ARR policy. The repository line in this document now points at `papers/ACL_paper.tex`; v1.0/v1.1 entries above still name `position_paper.tex` for historical accuracy.
 - v1.3 -- Eight-phase experimental pipeline added to extend the ACL draft with cross-vendor replication (claude-haiku-4-5, grok-4-1-fast-reasoning, claude-sonnet-4-6; N=20/20/10 per cell) and a five-act narrative arc of experiments. Scripts added under `scripts/`: `generators.py` (multi-vendor router), `run_phase1_quartet.py`, `aggregate_phase1.py`, `run_phase2_ablation.py`, `run_phase3_debate.py`, `kc_proxy.py`, `run_phase4_kc.py`, `run_sycophancyeval.py`, `run_agentic_probe.py`. Adversarial sycophancy probe set (30 hand-curated probes) committed to `data/adversarial_sycophancy_probes.json`. Tier-3 human pairwise preference pre-registration committed to `Guidance_Documents/tier3_preregistration.md`. Agentic-probe pre-registration added below.
+- v1.4 -- ACL_paper.tex Section 6 rewritten with the deliberative-primitives framing (human deliberation -> protocol reifies primitives at single-agent and social layers -> K_C as a consequence -> early grounded exploration / future-work mapping); Related Work paragraphs on multi-agent debate, multi-agent LLM systems for scientific discovery, and causal inference from narrative trimmed to fund the Section 6 expansion. Limitations rewritten as three tight scope-bound paragraphs (Generator scope, Multi-agent scale, K_C inference-time readout) with the self-effacing "No Tier-3", "Judge circularity", "Inter-judge kappa", "Anthropic residualisation", "N-CoT decisiveness", and "Agentic-probe scenarios" paragraphs removed (resolved in appendices, Ethics Statement, or absorbed into Section 6). Four remaining experimental commitments documented in this section (E1 matched-budget standard CoT, E2 full-quartet multi-agent at 100 scenarios, E3 safety-tuned fifth generator, E4 K_C registered proxies); Tier-3 study and Interpreter Network framed as longer-arc follow-ups in `tier3_preregistration.md`.
 
 ## Phase 6 Agentic-Misalignment Probe: Pre-Registration Block
 

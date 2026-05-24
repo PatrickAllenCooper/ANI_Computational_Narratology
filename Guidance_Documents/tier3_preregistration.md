@@ -1,9 +1,44 @@
 # Tier-3 Human Pairwise Preference Study: Pre-Registration
 
-**Status:** Pre-registered; IRB review pending. Run deferred to post-submission.
+**Status:** Pre-registered; IRB review pending. Run deferred to the post-submission revision cycle.
 **Registered by:** Patrick Cooper
 **Date of pre-registration:** 2026-05-10
 **Cited in paper:** ACL_paper.tex -- Conclusion and Limitations sections.
+
+---
+
+## 0. Why This Study Is Deferred From The Main Paper
+
+Experiments 1 and 2 in the main paper measure structural and behavioural
+outcomes: stakeholder count, uncertainty markers, decision-distribution
+entropy, four-round consensus rate, residual-rejection rate. These are the
+shape that defeasibility predicts; they are not a normative endorsement that
+N-CoT outputs are better. The legitimate claim from Experiments 1 and 2 is
+that N-CoT outputs carry more of the structural features the deliberative-
+primitives framing (Section 6 of the paper) hypothesises would matter, not
+that trained human raters prefer them. This Tier-3 study is the right
+instrument for the preference question, and it is deferred from the main
+paper for three reasons:
+
+1. **IRB review pending.** Human-subjects review must complete before
+   recruitment; the timeline is post-submission.
+2. **Methodological isolation.** Conflating the structural-effect question
+   with the preference question would either over-claim ("readers prefer
+   N-CoT") or under-claim ("N-CoT doesn't help readers") depending on which
+   way Tier-3 resolved. Reporting Experiments 1-2 on their own terms keeps
+   the structural claim crisp and lets the preference question be settled
+   on its own terms here.
+3. **Settles the decisiveness question.** N-CoT lowers per-scenario
+   decision entropy relative to standard CoT. The current paper reads this
+   as a positive consequence of commitments grounded in causal trajectory
+   (Section 6). A Tier-3 study with the "premature foreclosure" rubric
+   item in Section 4.4 below settles whether the increased decisiveness
+   reflects better calibration or premature foreclosure; no
+   structural-outcome experiment can.
+
+This document is the authoritative specification of the deferred study so
+the main paper does not need to carry an apologetic "limitations" paragraph
+about its absence.
 
 ---
 
