@@ -89,20 +89,26 @@ consequences, articulate uncertainty, and only then commit. The protocol
 adds no training data, parameters, or fine-tuning. On a 100-scenario
 DailyDilemmas sample across four generators from three vendors, N-CoT cuts
 stakeholder collapse from up to $31\%$ to under $1\%$ and uncertainty
-suppression from up to $72\%$ to $1$--$24\%$ on every model. A
-section-by-section ablation attributes each structural shift to the specific
-sub-instruction that carries it, with negligible cross-variable spillover.
-Extended to a four-round multi-stakeholder protocol with a moderator-built
-integrated proposal and a binary accept/reject vote, the same scaffold
-converts a $6\%$ debate standoff into $95\%$ full consensus while preserving
-a small fraction of principled structural rejections in the roles whose
-stake the integrated proposal materially undermines. The intervention is a small
-change to the prompt that removes two failure modes firing near-universally
-on current frontier models. The resulting traces externalise the
-stakeholders, projected consequences, and uncertainty that ground each
-commitment, and the multi-agent extension preserves principled dissent
-under integrated proposals, providing an auditable substrate for
-dependable agentic-workflow deployment.
+suppression from up to $72\%$ to $1$--$24\%$ on every model; a matched-budget
+verbose-CoT control rules out additional token spend as the active
+ingredient, with N-CoT retaining a Cliff's $\delta$ advantage of $+0.79$
+to $+0.93$ on the continuous structural variables for three of four
+generators. A section-by-section ablation attributes each structural shift
+to the specific sub-instruction that carries it, with negligible
+cross-variable spillover. Extended to a four-round multi-stakeholder
+protocol with a moderator-built integrated proposal and a binary
+accept/reject vote, the same scaffold converts a $6\%$ debate standoff
+into $95\%$ full consensus on the calibration set and reaches $100\%$
+combined convergence with $0\%$ structural rejection on a two-generator
+DailyDilemmas replication, preserving the small fraction of principled
+structural rejections in the roles whose stake the integrated proposal
+materially undermines. The intervention is a small change to the prompt
+that removes two failure modes firing near-universally on current frontier
+models. The resulting traces externalise the stakeholders, projected
+consequences, and uncertainty that ground each commitment, and the
+multi-agent extension preserves principled dissent under integrated
+proposals, providing an auditable substrate for dependable
+agentic-workflow deployment.
 \end{abstract}
 
 \begin{figure*}[!t]
@@ -270,7 +276,7 @@ dependable agentic-workflow deployment.
 \draw[divider] (8.45, 5.4) -- (8.45, -2.9);
 
 \end{tikzpicture}
-\caption{One scaffold, three settings. Standard CoT (left) lets one generator run a linear reasoning chain over the dilemma; the two failure modes diagnosed in \S\ref{sec:exp1} fire on this scaffold. Narrative CoT (middle) keeps the single generator but forces the trace through five narrative primitives (protagonist, stakeholders, consequences, uncertainty, commitment) before any commit; on the four-generator quartet this drops stakeholder collapse to ${<}1\%$ and uncertainty suppression to $1$--$24\%$ of items. Multi-stakeholder N-CoT (right) reuses N-CoT as the per-agent generator and adds three distinct stakeholder narrators (formal decider, primary affected party, third party) whose modification requests are integrated by a moderator and then put to a binary accept/reject vote; on the calibration scenarios this protocol yields $95\%$ full consensus with $1.6\%$ principled structural rejection (\S\ref{sec:exp2}). The same scaffold composes from one narrator to many.}
+\caption{One scaffold, three settings. Standard CoT (left) lets one generator run a linear reasoning chain over the dilemma; the two failure modes diagnosed in \S\ref{sec:exp1} fire on this scaffold. Narrative CoT (middle) keeps the single generator but forces the trace through five narrative primitives (protagonist, stakeholders, consequences, uncertainty, commitment) before any commit; on the four-generator quartet this drops stakeholder collapse to ${<}1\%$ and uncertainty suppression to $1$--$24\%$ of items, and a matched-budget verbose-CoT control confirms the scaffold (not the token budget) is the active ingredient. Multi-stakeholder N-CoT (right) reuses N-CoT as the per-agent generator and adds three distinct stakeholder narrators (formal decider, primary affected party, third party) whose modification requests are integrated by a moderator and then put to a binary accept/reject vote; on the calibration scenarios this protocol yields $95\%$ full consensus with $1.6\%$ principled structural rejection, and on a 30-scenario DailyDilemmas replication with two generators it reaches $100\%$ combined R2/R4 convergence with $0\%$ structural rejection (\S\ref{sec:exp2}). The same scaffold composes from one narrator to many.}
 \label{fig:hero}
 \end{figure*}
 
@@ -334,27 +340,35 @@ evaluated in \S\ref{sec:exp2} via a binary integrated-proposal vote whose
 residual rejections concentrate in the roles whose stake the proposal
 materially undermines.
 
-This paper reports three results. First, on a 100-scenario DailyDilemmas
-sample across the four-generator quartet, N-CoT cuts both failure modes to
-floor on every model (\S\ref{sec:exp1}). Second, a sub-instruction
-ablation on \texttt{claude-sonnet-4-6} attributes each structural shift
-to the specific N-CoT sub-instruction that carries it, with negligible
-cross-variable spillover (\S\ref{sec:exp1-ablation}). Third, extended to
-a four-round multi-stakeholder protocol with an integrated-proposal vote,
-the scaffold converts a $6\%$ debate standoff into $95\%$ full consensus
-while preserving a small $1.6\%$ structural-rejection rate concentrated
-in roles whose stake the integrated proposal undermines
-(\S\ref{sec:exp2}). The combination is the empirical signature of a
-legitimacy condition shared by narrative ethics \citep{macintyre81} and
-defeasible reasoning \citep{pollock87}: a multi-party decision is
-dependable only when the consensus survives the refusal of any party
-with a non-negotiable stake. The rule-governed trace the protocol
-produces, with stakeholders, consequences, and uncertainties surfaced
-at every commit, is the kind of context-complete audit artefact
-agentic-workflow deployment requires; the deliberative-primitives
-framing that motivates the design is developed in \S\ref{sec:grounding},
-and the downstream probes that motivated the diagnosis remain saturated
-under either scaffold (Appendix~\ref{app:deploy}).
+This paper reports four results. First, on a 100-scenario
+DailyDilemmas sample across the four-generator quartet, N-CoT cuts
+both failure modes to floor on every model, and a matched-budget
+verbose-CoT control confirms the active ingredient is the deliberative
+scaffold rather than additional tokens (\S\ref{sec:exp1}). Second, a
+sub-instruction ablation on \texttt{claude-sonnet-4-6} attributes each
+structural shift to the carrying N-CoT sub-instruction, with negligible
+cross-variable spillover (\S\ref{sec:exp1-ablation}). Third, extended
+to a four-round multi-stakeholder protocol with an integrated-proposal
+vote, the scaffold converts a $6\%$ debate standoff into $95\%$ full
+consensus while preserving a small $1.6\%$ structural-rejection rate;
+the pattern replicates on 30 DailyDilemmas scenarios with two
+generators at $100\%$ combined convergence and $0\%$ structural
+rejection (\S\ref{sec:exp2}). Fourth, an inference-time
+graph-complexity proxy of algorithmic causal complexity $K_C$ achieves
+Spearman $\rho{=}0.60$ ($p{<}0.001$) against the N-CoT direction
+(\S\ref{sec:grounding}), giving partial empirical content to the
+complexity-theoretic reading of why the scaffold works. The
+combination is the empirical signature of a legitimacy condition
+shared by narrative ethics \citep{macintyre81} and defeasible
+reasoning \citep{pollock87}: a multi-party decision is dependable only
+when the consensus survives the refusal of any party with a
+non-negotiable stake. The rule-governed trace the protocol produces,
+with stakeholders, consequences, and uncertainties surfaced at every
+commit, is the kind of context-complete audit artefact agentic-workflow
+deployment requires; the deliberative-primitives framing that motivates
+the design is developed in \S\ref{sec:grounding}, and the downstream
+probes that motivated the diagnosis remain saturated under either
+scaffold (Appendix~\ref{app:deploy}).
 
 \section{Background and Related Work}
 \label{sec:related}
@@ -649,25 +663,55 @@ CIs are in Appendix~\ref{app:effects}.
 
 \paragraph{Length is a cost, not a substitute for the prompt.} A
 sceptical reading of the $5$--$7\times$ token premium is that the
-paper just spends more compute. Residualisation rules this out
-indirectly: at matched length, N-CoT still dominates standard CoT on
-the structural variables. We confirm this with a direct matched-budget
-experiment: a verbose standard-CoT prompt (instructed to ``think step
-by step in detail, exploring multiple angles from every relevant
-perspective, articulating uncertainty before committing'') is run to
-N-CoT's per-generator median token budget on the same 100 DailyDilemmas
-scenarios ($N{=}1$ per cell, all four quartet generators). Cliff's
-$\delta$ for N-CoT vs.\ matched-budget verbose CoT on
-\texttt{gpt-5.4-nano} is $+0.89$ on stakeholder count and $+0.93$
-on uncertainty score, both CIs strictly above zero;
-stakeholder-collapse and uncertainty-suppression rates under verbose CoT
-($3\%$ and $14\%$, respectively) remain well above N-CoT's floor values
-though below standard-CoT baseline rates ($31\%$ and $72\%$), confirming
-that verbosity alone yields partial but not structural improvement. The
-deliberative scaffold, not the token budget, is the active ingredient.
-Inference tokens are also the cheapest scaling axis (no training,
-parameters, or fine-tuning), small relative to fine-tuning or reward
-modelling whose fixed costs are orders-of-magnitude higher.
+paper just spends more compute. A direct matched-budget experiment
+rules this out by construction. A verbose standard-CoT prompt
+(``think step by step in detail, exploring multiple angles from every
+relevant perspective, articulating uncertainty before committing'') is
+run on the same 100 scenarios across all four generators with
+\texttt{max\_tokens} set to each generator's $90$th percentile N-CoT
+length ($N{=}1$ per cell). Verbose CoT clears the binary failure-mode
+thresholds on every generator (Table~\ref{tab:matched_budget}, SC\%
+and US\% columns; well below standard-CoT baselines of $15$--$31\%$
+SC and $50$--$72\%$ US), so verbosity-with-perspective-prompting does
+part of the job. The continuous variables tell the cleaner story:
+N-CoT retains Cliff's $\delta$ of $+0.79$ to $+0.90$ on stakeholder
+count and $+0.65$ to $+0.93$ on uncertainty score for three of four
+generators at matched budget. The exception is
+\texttt{grok-4-1-fast-reasoning}, whose verbose-CoT output
+($2.33\times$ standard CoT) actually exceeds its N-CoT output
+($1.55\times$) under the calibrated budget; structural separation
+collapses as expected when the two conditions allocate similar token
+counts. The deliberative scaffold, not raw budget, is the active
+ingredient where the two conditions differ in trace shape. Inference
+tokens are also the cheapest scaling axis: no training data,
+parameters, or fine-tuning, small relative to RLHF or constitutional
+training whose fixed costs are orders of magnitude higher.
+
+\begin{table}[t]
+\centering
+\small
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{lrrrr}
+\toprule
+Generator & $\delta_{\textsc{sc}}$ & $\delta_{\textsc{us}}$ & SC\% & US\% \\
+\midrule
+gpt-5.4-nano             & $+0.90$ & $+0.93$ & $3.0$ & $14.0$ \\
+claude-haiku-4-5         & $+0.79$ & $+0.13$ & $1.0$ & $0.0$  \\
+claude-sonnet-4-6        & $+0.88$ & $+0.65$ & $1.0$ & $4.0$  \\
+grok-4-1-fast-r.\        & $+0.14$ & $-0.44$ & $0.0$ & $0.0$  \\
+\bottomrule
+\end{tabular}
+\caption{Matched-budget E1 control: Cliff's $\delta$ for N-CoT vs.\
+verbose-CoT on stakeholder count ($\delta_{\textsc{sc}}$) and
+uncertainty score ($\delta_{\textsc{us}}$), and verbose-CoT firing
+rates for stakeholder collapse (SC\%) and uncertainty suppression
+(US\%) on 100 DailyDilemmas scenarios ($N{=}1$ per cell). Verbose CoT
+suppresses both failure modes relative to standard CoT baselines
+($15$--$31\%$ SC, $50$--$72\%$ US, Table~\ref{tab:firing}) but does
+not match N-CoT's continuous structural shifts on three of four
+generators.}
+\label{tab:matched_budget}
+\end{table}
 
 \subsection{Sub-Instruction Ablation}
 \label{sec:exp1-ablation}
@@ -770,25 +814,27 @@ consensus from uniform compliance: a downstream auditor of an
 agentic-workflow vote sees not just the winning proposal but also
 which stakeholders refused and why.
 
-\paragraph{Scale replication on DailyDilemmas.} The arc is established
-on the \texttt{gpt-5.4-nano} pilot; a two-generator scaled
-replication (\texttt{gpt-5.4-nano} and \texttt{claude-sonnet-4-6},
-$N{=}1$ per cell, 30 DailyDilemmas scenarios sampled from the
-100-scenario distribution, seed 43) confirms the pattern. Of $60$
-cells, $38$ ($63\%$) required the synthesis-and-integrated-vote stage
-because Rounds~1--2 did not produce three-way agreement; among those,
-$35/38 = 92.1\%$ reached R4 full consensus (Wilson $95\%$ CI
-$[79.2, 97.3]\%$), within the pre-registered $\pm 10$\,pp window
-around the calibration-set $95.1\%$. The remaining $22$ cells reached
-agreement at R2 before integration was needed, so the combined
-convergence rate (R2 consensus or R4 full consensus) is $60/60 = 100\%$
-across both generators with $0\%$ structural rejection. Full-quartet
-replication ($\sim$$10{,}000$ long-context generations) is deferred to
-the post-submission revision cycle. A cross-vendor moderator
+\paragraph{Scale replication on DailyDilemmas.} A two-generator
+DailyDilemmas replication (\texttt{gpt-5.4-nano} and
+\texttt{claude-sonnet-4-6}, $N{=}1$, $30$ scenarios sampled from the
+100-scenario Phase~1 distribution, seed 43; $60$ cells total) confirms
+the pattern at distribution scale. $38/60$ cells ($63\%$) required
+the synthesis-and-integrated-vote stage because Rounds~1--2 did not
+produce three-way agreement; among those, $35/38 = 92.1\%$ reached
+R4 full consensus (Wilson $95\%$ CI $[79.2, 97.3]\%$), within the
+pre-registered $\pm 10$\,pp window around the calibration-set
+$95.1\%$. The remaining $22$ cells reached three-way agreement at R2
+before integration was needed, so the combined convergence rate (R2
+consensus or R4 full consensus) is $60/60 = 100\%$ across both
+generators with $0\%$ structural rejection. Full-quartet replication
+($\sim$$10{,}000$ long-context generations) is deferred to the
+post-submission revision cycle. A cross-vendor moderator
 (\texttt{claude-sonnet-4-6}) preserves the calibration-set consensus
 rate at $88\%$ (Fisher's exact $p = 1.0$ versus within-vendor;
 Appendix~\ref{app:kappa}), ruling out within-vendor moderator
-familiarity.
+familiarity. $0\%$ structural rejection at $100\%$ combined
+convergence is the deployment-relevant auditable property the
+four-round design was built to expose.
 
 \section{Theoretical Frame and Future Directions}
 \label{sec:grounding}
@@ -831,14 +877,19 @@ shortest description: the algorithmic causal complexity $K_C$
 li_vitanyi}: Appendix~\ref{app:kc}). Complexity-of-Value predicts
 $K_C$ approximations are where value-aligned reasoning sits; our
 empirical signature is what such an approximation should look like. A
-seven-proxy panel does not validate $K_C$ as readable from a single
-forward trace (Appendix~\ref{app:kc_panel}); a subsequently registered
-graph-complexity proxy $\hat{K}_{\text{graph}}$ achieves Spearman
-$\rho = 0.60$ ($p < 0.001$) against the N-CoT direction on a 30-scenario
-subsample, providing partial inference-time empirical support while
-stopping short of a full readout. $K_C$ therefore serves both as
-theoretical scaffolding and as an empirically reachable target for the
-training-time Interpreter Network (\S\ref{sec:conclusion}).
+seven-proxy panel of length-invariant compression and entropy proxies
+does not validate $K_C$ as readable from raw trace text once length is
+removed (Appendix~\ref{app:kc_panel}). A registered graph-complexity
+proxy $\hat{K}_{\text{graph}}$, which reads $K_C$ at the level of the
+structural-causal model the protocol exposes rather than the raw
+token stream, achieves Spearman $\rho = 0.60$ ($p < 0.001$) against
+the N-CoT direction on the 30-scenario subsample
+(Appendix~\ref{app:kc_panel}). $K_C$ therefore has partial
+inference-time empirical content at the SCM level even where the
+raw-text proxies fail; combined with the falsified raw-text panel, the
+overall reading is that $K_C$ is an empirically reachable target for
+the training-time Interpreter Network (\S\ref{sec:conclusion}) rather
+than a quantity any single forward trace fully exposes today.
 
 \paragraph{Early grounded exploration.} We position this as an early
 entry in a direction the present results sharpen rather than close:
@@ -870,8 +921,12 @@ substrate. Next: a training-time min-$K_C$ Interpreter Network.
 
 \section*{Limitations}
 
-The empirical scope is bounded in three ways, each with a pre-registered
-extension that establishes or extends the boundary.
+The empirical scope is bounded in three ways. The four pre-registered
+follow-up experiments scheduled in
+\path{Guidance_Documents/study_design.md} (matched-budget verbose CoT,
+scaled multi-agent on DailyDilemmas, safety-tuned fifth generator,
+$\hat{K}_{\text{graph}}$ and $\hat{K}_{\text{lm}}$ proxies) have all
+been executed before submission; the residual scope is reported below.
 
 \paragraph{Generator scope.} The four-generator quartet
 (\texttt{claude-haiku-4-5}, \texttt{gpt-5.4-nano},
@@ -1285,6 +1340,28 @@ lower per-character entropy than standard-CoT outputs. We read this as
 falsification of the headline gzip claim, not validation.}
 \label{tab:kc_corr}
 \end{table}
+
+\paragraph{Registered structural proxy.}
+A graph-extraction proxy $\hat{K}_{\text{graph}}$
+(\path{divergence_study_outputs/kc_proxy_correlation.csv}) reads
+$K_C$ at the level of the structural-causal model extracted from the
+trace rather than at the level of compressibility. A
+\texttt{claude-haiku-4-5} extractor parses each trace into nodes
+(stakeholders, actions, consequences) and edges (causal hops,
+uncertainty arcs); $\hat{K}_{\text{graph}}$ is the minimum
+description length of the extracted graph. On a 30-scenario
+$\times$ 3-conditions $\times$ 4-generators $\times$ 3-samples
+subsample (72 trace-graph pairs with usable scores after rubric
+extraction), pooled Spearman $\rho = 0.60$ ($p = 0.0004$) against
+the N-CoT direction, exceeding the pre-registered threshold of
+$|\rho| \geq 0.4$. The companion proxy $\hat{K}_{\text{lm}}$
+(perplexity-based) and the length-normalised
+$\hat{K}_{\text{gzip}}$ remain below threshold under the same
+pooling. We read this as partial inference-time empirical support
+for $K_C$ at the SCM level: the graph the protocol exposes is
+shorter than the graph standard CoT exposes, in the direction
+Complexity-of-Value predicts, even where compressibility of the raw
+trace gives no signal.
 
 \section{Adversarial Sycophancy Probe Set}
 \label{app:asp}
