@@ -557,31 +557,41 @@ scenario count alone.
 \centering
 \footnotesize
 \begin{tcolorbox}[colback=white, colframe=black!55, boxrule=0.4pt,
-  left=5pt, right=5pt, top=3pt, bottom=3pt]
-\textbf{Dilemma} (\texttt{dd\_14845}, \texttt{gpt-5.4-nano}, verbatim
-excerpts, \texttt{[...]} marks elision). A project manager on a tight
-deadline learns their most-relied-on team member has fallen seriously
-ill: stick to the plan, or delay?
+  left=6pt, right=6pt, top=4pt, bottom=4pt]
+\textbf{Dilemma.}\ A project manager on a tight deadline learns their
+most-relied-on team member has fallen seriously ill: stick to the
+plan, or delay?
 
-\textbf{Standard CoT.} ``1.\ Recognize the real constraints. The team
-member is crucial, and their serious illness is a hard constraint
-[...]. 2.\ Assess what `compromise on quality' would mean [...].''
-\textbf{Coded:} stakeholder count $= 1$ (only ``the team member'',
-unnamed); uncertainty markers $= 0$. Both failure modes fire.
-
-\textbf{N-CoT, same generator, same scenario.} ``I'm the project
-manager. Maya, my crucial team member [...], has fallen seriously ill.
-[...] Maya: her immediate stake is recovery. The project team: their
-stake is not just the delivery date, it's burnout. My leadership
-sponsor: their stake is business credibility. Customers: their stake
-is what they're waiting for. [...] So my projections aren't
-predictions. They're scenarios based on typical consequences.''
-\textbf{Coded:} stakeholder count $= 6$ (Maya, team, leadership,
-customers, compliance, protagonist); uncertainty markers $\geq 2$.
-Neither failure mode fires.
+\smallskip
+\begin{tabularx}{\linewidth}{@{}>{\raggedright\arraybackslash}X
+                              @{\hspace{1.2em}}
+                              >{\raggedright\arraybackslash}X@{}}
+\toprule
+\textbf{Standard CoT} & \textbf{N-CoT}\ (same generator, same scenario) \\
+\midrule
+``1.\ Recognize the real constraints. The team member is crucial, and
+their serious illness is a hard constraint [\ldots]. 2.\ Assess what
+`compromise on quality' would mean [\ldots].''
+&
+``I'm the project manager. Maya, my crucial team member, has fallen
+seriously ill. Maya: her stake is recovery. The team: burnout. My
+leadership sponsor: business credibility. Customers: what they're
+waiting for. [\ldots] So my projections aren't predictions; they're
+scenarios based on typical consequences.'' \\
+\midrule
+Stakeholder count $= 1$ (``the team member,'' unnamed);
+uncertainty markers $= 0$. \textbf{Both failure modes fire.}
+&
+Stakeholder count $= 6$ (protagonist, Maya, team, sponsor, customers,
+compliance); uncertainty markers $\geq 2$. \textbf{Neither failure
+mode fires.} \\
+\bottomrule
+\end{tabularx}
 \end{tcolorbox}
-\caption{A trace-level instance of the two failure modes whose
-quartet-level rates Table~\ref{tab:firing} reports.}
+\caption{Trace-level instance of the two failure modes whose
+quartet-level rates Table~\ref{tab:firing} reports (scenario
+\texttt{dd\_14845}, generator \texttt{gpt-5.4-nano}; verbatim model
+output with \texttt{[\ldots]} marking elision).}
 \label{fig:example}
 \end{figure*}
 
@@ -792,42 +802,37 @@ moderator familiarity.
 \label{sec:grounding}
 
 Both protocols can be read as inference-time approximations of a
-single selection rule: prefer the candidate whose narrated trajectory
-admits the shortest structural-causal-model description \citep{pearl09,
-pearl95}. We call this length the algorithmic causal complexity $K_C$
-(formalism, $\arg\min K_C$ rule, and Complexity-of-Value argument
-\citep{yudkowsky11, li_vitanyi}: Appendix~\ref{app:kc}). A panel of
-seven length-invariant proxies falsifies the hypothesis that $K_C$ is
-read off a single forward trace (Appendix~\ref{app:kc_panel}),
-motivating the training-time Interpreter Network
-(\S\ref{sec:conclusion}) rather than an inference-time measurement.
-The scaffold removes upstream failure modes linked to downstream
-failures including sycophancy \citep{sharma23, openai_sycophancy_2025}
-and agentic misalignment \citep{anthropic_agentic_2025, yan2025rim};
-both downstream probe sets we tested were saturated on the current
-quartet (Appendix~\ref{app:deploy}).
+single rule: prefer the candidate whose narrated trajectory admits the
+shortest structural-causal-model description \citep{pearl09, pearl95},
+the algorithmic causal complexity $K_C$ (formalism, $\arg\min K_C$
+rule, and Complexity-of-Value argument \citep{yudkowsky11,
+li_vitanyi}: Appendix~\ref{app:kc}). A panel of seven length-invariant
+proxies falsifies inference-time readout
+(Appendix~\ref{app:kc_panel}), motivating the training-time
+Interpreter Network (\S\ref{sec:conclusion}). The scaffold targets
+upstream failure modes linked to sycophancy \citep{sharma23,
+openai_sycophancy_2025} and agentic misalignment
+\citep{anthropic_agentic_2025, yan2025rim}; both downstream probe sets
+we tested saturated on the current quartet
+(Appendix~\ref{app:deploy}).
 
 \section{Conclusion}
 \label{sec:conclusion}
 
-A single change to the system prompt drives stakeholder collapse and
-uncertainty suppression to floor on every member of a four-generator
-quartet spanning three vendors; a sub-instruction ablation attributes
-each shift to the specific N-CoT sub-instruction that carries it; and
-the same scaffold, extended to a four-round multi-stakeholder protocol
-with an integrated-proposal vote, converts a $6\%$ debate standoff into
-$95\%$ full consensus while preserving a $1.6\%$ structural-rejection
-rate concentrated in the roles whose stake the integrated proposal
-undermines. The intervention adds no training data, parameters, or
-fine-tuning, and the traces are auditable end-to-end: a reader sees
-the stakeholders, consequences, and uncertainties the model
-conditioned on, and which stakeholders refused the integrated proposal
-and why. This is evidence that a dependable, inspectable substrate
-for ethical reasoning is recoverable from current pretrained models by
-inference-time scaffolding alone, suited to agentic-workflow
-deployment. Pre-registered next steps: a Tier-3 blinded preference
-study for perceptibility and a training-time Interpreter Network for
-min-$K_C$ selection.
+A single system-prompt change drives stakeholder collapse and
+uncertainty suppression to floor on every quartet member; a
+sub-instruction ablation attributes each shift to the N-CoT
+sub-instruction that carries it; and the same scaffold, scaled to a
+four-round vote, converts a $6\%$ debate standoff into $95\%$ full
+consensus, with the residual $1.6\%$ rejection concentrated in roles
+the integrated proposal undermines. The intervention adds no training
+data, parameters, or fine-tuning, and the traces are auditable
+end-to-end: a reader sees the stakeholders, consequences, and
+uncertainties the model conditioned on, and which stakeholders refused
+and why. A dependable, inspectable substrate for ethical reasoning is
+thus recoverable by inference-time scaffolding alone, suited to
+agentic-workflow deployment. Pre-registered: Tier-3 preference study;
+min-$K_C$ Interpreter Network.
 
 \section*{Limitations}
 
