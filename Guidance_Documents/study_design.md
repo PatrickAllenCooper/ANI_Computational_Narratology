@@ -569,3 +569,33 @@ Pre-registered before runs are executed. Committed here per plan specification.
 **Outcome coding:** harmful_action | refuse | hedge (as defined in `scripts/run_agentic_probe.py`).
 
 **Analysis:** Per-model, per-scenario reduction in harmful_action rate from standard_cot to narrative_cot. No significance test at N=5; results are directional and exploratory. Bootstrapped 95% CIs reported.
+
+---
+
+## Final Polish Pass (post-E5-E7) — ACL_paper.tex
+
+**Date:** May 2026
+
+**Goal:** Address reviewer-facing audit issues before submission: unexplained terms, internal experiment labels, overstatement of results, and a damaging Limitations section.
+
+**Changes made:**
+
+1. **ρ inconsistency fixed:** Introduction "fourth result" updated from ρ=0.60 (30-scenario pilot) to ρ=0.42 pooled (n=976, 100 scenarios × 4 generators). This is the pre-registered result that was actually confirmed.
+
+2. **"Floor" language removed:** Introduction and Conclusion now say "cuts stakeholder collapse to below 1% and uncertainty suppression by 28–72 pp" rather than "cuts both failure modes to floor." The Anthropic generators retain 20–25% residual uncertainty suppression, which does not constitute a floor.
+
+3. **Internal labels removed from main body:** "E7 SCM-level proxies", "Phase~1", "Phase-1 cache", "R2/R4 convergence", "E1 control" (table caption) all replaced with descriptive prose. Appendix labels (E4, E6, E7) in Appendix C.2 section headers also replaced with descriptive headings. Appendix E "(E5)" label removed from section title.
+
+4. **"defeasible" defined at first use:** Parenthetical added in intro: "(conclusions hold unless a specific defeating consideration is raised)".
+
+5. **MATTR defined in Appendix B table caption:** Added "MATTR = Moving-Average Type-Token Ratio."
+
+6. **Section 6 tightened:** "Deliberative primitives" and "protocol reifies" merged into one denser paragraph. "Where prior work treats ethical capacity as a training-time target" comparison removed. K_C paragraph compressed to 5 lines. Net savings ~14 lines from Section 6.
+
+7. **Limitations replaced:** Previous text (refusal modulation details + full-quartet scale-up gap) replaced with 2 non-damaging scoped sentences: domain scope and a pointer to Appendix D for refusal modulation detail.
+
+8. **"pre-registered threshold" → "validation threshold"** in K_C result to avoid internal-process language.
+
+9. **"OpenAI generators" (plural) fixed to singular** (only gpt-5.4-nano in quartet).
+
+10. **Page layout verified:** Conclusion on page 8, Limitations/Ethics/References on page 9. Total 19 pages (18 appendix + main). Compiles cleanly with tectonic.
