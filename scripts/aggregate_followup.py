@@ -1,26 +1,16 @@
 """
 scripts/aggregate_followup.py -- Follow-up paper registered analysis.
 
-Consumes Phase 1 cached judge cells for conditions narrative_cot_v2
-(v2) and narrative_cot (v1, already cached from Experiment 1) across all
-four generators, plus third-judge cells written by run_third_judge_v2.py.
+Consumes Phase 1 cached judge cells for the new condition (v2 or v3)
+and narrative_cot (v1 baseline) across all four generators, plus third-judge
+cells written by run_third_judge_v2.py (v2) or run_third_judge_v3.py (v3).
 
-Pre-registered analyses (from Guidance_Documents/followup_study_design.md,
-executed in declared order):
-  1. Per-generator Cliff's delta (v1 vs v2) with bootstrap 95% CI on
-     stakeholder_count, uncertainty_score, max_causal_hops, and
-     length-residualised versions of sc and us.
-  2. Per-generator binary firing-rate change (v2 - v1) for collapse and
-     suppression with binomial CIs.
-  3. Per-generator mean-token ratio (v2 / v1).
-  4. Per-generator inter-judge Cohen's kappa (primary vs third) on v2 binary
-     labels.
-  5. Cross-generator H1 verdict (count of generators with sc delta < -0.1
-     and CI hi < 0).
+Pass --new-condition narrative_cot_v3 to analyse v3 instead of v2.
+The third-judge cache prefix is detected automatically from the condition name.
 
 Outputs:
-  divergence_study_outputs/followup_aggregate.json
-  divergence_study_outputs/followup_per_generator.csv
+  divergence_study_outputs/followup_aggregate.json   (or followup_v3_aggregate.json)
+  divergence_study_outputs/followup_per_generator.csv (or followup_v3_per_generator.csv)
 
 Run discipline: execute before drafting any paper prose; the last line of
 stdout is the pre-declared outcome verdict.
@@ -36,7 +26,7 @@ from pathlib import Path
 
 OUT  = Path("./divergence_study_outputs")
 COND_V1 = "narrative_cot"
-COND_V2 = "narrative_cot_v2"
+COND_V2 = "narrative_cot_v2"   # default new condition
 
 PRIMARY_JUDGE  = "claude-haiku-4-5"
 THIRD_JUDGE    = "grok-4-1-fast-reasoning"
@@ -201,11 +191,33 @@ def load_third_judge_cells(
 # ---------------------------------------------------------------------------
 
 def analyse_generator(
-    gen_model: str, scenarios, n: int
+    gen_model: str, scenarios, n: int,
+    new_condition: str = None,
+    third_judge_path_fn=None,
 ) -> dict:
+    cond_new = new_condition or COND_V2
     v1_cells = load_judge_cells(gen_model, COND_V1, scenarios, n, PRIMARY_JUDGE)
-    v2_cells = load_judge_cells(gen_model, COND_V2, scenarios, n, PRIMARY_JUDGE)
-    v2_third = load_third_judge_cells(gen_model, scenarios, n)
+    v2_cells = load_judge_cells(gen_model, cond_new, scenarios, n, PRIMARY_JUDGE)
+
+    # Third-judge cells: use the provided path function or the module-level default
+    if third_judge_path_fn is not None:
+        v2_third = []
+        for scenario in scenarios:
+            for idx in range(n):
+                path = third_judge_path_fn(gen_model, scenario.id, idx)
+                if path.exists():
+                    d = json.loads(path.read_text())
+                    sc = int(d.get("stakeholder_count", 0) or 0)
+                    us = int(d.get("uncertainty_score", 0) or 0)
+                    v2_third.append({
+                        "scenario_id": scenario.id,
+                        "sample_idx": idx,
+                        "sc": sc, "us": us,
+                        "collapse_fired": int(sc <= 1),
+                        "suppression_fired": int(us == 0),
+                    })
+    else:
+        v2_third = load_third_judge_cells(gen_model, scenarios, n)
 
     if not v1_cells or not v2_cells:
         return {
@@ -343,6 +355,30 @@ def analyse_generator(
 # ---------------------------------------------------------------------------
 
 def main() -> None:
+    import argparse
+    ap = argparse.ArgumentParser()
+    ap.add_argument(
+        "--new-condition", default=COND_V2,
+        help="Condition to compare against v1 (default: narrative_cot_v2)"
+    )
+    args = ap.parse_args()
+    new_cond = args.new_condition
+
+    suffix = ("" if new_cond == COND_V2
+              else f"_{new_cond.replace('narrative_cot_', '')}")
+
+    # Build the third-judge path function for the requested condition.
+    # Always uses grok as the third judge; only the condition name in the
+    # filename changes between v2 and v3.
+    from scripts.run_third_judge_v2 import THIRD_JUDGE as _TJ, _safe as _s2, OUT_DIR as _od
+    _new_cond_for_closure = new_cond
+    def _third_path(gen_model: str, scenario_id: str, idx: int) -> Path:
+        return _od / (
+            f"judge3_{_s2(_TJ)}_{_s2(gen_model)}"
+            f"_{scenario_id}_{_new_cond_for_closure}_{idx:03d}.json"
+        )
+
+    print(f"Analysing: v1={COND_V1}  vs  new={new_cond}", flush=True)
     print("Loading 100 DailyDilemmas scenarios...", flush=True)
     scenarios = load_daily_dilemmas(n=100)
     print(f"  {len(scenarios)} scenarios.", flush=True)
@@ -351,7 +387,9 @@ def main() -> None:
     for gen_model in GENERATORS:
         n = N_PER_GENERATOR.get(gen_model, DEFAULT_N_FALLBACK)
         print(f"\n--- {gen_model}  (N={n} per cell) ---", flush=True)
-        r = analyse_generator(gen_model, scenarios, n)
+        r = analyse_generator(gen_model, scenarios, n,
+                              new_condition=new_cond,
+                              third_judge_path_fn=_third_path)
         results.append(r)
 
         if r["status"] != "OK":
@@ -430,12 +468,12 @@ def main() -> None:
         "n_generators": len(ok),
         "per_generator": results,
     }
-    agg_path = OUT / "followup_aggregate.json"
+    agg_path = OUT / f"followup{suffix}_aggregate.json"
     agg_path.write_text(json.dumps(aggregate, indent=2, default=str))
     print(f"Aggregate JSON: {agg_path}")
 
     # Write per-generator CSV
-    csv_path = OUT / "followup_per_generator.csv"
+    csv_path = OUT / f"followup{suffix}_per_generator.csv"
     with csv_path.open("w", newline="", encoding="utf-8") as f:
         w = csv.writer(f)
         w.writerow([
