@@ -1,0 +1,397 @@
+% followup_paper.tex -- Follow-up paper: Narrative-Gradient Prompt Optimisation
+% Target: workshop or short-paper venue (4-6 main pages, unlimited appendix).
+% Skeleton only. Fill [PLACEHOLDER] markers with numbers from
+% divergence_study_outputs/followup_aggregate.json and followup_per_generator.csv
+% after the four-generator replication run is complete and the aggregator has
+% been executed. Do not draft claim sentences before that step.
+
+\documentclass[11pt]{article}
+\usepackage{acl}
+\usepackage{times}
+\usepackage{latexsym}
+\usepackage{microtype}
+\usepackage{inconsolata}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{amsmath}
+\usepackage{url}
+
+% Review mode -- remove for camera-ready
+\aclfinalcopy
+
+\title{Narrative-Gradient Descent: Automatic Optimisation of\\
+       Deliberative Prompts for Ethical Reasoning}
+
+% Anonymous for review -- replace with author block at camera-ready
+\author{Anonymous}
+
+\date{}
+
+\begin{document}
+
+\maketitle
+
+% ---------------------------------------------------------------------------
+\begin{abstract}
+[PLACEHOLDER: 150-200 words. State the problem (hand-designed deliberative
+prompts are unverified as near-optimal), the method (narrative-gradient
+descent: textual-gradient descent initialised at N-CoT with a continuous
+deliberative-primitive loss), the key finding (REPLICATES / PARTIAL / DOES
+NOT REPLICATE per followup\_aggregate.json field "verdict"), and the
+implication. Draft this section last, after the results section is filled.]
+\end{abstract}
+% ---------------------------------------------------------------------------
+
+\section{Introduction}
+\label{sec:intro}
+
+Structured system prompts have been shown to reduce failure modes in
+LLM ethical reasoning \citep{[PLACEHOLDER: cite parent ACL paper when
+de-anonymised]}.
+The hand-designed Narrative Chain-of-Thought (N-CoT) prompt constrains
+the model's output to five deliberative sections (decision-maker, stakeholders,
+consequences, uncertainty, action) and substantially reduces stakeholder
+collapse and uncertainty suppression on a four-model panel.
+
+A natural question is whether this hand-designed structure is at or near
+a local optimum, or whether automatic prompt optimisation can improve it.
+Textual-gradient descent \citep{yuksekgonul2024textgrad} --- replacing
+numerical gradients with LLM-generated diagnoses and rewrites --- provides
+a tractable search mechanism over the discrete prompt space.
+
+We apply textual-gradient descent to N-CoT, initialising the optimiser at the
+hand-written prompt and minimising a continuous loss that rewards stakeholder
+coverage and uncertainty acknowledgement.
+A pilot study on one generator (Section~\ref{sec:pilot}) found a medium-effect
+improvement (Cliff's $\delta = -0.367$, 95\% CI $[-0.607, -0.114]$ on
+stakeholder count).
+This paper reports whether that pilot finding replicates across all four
+generators of the parent study.
+
+[PLACEHOLDER: one paragraph stating the main finding in one sentence once
+the verdict is known. E.g. ``We find that [VERDICT]: the optimised prompt
+[improves / does not improve] N-CoT on [X] of four generators\ldots'']
+
+% ---------------------------------------------------------------------------
+\section{Method}
+\label{sec:method}
+
+\subsection{Continuous Loss for Deliberative Depth}
+
+We define a per-output cell loss
+\begin{equation}
+  \ell = \max(0,\; 4 - \text{stakeholder\_count})
+        + \max(0,\; 2 - \text{uncertainty\_score}),
+  \label{eq:loss}
+\end{equation}
+and the batch loss $L = \tfrac{1}{|B|}\sum_{b \in B} \ell_b$.
+The loss is zero when every output names at least four distinct stakeholders
+\emph{and} acknowledges specific uncertainties (score $\geq 2$), and grows
+linearly below those targets.
+The thresholds 4 and 2 are the mid-band values for N-CoT cells in Experiment~1
+of the parent study, chosen to ensure gradient signal even when N-CoT already
+clears the binary failure-mode thresholds.
+
+\subsection{Narrative-Gradient Loop}
+
+\paragraph{Forward pass.}
+For each prompt $p$ and a batch of $k$ scenarios $B$, generate outputs
+$\{o_b\}_{b \in B}$ with the target generator (max\_tokens $= 4096$),
+then code each output with the Phase~1 judge rubric to obtain
+$(\text{sc}_b, \text{us}_b)$ and compute $L$.
+
+\paragraph{Backward pass (textual gradient).}
+Feed the current prompt $p$, the batch results $\{o_b\}$, their codes, and
+the batch loss $L$ to an optimiser LLM (\texttt{claude-sonnet-4-6}).
+The optimiser writes a \emph{textual gradient}: a concrete diagnosis (4--8
+sentences) of which sub-instruction causes the observed shortfall and what
+change would address it.
+It is told the prompt currently encodes a five-section scaffold and is
+explicitly free to retain, modify, or drop any section.
+
+\paragraph{Optimiser step.}
+The optimiser LLM rewrites the prompt to address the gradient.
+Constraints: $\leq 400$ words; no named ethical frameworks; the five-section
+structure may be changed freely.
+
+\paragraph{Early stopping.}
+Training halts when three consecutive iterations each reduce $L$ by less than
+5\% of the preceding value, or after a maximum of 10 iterations.
+
+\subsection{Experimental Setup}
+
+Training used 30 DailyDilemmas scenarios (seed-43 stratified subsample from
+the parent study's 100-scenario set), with a batch size of 10 scenarios per
+iteration.
+The optimiser was initialised at the verbatim N-CoT v1 prompt.
+Generator for the training run: \texttt{claude-haiku-4-5}
+(the generator with the highest residual failure rate under N-CoT v1 per
+Experiment~1, providing a non-trivial loss signal).
+
+The optimisation converged after 4 iterations (early-stop criterion met).
+The resulting prompt, designated N-CoT v2, is presented verbatim in
+Section~\ref{sec:v2prompt}.
+
+\subsection{Evaluation}
+
+The four-generator replication evaluates N-CoT v2 against N-CoT v1 on the
+full 100-scenario set used by Experiment~1 of the parent study, at the same
+per-generator sample count ($N = 20$ for \texttt{claude-haiku-4-5},
+$N = 5$ for \texttt{grok-4-1-fast-reasoning} and \texttt{claude-sonnet-4-6},
+and $N = [\text{PLACEHOLDER: check gpt-5.4-nano N\_PER\_GENERATOR}]$ for
+\texttt{gpt-5.4-nano}).
+Primary judge is \texttt{claude-haiku-4-5}; adversarial third judge is
+\texttt{grok-4-1-fast-reasoning}, which re-codes every v2 cell to guard
+against judge exploitation.
+
+% ---------------------------------------------------------------------------
+\section{N-CoT v2 Prompt}
+\label{sec:v2prompt}
+
+The following prompt was produced by the narrative-gradient optimiser
+(SHA-1 prefix of prompt text: \texttt{3fb7f75f6d}; verbatim copy pinned in
+\texttt{scripts/run\_phase1\_quartet.py} as
+\texttt{PROMPTS["narrative\_cot\_v2"]}).
+
+\begin{quote}\small
+You are a thoughtful advisor reasoning through ethical dilemmas. Before giving
+your final answer, work through a structured analysis. Keep each section tight
+and purposeful.
+
+\textbf{Who is deciding?} Name the decision-maker, their role, and the
+specific knowledge or constraints they bring to this choice.
+
+\textbf{Who is affected?} Identify every person, group, or institution whose
+wellbeing, interests, or rights intersect this decision. Push past the central
+figures: include indirect parties, bystanders, background institutions, and
+anyone whose situation quietly changes as a result. For each, state precisely
+what they stand to gain, lose, or have changed. Prefer concrete specificity
+over abstract categories. Aim for at least five distinct stakeholders with
+individuated stakes.
+
+\textbf{What happens next?} For each available course of action, trace
+consequences at least two steps forward. Every stakeholder you named must
+appear somewhere in this analysis.
+
+\textbf{What don't we know?} For each projected future, surface specific
+uncertainties. For each course of action, name at least three distinct
+uncertainties. For each uncertainty, explain why it matters.
+
+\textbf{What should be done?} Commit to a specific decision. Name which
+uncertainties most threaten your chosen path and state directly why you are
+proceeding despite them.
+
+\textit{Additional guidance}: Precision over length. Do not resolve tensions
+prematurely. Be concrete about stakes. Explain the consequence of being wrong,
+not merely that the unknown exists. Work through all sections before stating
+your final answer.
+\end{quote}
+
+The optimiser retained the five-section structure from N-CoT v1 but made two
+targeted additions: (1)~an explicit stakeholder minimum (``aim for at least
+five distinct stakeholders with individuated stakes'') with instructions to
+include indirect parties, and (2)~an explicit uncertainty minimum
+(``at least three distinct uncertainties per course of action'') with the
+directive to explain why each uncertainty matters.
+A trailing guidance block was also added with four writing principles.
+
+% ---------------------------------------------------------------------------
+\section{Results}
+\label{sec:results}
+
+\paragraph{Pilot (single generator).}
+Table~\ref{tab:pilot} summarises the Phase~10 pilot results (30-scenario
+held-out eval set, \texttt{claude-haiku-4-5} generator).
+
+\begin{table}[t]
+\centering
+\small
+\begin{tabular}{lrr}
+\toprule
+Metric & N-CoT v1 & N-CoT v2 \\
+\midrule
+mean stakeholder count  & 5.50 & 6.30 \\
+mean uncertainty score  & 3.00 & 3.00 \\
+mean max causal hops    & 4.60 & 4.97 \\
+mean completion tokens  & 1322 & 2116 \\
+Cliff's $\delta$ (v1 vs v2, sc) & \multicolumn{2}{c}{$-0.367$ $[-0.607, -0.114]$} \\
+\midrule
+Third judge (grok) mean sc  & --- & 5.27 \\
+Inter-judge $\kappa$ (collapse)  & \multicolumn{2}{c}{$1.000$} \\
+Inter-judge $\kappa$ (suppression) & \multicolumn{2}{c}{$1.000$} \\
+\bottomrule
+\end{tabular}
+\caption{Phase~10 pilot held-out results (30 scenarios, \texttt{claude-haiku-4-5}
+generator, \texttt{claude-haiku-4-5} primary judge, \texttt{grok-4-1-fast-reasoning}
+third judge). Cliff's $\delta$ is for v1 vs.\ v2; negative favours v2.}
+\label{tab:pilot}
+\end{table}
+
+\paragraph{Cross-vendor replication.}
+Table~\ref{tab:replication} reports the four-generator comparison
+([PLACEHOLDER: fill from followup\_per\_generator.csv after run completes]).
+
+\begin{table*}[t]
+\centering
+\small
+\begin{tabular}{lcccccc}
+\toprule
+Generator & v1 sc & v2 sc & $\delta$ (sc) & 95\% CI & H1 met & Token ratio \\
+\midrule
+\texttt{gpt-5.4-nano}            & [PH] & [PH] & [PH] & $[$[PH], [PH]$]$ & [PH] & [PH]$\times$ \\
+\texttt{claude-haiku-4-5}        & [PH] & [PH] & [PH] & $[$[PH], [PH]$]$ & [PH] & [PH]$\times$ \\
+\texttt{grok-4-1-fast-reasoning} & [PH] & [PH] & [PH] & $[$[PH], [PH]$]$ & [PH] & [PH]$\times$ \\
+\texttt{claude-sonnet-4-6}       & [PH] & [PH] & [PH] & $[$[PH], [PH]$]$ & [PH] & [PH]$\times$ \\
+\bottomrule
+\end{tabular}
+\caption{Per-generator v1 vs.\ v2 comparison. $\delta$ is Cliff's delta;
+negative favours v2. H1 met if $\delta < -0.1$ and CI strictly below 0.
+Token ratio is v2 mean tokens / v1 mean tokens.}
+\label{tab:replication}
+\end{table*}
+
+[PLACEHOLDER: one paragraph per hypothesis H1-H4 once the numbers are
+populated. Structure: H1: ``[X] of 4 generators satisfy the pre-registered
+threshold...''; H2: ``Binary firing rates...''; H3: ``Inter-judge kappa
+across generators...''; H4: ``Token ratios...'']
+
+\paragraph{Pre-declared outcome verdict.}
+[PLACEHOLDER: state the outcome verdict (REPLICATES / PARTIAL / DOES NOT
+REPLICATE) as the first sentence of this paragraph and apply the corresponding
+pre-declared interpretation from Guidance\_Documents/followup\_study\_design.md.]
+
+% ---------------------------------------------------------------------------
+\section{Discussion}
+\label{sec:discussion}
+
+[PLACEHOLDER after results are filled. Suggested structure:]
+
+\paragraph{What the optimiser added.}
+The two structural changes in v2 (explicit stakeholder minimum, per-course
+uncertainty minimum with consequence framing) are interpretable as tightening
+the two rubric-targeted sub-instructions in N-CoT v1.
+This raises a methodological question: does v2 improve reasoning quality
+or does it improve rubric compliance through instruction-following?
+The length-residualised Cliff's $\delta$ (Analysis~1d) [PLACEHOLDER: addresses
+this by showing whether the gain survives per-unit-length normalisation].
+
+\paragraph{Prompt engineering as a search problem.}
+Narrative-gradient descent [converges on / fails to improve] the hand-designed
+scaffold [PLACEHOLDER: fill based on verdict].
+[PLACEHOLDER: discuss implications for whether expert hand-design is necessary
+or whether gradient descent can serve as an auditing tool even when it does
+not improve the hand design.]
+
+\paragraph{Cross-vendor consistency.}
+[PLACEHOLDER: note which generators showed the largest and smallest effects
+and hypothesise why, referencing the parent paper's finding that Anthropic
+generators show residual uncertainty suppression that is length-driven rather
+than per-unit-length driven.]
+
+% ---------------------------------------------------------------------------
+\section{Limitations}
+\label{sec:limitations}
+
+\textbf{Single dataset.} All evaluations use DailyDilemmas
+\citep{[PLACEHOLDER: cite DailyDilemmas]}. Generalisability to other
+ethical-reasoning benchmarks is untested.
+
+\textbf{Narrow loss function.} The optimiser minimises stakeholder count and
+uncertainty score only. Max causal hops, action commitment, and trace coherence
+are out-of-loss; their v1-vs-v2 deltas are reported as generalisability checks
+but were not targeted.
+
+\textbf{Single optimiser model.} All textual gradients and prompt rewrites
+were produced by \texttt{claude-sonnet-4-6}. A different optimiser may
+produce different prompts.
+
+\textbf{Sample-count variation.} Per-generator sample counts follow the parent
+study's cost constraints ($N = 5$ for two generators). Bootstrap CIs on
+small-$N$ cells are wider; the H1 CI criterion accounts for this.
+
+\textbf{Judge biases.} Primary judge \texttt{claude-haiku-4-5} was also the
+training generator. The adversarial third-judge pass guards against exploitation
+but cannot fully rule out in-family judge bias.
+
+% ---------------------------------------------------------------------------
+\section*{Acknowledgements}
+
+[PLACEHOLDER: to be added at camera-ready stage.]
+
+% ---------------------------------------------------------------------------
+\bibliographystyle{acl_natbib}
+\bibliography{references}
+
+% ---------------------------------------------------------------------------
+\appendix
+
+\section{Phase 10 Pilot Details}
+\label{app:pilot}
+
+The pilot run used 30 DailyDilemmas scenarios (seed-43 stratified subsample)
+as the training set and 30 scenarios (seed-42 indices 30--59, shared with the
+Phase~9 TextGrad control) as the held-out evaluation set.
+The optimiser ran for 4 iterations before early-stop (three consecutive
+iterations with $< 5\%$ loss reduction).
+
+\paragraph{Training-loss curve.}
+\begin{center}
+\small
+\begin{tabular}{lrrrr}
+\toprule
+Iter & Loss & Mean sc & Mean us & $\Delta$ loss \\
+\midrule
+0 (baseline) & 0.100 & 4.50 & 3.00 & --- \\
+1            & 0.000 & 6.30 & 3.00 & $+100\%$ \\
+2            & 0.000 & 6.60 & 3.00 & $0\%$ \\
+3            & 0.000 & 5.40 & 3.00 & $0\%$ \\
+4            & 0.000 & 6.30 & 3.00 & $0\%$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\paragraph{Drift control.}
+A live N-CoT v1 cell was re-run on \texttt{claude-haiku-4-5} at the start
+and end of the Phase~10 run (scenario \texttt{dd\_32489}).
+Start stakeholder count: 6. End stakeholder count: 6. Drift: 0.
+Model deployment was stable across the run.
+
+\paragraph{Gradient diagnoses.}
+Iteration~1 gradient (paraphrased): the Stakeholders section lacks an explicit
+numeric floor; the phrase ``list every person'' is passive and leads the model
+to collapse to two or three obvious parties on simpler scenarios.
+The Uncertainty section is robust but does not specify a per-course minimum.
+Subsequent iterations (2--4) reported no active shortfalls and correctly
+diagnosed the loss as already at zero.
+
+\section{Tabular Summary: Phase 9 vs Phase 10 vs Hand N-CoT}
+\label{app:cross_phase}
+
+Table~\ref{tab:cross_phase} extends the held-out comparison from the parent
+paper's Appendix~G (Phase~9: TextGrad on standard CoT, generator
+\texttt{gpt-5.4-nano}) with the Phase~10 result (N-CoT v2, generator
+\texttt{claude-haiku-4-5}).
+Note that the generators differ, so this is a qualitative comparison only.
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{lrrr}
+\toprule
+Prompt & Mean sc & Mean us & Mean tokens \\
+\midrule
+Phase 9: TG-opt std CoT  & 4.00 & 2.83 & 620 \\
+Phase 9: N-CoT v1 (ctrl) & 5.47 & 2.97 & 1440 \\
+Phase 10: N-CoT v1 (ctrl)& 5.50 & 3.00 & 1322 \\
+Phase 10: N-CoT v2       & 6.30 & 3.00 & 2116 \\
+\bottomrule
+\end{tabular}
+\caption{Cross-phase summary on the shared 30-scenario held-out set.
+Phase~9 generator: \texttt{gpt-5.4-nano}; Phase~10 generator:
+\texttt{claude-haiku-4-5}. Generator difference precludes direct comparison
+between Phase~9 and Phase~10 rows.}
+\label{tab:cross_phase}
+\end{table}
+
+\end{document}
