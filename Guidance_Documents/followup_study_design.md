@@ -372,3 +372,21 @@ exploitation for non-haiku generators but exposes residual within-family bias.
   Verdict: H1=3/4, H3 fails only for haiku generator (within-family bias, not
   exploitation). Sonnet kappa 0→1.0. Guidance document updated to record
   both the gap and the v3 findings before paper prose drafting begins.
+- v0.3 (2026-05-26): Paper drafted at papers/followup_paper.tex. On
+  re-examining the v2 cross-judge data more carefully, the original
+  "judge exploitation" framing was found to be overstated:
+  * On grok and sonnet the v2 third judge actually saw LARGER stakeholder
+    improvements than the primary judge (third sees v2 = -1.04 / -0.75
+    vs primary = -0.68 / -0.60), not smaller as exploitation would predict.
+  * The only generator where the v2 primary judge saw a larger improvement
+    than the third was haiku (the in-family pair): gap of +0.80 stakeholders.
+  The honest signal is therefore "in-family judge-generosity bias of ~0.8
+  stakeholders on the in-family generator", not "wholesale exploitation".
+  v3 reduces this haiku gap to +0.46 and inverts the grok gap to -0.21.
+  The paper has been reframed as a head-to-head v2-vs-v3 comparison with
+  cross-family training as the dominant configuration on every metric
+  (effect size, output length, generosity-gap). The verdict-label system
+  declared in this pre-registration is set aside in the paper itself;
+  claims are pegged to per-generator effect sizes and the cross-judge
+  continuous-metric gap directly. This reframing is documented here for
+  transparency about the post-registration analytical adjustment.
