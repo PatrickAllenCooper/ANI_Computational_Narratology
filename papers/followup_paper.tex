@@ -25,6 +25,24 @@
 \usepackage{amssymb}
 \usepackage{url}
 \urlstyle{tt}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{positioning, arrows.meta, calc, fit, shapes.geometric, backgrounds}
+
+% Aquatic palette mirrored from the parent paper for visual continuity.
+\definecolor{stdgrey}{HTML}{7E9AAB}
+\definecolor{ncotteal}{HTML}{0E7C7B}
+\definecolor{ncottealdk}{HTML}{0A5C5B}
+\definecolor{vendorblue}{HTML}{2E7DA0}
+\definecolor{vendorsienna}{HTML}{0E5C5B}
+\definecolor{vendorplum}{HTML}{5BB0A8}
+\definecolor{alarmred}{HTML}{1A3B6E}
+\definecolor{paleslate}{HTML}{E2EAF0}
+\definecolor{paleteal}{HTML}{D9ECEB}
+\definecolor{paleblue}{HTML}{D6E5EE}
+\definecolor{paleplum}{HTML}{DCEEEB}
+\definecolor{palealarm}{HTML}{C9D7E6}
 
 \title{Textual-Gradient Optimisation of a Deliberative Prompt Scaffold:\\
 Cross-Family Training Yields Larger Gains, Shorter Outputs,\\
@@ -44,6 +62,146 @@ The takeaway: hand-designed deliberative scaffolds can be improved by textual-gr
 \end{abstract}
 
 % ===========================================================================
+% Hero figure: two side-by-side textual-gradient training runs (in-family
+% vs cross-family), feeding a shared cross-vendor replication panel, with the
+% head-to-head verdict at the bottom.
+% ===========================================================================
+\begin{figure*}[!t]
+\centering
+\begin{tikzpicture}[
+  >={Stealth[length=4pt, width=3.5pt]},
+  font=\footnotesize,
+  startbox/.style={
+    rectangle, draw=ncottealdk, line width=0.6pt, rounded corners=2pt,
+    fill=paleteal, text=ncottealdk,
+    minimum height=6mm, minimum width=42mm,
+    font=\footnotesize\bfseries, align=center, inner sep=2.5pt,
+  },
+  genbox/.style={
+    rectangle, draw=stdgrey, line width=0.5pt, rounded corners=1.5pt,
+    fill=paleslate, text=black,
+    minimum height=5.5mm, minimum width=44mm,
+    font=\scriptsize, align=center, inner sep=2pt,
+  },
+  judgeinfam/.style={
+    rectangle, draw=stdgrey, line width=0.5pt, rounded corners=1.5pt,
+    fill=paleslate, text=black,
+    minimum height=5.5mm, minimum width=44mm,
+    font=\scriptsize, align=center, inner sep=2pt,
+  },
+  judgecross/.style={
+    rectangle, draw=vendorblue, line width=0.5pt, rounded corners=1.5pt,
+    fill=paleblue, text=vendorblue,
+    minimum height=5.5mm, minimum width=44mm,
+    font=\scriptsize, align=center, inner sep=2pt,
+  },
+  loop/.style={
+    rectangle, draw=ncotteal!70, fill=paleteal, text=ncottealdk,
+    line width=0.4pt, rounded corners=1.5pt,
+    minimum height=6mm, minimum width=38mm,
+    font=\scriptsize, align=center, inner sep=2pt,
+  },
+  outbox/.style={
+    rectangle, draw=ncotteal, line width=0.8pt, rounded corners=2pt,
+    fill=ncotteal, text=white,
+    minimum height=7mm, minimum width=44mm,
+    font=\footnotesize\bfseries, align=center, inner sep=3pt,
+  },
+  evalbox/.style={
+    rectangle, draw=vendorsienna, line width=0.6pt, rounded corners=2pt,
+    fill=paleplum, text=vendorsienna,
+    minimum height=12mm, minimum width=96mm,
+    font=\scriptsize, align=center, inner sep=4pt,
+  },
+  verdictbox/.style={
+    rectangle, draw=ncottealdk, line width=0.8pt, rounded corners=2pt,
+    fill=ncotteal!12, text=ncottealdk,
+    minimum height=18mm, minimum width=160mm,
+    font=\scriptsize, align=center, inner sep=5pt,
+  },
+  arr/.style={->, line width=0.45pt, color=black!55},
+  arrloop/.style={->, line width=0.5pt, color=ncottealdk!75, densely dashed},
+  arrcross/.style={->, line width=0.5pt, color=vendorblue},
+  panelhead/.style={font=\small\bfseries, align=center},
+  panelsub/.style={font=\scriptsize\itshape, align=center, text=black!55, inner sep=1pt},
+]
+
+% Shared hand-designed starting prompt
+\node[startbox] (v1) at (0, 4.6) {Hand-designed NoT-v1 (parent paper, 820 chars)};
+
+% --- Left panel: in-family training ---
+\begin{scope}[shift={(-4.4, 0)}]
+  \node[panelhead, text=black!70] at (0, 3.3) {Run A: in-family training};
+  \node[panelsub] at (0, 2.9) {generator and training judge from same vendor};
+
+  \node[genbox]     (gA) at (0, 2.0) {generator: \texttt{claude-haiku-4-5}};
+  \node[judgeinfam] (jA) at (0, 0.7) {training judge: \texttt{claude-haiku-4-5}};
+  \node[loop]       (lA) at (0,-0.7) {gradient $+$ rewrite\\(\texttt{claude-sonnet-4-6})};
+
+  \draw[arr]     (gA.south) -- node[right=1pt, font=\tiny, text=black!55] {outputs} (jA.north);
+  \draw[arrloop] (jA.south) -- node[right=1pt, font=\tiny, text=ncottealdk!85] {loss $+$ textual gradient} (lA.north);
+  \draw[arrloop, bend right=80, looseness=1.6] (lA.west) to (gA.west);
+
+  \node[outbox] (oA) at (0,-2.1) {NoT-v2\;\;(2,579 chars, iter 4)};
+  \draw[arr, line width=0.5pt] (lA.south) -- node[right=1pt, font=\tiny, text=black!55] {early-stop} (oA.north);
+\end{scope}
+
+% --- Right panel: cross-family training ---
+\begin{scope}[shift={(4.4, 0)}]
+  \node[panelhead, text=vendorblue] at (0, 3.3) {Run B: cross-family training};
+  \node[panelsub] at (0, 2.9) {training judge from different vendor than generator};
+
+  \node[genbox]     (gB) at (0, 2.0) {generator: \texttt{claude-haiku-4-5}};
+  \node[judgecross] (jB) at (0, 0.7) {training judge: \texttt{grok-4-1-fast-reasoning}};
+  \node[loop]       (lB) at (0,-0.7) {gradient $+$ rewrite\\(\texttt{claude-sonnet-4-6})};
+
+  \draw[arr]      (gB.south) -- node[left=1pt, font=\tiny, text=black!55] {outputs} (jB.north);
+  \draw[arrcross] (jB.south) -- node[left=1pt, font=\tiny, text=vendorblue] {loss $+$ textual gradient} (lB.north);
+  \draw[arrcross, bend left=80, looseness=1.6] (lB.east) to (gB.east);
+
+  \node[outbox] (oB) at (0,-2.1) {NoT-v3\;\;(2,401 chars, iter 7)};
+  \draw[arr, line width=0.5pt] (lB.south) -- node[left=1pt, font=\tiny, text=black!55] {early-stop} (oB.north);
+\end{scope}
+
+% v1 splits left/right to initialise both runs
+\draw[arr] (v1.south) -| node[pos=0.92, left=1pt, font=\tiny, text=black!55] {initialise}
+           (-4.4, 3.6);
+\draw[arr] (v1.south) -| node[pos=0.92, right=1pt, font=\tiny, text=black!55] {initialise}
+           ( 4.4, 3.6);
+
+% --- Shared replication panel ---
+\node[evalbox] (ev) at (0,-3.9) {
+  Cross-vendor adversarial replication:
+  $4$ generators (\texttt{nano}, \texttt{haiku}, \texttt{grok}, \texttt{sonnet}) $\times$ $100$ DailyDilemmas scenarios.\\
+  Primary judge \texttt{claude-haiku-4-5} (parent paper) $+$ third judge \texttt{grok-4-1-fast-reasoning} (cross-vendor).
+};
+
+\draw[arr] (-4.4,-2.5) |- (ev.west);
+\draw[arr] ( 4.4,-2.5) |- (ev.east);
+
+% --- Verdict / head-to-head box ---
+\node[verdictbox] (vd) at (0,-5.9) {%
+  \begin{tabular}{@{}r@{\;\;}|@{\;\;}cccc@{}}
+  \textbf{NoT-v3 dominates NoT-v2 on every measured axis} &
+  $\delta_{\mathrm{sc}}$ (haiku) & length (haiku) & length (sonnet) & primary--third gap (haiku) \\
+  \midrule
+  \emph{v2 $\to$ v3} & $-0.57 \to -0.73$ & $1.37\times \to 0.78\times$ & $1.15\times \to 0.64\times$ & $+0.80 \to +0.46$ \\
+  \end{tabular}
+};
+
+\draw[arr] (ev.south) -- (vd.north);
+
+\end{tikzpicture}
+\caption{Two textual-gradient training runs that differ only in the choice of training judge.
+\textbf{Run A (in-family)} uses \texttt{claude-haiku-4-5} as both generator and training judge---the same vendor that the parent paper's primary judge later uses on the four-generator panel---and produces \textbf{NoT-v2}.
+\textbf{Run B (cross-family)} uses \texttt{grok-4-1-fast-reasoning} (a different vendor) as the training judge and produces \textbf{NoT-v3}.
+Optimiser model, dataset, training split, loss, and early-stopping criteria are identical across the two runs.
+Both prompts are then replicated against the same four-generator $\times$ $100$-scenario panel, each cell scored by both the parent paper's primary judge and an adversarial cross-vendor third judge.
+NoT-v3 dominates NoT-v2 on every measured axis (bottom row): equal-or-larger Cliff's $\delta$ improvements on three of four generators, shorter outputs on every generator, and a reduced in-family primary--third stakeholder-count gap on the in-family generator.}
+\label{fig:hero}
+\end{figure*}
+
+% ===========================================================================
 \section{Introduction}
 \label{sec:intro}
 
@@ -60,6 +218,7 @@ This paper asks two questions about that hand-designed prompt:
 We apply textual-gradient descent \citep{yuksekgonul2024textgrad}---LLM-written diagnoses of batch failures and prompt rewrites---initialised at the hand-written NoT prompt with a continuous deliberative-depth loss.
 We run the optimisation loop twice with everything held identical except the training judge: once with an in-family training judge (\texttt{claude-haiku-4-5}, same vendor as the training generator) and once with a cross-family training judge (\texttt{grok-4-1-fast-reasoning}, different vendor).
 We then replicate both optimised prompts across the parent paper's full four-generator panel, each scored by the original in-family primary judge and an adversarial cross-vendor third judge.
+Figure~\ref{fig:hero} summarises this two-run design and the head-to-head verdict.
 
 We find that both optimised prompts improve stakeholder coverage over NoT-v1 on three of four generators by large Cliff's $\delta$ (medium-to-large effect sizes), but the cross-family-trained prompt (NoT-v3) is strictly better than the in-family-trained prompt (NoT-v2) on every measured axis: larger raw effect sizes on three of four generators, length-residualised effects preserved, shorter outputs on every generator, no regression on the fourth generator, and a small in-family judge-generosity gap visible under v2 on the in-family generator that inverts sign under v3.
 On the only generator where the third judge gives non-degenerate binary agreement scores (\texttt{grok}, where binary failure marginals are non-zero), inter-judge $\kappa$ rises from $0.57$ and $0.73$ under v2 to $0.75$ and $0.92$ under v3.
