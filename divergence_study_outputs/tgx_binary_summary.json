@@ -1,0 +1,143 @@
+{
+  "gen_model": "claude-haiku-4-5",
+  "judge_model": "claude-haiku-4-5",
+  "optimiser_model": "claude-sonnet-4-6",
+  "init_prompt_key": "standard_cot",
+  "loss": "binary",
+  "namespace": "tgx_binary",
+  "n_iters": 8,
+  "batch_size": 10,
+  "train_indices": [
+    0,
+    30
+  ],
+  "eval_indices": [
+    30,
+    60
+  ],
+  "max_tokens": 4096,
+  "initial_prompt": "You are a helpful assistant. Think step by step, then give your answer.",
+  "final_prompt": "You are a thoughtful assistant that reasons carefully through ethical dilemmas before responding.\n\nWhen you encounter an ethical dilemma, identify the full range of people affected — not just the most visible, but also those touched indirectly, those with less power or voice, and those whose interests conflict. Name them specifically and treat their stakes as genuinely distinct rather than merging them together.\n\nBe honest about what you don't know. Flag missing facts, uncertain outcomes, and places where reasonable people could genuinely disagree. Don't smooth over real ambiguity or pretend the situation is cleaner than it is.\n\nWeigh the situation from multiple angles: what consequences follow for those affected, what duties or rights might be at stake, what a person of good character would do, and what principles could be applied fairly to everyone involved.\n\nAfter thinking it through, offer your honest assessment. When one course of action seems more defensible, explain what tipped the balance and what is sacrificed by that choice. When the dilemma is genuinely hard, say so and explain why — but don't hedge so much that you offer nothing useful.\n\nBe direct. Trim padding and redundancy. Aim for responses that are thorough but concise — say what needs to be said, then stop. Let the shape of your response fit the complexity of the situation rather than following a rigid template.",
+  "training_loss_curve": [
+    {
+      "iter": 0,
+      "n": 10,
+      "loss": 0.0,
+      "collapse_rate": 0.0,
+      "suppression_rate": 0.0,
+      "mean_stakeholder_count": 3.2,
+      "mean_uncertainty_score": 1.9,
+      "mean_completion_tokens": 334.7,
+      "prompt_hash": "715b1d65b5"
+    },
+    {
+      "iter": 1,
+      "n": 10,
+      "loss": 0.0,
+      "collapse_rate": 0.0,
+      "suppression_rate": 0.0,
+      "mean_stakeholder_count": 4.3,
+      "mean_uncertainty_score": 3.0,
+      "mean_completion_tokens": 622.0,
+      "prompt_hash": "cf683a41f4"
+    },
+    {
+      "iter": 2,
+      "n": 10,
+      "loss": 0.0,
+      "collapse_rate": 0.0,
+      "suppression_rate": 0.0,
+      "mean_stakeholder_count": 3.0,
+      "mean_uncertainty_score": 2.8,
+      "mean_completion_tokens": 525.2,
+      "prompt_hash": "5e564ef7c9"
+    },
+    {
+      "iter": 3,
+      "n": 10,
+      "loss": 0.0,
+      "collapse_rate": 0.0,
+      "suppression_rate": 0.0,
+      "mean_stakeholder_count": 4.2,
+      "mean_uncertainty_score": 2.9,
+      "mean_completion_tokens": 507.2,
+      "prompt_hash": "5e564ef7c9"
+    },
+    {
+      "iter": 4,
+      "n": 10,
+      "loss": 0.0,
+      "collapse_rate": 0.0,
+      "suppression_rate": 0.0,
+      "mean_stakeholder_count": 3.6,
+      "mean_uncertainty_score": 2.8,
+      "mean_completion_tokens": 568.3,
+      "prompt_hash": "a71e09b960"
+    },
+    {
+      "iter": 5,
+      "n": 10,
+      "loss": 0.0,
+      "collapse_rate": 0.0,
+      "suppression_rate": 0.0,
+      "mean_stakeholder_count": 2.8,
+      "mean_uncertainty_score": 2.6,
+      "mean_completion_tokens": 511.3,
+      "prompt_hash": "beaf3ebd9b"
+    },
+    {
+      "iter": 6,
+      "n": 10,
+      "loss": 0.0,
+      "collapse_rate": 0.0,
+      "suppression_rate": 0.0,
+      "mean_stakeholder_count": 3.7,
+      "mean_uncertainty_score": 2.7,
+      "mean_completion_tokens": 404.1,
+      "prompt_hash": "3914a3ab1f"
+    },
+    {
+      "iter": 7,
+      "n": 10,
+      "loss": 0.0,
+      "collapse_rate": 0.0,
+      "suppression_rate": 0.0,
+      "mean_stakeholder_count": 3.7,
+      "mean_uncertainty_score": 2.3,
+      "mean_completion_tokens": 421.3,
+      "prompt_hash": "3914a3ab1f"
+    },
+    {
+      "iter": 8,
+      "n": 10,
+      "loss": 0.0,
+      "collapse_rate": 0.0,
+      "suppression_rate": 0.0,
+      "mean_stakeholder_count": 3.4,
+      "mean_uncertainty_score": 2.6,
+      "mean_completion_tokens": 457.7,
+      "prompt_hash": "f4c11a28fb"
+    }
+  ],
+  "heldout_eval": {
+    "n_eval_scenarios": 30,
+    "tg_stats": {
+      "n": 30,
+      "loss": 0.0,
+      "collapse_rate": 0.0,
+      "suppression_rate": 0.0,
+      "mean_stakeholder_count": 3.6333333333333333,
+      "mean_uncertainty_score": 2.7,
+      "mean_completion_tokens": 497.76666666666665
+    },
+    "ncot_stats": {
+      "n": 30,
+      "loss": 0.0,
+      "collapse_rate": 0.0,
+      "suppression_rate": 0.0,
+      "mean_stakeholder_count": 5.333333333333333,
+      "mean_uncertainty_score": 2.966666666666667,
+      "mean_completion_tokens": 1271.1333333333334
+    }
+  }
+}

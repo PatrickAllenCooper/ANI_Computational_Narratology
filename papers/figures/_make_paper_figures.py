@@ -161,20 +161,27 @@ def make_debate_arc_figure() -> None:
         linewidth=0.5,
         alpha=0.95,
     )
+    headline_bbox = dict(
+        boxstyle="round,pad=0.32",
+        facecolor="white",
+        edgecolor=LIGHT,
+        linewidth=0.5,
+        alpha=0.96,
+    )
     callouts = [
-        (0, 0.06, "6%", 0, 12, "center", "bottom", INK, None),
-        (1, 0.09, "9%", 0, 12, "center", "bottom", INK, None),
-        (2, 0.0, "0%", 0, 12, "center", "bottom", INK, None),
-        (2, 1.0, "100%", -8, 6, "right", "bottom", INK, None),
-        (3, 0.951, "95% full\n(90% nano, 100% gpt-4o)", -8, -6, "right", "top", INK, None),
-        (3, 1.0, "100% majority", -8, 6, "right", "bottom", MUTED, None),
+        (0, 0.06, "6%", 0, 12, "center", "bottom", INK, None, 7.8, "bold"),
+        (1, 0.09, "9%", 0, 12, "center", "bottom", INK, None, 7.8, "bold"),
+        (2, 0.0, "0%", 0, 12, "center", "bottom", INK, None, 7.8, "bold"),
+        (2, 1.0, "100% partial", -8, 6, "right", "bottom", INK, None, 7.8, "bold"),
+        (3, 0.951, "95% full consensus", -10, -6, "right", "top",
+            INK, headline_bbox, 9.0, "bold"),
         (
             2.55, 0.22,
             "synthesis pivot\nfull \u2192 0%   partial \u2192 100%",
-            0, 0, "center", "center", MUTED, pivot_bbox,
+            0, 0, "center", "center", MUTED, pivot_bbox, 7.4, "normal",
         ),
     ]
-    for xi, yi, text, dx, dy, ha, va, color, bbox in callouts:
+    for xi, yi, text, dx, dy, ha, va, color, bbox, fs, wt in callouts:
         ax.annotate(
             text,
             xy=(xi, yi),
@@ -182,9 +189,9 @@ def make_debate_arc_figure() -> None:
             textcoords="offset points",
             ha=ha,
             va=va,
-            fontsize=7.8 if color is INK else 7.4,
+            fontsize=fs,
             color=color,
-            weight="bold" if color is INK else "normal",
+            weight=wt,
             bbox=bbox,
             zorder=5,
         )

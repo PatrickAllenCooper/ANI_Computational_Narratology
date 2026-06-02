@@ -59,6 +59,7 @@ The parent ARR submission of this work introduces Narration-of-Thought (NoT), a 
 We ask whether NoT is at or near a local optimum by applying textual-gradient descent (TextGrad) initialised at NoT under a continuous deliberative-depth loss, and run two configurations of the optimisation loop that differ only in their training judge: one in-family (training judge same vendor as training generator) and one cross-family.
 Replicated against the parent paper's full four-generator panel and an adversarial cross-vendor third judge, both optimised prompts improve over the hand design on three of four generators, but the cross-family-trained prompt (NoT-v3) is strictly better than the in-family-trained prompt (NoT-v2) on every measured axis: Cliff's $\delta$ effect sizes on stakeholder count are larger or equal on all four generators, max causal hops is preserved or improved on more generators, output length is shorter ($0.59$--$0.95\times$ versus $0.82$--$1.37\times$), and the small in-family judge-generosity gap visible on the haiku generator under v2 ($0.19$ stakeholders) inverts in v3.
 The takeaway: hand-designed deliberative scaffolds can be improved by textual-gradient descent, but the choice of training judge controls both the size and the cross-vendor reliability of the improvement; cross-family training is the dominant configuration on every axis we measured.
+As a control on the premise that NoT is worth optimising at all, we also run the optimiser in the opposite direction---starting from a plain standard CoT and descending on the same deliberative-depth loss---and find that even the best resulting prompt does not recover NoT: it trails NoT on stakeholder coverage at the single-agent layer (Cliff's $\delta$ up to $+0.78$) and, dropped into the five-round multi-stakeholder protocol, reaches $20$ percentage points less full consensus (Fisher $p = 0.041$) while deadlocking four times more often. Optimising CoT is no substitute for the NoT scaffold; it is better spent improving it.
 \end{abstract}
 
 % ===========================================================================
@@ -514,6 +515,59 @@ The cross-family-training recommendation is independent of the loss and should t
 We do not have data outside the deliberative-reasoning domain.
 
 % ===========================================================================
+\section{Control: Can an Optimised CoT Replace NoT?}
+\label{sec:cot_control}
+
+The experiment above optimises \emph{from} NoT.
+A reader may reasonably ask the prior question: is the NoT scaffold itself worth keeping, or would textual-gradient descent reach the same place starting from a plain standard chain-of-thought?
+We answer this with a head-to-head control that runs the optimiser in the opposite direction---initialised at the parent paper's \texttt{standard\_cot} prompt and descending on the same loss (Equation~\ref{eq:loss})---and then pits the best optimised CoT against hand-written NoT at both the single-agent and the multi-stakeholder layers.
+
+\paragraph{Setup.}
+We optimise \texttt{standard\_cot} on \texttt{claude-haiku-4-5} (which, unlike \texttt{gpt-5.4-nano}, retains failure-mode signal) under both the binary failure-mode loss and the continuous loss of Equation~\ref{eq:loss}, training on seed-42 indices $0$--$29$ and carrying forward whichever optimised prompt scores higher on held-out depth.
+All comparisons use the held-out scenarios (seed-42 indices $30$--$59$), disjoint from training.
+At the single-agent layer, four conditions (NoT, the two optimised CoTs, and verbatim standard CoT) are generated on two generators (\texttt{claude-haiku-4-5}, \texttt{gpt-5.4-nano}) and coded by a cross-vendor judge pair (\texttt{claude-haiku-4-5} primary, \texttt{gpt-5.4-nano} secondary).
+At the multi-stakeholder layer we hold the parent paper's five-round integration protocol and the moderator (\texttt{claude-sonnet-4-6}) fixed and vary only the agent prompt across three arms (NoT, best optimised CoT, plain standard CoT), $n = 60$ debates per arm.
+Cliff's $\delta$ is signed so that positive favours NoT.
+
+\paragraph{Single-agent: NoT leads the best optimised CoT.}
+Even after optimisation, standard CoT does not reach NoT's stakeholder coverage.
+Against the strongest optimised prompt, NoT retains Cliff's $\delta = +0.78$ ($95\%$ CI $[+0.63, +0.91]$) on stakeholder count on \texttt{haiku} and $+0.07$ ($[-0.21, +0.34]$) on \texttt{nano}, and $+0.23$ / $+0.54$ on uncertainty score (both CIs above $0$).
+The optimised CoT closes the stakeholder-count gap on \texttt{nano} but never the uncertainty gap, at $2$--$5\times$ fewer tokens---it recovers breadth on the easier generator but not the explicit-uncertainty habit that NoT enforces by construction.
+
+\paragraph{Multi-stakeholder: NoT dominates the optimised CoT.}
+Table~\ref{tab:cot_debate} reports the three-arm consensus result.
+NoT reaches full $R4$ consensus on $52\%$ of held-out scenarios versus $32\%$ for the best optimised CoT (a $+20$pp gap, Fisher exact $p = 0.041$, two-proportion $z$ $p = 0.026$) and leaves roughly four times fewer debates in unresolved structural rejection ($8\%$ vs $35\%$).
+Strikingly, optimising a CoT prompt for single-agent stakeholder breadth---the very axis the optimiser targets---\emph{degrades} its behaviour once it is placed in the social protocol: the optimised-CoT arm is the worst of the three on consensus and the most deadlocked.
+
+\paragraph{Honest caveat.}
+A plain, unoptimised standard CoT reaches the \emph{highest} raw consensus of the three arms ($63\%$, above NoT's $52\%$).
+Our multi-stakeholder claim is therefore the specific one that NoT dominates the \emph{optimised} CoT baseline, not that NoT maximises raw agreement.
+Higher raw consensus is not self-evidently better---the parent paper values agreement that survives genuine stakeholder tension rather than agreement reached by collapsing it.
+
+\paragraph{Where rejections land.}
+Coding every per-perspective $R4$ vote (a cached judge over each debater's final verdict) reframes the standard-CoT caveat as evidence for NoT.
+NoT's $R4$ rejections are both rare and role-appropriate: of the $5$ per-perspective rejections across $126$ NoT votes, $60\%$ come from the External Advisor---the role explicitly charged with flagging principle violations---and only $20\%$ from the Primary Decision Maker meant to drive toward a workable decision.
+The optimised CoT instead scatters $38$ rejections near-uniformly across roles (normalised role entropy $0.98$ vs.\ NoT's $0.86$), with the decider \emph{itself} the modal rejector ($42\%$): the role responsible for convergence most often blocks the synthesis it helped construct.
+NoT thus disagrees roughly $7\times$ less often than the optimised CoT, and its dissent concentrates where principled objection belongs rather than scattering.
+(NoT's narrative style left $12$ of $126$ verdicts without a clean binary token; these are counted conservatively as non-rejections, and NoT's $n = 5$ rejections make the share suggestive rather than a tight estimate.)
+The defensible conclusion here is narrow and clean: textual-gradient descent applied to a flat CoT does not reconstruct NoT at either layer, which is why the rest of this paper optimises \emph{from} NoT rather than toward it.
+
+\begin{table}[t]
+\centering\small
+\begin{tabular}{lrrr}
+\toprule
+Arm & $R4$ consensus & $95\%$ CI & struct.\ reject \\
+\midrule
+NoT             & $52\%$ & $[39, 64]$ & $8\%$  \\
+optimised CoT   & $32\%$ & $[21, 44]$ & $35\%$ \\
+standard CoT    & $63\%$ & $[51, 74]$ & $17\%$ \\
+\bottomrule
+\end{tabular}
+\caption{Multi-stakeholder head-to-head on $30$ held-out DailyDilemmas scenarios ($2$ generators, moderator \texttt{claude-sonnet-4-6}, $n = 60$ debates per arm; only the agent prompt varies). NoT vs.\ optimised CoT: $+20$pp on full $R4$ consensus (Wilson CIs shown), Fisher exact $p = 0.041$, and four times less unresolved structural rejection. Plain standard CoT reaches the highest raw consensus (caveat in text).}
+\label{tab:cot_debate}
+\end{table}
+
+% ===========================================================================
 \section*{Limitations}
 \label{sec:limitations}
 
@@ -553,6 +607,11 @@ The continuous-metric agreement analysis in Section~\ref{sec:cross_vendor} was a
 \textbf{Action-commitment unanalysed.}
 The parent paper's decision-extraction rubric was applied per cell during replication but is not analysed here.
 Whether NoT-v3 changes the model's final action commitment is open.
+
+\textbf{CoT-control scope.}
+The optimised-CoT control (Section~\ref{sec:cot_control}) uses a narrower panel than the main replication---two generators (\texttt{claude-haiku-4-5}, \texttt{gpt-5.4-nano}) and the held-out $30$-scenario split.
+Its role-concentration finding rests on NoT's $n = 5$ per-perspective $R4$ rejections, so the modal-role share is directionally clear but statistically thin, and $12$ NoT verdicts lacked a clean binary token (counted as non-rejections).
+We also define ``materially undermined'' indirectly via the rejecting role rather than via the integrator's unaddressed-modification list, which was empty in almost every debate and so could not discriminate the arms.
 
 % ===========================================================================
 \bibliography{references}

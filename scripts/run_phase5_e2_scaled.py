@@ -150,6 +150,18 @@ def _call_mod(model: str, system: str, user: str, seed: int,
 
 NCOT_SYSTEM = PROMPTS["narrative_cot"]
 
+# Reasoning-style prompt driving every agent-authored turn (R0, R1, R2, R4).
+# Defaults to N-CoT (Experiment 2 behaviour); Phase 11 sets it to standard CoT or
+# a TextGrad-optimised prompt via --agent-prompt / --agent-prompt-file so the only
+# thing varying between head-to-head arms is the agent reasoning style. The
+# moderator turns and the R3 synthesis-acceptance framing stay protocol-fixed.
+AGENT_SYSTEM = NCOT_SYSTEM
+
+# Cache/arm namespace. Empty string reproduces the original e2_* cache names so
+# the prior Experiment 2 run is untouched; Phase 11 sets it ("not"/"tgcot"/"stdcot")
+# so each arm's caches never collide.
+ARM_TAG = ""
+
 # Three generic deliberation perspectives; each gets scenario-specific framing
 PERSPECTIVE_ROLES = [
     {
@@ -344,12 +356,16 @@ R2_USER = (
 # Cache helpers
 # ---------------------------------------------------------------------------
 
+def _arm_prefix() -> str:
+    return f"{_safe(ARM_TAG)}_" if ARM_TAG else ""
+
+
 def _cache_e2(tag: str, model: str, sid: str, pid: str, idx: int) -> Path:
-    return OUT_DIR / f"e2_{tag}_{_safe(model)}_{sid}_{pid}_{idx:03d}.json"
+    return OUT_DIR / f"e2_{_arm_prefix()}{tag}_{_safe(model)}_{sid}_{pid}_{idx:03d}.json"
 
 
 def _cache_mod_e2(tag: str, model: str, sid: str, idx: int) -> Path:
-    return OUT_DIR / f"e2_{tag}_{_safe(model)}_{sid}_{idx:03d}.json"
+    return OUT_DIR / f"e2_{_arm_prefix()}{tag}_{_safe(model)}_{sid}_{idx:03d}.json"
 
 
 # ---------------------------------------------------------------------------
@@ -369,7 +385,7 @@ def gen_r0(scenario: DD_Scenario, pid: str, idx: int,
         scenario=scenario.prompt,
         perspective_description=role["framing"],
     )
-    text = _call_gen(gen_model, NCOT_SYSTEM, user, seed=idx)
+    text = _call_gen(gen_model, AGENT_SYSTEM, user, seed=idx)
     rec = {"scenario_id": scenario.id, "pid": pid, "idx": idx,
            "model": gen_model, "round": "r0", "output": text}
     cache.write_text(json.dumps(rec, ensure_ascii=False))
@@ -396,7 +412,7 @@ def gen_r1(scenario: DD_Scenario, pid: str, idx: int,
         own_r0=own_r0,
         other_r0=others,
     )
-    text = _call_gen(gen_model, NCOT_SYSTEM, user, seed=idx + 1000)
+    text = _call_gen(gen_model, AGENT_SYSTEM, user, seed=idx + 1000)
     rec = {"scenario_id": scenario.id, "pid": pid, "idx": idx,
            "model": gen_model, "round": "r1", "output": text}
     cache.write_text(json.dumps(rec, ensure_ascii=False))
@@ -425,7 +441,7 @@ def gen_r2(scenario: DD_Scenario, pid: str, idx: int,
         own_r1=own_r1,
         other_r1=others_r1,
     )
-    text = _call_gen(gen_model, NCOT_SYSTEM, user, seed=idx + 3000)
+    text = _call_gen(gen_model, AGENT_SYSTEM, user, seed=idx + 3000)
     rec = {"scenario_id": scenario.id, "pid": pid, "idx": idx,
            "model": gen_model, "round": "r2", "output": text}
     cache.write_text(json.dumps(rec, ensure_ascii=False))
@@ -622,7 +638,7 @@ def gen_r4(scenario: DD_Scenario, pid: str, idx: int,
         integrated_description=integ_desc,
         integration_rationale=integ_rationale,
     )
-    text = _call_gen(gen_model, NCOT_SYSTEM, user, seed=idx + 5000, max_tokens=2000)
+    text = _call_gen(gen_model, AGENT_SYSTEM, user, seed=idx + 5000, max_tokens=2000)
     rec = {"scenario_id": scenario.id, "pid": pid, "idx": idx,
            "model": gen_model, "round": "r4", "output": text}
     cache.write_text(json.dumps(rec, ensure_ascii=False))
@@ -685,6 +701,7 @@ def run_scenario_sample(
     result_base = {
         "generator": gen_model,
         "moderator": mod_model,
+        "arm": ARM_TAG or "ncot_default",
         "scenario_id": scenario.id,
         "sample_idx": idx,
         "r2_consensus_reached": False,
@@ -818,8 +835,24 @@ def run_scenario_sample(
 # Main
 # ---------------------------------------------------------------------------
 
+def _resolve_agent_prompt(args) -> str:
+    """Pick the agent reasoning-style prompt for Rounds 0-2/R4 of every arm."""
+    if args.agent_prompt == "narrative_cot":
+        return PROMPTS["narrative_cot"]
+    if args.agent_prompt == "standard_cot":
+        return PROMPTS["standard_cot"]
+    # custom: load "final_prompt" from a TextGrad summary JSON
+    if not args.agent_prompt_file:
+        raise SystemExit("--agent-prompt custom requires --agent-prompt-file PATH")
+    data = json.loads(Path(args.agent_prompt_file).read_text())
+    prompt = data.get("final_prompt")
+    if not prompt:
+        raise SystemExit(f"no 'final_prompt' field in {args.agent_prompt_file}")
+    return prompt
+
+
 def main(argv: list[str] | None = None) -> int:
-    global _total_cost_usd
+    global _total_cost_usd, AGENT_SYSTEM, ARM_TAG
 
     parser = argparse.ArgumentParser(description="E2: Scaled multi-agent debate on DailyDilemmas")
     parser.add_argument("--scenarios", type=int, default=30,
@@ -834,27 +867,53 @@ def main(argv: list[str] | None = None) -> int:
                         help="Concurrent threads (keep low for Anthropic rate limits)")
     parser.add_argument("--budget-cap-usd", type=float, default=110.0,
                         help="Hard budget cap in USD; run pauses if exceeded")
+    # Phase 11 head-to-head parametrisation
+    parser.add_argument("--agent-prompt", default="narrative_cot",
+                        choices=["narrative_cot", "standard_cot", "custom"],
+                        help="Reasoning-style prompt for agent turns (R0-R2, R4)")
+    parser.add_argument("--agent-prompt-file", default=None,
+                        help="TextGrad summary JSON whose 'final_prompt' is used when "
+                             "--agent-prompt custom")
+    parser.add_argument("--arm-tag", default="",
+                        help="Cache/arm namespace so arms never collide (e.g. not/tgcot/stdcot)")
+    parser.add_argument("--scenario-mode", default="seed43",
+                        choices=["seed43", "heldout"],
+                        help="seed43: legacy shuffle subsample; heldout: seed-42 slice "
+                             "[eval-start:eval-end] (Phase 11 uses heldout 30-60)")
+    parser.add_argument("--eval-start", type=int, default=30)
+    parser.add_argument("--eval-end", type=int, default=60)
+    parser.add_argument("--out-csv", default="debate_dd_scaled.csv",
+                        help="Output CSV filename under divergence_study_outputs/")
     args = parser.parse_args(argv)
 
     generators = [g.strip() for g in args.generators.split(",") if g.strip()]
     mod_model = args.moderator
 
+    AGENT_SYSTEM = _resolve_agent_prompt(args)
+    ARM_TAG = args.arm_tag
+
     print(f"E2 scaled debate: {args.scenarios} scenarios x {len(generators)} generators x "
           f"{args.samples} samples")
     print(f"Generators: {generators}")
     print(f"Moderator: {mod_model}")
+    print(f"Agent prompt: {args.agent_prompt} ({len(AGENT_SYSTEM)} chars) | arm-tag='{ARM_TAG}'")
     print(f"Budget cap: ${args.budget_cap_usd}")
     print(f"Workers: {args.workers}")
 
     print("Loading DailyDilemmas 100-scenario pool...")
     all_scenarios = load_daily_dilemmas(100)
 
-    # Subsample: shuffle with E2_SAMPLE_SEED, take first --scenarios
-    rng = random.Random(E2_SAMPLE_SEED)
-    shuffled = list(all_scenarios)
-    rng.shuffle(shuffled)
-    scenarios = shuffled[:args.scenarios]
-    print(f"  Selected {len(scenarios)} scenarios (seed={E2_SAMPLE_SEED})")
+    if args.scenario_mode == "heldout":
+        scenarios = all_scenarios[args.eval_start:args.eval_end]
+        print(f"  Selected {len(scenarios)} held-out scenarios "
+              f"(seed-42 indices {args.eval_start}-{args.eval_end - 1})")
+    else:
+        # Subsample: shuffle with E2_SAMPLE_SEED, take first --scenarios
+        rng = random.Random(E2_SAMPLE_SEED)
+        shuffled = list(all_scenarios)
+        rng.shuffle(shuffled)
+        scenarios = shuffled[:args.scenarios]
+        print(f"  Selected {len(scenarios)} scenarios (seed={E2_SAMPLE_SEED})")
 
     tasks = [
         (scenario, idx, gen_model)
@@ -897,7 +956,7 @@ def main(argv: list[str] | None = None) -> int:
                 print(f"  ERROR {key_t}: {e}", flush=True)
 
     # --- Write checkpoint CSV ---
-    out_csv = OUT_DIR / "debate_dd_scaled.csv"
+    out_csv = OUT_DIR / args.out_csv
     if all_rows:
         fieldnames = sorted(set().union(*[r.keys() for r in all_rows]))
         with out_csv.open("w", newline="", encoding="utf-8") as f:

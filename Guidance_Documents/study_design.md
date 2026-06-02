@@ -548,6 +548,208 @@ deferred (see `tier3_preregistration.md` for Tier-3 rationale).
   - **E7 (SCM-level convergent proxies: graph MDL + structural entropy):** COMPLETED at zero API cost from E6 extracted graphs. Graph MDL (log2(n_nodes+1)+log2(n_edges+1) / log2(len+1)): pooled rho=-0.32 (p<0.001, 95% CI [-0.38, -0.26]). Structural entropy (Shannon entropy of out-degree distribution): pooled rho=+0.27 (p<0.001, 95% CI [0.21, 0.33]). Negative MDL sign reflects N-CoT embeds more causal structure per proportionally longer text, reducing per-token MDL. All three SCM-level proxies (kc_graph_score, graph MDL, structural entropy) significant at p<0.001; convergent validation confirmed. Appendix C.2 updated with full per-generator table and E7 results.
   - **Paper updates from E5-E7:** Limitations section rewritten to report refusal modulation as a measured per-model result (replacing scope boundary). Section 6 K_C paragraph updated with scaled pooled rho=0.42. Appendix C.2 expanded with E6 per-generator table and E7 convergent proxies. New Appendix E (Refusal Modulation) added with per-cell table and classifier-limitation note. References rottger23 (XSTest) and vidgen24 (SimpleSafetyTests / MLCommons safety benchmark) added to references.bib.
 
+- v1.7 -- Advisor clarity polish (2026-05-25). One-pass clarity sweep over `papers/ACL_paper.tex` addressing every advisor comment except the deferred TextGrad experimental suggestion. Inline definitions added on first use for stakeholder collapse, uncertainty suppression, stakeholder count, uncertainty score, and defeasibility. Global replace `quartet` -> `four-model panel` / `panel-level` throughout. Load-bearing uses of `structural` (rejection, shift, separation, non-revisable, non-negotiable, interpretable) replaced with plain-English equivalents (`rejections the moderator cannot absorb`, `shift in the coded metrics`, `gap between the two conditions on the coded metrics`, etc.); `structural-causal model` and `structural entropy` retained as precisely-defined technical terms. Integrated-proposal vote mechanic expanded in Methods Section 3.2 so the binary-vote-on-moderator-built-proposal flow is unambiguous; abstract rewritten to two short declarative sentences for the closing claim. N-CoT framing clarified as "a system prompt that constrains the model's chain-of-thought to five narrative sections" (not a competing alternative to CoT). Conclusion rewritten as compact declarative prose. Algorithm 1 line 8: `\Vert` (renders as `||`) replaced with `\oplus` (explicit concatenation operator) with caption gloss. Figure 4 caption updated to `sub-instruction 2 / sub-instruction 4 of the N-CoT prompt`. Figure 2 caption gained a sentence clarifying that the N-CoT text is the model's verbatim completion under the N-CoT system prompt. Missing commas added (`N-CoT, respectively`; `Here, $N$ is`). Em-dash check passed. Page-limit verification: main content (Sections 1-7) fits cleanly on pages 1-8; Limitations / Ethics Statement / References on page 9+, per ARR rules.
+
+- **Advisor-suggested future work (deferred to journal version / resubmission):** TextGrad / narrative-gradient automatic prompt optimisation comparison against N-CoT with the explicit objective of minimising stakeholder collapse and uncertainty suppression. Cited as out-of-scope for this submission by the advisor; tracked here so the comparison is not lost on the next revision cycle. **Status as of v1.8: pilot version executed; see v1.8 entry below.**
+
+- **Naming decision (2026-05-25, recorded for future revisions, do not reopen):** the project method is named **Narrative Chain-of-Thought (N-CoT)** and the X-of-Thought convention rename (Narrative-of-Thought / NoT) is rejected. Rationale: Zhang, Beauchamp and Wang ([arXiv:2410.05558](https://arxiv.org/abs/2410.05558), Findings of EMNLP 2024) already published *Narrative-of-Thought (NoT)* as a temporal-reasoning prompting technique that converts an event set into a Python class, generates a temporally-grounded narrative, and sorts events topologically into a temporal graph. The phrase and abbreviation are theirs in the NLP literature. Adopting the name would create a direct collision with no novel content (their method and ours share only the word "narrative"). Separately, *Narrative Chain-of-Thought* is more semantically accurate for our method than *Narrative-of-Thought*: ToT/GoT/VoT all denote structures that are explicitly NOT chains (trees, graphs, visualisations), whereas N-CoT IS a chain --- a chain whose sections are constrained to five narrative roles. The `Chain-of-Thought` suffix correctly signals that the method is a structured CoT variant, which is the framing the paper uses ("a system prompt that constrains the model's chain-of-thought to five narrative sections"). Decision logged here; no in-text citation of Zhang et al. 2024 is added in the present submission, on the judgement that a careful reader will see N-CoT and NoT as obviously different names; a future revision may add a one-sentence distinguishing footnote if reviewers raise the lexical proximity.
+
+## Phase 10 Narrative-Gradients: Pre-Registered Plan (deferred to next revision cycle)
+
+Pre-registered here before any runs are executed. Mirrors the format of the
+Phase 6 pre-registration block below.
+
+**Origin.** Second of the two experimental suggestions in the 2026-05-25
+advisor email (`Guidance_Documents/study_design.md` v1.8 entry quotes the
+full passage). The first suggestion (TextGrad on standard CoT against the
+failure-mode loss) was implemented as Phase 9 / Appendix G. This block
+plans the second suggestion: *"combine TextGrad and N-CoT to get narrative
+gradients (automatic narrative prompt optimisation)."* Status: **not run
+for the current ARR submission**; planned for the next revision cycle or
+journal version.
+
+**Headline question.** When textual-gradient descent is initialised at the
+hand-written N-CoT prompt and pushed against a loss that rewards
+stakeholder coverage and uncertainty acknowledgement, does the optimiser
+(a) converge on a prompt that matches hand-written N-CoT (validating the
+hand-design as near-optimal in its prompt class), (b) discover an improved
+prompt that outperforms hand-written N-CoT, or (c) degrade N-CoT?
+
+**Pre-registered hypotheses.**
+- *H1 (primary, weak):* Held-out Cliff's $\delta$ for hand-written N-CoT
+  vs. narrative-gradient-optimised N-CoT lies in $[-0.1, +0.1]$ on
+  stakeholder count and uncertainty score (the hand-design is at or near
+  a local optimum for the loss).
+- *H2 (secondary, directional):* If the optimised prompt outperforms
+  hand-written N-CoT on any continuous coded metric, the improvement
+  comes paired with longer trace length (the optimiser trades token cost
+  for marginal structural depth).
+- *H3 (mechanism check):* The optimised prompt retains the
+  Stakeholders sub-instruction (Section 2 of the N-CoT prompt) and the
+  Uncertainty sub-instruction (Section 4); these are the carriers of the
+  two failure-mode-targeted metrics as established by the Phase 2 ablation.
+
+**Design.**
+- *Generators.* Pilot tier: `claude-haiku-4-5` only (cheap;
+  retains $20$--$25\%$ uncertainty suppression under hand-written N-CoT
+  per Experiment 1, so the loss has signal above the binary floor unlike
+  the Phase 9 `gpt-5.4-nano` cell). Full tier: four-model panel
+  (`gpt-5.4-nano`, `claude-haiku-4-5`, `grok-4-1-fast-reasoning`,
+  `claude-sonnet-4-6`) for the journal version.
+- *Optimiser model.* `claude-sonnet-4-6` (same as Phase 9; the gradient-quality
+  bottleneck).
+- *Primary judge.* `claude-haiku-4-5` (Experiment 1 primary).
+- *Held-out third judge.* `grok-4-1-fast-reasoning` on the final
+  optimised prompt only (mirrors the Phase 1 inter-judge agreement design;
+  guards against the optimiser exploiting `claude-haiku-4-5`'s coding biases).
+- *Initial prompt.* Verbatim Phase 1 N-CoT prompt (`PROMPTS["narrative_cot"]`
+  in `scripts/run_phase1_quartet.py`).
+- *Train set.* $30$ DailyDilemmas scenarios at seed 43 (the existing
+  calibration subset used by Phase 2; deliberately different from
+  Phase 9's training subset of seed-42 indices $0$--$29$ to avoid the
+  optimiser collapsing the loss the same way Phase 9 did).
+- *Held-out eval set.* $30$ DailyDilemmas scenarios at seed-42
+  indices $30$--$59$ (identical to Phase 9 eval; enables cross-phase
+  comparison of Phase 9's optimised standard-CoT prompt against
+  Phase 10's optimised N-CoT prompt on a shared scenario set).
+- *Iterations.* $10$ steps (twice Phase 9; N-CoT is closer to a local
+  optimum so steeper descent is unlikely and more iterations are needed
+  to either confirm convergence or find improvement). Batch size $10$
+  scenarios per step. Early-stop if three consecutive iterations show
+  $<5\%$ loss reduction.
+- *Loss function (continuous, gradient-friendly above binary floor):*
+  $L = \max(0, 4 - \text{stakeholder\_count}) + \max(0, 2 - \text{uncertainty\_score})$.
+  Rationale: binary failure-mode rates ($\text{sc} \le 1$; $\text{us} = 0$)
+  saturate at zero on N-CoT for most cells, removing gradient signal.
+  The continuous penalty is zero when stakeholder count $\ge 4$ and
+  uncertainty score $\ge 2$ (mid-band targets for N-CoT cells in
+  Experiment 1) and grows linearly with the shortfall below those
+  targets. Linear shape keeps the textual gradient interpretable.
+- *Compute drift control.* Re-run a single Phase 1 N-CoT cell at the
+  start and end of the Phase 10 run on the same generator; report the
+  drift delta. If the start-vs-end stakeholder-count mean shifts by
+  more than $0.5$, treat the run as compute-confounded and pin model
+  version explicitly in the appendix.
+
+**Pre-registered analyses (in declared order).**
+1. Per-iteration training-loss curve.
+2. Held-out coded metrics (stakeholder count, uncertainty score, max
+   causal hops, completion tokens) for the optimised prompt vs.
+   hand-written N-CoT control vs.\ Phase 9 optimised standard-CoT.
+3. Cliff's $\delta$ with bootstrap $95\%$ CI for each held-out metric:
+   hand N-CoT vs.\ optimised N-CoT (primary) and Phase 9 vs.\ Phase 10
+   (secondary; tests whether starting from N-CoT vs.\ from standard CoT
+   reaches different optima).
+4. Held-out third-judge re-coding pass (`grok-4-1-fast-reasoning`) on
+   the final optimised N-CoT prompt; report Cohen's $\kappa$ against
+   primary judge and re-compute Cliff's $\delta$.
+5. Structural analysis of the final optimised prompt: does it retain
+   the five-section scaffold? Which sub-instructions did the optimiser
+   rewrite? Verbatim diff against hand-written N-CoT.
+6. Token-cost premium: mean completion tokens optimised vs.\ hand N-CoT.
+
+**Pre-declared outcome interpretations (so the paper isn't post-hoc).**
+- *Convergence on hand-written N-CoT* ($|\delta| < 0.1$ on both metrics,
+  optimiser retains $\ge 4$ of the $5$ sections recognisable): Strong
+  validation of the hand-design. One paragraph in Appendix G unified with
+  Phase 9; no main-body change.
+- *Improvement on hand-written N-CoT* ($\delta < -0.2$ on either metric,
+  optimised prompt outperforms): Re-run Experiment 1 with the optimised
+  prompt as the new control on all four generators; if the improvement
+  replicates, the optimised prompt becomes the canonical N-CoT v$2$
+  and the abstract is updated. Track as a paper-changing finding.
+- *Degradation* ($\delta > +0.2$ on either metric, hand-written N-CoT
+  wins): Diagnostic. Investigate whether the loss function is too narrow
+  (the optimiser may be over-fitting to the two failure-mode metrics at
+  the cost of trace coherence). Report in Appendix G alongside Phase 9
+  with the diagnosis.
+
+**Cost and wall-clock.**
+- Pilot (`claude-haiku-4-5` only, 10 iter, batch 10, 30 train + 30 eval):
+  $\sim$$1{,}200$--$1{,}500$ LLM calls (gen + judge + gradient + update +
+  third-judge eval). Estimated $\$40$--$60$, $\sim 3$--$4$ hrs wall-clock
+  with parallel batching.
+- Full panel (4 generators): $\sim$$5{,}000$ LLM calls. Estimated
+  $\$150$--$250$, $\sim 8$--$12$ hrs.
+
+**Risks and mitigations.**
+1. *Judge exploitation.* Optimiser may discover prompt phrasings that
+   inflate `claude-haiku-4-5`'s stakeholder-count and uncertainty-score
+   ratings without producing genuinely deeper traces. Mitigation:
+   held-out third-judge re-coding pass with `grok-4-1-fast-reasoning`;
+   if Cliff's $\delta$ drops by $> 0.2$ when re-coded by the
+   third judge, treat the optimisation as judge-exploitation rather
+   than substantive improvement.
+2. *Loss-function narrowness.* The continuous loss rewards stakeholder
+   coverage and uncertainty acknowledgement but not causal hops, action
+   commitment, or trace coherence. Mitigation: report Cliff's $\delta$
+   on max causal hops and a qualitative trace-coherence inspection
+   (random sample of $10$ traces, human-readable) as ancillary metrics
+   not in the loss.
+3. *Compute drift.* The Phase 9 caveat (Azure deployment update between
+   runs) showed standard-CoT on `gpt-5.4-nano` no longer fires either
+   failure mode. Mitigation: drift-control re-run as part of the design
+   (declared above); switch to `claude-haiku-4-5` as the primary
+   pilot generator because Phase 1 measured higher floor failure rates
+   on Anthropic models.
+4. *Optimiser produces over-long or under-readable prompts.* Mitigation:
+   enforce $\le 400$-word constraint in the optimiser's system prompt
+   (same constraint used in Phase 9); reject and re-prompt the optimiser
+   if the output exceeds the limit.
+
+**Paper integration plan.** If Phase 10 runs and yields a *convergence* or
+*degradation* outcome, replace the current Appendix G with a single
+unified appendix titled *"Automatic Prompt Optimisation Controls"*
+reporting both Phase 9 (standard CoT $\to$ optimised) and Phase 10 (N-CoT
+$\to$ optimised) on the same table. The Section 4 main-body sentence
+expands to one short paragraph naming both controls. If Phase 10 yields
+an *improvement* outcome, Experiment 1 is re-run with the optimised
+prompt as canonical N-CoT, the abstract and Table 1 are updated, and
+Phase 10's narrative gradient becomes a contribution claim rather than a
+control. Page-limit budget for the appendix-only path: net zero (replaces
+existing Appendix G); for the main-body-update path: re-verify, expect
+$\sim 8$ lines added to Section 4.
+
+**Implementation checklist (for the future revision cycle).**
+1. Add `narrative_cot_init` as a starting-prompt option to
+   `scripts/run_phase9_textgrad.py` and parametrise the loss function
+   (`--loss continuous` flag), or write `scripts/run_phase10_narrative_grad.py`
+   as a sibling script if cleaner.
+2. Implement continuous loss
+   $L = \max(0, 4 - \text{sc}) + \max(0, 2 - \text{us})$
+   in `batch_loss()`.
+3. Implement early-stopping (three-iter $< 5\%$ loss reduction).
+4. Add held-out third-judge re-coding pass (`grok-4-1-fast-reasoning`)
+   to `evaluate_holdout()`.
+5. Add drift-control: re-run one Phase 1 N-CoT cell at start and end of
+   the run; log delta.
+6. Extend `scripts/aggregate_tg_results.py` to handle two prompt hashes
+   (Phase 9 + Phase 10) and emit a unified comparison table.
+7. Run pilot tier; commit raw artefacts to `divergence_study_outputs/`
+   under namespace `ng_*` (narrative-gradient cache prefix; keeps
+   separation from Phase 9's `tg_*` prefix).
+8. Run pre-registered analyses in declared order; commit aggregate
+   output as the registered output BEFORE inspecting the qualitative
+   prompt diff (this preserves the pre-registration's strength).
+9. Update Appendix G in `papers/ACL_paper.tex` per the *Paper
+   integration plan* branch matching the observed outcome.
+10. Append v1.9 execution-log entry to this document.
+11. Rebuild `papers/ncot_anonymized_supplementary.zip` with the new
+    scripts, raw `ng_*` artefacts, and updated `study_design.md`.
+
+**Decision rule on whether to run Phase 10 next revision cycle.** Run
+unconditionally if reviewers raise the prompt-optimisation question
+(Phase 9 covers part of it; Phase 10 closes the gap). Run defensively if
+no reviewer raises it but a comparable paper appears in the
+post-submission window using narrative or structured-CoT optimisation,
+since the question will then be live in the literature. Skip only if
+both: (a) no reviewer raises it, and (b) the resubmission target is
+sufficiently constrained that no new experimental work is feasible.
+
+- v1.8 -- TextGrad automatic-prompt-optimisation pilot (2026-05-25). Implemented the deferred advisor comparison as a pilot to anchor the journal-version comparison. Custom textual-gradient-descent loop (`scripts/run_phase9_textgrad.py`, faithful to Yuksekgonul et al. 2024 but written directly against the existing generator/judge wrappers rather than the `textgrad` library, avoiding the library's incompatibility with the project's Azure Foundry routing): generator `gpt-5.4-nano` (the matched-budget cleanest pro-N-CoT cell), judge `claude-haiku-4-5` (Experiment 1 primary), optimiser `claude-sonnet-4-6` (writes textual gradient + rewrites prompt), loss = StakeholderCollapse% + UncertaintySuppression%, 5 iterations at batch size 10 on a 30-scenario training subsample (DailyDilemmas seed-42 indices 0-29), final evaluation on a held-out 30-scenario subsample (indices 30-59). Held-out result (`divergence_study_outputs/tg_aggregate.json`): TextGrad-optimised prompt matches N-CoT at the binary failure-mode floor (both 0% on this subsample) at 2.3x lower token budget (620 vs. 1440 mean completion tokens) but trails N-CoT by Cliff's delta = +0.67 (95% CI [+0.47, +0.83], large effect) on stakeholder count, +0.13 on uncertainty score, and +0.03 on max causal hops. Optimised prompt is a 950-character compressed instruction that recovers the qualitative N-CoT diagnosis (name stakeholders, acknowledge uncertainty, commit to a judgement) and adds a self-discovered hard 450-word length constraint, but without the five-section narrative structure. Caveat documented: optimisation loss was flat at 0.0 on every training batch because the verbatim Experiment 1 standard-CoT prompt run on `gpt-5.4-nano` via Azure Foundry one day after Experiment 1 no longer fires either failure mode on these 30 scenarios (Experiment 1 reported 14.6% collapse / 50.0% suppression for this generator + condition), plausibly reflecting model deployment drift on the Azure-hosted endpoint. The comparison reported in Appendix G of the paper is therefore between two prompts both already clearing the binary thresholds, so the delta = +0.67 N-CoT advantage on continuous stakeholder coverage is the discriminating signal. Paper updates: new Appendix G (Textual-Gradient Automatic-Prompt-Optimisation Control) with optimised prompt verbatim + comparison table + caveat; one-sentence promotion to Section 4 main body referencing Appendix G; references.bib augmented with `yuksekgonul2024textgrad`. Page-limit re-verified: main content (Sections 1-7) fits on pages 1-8, Limitations onward begins on page 9. Cached artefacts written to `divergence_study_outputs/tg_*` (40 generation cells + 60 judge cells + per-iteration JSON + summary).
+- v1.9 -- Phase 11 head-to-head executed (2026-06-02): N-CoT and multi-stakeholder N-CoT vs CoT+TextGrad, per the Phase 11 pre-registration block above. `scripts/run_phase9_textgrad.py` generalised with `--init-prompt`/`--loss {binary,continuous}`/`--namespace` (Phase 9 defaults reproduce the original byte-for-byte). Two TextGrad optimisations on `claude-haiku-4-5` (train indices 0-29, optimiser `claude-sonnet-4-6`): the binary failure-mode loss saturated at 0.0 every iteration even on haiku (standard CoT already clears `sc>=2`/`us>=1` on these scenarios, the same drift caveat as v1.8), while the continuous depth loss `max(0,4-sc)+max(0,2-us)` carried real signal (iter-0 loss 0.90 descending to ~0.10-0.40). **Arm A (single-agent, held-out indices 30-59, dual judge `claude-haiku-4-5`+`gpt-5.4-nano`, `scripts/run_phase11_singleagent.py`):** hand-written N-CoT beats the best TextGrad-optimised CoT decisively. Primary-judge means -- haiku: N-CoT sc=5.23/us=3.00 (1269 tok) vs best TG-CoT sc=3.53/us=2.73 (483 tok); nano: N-CoT sc=5.73/us=2.93 (1509 tok) vs best TG-CoT sc=5.60/us=2.37 (1026 tok). Cliff's delta (N-CoT vs best TG-CoT, + = N-CoT richer) -- haiku stakeholder_count +0.78 [+0.63,+0.91], uncertainty_score +0.23 [+0.10,+0.37]; nano stakeholder_count +0.07 [-0.21,+0.34] (CoT closes the gap here), uncertainty_score +0.54 [+0.33,+0.73]. The pre-registered single-agent criterion (delta>=+0.2, CI excluding 0, on at least one generator) is met on three of the four metric-by-generator cells; N-CoT's advantage is largest on stakeholder breadth (haiku) and uncertainty acknowledgement (both), and it buys this at ~2-3x the token cost. **Arm B (multi-stakeholder, three arms x 2 generators x held-out 30, moderator `claude-sonnet-4-6` held constant, `scripts/run_phase5_e2_scaled.py` parametrised with `--agent-prompt`/`--agent-prompt-file`/`--arm-tag`/`--scenario-mode heldout`):** R4 full-consensus -- N-CoT 52% [39,64], TextGrad-CoT 32% [21,44], standard CoT 63% [51,74]; structural-rejection -- N-CoT 8%, TextGrad-CoT 35%, standard CoT 17%; combined (R2-or-R4) convergence 95/100/98%. N-CoT beats the TextGrad-optimised CoT by +20pp on R4 consensus (Fisher exact p=0.041, two-proportion z p=0.026) AND deadlocks ~4x less (8% vs 35% structural rejection), clearing the pre-registered >10pp multi-stakeholder criterion. **Honest caveat:** plain standard CoT reached the highest raw consensus (63%), above N-CoT (52%). The TextGrad-optimised CoT -- tuned purely for single-agent stakeholder breadth -- actively *hurts* multi-agent consensus (most deadlock, least agreement), suggesting single-agent metric optimisation does not transfer to the social layer; this wrinkle is reportable and weakens any "just optimise CoT" shortcut rather than the N-CoT claim. **Verdict:** against the pre-registered comparator (best TextGrad-optimised CoT), N-CoT adds value at BOTH layers; the falsification "N-CoT adds nothing" outcome is rejected. Artefacts: `tgx_binary_*`/`tgx_continuous_*` (optimisation), `p11sa_*` + `p11_singleagent_raw.csv` (Arm A), `debate_dd_headtohead_{not,textgrad_cot,std_cot}.csv` (Arm B), `p11_summary.json`, figures `p11_arm_a_depth.pdf` / `p11_arm_b_consensus.pdf`. Total API cost ~$10 (Arm B debates) + Arm A/optimisation. **Paper updates:** the result is written into both manuscripts as the "optimised CoT cannot substitute for NoT" control that motivates the scaffold. `papers/ACL_paper.tex` -- one-sentence promotion in Section 4 plus a strengthened head-to-head added to Appendix G (Textual-Gradient Control): single-agent best-optimised-CoT-vs-NoT Cliff's deltas and the multi-stakeholder consensus table (new Table 13); Limitations still begins on page 9 (8-page main-body budget preserved; 18 pp total). `papers/followup_paper.tex` -- abstract sentence plus a new self-contained Section "Control: Can an Optimised CoT Replace NoT?" (single-agent + multi-stakeholder subsections, consensus table, honest std-CoT caveat) and a matching CoT-control Limitations note (10 pp total). Both compile cleanly with tectonic.
+- v1.9a -- Phase 11 role-concentration of R4 rejections (2026-06-02), closing the std-CoT caveat from v1.9. The moderator records only the aggregate R4 tally per debate, not which role rejected, so `scripts/extract_phase11_r4_votes.py` classifies every per-perspective R4 verdict (ACCEPT/REJECT/UNKNOWN) with a cached `claude-haiku-4-5` extractor over each debater's final-vote text and joins the integration record's `modifications_unaddressed` list; output `divergence_study_outputs/p11_r4_votes.csv` (390 votes across the three arms x 2 generators that reached R4). `scripts/aggregate_phase11.py` extended with `aggregate_role_concentration()` + figure `p11_arm_b_rejection_roles.pdf` (stacked rejection counts by role). **Result:** N-CoT's R4 rejections are both rare and role-appropriate -- 5 per-perspective rejections across 126 votes, 60% from the External Advisor (the principle-check role) and only 20% from the Primary Decision Maker; normalised role entropy 0.86. The TextGrad-optimised CoT scatters 38 rejections near-uniformly (entropy 0.98) with the *decider itself* the modal rejector (42%) -- the role meant to drive convergence most often blocks the synthesis it helped build. Std CoT sits between (15 rejections, modal = Affected Third Party 40%, entropy 0.96). So N-CoT disagrees ~7x less than the optimised CoT and concentrates its rare dissent where principled objection belongs, rather than scattering: this turns the "std CoT had higher raw consensus" caveat into evidence that N-CoT's consensus is higher-*quality*, not just differently-counted. **Caveats (logged honestly):** N-CoT left 12/126 verdicts without a clean binary token (narrative style), counted conservatively as non-rejections; N-CoT's n=5 makes the modal share directional rather than tight; `modifications_unaddressed` was empty in almost every debate (NoT 0, TextGrad 6 rows) so it could not serve as the "materially undermined" signal -- role identity is used instead. **Paper updates:** `papers/ACL_paper.tex` Appendix G gained a "Where rejections land" paragraph replacing the prior "left to future work" sentence (still 18 pp, main-body budget preserved). `papers/followup_paper.tex` Section "Control" gained a matching "Where rejections land" paragraph and the CoT-control Limitations note was rewritten from "not yet measured" to the now-measured directional finding with its n=5/entropy caveats (still 10 pp). Both compile cleanly with tectonic. Artefacts: `p11_r4_votes.csv`, `p11r4dec_*` (cached votes), `p11_arm_b_rejection_roles.pdf`, updated `p11_summary.json` (`arm_b_role_concentration`).
+
 ## Phase 6 Agentic-Misalignment Probe: Pre-Registration Block
 
 Pre-registered before runs are executed. Committed here per plan specification.
@@ -599,3 +801,44 @@ Pre-registered before runs are executed. Committed here per plan specification.
 9. **"OpenAI generators" (plural) fixed to singular** (only gpt-5.4-nano in quartet).
 
 10. **Page layout verified:** Conclusion on page 8, Limitations/Ethics/References on page 9. Total 19 pages (18 appendix + main). Compiles cleanly with tectonic.
+
+## Phase 11 — N-CoT and Multi-Stakeholder N-CoT vs CoT+TextGrad Head-to-Head: Pre-Registration
+
+Pre-registered here before any runs are executed. This block records the design and falsification criteria for the follow-up-paper experiment that asks whether N-CoT (the paper's Narration-of-Thought / `narrative_cot` prompt) adds anything that a *sufficiently optimised* standard chain-of-thought cannot recover. It is distinct from Phase 9 (TextGrad on standard CoT as a control vs hand-written N-CoT) and Phase 10 (narrative gradients on the N-CoT prompt): Phase 11 is a direct head-to-head at two layers, and crucially extends to the multi-stakeholder protocol, which neither Phase 9 nor Phase 10 touch.
+
+**Origin.** The single-agent half generalises the Phase 9 control; the multi-stakeholder half is the "priority Demonstration II follow-up" already recorded in the Section 13--16 scope note ("hold the four-round integration protocol constant and replace narrative chain-of-thought with standard chain-of-thought in Rounds 0-2"), strengthened by replacing *plain* standard CoT with a *TextGrad-optimised* standard CoT so the baseline is the strongest CoT the optimiser can produce against the failure-mode loss.
+
+**Headline question.** Does N-CoT beat an optimised CoT (a) on the single-agent coded metrics, and (b) on the multi-stakeholder R4 full-consensus arc, or does optimised CoT close the gap at one or both layers?
+
+**Configuration (confirmed).**
+- *Generators.* `claude-haiku-4-5` (retains 20--25% uncertainty suppression under hand-written N-CoT, so the failure-mode loss has signal above the binary floor) and `gpt-5.4-nano`.
+- *Scenarios.* 30 DailyDilemmas, seed-42 stratified sample. TextGrad **trains on indices 0--29**; everything is **evaluated on the held-out indices 30--59** for both arms (clean train/eval hygiene; no scenario is both trained on and evaluated).
+- *TextGrad losses.* Run **both** the binary failure-mode loss `StakeholderCollapse% + UncertaintySuppression%` (Phase 9) and the continuous depth loss `max(0, 4-sc) + max(0, 2-us)` (Phase 10). Carry forward whichever optimised-CoT prompt performs best vs N-CoT on the held-out single-agent eval as the "best TextGrad-CoT" used in the multi-stakeholder arm.
+- *Optimiser model.* `claude-sonnet-4-6` (the gradient-quality model used in Phases 9/10). TextGrad init prompt is verbatim `PROMPTS["standard_cot"]`.
+- *Judges (single-agent).* `claude-haiku-4-5` primary + `gpt-5.4-nano` secondary (the existing Experiment 1 cross-vendor pair).
+- *Moderator (multi-stakeholder).* `claude-sonnet-4-6`, held constant across all arms so the only thing that varies between arms is the Rounds-0--2/R4 agent reasoning-style prompt.
+
+**Arm A (single-agent).** Generate and dual-judge-code four conditions on the held-out 30 across both generators: hand-written N-CoT, optimised-CoT-binary, optimised-CoT-continuous, and verbatim `standard_cot` (reference floor). Cache namespace `p11sa_*`; TextGrad optimisation namespace `tgx_*` (never collides with Phase 9 `tg_*` / Phase 10 `ng_*`).
+
+**Arm B (multi-stakeholder).** Hold the full R0--R4 integration protocol constant (`scripts/run_phase5_e2_scaled.py`); vary only the agent reasoning-style prompt that drives the agent-authored turns (R0, R1, R2, R4). Run three arms x 2 generators on the held-out 30: `not` (`narrative_cot`), `textgrad_cot` (best optimised prompt from Arm A), `std_cot` (`standard_cot`). Each arm's caches are namespaced by an arm tag so they never collide; outputs to `debate_dd_headtohead_{arm}.csv`.
+
+**Pre-registered analyses (declared order).**
+1. Arm A per-generator Cliff's delta (N-CoT vs best TextGrad-CoT) with bootstrap 95% CI on stakeholder_count, uncertainty_score, max_causal_hops; plus binary fire rates and mean completion tokens per condition.
+2. Arm B per-arm R4 full-consensus rate with Wilson 95% CI, combined (R2-or-R4) convergence, structural-rejection rate with role concentration, and mean modifications-addressed per integrated proposal.
+3. Arm B between-arm test: two-proportion / Fisher exact on N-CoT vs TextGrad-CoT R4 full consensus.
+
+**Falsification criteria (pre-declared).**
+- *N-CoT adds value (single-agent):* held-out Cliff's delta (N-CoT vs best TextGrad-CoT) >= +0.2 on stakeholder count or uncertainty score, CI excluding 0, on at least one generator.
+- *N-CoT adds value (multi-stakeholder):* N-CoT R4 full-consensus exceeds TextGrad-CoT by > 10 pp, OR TextGrad-CoT's residual rejections fail to concentrate in the materially-undermined roles the way N-CoT's do.
+- *N-CoT adds nothing beyond optimised CoT:* optimised CoT matches N-CoT inside both bands (|delta| < 0.2 single-agent AND within +/-10 pp R4 consensus). Either outcome is reportable and decides whether the follow-up paper frames N-CoT as necessary or as one of several routes to the same trace structure.
+
+**Cost and wall-clock.** ~$100--150, ~1 day. Single-agent arm is cheap; the multi-stakeholder arm (180 debates: 30 x 2 generators x 3 arms) is the bulk, comparable to the ~$12 / 60-debate E2 scaled run scaled up threefold.
+
+**Implementation checklist.**
+1. Generalise `scripts/run_phase9_textgrad.py` with `--gen-model`, `--init-prompt {standard_cot,narrative_cot}`, `--loss {binary,continuous}`, `--namespace` (defaults preserve Phase 9 behaviour; new runs use `tgx_`).
+2. Run both TextGrad optimisations on `claude-haiku-4-5`, train indices 0--29, producing `tgx_binary_summary.json` and `tgx_continuous_summary.json`.
+3. `scripts/run_phase11_singleagent.py`: held-out (indices 30--59) generation + dual-judge coding of the four conditions across both generators.
+4. Add `--agent-prompt` / `--agent-prompt-file` / `--arm-tag` and held-out scenario slicing to `scripts/run_phase5_e2_scaled.py`.
+5. Run the three multi-stakeholder arms x 2 generators on the held-out 30.
+6. `scripts/aggregate_phase11.py`: Arm A Cliff's delta + fire rates + tokens; Arm B Wilson CIs + Fisher/two-proportion; emit `p11_summary.json` + figures.
+7. Append a v1.9 execution-log entry with results and the falsification verdict.

@@ -1,0 +1,107 @@
+{
+  "gen_model": "gpt-5.4-nano",
+  "judge_model": "claude-haiku-4-5",
+  "optimiser_model": "claude-sonnet-4-6",
+  "n_iters": 5,
+  "batch_size": 10,
+  "train_indices": [
+    0,
+    30
+  ],
+  "eval_indices": [
+    30,
+    60
+  ],
+  "max_tokens": 4096,
+  "initial_prompt": "You are a helpful assistant. Think step by step, then give your answer.",
+  "final_prompt": "You are a careful ethical reasoner. When given a dilemma, think through it and give your answer.\n\nBefore concluding, you must: identify the distinct people or groups affected and what each stands to gain or lose; acknowledge any facts, values, or outcomes that remain genuinely uncertain; and weigh competing considerations without forcing false certainty.\n\nLength is a hard constraint. Your entire response must stay under 450 words. If you find yourself approaching that limit, cut immediately—trim restatements, throat-clearing, and any sentence that doesn't add new substance. Brief and deep beats long and thorough.\n\nMove directly into substantive analysis without restating the question or summarizing what you are about to do. Every sentence must do real work. Cut anything that could be removed without loss.\n\nReach a clear, considered judgment while honestly noting where reasonable people could disagree or where key information is missing.",
+  "training_loss_curve": [
+    {
+      "iter": 0,
+      "n": 10,
+      "loss": 0.0,
+      "collapse_rate": 0.0,
+      "suppression_rate": 0.0,
+      "mean_stakeholder_count": 3.2,
+      "mean_uncertainty_score": 1.7,
+      "mean_completion_tokens": 571.2,
+      "prompt_hash": "715b1d65b5"
+    },
+    {
+      "iter": 1,
+      "n": 10,
+      "loss": 0.0,
+      "collapse_rate": 0.0,
+      "suppression_rate": 0.0,
+      "mean_stakeholder_count": 3.8,
+      "mean_uncertainty_score": 2.9,
+      "mean_completion_tokens": 802.5,
+      "prompt_hash": "a84017c1eb"
+    },
+    {
+      "iter": 2,
+      "n": 10,
+      "loss": 0.0,
+      "collapse_rate": 0.0,
+      "suppression_rate": 0.0,
+      "mean_stakeholder_count": 3.3,
+      "mean_uncertainty_score": 2.4,
+      "mean_completion_tokens": 631.7,
+      "prompt_hash": "ca502e4b81"
+    },
+    {
+      "iter": 3,
+      "n": 10,
+      "loss": 0.0,
+      "collapse_rate": 0.0,
+      "suppression_rate": 0.0,
+      "mean_stakeholder_count": 3.8,
+      "mean_uncertainty_score": 2.8,
+      "mean_completion_tokens": 738.6,
+      "prompt_hash": "b66ac41394"
+    },
+    {
+      "iter": 4,
+      "n": 10,
+      "loss": 0.0,
+      "collapse_rate": 0.0,
+      "suppression_rate": 0.0,
+      "mean_stakeholder_count": 3.7,
+      "mean_uncertainty_score": 2.8,
+      "mean_completion_tokens": 750.7,
+      "prompt_hash": "49b4cb6ef7"
+    },
+    {
+      "iter": 5,
+      "n": 10,
+      "loss": 0.0,
+      "collapse_rate": 0.0,
+      "suppression_rate": 0.0,
+      "mean_stakeholder_count": 3.8,
+      "mean_uncertainty_score": 2.9,
+      "mean_completion_tokens": 592.7,
+      "prompt_hash": "022dcad0f9"
+    }
+  ],
+  "heldout_eval": {
+    "n_eval_scenarios": 30,
+    "tg_stats": {
+      "n": 30,
+      "loss": 0.0,
+      "collapse_rate": 0.0,
+      "suppression_rate": 0.0,
+      "mean_stakeholder_count": 4.0,
+      "mean_uncertainty_score": 2.8333333333333335,
+      "mean_completion_tokens": 619.7666666666667
+    },
+    "ncot_stats": {
+      "n": 30,
+      "loss": 0.0,
+      "collapse_rate": 0.0,
+      "suppression_rate": 0.0,
+      "mean_stakeholder_count": 5.466666666666667,
+      "mean_uncertainty_score": 2.966666666666667,
+      "mean_completion_tokens": 1440.2666666666667
+    }
+  }
+}

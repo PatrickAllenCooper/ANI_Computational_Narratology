@@ -1,0 +1,165 @@
+{
+  "gen_model": "claude-haiku-4-5",
+  "judge_model": "claude-haiku-4-5",
+  "optimiser_model": "claude-sonnet-4-6",
+  "init_prompt_key": "standard_cot",
+  "loss": "continuous",
+  "namespace": "tgx_continuous",
+  "n_iters": 10,
+  "batch_size": 10,
+  "train_indices": [
+    0,
+    30
+  ],
+  "eval_indices": [
+    30,
+    60
+  ],
+  "max_tokens": 4096,
+  "initial_prompt": "You are a helpful assistant. Think step by step, then give your answer.",
+  "final_prompt": "You are a thoughtful assistant that reasons carefully about ethical dilemmas. Write in plain, flowing prose — no bullet points, lists, or headers.\n\nYour response must not exceed 180 words. Count carefully as you write. At word 150, you are in the final stretch — stop adding new points and close out. Reaching word 181 is a failure. Stopping at word 179 is a success. Stopping mid-sentence at word 180 is also a success.\n\nTo use your word budget well, open by naming the people and groups most affected, including those easy to overlook. Then briefly flag where facts are disputed, outcomes uncertain, or reasonable people genuinely disagree. Then offer your clearest honest judgment given that uncertainty.\n\nBe ruthlessly selective. Name only the most consequential stakeholders. Flag only the most significant uncertainties. Do not save important observations for the end — front-load them, because you may not reach the end.\n\nDo not treat incompleteness as failure. A response that names multiple affected parties, acknowledges real uncertainty, and offers a clear judgment — all within 180 words — is a perfect response, even if it feels abrupt. The constraint is the point. Respect it exactly.",
+  "training_loss_curve": [
+    {
+      "iter": 0,
+      "n": 10,
+      "loss": 0.9,
+      "collapse_rate": 0.0,
+      "suppression_rate": 0.0,
+      "mean_stakeholder_count": 3.3,
+      "mean_uncertainty_score": 1.9,
+      "mean_completion_tokens": 330.4,
+      "prompt_hash": "715b1d65b5"
+    },
+    {
+      "iter": 1,
+      "n": 10,
+      "loss": 0.4,
+      "collapse_rate": 0.0,
+      "suppression_rate": 0.0,
+      "mean_stakeholder_count": 3.9,
+      "mean_uncertainty_score": 2.6,
+      "mean_completion_tokens": 355.8,
+      "prompt_hash": "78be807d06"
+    },
+    {
+      "iter": 2,
+      "n": 10,
+      "loss": 1.4,
+      "collapse_rate": 0.0,
+      "suppression_rate": 0.0,
+      "mean_stakeholder_count": 2.8,
+      "mean_uncertainty_score": 2.1,
+      "mean_completion_tokens": 313.0,
+      "prompt_hash": "01646787cc"
+    },
+    {
+      "iter": 3,
+      "n": 10,
+      "loss": 0.1,
+      "collapse_rate": 0.0,
+      "suppression_rate": 0.0,
+      "mean_stakeholder_count": 4.1,
+      "mean_uncertainty_score": 2.7,
+      "mean_completion_tokens": 286.3,
+      "prompt_hash": "9e590f6a7c"
+    },
+    {
+      "iter": 4,
+      "n": 10,
+      "loss": 0.8,
+      "collapse_rate": 0.0,
+      "suppression_rate": 0.0,
+      "mean_stakeholder_count": 3.8,
+      "mean_uncertainty_score": 2.4,
+      "mean_completion_tokens": 276.9,
+      "prompt_hash": "4ffbd12b83"
+    },
+    {
+      "iter": 5,
+      "n": 10,
+      "loss": 0.5,
+      "collapse_rate": 0.0,
+      "suppression_rate": 0.0,
+      "mean_stakeholder_count": 4.1,
+      "mean_uncertainty_score": 2.2,
+      "mean_completion_tokens": 264.5,
+      "prompt_hash": "60e3a96bd5"
+    },
+    {
+      "iter": 6,
+      "n": 10,
+      "loss": 0.9,
+      "collapse_rate": 0.0,
+      "suppression_rate": 0.0,
+      "mean_stakeholder_count": 3.6,
+      "mean_uncertainty_score": 2.0,
+      "mean_completion_tokens": 268.1,
+      "prompt_hash": "27cbc978fe"
+    },
+    {
+      "iter": 7,
+      "n": 10,
+      "loss": 0.5,
+      "collapse_rate": 0.0,
+      "suppression_rate": 0.0,
+      "mean_stakeholder_count": 4.2,
+      "mean_uncertainty_score": 2.1,
+      "mean_completion_tokens": 270.6,
+      "prompt_hash": "e1a40daf65"
+    },
+    {
+      "iter": 8,
+      "n": 10,
+      "loss": 0.6,
+      "collapse_rate": 0.0,
+      "suppression_rate": 0.0,
+      "mean_stakeholder_count": 3.7,
+      "mean_uncertainty_score": 2.3,
+      "mean_completion_tokens": 268.9,
+      "prompt_hash": "91d9b6e1f3"
+    },
+    {
+      "iter": 9,
+      "n": 10,
+      "loss": 0.1,
+      "collapse_rate": 0.0,
+      "suppression_rate": 0.0,
+      "mean_stakeholder_count": 4.0,
+      "mean_uncertainty_score": 2.7,
+      "mean_completion_tokens": 247.7,
+      "prompt_hash": "5dc99e1707"
+    },
+    {
+      "iter": 10,
+      "n": 10,
+      "loss": 0.4,
+      "collapse_rate": 0.0,
+      "suppression_rate": 0.0,
+      "mean_stakeholder_count": 3.7,
+      "mean_uncertainty_score": 2.3,
+      "mean_completion_tokens": 256.5,
+      "prompt_hash": "60f22cf1ab"
+    }
+  ],
+  "heldout_eval": {
+    "n_eval_scenarios": 30,
+    "tg_stats": {
+      "n": 30,
+      "loss": 0.3,
+      "collapse_rate": 0.0,
+      "suppression_rate": 0.0,
+      "mean_stakeholder_count": 4.0,
+      "mean_uncertainty_score": 2.466666666666667,
+      "mean_completion_tokens": 252.0
+    },
+    "ncot_stats": {
+      "n": 30,
+      "loss": 0.0,
+      "collapse_rate": 0.0,
+      "suppression_rate": 0.0,
+      "mean_stakeholder_count": 5.233333333333333,
+      "mean_uncertainty_score": 3.0,
+      "mean_completion_tokens": 1260.5666666666666
+    }
+  }
+}

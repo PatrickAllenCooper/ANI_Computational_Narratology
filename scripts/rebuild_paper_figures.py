@@ -110,7 +110,7 @@ def fig_failure_mode_firing() -> None:
 
     axes[0].legend(loc="upper right", frameon=False, ncol=1,
                    handlelength=1.4, handletextpad=0.5)
-    fig.suptitle("Both failure modes drop sharply under N-CoT on every generator",
+    fig.suptitle("Both failure modes drop sharply under NoT on every generator",
                  fontweight="semibold")
     save(fig, OUT / "failure_mode_firing_quartet.pdf")
 
@@ -175,7 +175,7 @@ def fig_tier1_effects() -> None:
         ax.set_ylim(-1.0, 1.05)
         style_generator_axis(ax, generators)
         if ax is axes[0]:
-            ax.set_ylabel(r"Cliff's $\delta$  (N-CoT vs. standard CoT)")
+            ax.set_ylabel(r"Cliff's $\delta$  (NoT vs. standard CoT)")
 
     axes[0].legend(loc="lower left", frameon=False, handlelength=1.4,
                    handletextpad=0.5, ncol=1)
@@ -184,7 +184,7 @@ def fig_tier1_effects() -> None:
                  fontweight="semibold")
     for ax in axes:
         if ax.get_ylabel():
-            ax.set_ylabel(r"Cliff's $\delta$  (N-CoT vs. standard CoT)")
+            ax.set_ylabel(r"Cliff's $\delta$  (NoT vs. standard CoT)")
     save(fig, OUT / "tier1_effect_sizes_quartet.pdf")
 
 
@@ -265,7 +265,7 @@ def fig_subinstruction() -> None:
             ax.text(j, i, f"{v:+.2f}", ha="center", va="center",
                     fontsize=7.5, color=colour, fontweight=weight)
     cbar = fig.colorbar(im, ax=ax, shrink=0.85, pad=0.03)
-    cbar.set_label(r"Cliff's $\delta$  (drop vs. full N-CoT)", fontsize=8)
+    cbar.set_label(r"Cliff's $\delta$  (drop vs. full NoT)", fontsize=8)
     cbar.ax.tick_params(labelsize=7)
     ax.set_title("Each substantive section carries its target metric "
                  "(claude-sonnet-4-6, N=3, 30 scenarios)",
@@ -279,7 +279,7 @@ def fig_subinstruction() -> None:
 
 def fig_kc_proxy() -> None:
     """Headline figure for the revised Section 6: every length-invariant
-    K_C proxy we tested has a raw correlation with the N-CoT vs Std CoT
+    K_C proxy we tested has a raw correlation with the NoT vs Std CoT
     contrast that COLLAPSES under length residualization. This is a clean
     negative empirical result, not a positive one.
 
@@ -324,7 +324,7 @@ def fig_kc_proxy() -> None:
     ax.set_yticklabels(pooled["proxy_label"], fontsize=8)
     ax.invert_yaxis()
     ax.set_xlim(0, 1.0)
-    ax.set_xlabel(r"$|\rho|$ with N-CoT vs Std CoT contrast")
+    ax.set_xlabel(r"$|\rho|$ with NoT vs Std CoT contrast")
     ax.set_title("Every proxy's correlation collapses under length control",
                  fontweight="semibold")
     ax.axvline(0.1, color="#999999", linewidth=0.4, linestyle=":")
@@ -414,73 +414,65 @@ def fig_agentic_probe() -> None:
                        "corporate_espionage": "Corporate espionage"}
     generators = [g for g in GENERATOR_ORDER if g in df["generator"].unique().tolist()]
     apply_paper_style()
-    # Single-column vertical stack: 2 rows x 1 col fits inside one ACL column,
-    # which lets the figure flow inline with the appendix prose rather than
-    # waiting for a full-width float slot at the top of a page.
-    fig_w = COL_WIDTH
-    fig_h = 3.6
-    fig, axes = plt.subplots(len(scenario_order), 1, figsize=(fig_w, fig_h),
-                             sharex=True, sharey=True)
+    # Side-by-side facets (one per scenario) across the full text width.
+    # Each bar is the clean-refusal rate per (generator, condition); the
+    # complement is the hedge/truncated share. The harmful-action slice is
+    # not plotted because it is 0% in every cell (stated in caption).
+    fig_w = TEXT_WIDTH
+    fig_h = 2.4
+    fig, axes = plt.subplots(1, len(scenario_order), figsize=(fig_w, fig_h),
+                             sharey=True)
     axes = list(axes)
-    width = 0.34
+    width = 0.36
     x = np.arange(len(generators))
-    cls_palette = {
-        "refuse": "#0E7C7B",      # jewel teal (refusal: safe, matches N-CoT)
-        "hedge":  "#9DCFC9",      # pale aqua (deliberation truncated)
-        "harm":   "#1A3B6E",      # deep navy (would read as grave if non-zero)
+    cond_palette = {
+        "standard_cot": "#9DCFC9",  # pale aqua (baseline)
+        "narrative_cot": "#0E7C7B",  # jewel teal (intervention)
     }
+    cond_label = {"standard_cot": "S", "narrative_cot": "N"}
     for ax, scen in zip(axes, scenario_order):
         d = df[df["scenario_id"] == scen]
         for i, cond in enumerate(["standard_cot", "narrative_cot"]):
-            stacks = []
+            refuse = []
             for g in generators:
                 sub = d[(d["generator"] == g) & (d["condition"] == cond)]
                 n = max(len(sub), 1)
-                refuse = (sub["classification"] == "refuse").sum() / n
-                hedge = (sub["classification"] == "hedge").sum() / n
-                harm = sub["harmful_action"].astype(float).mean() if len(sub) else 0.0
-                stacks.append((refuse, hedge, harm))
+                refuse.append((sub["classification"] == "refuse").sum() / n)
             xpos = x + (i - 0.5) * width
-            refuse = [s[0] for s in stacks]
-            hedge = [s[1] for s in stacks]
-            harm = [s[2] for s in stacks]
-            ax.bar(xpos, refuse, width, color=cls_palette["refuse"],
-                   edgecolor="white", linewidth=0.4)
-            ax.bar(xpos, hedge, width, bottom=refuse,
-                   color=cls_palette["hedge"], edgecolor="white", linewidth=0.4)
-            ax.bar(xpos, harm, width, bottom=np.add(refuse, hedge),
-                   color=cls_palette["harm"], edgecolor="white", linewidth=0.4)
-            for xx in xpos:
-                tag = "S" if cond == "standard_cot" else "N"
-                ax.text(xx, 1.04, tag, ha="center", va="bottom",
-                        fontsize=6.0, color="#666666")
+            ax.bar(xpos, refuse, width, color=cond_palette[cond],
+                   edgecolor="white", linewidth=0.5)
+            for xx, val in zip(xpos, refuse):
+                ax.text(xx, val + 0.025, cond_label[cond], ha="center",
+                        va="bottom", fontsize=8.0, color="#333333",
+                        fontweight="semibold")
         ax.set_title(scenario_labels[scen], fontweight="semibold",
-                     pad=10, fontsize=8.5, loc="left")
-        ax.set_ylim(0, 1.05)
+                     pad=8, fontsize=9.0, loc="left")
+        ax.set_ylim(0, 1.12)
+        ax.set_yticks([0, 0.25, 0.5, 0.75, 1.0])
         ax.yaxis.set_major_formatter(mticker.PercentFormatter(1.0))
-        ax.set_ylabel("classification share", fontsize=7.5)
-    # Only the bottom panel keeps generator tick labels (shared x).
-    style_generator_axis(axes[-1], generators)
-    axes[0].tick_params(axis="x", labelbottom=False)
+        style_generator_axis(ax, generators)
+    axes[0].set_ylabel("clean refusal rate", fontsize=8.5)
     legend_handles = [
-        mpatches.Patch(color=cls_palette["refuse"], label="Refuse"),
-        mpatches.Patch(color=cls_palette["hedge"], label="Hedge / truncated"),
-        mpatches.Patch(color=cls_palette["harm"], label="Harmful action"),
+        mpatches.Patch(color=cond_palette["standard_cot"],
+                       label="Standard CoT (S)"),
+        mpatches.Patch(color=cond_palette["narrative_cot"],
+                       label="NoT (N)"),
     ]
-    fig.subplots_adjust(left=0.16, right=0.98, top=0.92, bottom=0.18, hspace=0.32)
+    fig.subplots_adjust(left=0.07, right=0.99, top=0.88, bottom=0.28,
+                        wspace=0.10)
     fig.legend(
         handles=legend_handles,
         loc="lower center",
-        ncol=3,
+        ncol=2,
         frameon=True,
         framealpha=1.0,
         edgecolor="#BFCDD5",
         facecolor="white",
         handlelength=1.2,
-        handletextpad=0.45,
-        columnspacing=1.4,
-        fontsize=7.5,
-        bbox_to_anchor=(0.5, 0.005),
+        handletextpad=0.5,
+        columnspacing=2.0,
+        fontsize=8.0,
+        bbox_to_anchor=(0.5, 0.01),
     )
     save(fig, OUT / "agentic_probe_rates.pdf")
 

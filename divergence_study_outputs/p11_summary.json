@@ -1,0 +1,382 @@
+{
+  "arm_a": {
+    "n_generators": 2,
+    "generators": [
+      "claude-haiku-4-5",
+      "gpt-5.4-nano"
+    ],
+    "conditions": [
+      "narrative_cot",
+      "textgrad_binary",
+      "textgrad_continuous",
+      "standard_cot"
+    ],
+    "per_generator": {
+      "claude-haiku-4-5": {
+        "condition_stats": {
+          "narrative_cot": {
+            "n": 30,
+            "mean_sc": 5.233333333333333,
+            "mean_us": 3.0,
+            "mean_mh": 4.533333333333333,
+            "collapse_rate": 0.0,
+            "suppression_rate": 0.0,
+            "mean_tokens": 1268.7666666666667,
+            "mean_sc_secondary": 5.066666666666666,
+            "mean_us_secondary": 2.566666666666667
+          },
+          "textgrad_binary": {
+            "n": 30,
+            "mean_sc": 3.533333333333333,
+            "mean_us": 2.7333333333333334,
+            "mean_mh": 3.966666666666667,
+            "collapse_rate": 0.0,
+            "suppression_rate": 0.0,
+            "mean_tokens": 483.1333333333333,
+            "mean_sc_secondary": 3.433333333333333,
+            "mean_us_secondary": 1.8
+          },
+          "textgrad_continuous": {
+            "n": 30,
+            "mean_sc": 3.566666666666667,
+            "mean_us": 2.533333333333333,
+            "mean_mh": 3.9,
+            "collapse_rate": 0.0,
+            "suppression_rate": 0.0,
+            "mean_tokens": 251.43333333333334,
+            "mean_sc_secondary": 3.6333333333333333,
+            "mean_us_secondary": 2.1
+          },
+          "standard_cot": {
+            "n": 30,
+            "mean_sc": 3.066666666666667,
+            "mean_us": 2.2,
+            "mean_mh": 3.8,
+            "collapse_rate": 0.03333333333333333,
+            "suppression_rate": 0.0,
+            "mean_tokens": 338.9,
+            "mean_sc_secondary": 3.1,
+            "mean_us_secondary": 1.1
+          }
+        },
+        "ncot_vs_textgrad_cliffs_delta": {
+          "textgrad_binary": {
+            "stakeholder_count": {
+              "delta": 0.7833333333333333,
+              "ci": [
+                0.6277777777777778,
+                0.9088888888888889
+              ]
+            },
+            "uncertainty_score": {
+              "delta": 0.23333333333333334,
+              "ci": [
+                0.1,
+                0.36666666666666664
+              ]
+            },
+            "max_causal_hops": {
+              "delta": 0.5488888888888889,
+              "ci": [
+                0.3877777777777778,
+                0.72
+              ]
+            }
+          },
+          "textgrad_continuous": {
+            "stakeholder_count": {
+              "delta": 0.7744444444444445,
+              "ci": [
+                0.6055555555555555,
+                0.9088888888888889
+              ]
+            },
+            "uncertainty_score": {
+              "delta": 0.4666666666666667,
+              "ci": [
+                0.3,
+                0.6666666666666666
+              ]
+            },
+            "max_causal_hops": {
+              "delta": 0.58,
+              "ci": [
+                0.42,
+                0.74
+              ]
+            }
+          },
+          "standard_cot": {
+            "stakeholder_count": {
+              "delta": 0.91,
+              "ci": [
+                0.8111111111111111,
+                0.9755555555555555
+              ]
+            },
+            "uncertainty_score": {
+              "delta": 0.7333333333333333,
+              "ci": [
+                0.6,
+                0.8666666666666667
+              ]
+            },
+            "max_causal_hops": {
+              "delta": 0.6266666666666667,
+              "ci": [
+                0.4711111111111111,
+                0.78
+              ]
+            }
+          }
+        }
+      },
+      "gpt-5.4-nano": {
+        "condition_stats": {
+          "narrative_cot": {
+            "n": 30,
+            "mean_sc": 5.733333333333333,
+            "mean_us": 2.933333333333333,
+            "mean_mh": 4.133333333333334,
+            "collapse_rate": 0.0,
+            "suppression_rate": 0.0,
+            "mean_tokens": 1508.8666666666666,
+            "mean_sc_secondary": 5.566666666666666,
+            "mean_us_secondary": 2.3
+          },
+          "textgrad_binary": {
+            "n": 30,
+            "mean_sc": 5.6,
+            "mean_us": 2.3666666666666667,
+            "mean_mh": 4.0,
+            "collapse_rate": 0.0,
+            "suppression_rate": 0.0,
+            "mean_tokens": 1025.6333333333334,
+            "mean_sc_secondary": 4.833333333333333,
+            "mean_us_secondary": 1.5333333333333334
+          },
+          "textgrad_continuous": {
+            "n": 30,
+            "mean_sc": 4.466666666666667,
+            "mean_us": 2.2666666666666666,
+            "mean_mh": 3.933333333333333,
+            "collapse_rate": 0.0,
+            "suppression_rate": 0.0,
+            "mean_tokens": 848.8,
+            "mean_sc_secondary": 4.8,
+            "mean_us_secondary": 1.9666666666666666
+          },
+          "standard_cot": {
+            "n": 30,
+            "mean_sc": 3.2,
+            "mean_us": 1.6333333333333333,
+            "mean_mh": 3.8666666666666667,
+            "collapse_rate": 0.03333333333333333,
+            "suppression_rate": 0.0,
+            "mean_tokens": 561.1,
+            "mean_sc_secondary": 3.7666666666666666,
+            "mean_us_secondary": 1.0333333333333334
+          }
+        },
+        "ncot_vs_textgrad_cliffs_delta": {
+          "textgrad_binary": {
+            "stakeholder_count": {
+              "delta": 0.07333333333333333,
+              "ci": [
+                -0.21333333333333335,
+                0.34
+              ]
+            },
+            "uncertainty_score": {
+              "delta": 0.5355555555555556,
+              "ci": [
+                0.3333333333333333,
+                0.7333333333333333
+              ]
+            },
+            "max_causal_hops": {
+              "delta": 0.13333333333333333,
+              "ci": [
+                0.03333333333333333,
+                0.26666666666666666
+              ]
+            }
+          },
+          "textgrad_continuous": {
+            "stakeholder_count": {
+              "delta": 0.7288888888888889,
+              "ci": [
+                0.57,
+                0.87
+              ]
+            },
+            "uncertainty_score": {
+              "delta": 0.6666666666666666,
+              "ci": [
+                0.4666666666666667,
+                0.8333333333333334
+              ]
+            },
+            "max_causal_hops": {
+              "delta": 0.19111111111111112,
+              "ci": [
+                0.06555555555555556,
+                0.33555555555555555
+              ]
+            }
+          },
+          "standard_cot": {
+            "stakeholder_count": {
+              "delta": 0.9744444444444444,
+              "ci": [
+                0.92,
+                1.0
+              ]
+            },
+            "uncertainty_score": {
+              "delta": 0.9266666666666666,
+              "ci": [
+                0.8366666666666667,
+                1.0
+              ]
+            },
+            "max_causal_hops": {
+              "delta": 0.24888888888888888,
+              "ci": [
+                0.1288888888888889,
+                0.3888888888888889
+              ]
+            }
+          }
+        }
+      }
+    },
+    "pooled_textgrad_depth": {
+      "textgrad_binary": 7.116666666666666,
+      "textgrad_continuous": 6.416666666666667
+    },
+    "best_textgrad_condition": "textgrad_binary",
+    "best_textgrad_summary_path": "divergence_study_outputs/tgx_binary_summary.json"
+  },
+  "arm_b": {
+    "arms": {
+      "not": {
+        "n": 60,
+        "r4_full_consensus": 31,
+        "r4_full_consensus_rate": 0.5166666666666667,
+        "r4_wilson_ci": [
+          0.39307594850843575,
+          0.6382515871422999
+        ],
+        "r2_consensus": 57,
+        "combined_convergence_rate": 0.95,
+        "structural_rejection_rate": 0.08333333333333333,
+        "has_synthesis_rate": 0.7
+      },
+      "textgrad_cot": {
+        "n": 60,
+        "r4_full_consensus": 19,
+        "r4_full_consensus_rate": 0.31666666666666665,
+        "r4_wilson_ci": [
+          0.21305705841174333,
+          0.4423400494301654
+        ],
+        "r2_consensus": 60,
+        "combined_convergence_rate": 1.0,
+        "structural_rejection_rate": 0.35,
+        "has_synthesis_rate": 0.6666666666666666
+      },
+      "std_cot": {
+        "n": 60,
+        "r4_full_consensus": 38,
+        "r4_full_consensus_rate": 0.6333333333333333,
+        "r4_wilson_ci": [
+          0.5068276736679673,
+          0.7437926115379172
+        ],
+        "r2_consensus": 59,
+        "combined_convergence_rate": 0.9833333333333333,
+        "structural_rejection_rate": 0.16666666666666666,
+        "has_synthesis_rate": 0.8
+      }
+    },
+    "tests": {
+      "not_vs_textgrad_cot_r4": {
+        "fisher_odds_ratio": 2.3067150635208713,
+        "fisher_p": 0.04117630543577307,
+        "z": 2.2219682394541245,
+        "z_p": 0.026285452074960025,
+        "p1": 0.5166666666666667,
+        "p2": 0.31666666666666665,
+        "diff_pp": 20.000000000000007
+      }
+    }
+  },
+  "arm_b_role_concentration": {
+    "arms": {
+      "not": {
+        "n_votes": 126,
+        "n_rejections": 5,
+        "rejections_by_role": {
+          "stakeholder_a": 1,
+          "stakeholder_b": 1,
+          "stakeholder_c": 3
+        },
+        "role_share": {
+          "stakeholder_a": 0.2,
+          "stakeholder_b": 0.2,
+          "stakeholder_c": 0.6
+        },
+        "modal_role": "stakeholder_c",
+        "modal_role_share": 0.6,
+        "normalised_entropy": 0.8649735207179272,
+        "advisor_share": 0.6,
+        "decider_share": 0.2,
+        "undermined_rejections": 0,
+        "unknown_votes": 12
+      },
+      "textgrad_cot": {
+        "n_votes": 120,
+        "n_rejections": 38,
+        "rejections_by_role": {
+          "stakeholder_a": 16,
+          "stakeholder_b": 9,
+          "stakeholder_c": 13
+        },
+        "role_share": {
+          "stakeholder_a": 0.42105263157894735,
+          "stakeholder_b": 0.23684210526315788,
+          "stakeholder_c": 0.34210526315789475
+        },
+        "modal_role": "stakeholder_a",
+        "modal_role_share": 0.42105263157894735,
+        "normalised_entropy": 0.9760517185620544,
+        "advisor_share": 0.34210526315789475,
+        "decider_share": 0.42105263157894735,
+        "undermined_rejections": 1,
+        "unknown_votes": 1
+      },
+      "std_cot": {
+        "n_votes": 144,
+        "n_rejections": 15,
+        "rejections_by_role": {
+          "stakeholder_a": 3,
+          "stakeholder_b": 6,
+          "stakeholder_c": 6
+        },
+        "role_share": {
+          "stakeholder_a": 0.2,
+          "stakeholder_b": 0.4,
+          "stakeholder_c": 0.4
+        },
+        "modal_role": "stakeholder_b",
+        "modal_role_share": 0.4,
+        "normalised_entropy": 0.9602297178607612,
+        "advisor_share": 0.4,
+        "decider_share": 0.2,
+        "undermined_rejections": 0,
+        "unknown_votes": 1
+      }
+    }
+  }
+}

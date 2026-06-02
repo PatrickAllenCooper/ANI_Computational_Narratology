@@ -8,8 +8,8 @@ choice that appears in the camera-ready manuscript.
 Conventions:
 
 * Condition palette is fixed across all figures:
-    standard CoT  -> warm grey
-    narrative CoT -> deep teal
+    standard CoT         -> warm grey
+    narration-of-thought -> deep teal
   These two colours encode the experiment's primary contrast and must
   appear consistently wherever both conditions are plotted side by side.
 
@@ -59,7 +59,7 @@ CONDITION_COLORS = {
 }
 CONDITION_LABELS = {
     "standard_cot": "Standard CoT",
-    "narrative_cot": "Narrative CoT",
+    "narrative_cot": "NoT",
     "baseline_io": "Baseline I/O",
 }
 
