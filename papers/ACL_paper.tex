@@ -374,8 +374,12 @@ rule-governed form; the mapping from NoT's five sub-instructions
 to the recognised primitives of human ethical deliberation is
 developed in \S\ref{sec:grounding}, and the downstream-probe sets
 that motivated the diagnosis (sycophancy, agentic misalignment)
-saturate under either scaffold on the current four-model panel
-(Appendix~\ref{app:deploy}).
+saturate under either scaffold on the Sharma SycophancyEval panel
+(Appendix~\ref{app:sycophancy}); a follow-on ELEPHANT social-sycophancy
+benchmark \citep{cheng25elephant} retains headroom and shows NoT
+lowering framing and validation rates relative to standard CoT on
+held-out advice queries (Appendix~\ref{app:elephant}). Agentic
+misalignment probes remain saturated (Appendix~\ref{app:deploy}).
 
 \section{Background and Related Work}
 \label{sec:related}
@@ -1388,6 +1392,63 @@ responses; the single non-floor cell is \texttt{gpt-5.4-nano}
 false-premise under NoT ($6.7\%$). We read this as instrument
 saturation on frontier models rather than a null effect on the
 intervention.
+
+\subsection{ELEPHANT Social-Sycophancy Benchmark}
+\label{app:elephant}
+
+Sharma-style probes saturate at the floor above; we therefore re-run
+the comparison on ELEPHANT \citep{cheng25elephant}, which scores
+\emph{social} sycophancy---excessive face-preservation---via
+validation, indirectness, and framing judges (faithful prompt port;
+\texttt{claude-haiku-4-5} scorer). We evaluate three single-agent arms
+(\texttt{baseline\_io}, standard CoT, NoT) on four dataset slices
+(OEQ open advice, AITA-YTA wrongdoer posts, SS assumption-laden
+statements, AITA-NTA-FLIP moral pairs) and score crowdsourced human
+responses as a reference. OSF-hosted full splits were unavailable at
+run time; we report the GitHub $10$-prompt sample per slice ($n{=}10$
+items, budget trio generators) plus a multi-stakeholder NoT arm on
+$5$ OEQ and $5$ AITA-YTA items ($2$ generators, \texttt{claude-sonnet-4-6}
+moderator).
+
+Table~\ref{tab:elephant} summarises the clearest single-agent cells on
+\texttt{claude-haiku-4-5}. NoT \emph{reduces} framing sycophancy on
+AITA-YTA ($0\%$ vs.\ $50\%$ under standard CoT; Fisher exact
+$p{=}0.033$) and validation sycophancy on the same slice ($0\%$ vs.\
+$30\%$). On OEQ, NoT matches the crowdsourced human validation rate
+($30\%$ each) while standard CoT runs higher ($80\%$). Moral
+sycophancy (both-NTA rate on flipped pairs) is directionally lower
+under NoT than CoT on all three generators ($60$--$80\%$ vs.\ $90$--$100\%$).
+The trade-off is indirectness: NoT's committed Decision section can read
+as \emph{more} suggestive on OEQ ($100\%$ vs.\ $80\%$ under CoT on
+\texttt{haiku}), so the scaffold suppresses reflexive validation and
+premise acceptance but not every face-preserving linguistic habit.
+Multi-stakeholder NoT does not uniformly beat single-agent NoT on
+validation (debate raises it on AITA-YTA for \texttt{haiku}) but
+\emph{lowers} OEQ indirectness ($60\%$ vs.\ $100\%$), consistent with
+the integration layer forcing a concrete consensus statement.
+
+\begin{table}[!tbp]
+\centering
+\small
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{lrrrr}
+\toprule
+Metric (slice) & Human & IO & Std CoT & NoT \\
+\midrule
+OEQ validation        & $30\%$ & $60\%$ & $80\%$ & $30\%$ \\
+OEQ framing           & $70\%$ & $50\%$ & $40\%$ & $30\%$ \\
+AITA-YTA validation   & $0\%$  & --     & $30\%$ & $0\%$  \\
+AITA-YTA framing      & $60\%$ & --     & $50\%$ & $0\%$  \\
+\bottomrule
+\end{tabular}
+\caption{ELEPHANT social-sycophancy rates (\%, higher = more
+sycophantic) on the $10$-prompt sample, generator
+\texttt{claude-haiku-4-5}. Framing/validation judges follow
+\citet{cheng25elephant}; human column is crowdsourced responses on
+the same prompts. AITA-YTA IO arm omitted (identical prompt format
+to CoT on binary judgement tasks).}
+\label{tab:elephant}
+\end{table}
 
 \subsection{Agentic-Misalignment Replication}
 \label{app:agentic}
