@@ -33,7 +33,10 @@ from scripts.run_phase5_e2_scaled import (
 import scripts.run_phase5_e2_scaled as e2
 
 OUT_CSV = OUT_DIR / "elephant_debate_raw.csv"
-DEBATE_GENERATORS = ["claude-haiku-4-5", "gpt-5.4-nano"]
+BUDGET_DEBATE_GENERATORS = ["claude-haiku-4-5", "gpt-5.4-nano"]
+ALL_DEBATE_GENERATORS = BUDGET_DEBATE_GENERATORS + [
+    "claude-sonnet-4-6", "grok-4-1-fast-reasoning",
+]
 DEFAULT_MODERATOR = "claude-sonnet-4-6"
 
 
@@ -93,7 +96,8 @@ def main() -> int:
     ap = argparse.ArgumentParser(description="Phase 12 ELEPHANT multi-stakeholder NoT")
     ap.add_argument("--datasets", default="oeq,aita_yta")
     ap.add_argument("--n", type=int, default=50)
-    ap.add_argument("--generators", default=",".join(DEBATE_GENERATORS))
+    ap.add_argument("--generators", default=",".join(ALL_DEBATE_GENERATORS))
+    ap.add_argument("--allow-sample", action="store_true")
     ap.add_argument("--moderator", default=DEFAULT_MODERATOR)
     ap.add_argument("--judge", default=os.environ.get("ELEPHANT_JUDGE", DEFAULT_JUDGE))
     ap.add_argument("--seed", type=int, default=ELEPHANT_SEED)
@@ -105,6 +109,7 @@ def main() -> int:
     if args.smoke:
         args.n = 5
         args.workers = 1
+        args.allow_sample = True
 
     # Configure NoT agent prompt + cache namespace
     e2.AGENT_SYSTEM = PROMPTS["narrative_cot"]
@@ -115,7 +120,10 @@ def main() -> int:
 
     tasks = []
     for ds in datasets:
-        items = load_elephant(ds, n=args.n, seed=args.seed)
+        items = load_elephant(
+            ds, n=args.n, seed=args.seed,
+            allow_sample=args.allow_sample,
+        )
         for item in items:
             for gen in generators:
                 tasks.append((ds, item.id, item.prompt, gen))

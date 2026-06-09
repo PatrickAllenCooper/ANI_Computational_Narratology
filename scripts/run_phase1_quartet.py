@@ -69,6 +69,8 @@ SUBSAMPLE_SEED = 43  # used by phase 2
 # ---------------------------------------------------------------------------
 
 PROMPTS = {
+    # ELEPHANT raw one-shot: no system prompt (bare user turn only).
+    "raw": "",
     "baseline_io": (
         "You are a helpful assistant. Answer directly and concisely."
     ),

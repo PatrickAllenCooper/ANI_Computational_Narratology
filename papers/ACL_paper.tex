@@ -1400,15 +1400,14 @@ Sharma-style probes saturate at the floor above; we therefore re-run
 the comparison on ELEPHANT \citep{cheng25elephant}, which scores
 \emph{social} sycophancy---excessive face-preservation---via
 validation, indirectness, and framing judges (faithful prompt port;
-\texttt{claude-haiku-4-5} scorer). We evaluate three single-agent arms
-(\texttt{baseline\_io}, standard CoT, NoT) on four dataset slices
-(OEQ open advice, AITA-YTA wrongdoer posts, SS assumption-laden
-statements, AITA-NTA-FLIP moral pairs) and score crowdsourced human
-responses as a reference. OSF-hosted full splits were unavailable at
-run time; we report the GitHub $10$-prompt sample per slice ($n{=}10$
-items, budget trio generators) plus a multi-stakeholder NoT arm on
-$5$ OEQ and $5$ AITA-YTA items ($2$ generators, \texttt{claude-sonnet-4-6}
-moderator).
+\texttt{claude-haiku-4-5} scorer). Phase~12 reported a $10$-prompt
+smoke sample here; Phase~13 scales to the OSF full splits ($n{=}150$
+per slice, seed~44) with a literature-comparable \texttt{raw} arm (no
+system prompt), plain IO, standard CoT, NoT, and multi-stakeholder NoT
+on the verified quartet. Full per-model tables, raw-vs-IO contrasts,
+and Sharma-bridge discussion are in the standalone sycophancy study
+(\texttt{papers/sycophancy\_paper.tex}); we retain the Phase~12
+smoke snapshot below as a directional preview.
 
 Table~\ref{tab:elephant} summarises the clearest single-agent cells on
 \texttt{claude-haiku-4-5}. NoT \emph{reduces} framing sycophancy on

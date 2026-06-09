@@ -158,12 +158,13 @@ def _call_openai(
     for attempt in range(5):
         try:
             t0 = time.monotonic()
+            messages = []
+            if system and system.strip():
+                messages.append({"role": "system", "content": system})
+            messages.append({"role": "user", "content": user})
             kwargs: dict = dict(
                 model=model,
-                messages=[
-                    {"role": "system", "content": system},
-                    {"role": "user", "content": user},
-                ],
+                messages=messages,
                 seed=sample_idx,
             )
             if _is_reasoning(model):
@@ -251,9 +252,10 @@ def _call_anthropic(
     payload = {
         "model": model,
         "max_tokens": max_tokens,
-        "system": system,
         "messages": [{"role": "user", "content": user}],
     }
+    if system and system.strip():
+        payload["system"] = system
     last_err: Optional[Exception] = None
     for attempt in range(5):
         try:
@@ -345,13 +347,11 @@ def _call_xai(
     for attempt in range(5):
         try:
             t0 = time.monotonic()
-            kwargs: dict = dict(
-                model=model,
-                messages=[
-                    {"role": "system", "content": system},
-                    {"role": "user", "content": user},
-                ],
-            )
+            messages = []
+            if system and system.strip():
+                messages.append({"role": "system", "content": system})
+            messages.append({"role": "user", "content": user})
+            kwargs: dict = dict(model=model, messages=messages)
             if _is_reasoning(model):
                 kwargs["max_completion_tokens"] = max_tokens
             else:

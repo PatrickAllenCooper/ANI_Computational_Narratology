@@ -1,14 +1,15 @@
 """
-scripts/run_elephant.py -- Phase 12 ELEPHANT single-agent evaluation.
+scripts/run_elephant.py -- Phase 12/13 ELEPHANT single-agent evaluation.
 
-Generates advice for baseline_io, standard_cot, narrative_cot across ELEPHANT
-datasets, scores with faithful ELEPHANT metrics, and scores human baselines.
+Generates advice for raw, baseline_io, standard_cot, narrative_cot across
+ELEPHANT datasets, scores with faithful ELEPHANT metrics, and scores human
+baselines.
 
 Output: divergence_study_outputs/elephant_singleagent_raw.csv
 
 Usage:
   python -m scripts.run_elephant --smoke
-  python -m scripts.run_elephant --datasets oeq,aita_yta,ss --n 150 --workers 6
+  python -m scripts.run_elephant --datasets oeq,aita_yta,ss,flip_pairs --n 150 --workers 6
 """
 from __future__ import annotations
 
@@ -33,14 +34,30 @@ from scripts.load_elephant import (
 from scripts.run_phase1_quartet import PROMPTS, _safe, OUT_DIR
 
 BUDGET_GENERATORS = ["gpt-5.4-nano", "claude-haiku-4-5", "grok-4-1-fast-reasoning"]
-SINGLE_AGENT_ARMS = ["baseline_io", "standard_cot", "narrative_cot"]
+ALL_GENERATORS = BUDGET_GENERATORS + ["claude-sonnet-4-6"]
+SINGLE_AGENT_ARMS = ["raw", "baseline_io", "standard_cot", "narrative_cot"]
 AITA_BINARY_SUFFIX = "\nOutput only YTA or NTA."
+EMPTY_SCORE = -1
 
 OUT_CSV = OUT_DIR / "elephant_singleagent_raw.csv"
 
 
 def _gen_cache_path(dataset: str, item_id: str, gen: str, arm: str) -> Path:
     return OUT_DIR / f"elephant_gen_{dataset}_{_safe(gen)}_{arm}_{_safe(item_id)}.json"
+
+
+def _max_tokens_for(gen_model: str, arm: str) -> int:
+    if gen_model == "gpt-5.4-nano":
+        return 2048
+    if arm == "narrative_cot":
+        return 2048
+    return 1024
+
+
+def _system_prompt(arm: str) -> str:
+    if arm == "raw":
+        return ""
+    return PROMPTS.get(arm, PROMPTS["standard_cot"])
 
 
 def _generate_advice(
@@ -50,26 +67,35 @@ def _generate_advice(
     dataset: str,
     item_id: str,
     aita_binary: bool = False,
-) -> str:
+) -> tuple[str, bool]:
     cache = _gen_cache_path(dataset, item_id, gen_model, arm)
     if cache.exists():
-        cached = json.loads(cache.read_text()).get("response", "")
+        cached_obj = json.loads(cache.read_text())
+        cached = cached_obj.get("response", "")
         if cached.strip():
-            return cached
-    sys_prompt = PROMPTS.get(arm, PROMPTS["standard_cot"])
+            return cached, False
+    sys_prompt = _system_prompt(arm)
     user_turn = prompt + (AITA_BINARY_SUFFIX if aita_binary else "")
+    max_tokens = _max_tokens_for(gen_model, arm)
     text = ""
+    result = None
     for attempt in range(3):
-        result = generate(gen_model, sys_prompt, user_turn, sample_idx=attempt, max_tokens=1024)
+        result = generate(
+            gen_model, sys_prompt, user_turn,
+            sample_idx=attempt, max_tokens=max_tokens,
+        )
         text = (result.text or "").strip()
         if text:
             break
     if text:
         cache.write_text(json.dumps({
             "response": text,
-            "completion_tokens": result.completion_tokens,
+            "completion_tokens": result.completion_tokens if result else 0,
+            "arm": arm,
+            "empty": False,
         }, ensure_ascii=False))
-    return text
+        return text, False
+    return "", True
 
 
 def _score_all_metrics(
@@ -77,10 +103,15 @@ def _score_all_metrics(
     prompt: str,
     response: str,
     judge: str,
+    *,
+    empty: bool,
 ) -> dict[str, int]:
     scores = {}
     for metric in metrics_for_dataset(dataset):
         if metric == "moral":
+            continue
+        if empty or not response.strip():
+            scores[metric] = EMPTY_SCORE
             continue
         s = score_response(metric, prompt, response, judge=judge)
         scores[metric] = s
@@ -100,7 +131,7 @@ def _run_cell(
     side: str = "",
 ) -> dict:
     aita_binary = dataset == "flip_pairs"
-    response = _generate_advice(
+    response, empty = _generate_advice(
         prompt, gen_model, arm, dataset, item_id,
         aita_binary=aita_binary,
     )
@@ -115,10 +146,13 @@ def _run_cell(
         "response_len": len(response),
         "response": response,
         "response_preview": response[:200],
+        "empty_response": int(empty),
     }
-    for metric, val in _score_all_metrics(dataset, prompt, response, judge).items():
+    for metric, val in _score_all_metrics(
+        dataset, prompt, response, judge, empty=empty,
+    ).items():
         row[f"score_{metric}"] = val
-        row[f"sycophantic_{metric}"] = val  # 1 = sycophantic in ELEPHANT convention
+        row[f"sycophantic_{metric}"] = val
     for m, v in human_scores.items():
         row[f"human_{m}"] = v
     return row
@@ -144,6 +178,7 @@ def _run_human_baseline(
         "prompt_len": len(prompt),
         "response_len": len(human_response),
         "response_preview": human_response[:200],
+        "empty_response": 0,
     }
     for metric in metrics_for_dataset(dataset):
         if metric == "moral":
@@ -174,7 +209,12 @@ def _build_flip_moral_rows(
             continue
         og_text = sides["og"].get("response", "") or ""
         flip_text = sides["flip"].get("response", "") or ""
-        both_nta = moral_both_nta(og_text, flip_text)
+        og_empty = bool(sides["og"].get("empty_response"))
+        flip_empty = bool(sides["flip"].get("empty_response"))
+        if og_empty or flip_empty or not og_text.strip() or not flip_text.strip():
+            both_nta = EMPTY_SCORE
+        else:
+            both_nta = moral_both_nta(og_text, flip_text)
         out.append({
             "dataset": "flip_pairs",
             "item_id": pair_id,
@@ -184,6 +224,7 @@ def _build_flip_moral_rows(
             "arm": arm,
             "score_moral": both_nta,
             "sycophantic_moral": both_nta,
+            "empty_response": int(og_empty or flip_empty),
             "og_yta_nta": sides["og"].get("response_preview", "")[:50],
             "flip_yta_nta": sides["flip"].get("response_preview", "")[:50],
         })
@@ -191,36 +232,48 @@ def _build_flip_moral_rows(
 
 
 def main() -> int:
-    ap = argparse.ArgumentParser(description="Phase 12 ELEPHANT single-agent eval")
+    ap = argparse.ArgumentParser(description="Phase 12/13 ELEPHANT single-agent eval")
     ap.add_argument("--datasets", default="oeq,aita_yta,ss,flip_pairs")
     ap.add_argument("--n", type=int, default=150)
-    ap.add_argument("--generators", default=",".join(BUDGET_GENERATORS))
+    ap.add_argument("--generators", default=",".join(ALL_GENERATORS))
     ap.add_argument("--arms", default=",".join(SINGLE_AGENT_ARMS))
     ap.add_argument("--judge", default=os.environ.get("ELEPHANT_JUDGE", DEFAULT_JUDGE))
     ap.add_argument("--seed", type=int, default=ELEPHANT_SEED)
     ap.add_argument("--workers", type=int, default=6)
     ap.add_argument("--smoke", action="store_true", help="10-item sample datasets")
+    ap.add_argument("--allow-sample", action="store_true", help="Allow GitHub sample CSVs")
     args = ap.parse_args()
 
     if args.smoke:
         args.n = 10
+        args.allow_sample = True
 
     datasets = [d.strip() for d in args.datasets.split(",") if d.strip()]
     generators = [g.strip() for g in args.generators.split(",") if g.strip()]
     arms = [a.strip() for a in args.arms.split(",") if a.strip()]
     judge = args.judge
 
-    print(f"ELEPHANT single-agent: datasets={datasets} n={args.n} arms={arms}", flush=True)
+    print(
+        f"ELEPHANT single-agent: datasets={datasets} n={args.n} arms={arms}",
+        flush=True,
+    )
     print(f"  generators={generators} judge={judge}", flush=True)
 
     tasks = []
     human_tasks = []
+    data_dir = Path("data/elephant")
 
     for ds in datasets:
         if ds == "flip_pairs":
-            items = _load_flip_pairs(n=args.n, seed=args.seed, data_dir=Path("data/elephant"))
+            items = _load_flip_pairs(
+                n=args.n, seed=args.seed, data_dir=data_dir,
+                allow_sample=args.allow_sample,
+            )
         else:
-            items = load_elephant(ds, n=args.n, seed=args.seed)
+            items = load_elephant(
+                ds, n=args.n, seed=args.seed, data_dir=data_dir,
+                allow_sample=args.allow_sample,
+            )
         for item in items:
             if item.human_response:
                 human_tasks.append((ds, item))

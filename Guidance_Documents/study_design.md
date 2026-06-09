@@ -895,3 +895,57 @@ Data source: OSF `datasets.zip` ([osf.io/r3dmj](https://osf.io/r3dmj/?view_only=
 4. `scripts/run_elephant_debate.py` -- multi-stakeholder NoT on OEQ/AITA-YTA subsets.
 5. `scripts/aggregate_elephant.py` -- Wilson CIs, human-gap deltas, figures.
 6. Append v1.10 execution-log entry; integrate into `papers/ACL_paper.tex` appendix.
+
+---
+
+## Phase 13 — ELEPHANT Expansion and Unified Sycophancy Paper: Pre-Registration
+
+Pre-registered here before any Phase 13 runs are executed. Phase 12 smoke results (v1.10) used GitHub `sample_datasets` ($n=10$ per slice) and omitted a literature-comparable raw one-shot arm; this phase scales to the pre-registered $n=150$ full OSF splits, expands to the verified quartet, and composes a standalone unified sycophancy paper bridging Sharma SycophancyEval saturation with ELEPHANT social-sycophancy headroom.
+
+**Headline question.** Does NoT's deliberative scaffold reduce *social* sycophancy (ELEPHANT) where Sharma-style *propositional* sycophancy probes saturate at the floor, and does a true raw (no-system-prompt) one-shot arm establish the literature-comparable baseline?
+
+**Benchmark.** Same faithful ELEPHANT port as Phase 12 (`scripts/elephant_scorers.py`); full OSF `datasets.zip` required (no silent fallback to `sample_datasets` when $n>10$).
+
+| Dataset | N (subsample) | Metrics | Human baseline |
+|---------|---------------|---------|----------------|
+| OEQ | 150 | validation, indirectness, framing | crowdsourced `human` column |
+| AITA-YTA | 150 | validation, indirectness, framing | precomputed human scores |
+| SS | 150 | framing only | 0.5 random-chance baseline |
+| AITA-NTA-FLIP + OG pairs | 150 pairs | moral sycophancy (`both_NTA_rate`) | 0 conservative baseline |
+
+**Arms.**
+- *Single-agent:* `raw` (no system prompt; ELEPHANT published protocol), `baseline_io`, `standard_cot`, `narrative_cot` (NoT).
+- *Multi-stakeholder debate:* `narrative_cot` only (NoT agents + `claude-sonnet-4-6` moderator); score integrated consensus advice.
+- *Human reference:* score crowdsourced human responses with identical scorers (OEQ/AITA-YTA).
+- *Sharma bridge:* existing `scripts/run_sycophancyeval.py` saturation result (propositional sycophancy floor) cited in the new paper as motivation for ELEPHANT.
+
+**Generators.**
+- Single-agent: verified quartet `gpt-5.4-nano`, `claude-haiku-4-5`, `claude-sonnet-4-6`, `grok-4-1-fast-reasoning`.
+- Debate: full quartet agents on OEQ + AITA-YTA ($n=50$ per dataset per generator).
+
+**Pre-registered analyses (declared order).**
+1. Per `(dataset, metric, arm, generator)` mean sycophancy rate with Wilson 95% CI.
+2. Delta vs `standard_cot` (NoT minus CoT; negative = NoT less sycophantic) with two-proportion test / Fisher exact.
+3. Delta vs `raw` (each arm minus raw; establishes literature-comparable floor).
+4. Delta vs human baseline on OEQ/AITA-YTA (model rate minus human rate).
+5. Moral sycophancy: `both_NTA_rate` on FLIP pairs.
+6. Per-model panel figures (one column per quartet member).
+7. Debate arm vs single-agent NoT on OEQ/AITA-YTA.
+
+**Falsification criteria (pre-declared).**
+- *NoT reduces social sycophancy:* NoT rate < standard CoT on validation+framing on OEQ for a majority of quartet models, OR pooled two-proportion $p<0.05$ on those metrics; otherwise the social-sycophancy claim weakens.
+- *Raw floor:* if NoT $\geq$ raw on most metrics, report honestly (scaffold may not beat bare one-shot).
+- *Multi-stakeholder bonus:* debate NoT $\leq$ single-agent NoT on OEQ validation (directional; not a hard gate).
+- *Sharma complementarity:* propositional probes remain at floor; ELEPHANT must show discriminating signal between arms or the unified paper's dual-benchmark framing fails.
+
+**Cache namespaces.** `elephant_gen_*`, `elephant_score_*`, `e2_elephant_*` (debate). Outputs: `elephant_singleagent_raw.csv`, `elephant_debate_raw.csv`, `elephant_summary.json`, `papers/sycophancy_paper.tex`.
+
+**Implementation checklist.**
+1. Harden `scripts/load_elephant.py` -- OSF file API + mirror fallbacks; fail loudly when $n>10$ and only samples available.
+2. Add `raw` arm to `PROMPTS` sentinel + `run_elephant.py` empty-system generation.
+3. Default generators to quartet; harden `gpt-5.4-nano` empty-response handling.
+4. Run single-agent grid ($4$ datasets $\times$ $150$ $\times$ $4$ arms $\times$ quartet).
+5. Run multi-stakeholder debate (OEQ + AITA-YTA, quartet agents).
+6. Extend `scripts/aggregate_elephant.py` -- per-model panels, deltas vs human/raw/CoT.
+7. Compose `papers/sycophancy_paper.tex`; update ACL Appendix L pointer.
+8. Append v1.11 execution-log entry with full-data results and falsification verdict.

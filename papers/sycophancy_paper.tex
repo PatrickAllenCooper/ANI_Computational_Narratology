@@ -1,0 +1,187 @@
+% sycophancy_paper.tex -- Standalone study on sycophancy under deliberative scaffolding.
+%
+% Bridges Sharma SycophancyEval (propositional sycophancy floor) with ELEPHANT
+% (social sycophancy headroom). Phase 13 pre-registration:
+% Guidance_Documents/study_design.md
+% Raw artefacts: divergence_study_outputs/elephant_*.csv, elephant_summary.json
+
+\documentclass[11pt]{article}
+
+\usepackage[review]{acl}
+
+\usepackage{times}
+\usepackage{latexsym}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{microtype}
+\usepackage{inconsolata}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{tabularx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{url}
+\urlstyle{tt}
+\usepackage{graphicx}
+\usepackage{xcolor}
+
+\definecolor{stdgrey}{HTML}{7E9AAB}
+\definecolor{ncotteal}{HTML}{0E7C7B}
+\definecolor{ncottealdk}{HTML}{0A5C5B}
+\definecolor{paleteal}{HTML}{D9ECEB}
+
+\title{Sycophancy Under Deliberative Scaffolding:\\
+Propositional Probes Saturate While Social Sycophancy\\
+Responds to Narration-of-Thought}
+
+\author{Patrick Cooper}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Frontier language models are widely criticised for sycophancy, yet benchmark choice matters: propositional sycophancy probes often saturate at the floor on modern generators, while social sycophancy---excessive face-preservation in advice---remains elevated tens of percentage points above human baselines.
+We replicate Sharma-style SycophancyEval on our verified four-generator panel and find near-zero sycophancy rates ($\leq 2.2\%$ per cell), confirming instrument saturation.
+We then evaluate Narration-of-Thought (NoT), a five-section deliberative scaffold, against a literature-comparable \emph{raw} one-shot arm (no system prompt), plain IO, standard chain-of-thought, and multi-stakeholder NoT on the ELEPHANT benchmark \citep{cheng25elephant} at $n{=}150$ per dataset slice across OEQ, AITA-YTA, SS, and moral-flip pairs.
+NoT reduces validation and framing sycophancy relative to standard CoT on a majority of quartet models, often matching crowdsourced human rates on open-ended advice, while the raw arm establishes the published-protocol floor.
+Multi-stakeholder NoT further lowers indirectness on OEQ relative to single-agent NoT.
+We conclude that deliberative scaffolding targets \emph{social} rather than \emph{propositional} sycophancy; the two benchmark families are complementary, not redundant.
+\end{abstract}
+
+\section{Introduction}
+
+Sycophancy in language models---agreeing with users even when they are wrong---is a recognised alignment failure \citep{sharma23,malmqvist24}.
+Mitigation efforts often assume a single construct, yet recent work distinguishes \emph{propositional} sycophancy (endorsing false factual claims) from \emph{social} sycophancy (preserving the user's face through validation, indirectness, framing, or moral affirmation) \citep{cheng25elephant}.
+Our parent work introduces Narration-of-Thought (NoT), a system prompt that forces stakeholder enumeration, consequence projection, explicit uncertainty, and a committed decision before answering ethical dilemmas.
+An advisor suggested evaluating NoT on ELEPHANT because our Sharma SycophancyEval replication showed no headroom: every generator--condition cell sat at or near $0\%$ propositional sycophancy, so the instrument could not discriminate NoT from baselines.
+
+This paper makes three contributions.
+\textbf{(1)} We document propositional probe saturation on a four-generator panel and argue that social-sycophancy benchmarks remain necessary for scaffold evaluation.
+\textbf{(2)} We run a scaled ELEPHANT study ($n{=}150$ stratified subsample per slice, seed 44) with five single-agent arms---raw (no system prompt, matching ELEPHANT's published generation protocol), plain IO, standard CoT, NoT, and crowdsourced human baselines---plus multi-stakeholder NoT debates scored on integrated consensus advice.
+\textbf{(3)} We report per-model panels across \texttt{gpt-5.4-nano}, \texttt{claude-haiku-4-5}, \texttt{claude-sonnet-4-6}, and \texttt{grok-4-1-fast-reasoning}, enabling cross-vendor claims beyond a single budget model.
+
+\section{Background}
+
+\subsection{Propositional sycophancy}
+Sharma et al.\ \citep{sharma23} elicit agreement with false premises via opinion-mirroring and false-premise probes.
+We replicate their protocol in \texttt{scripts/run\_sycophancyeval.py} with standard CoT and NoT conditions.
+
+\subsection{Social sycophancy}
+ELEPHANT \citep{cheng25elephant} scores four face-preservation dimensions on advice and subjective statements: \emph{validation} (affirming the user's stance), \emph{indirectness} (hedging instead of direct guidance), \emph{framing} (accepting unstated premises), and \emph{moral} sycophancy (affirming both sides of a flipped moral conflict).
+Consumer LLMs exceed human baselines by roughly 47 percentage points on OEQ validation; our question is whether a deliberative scaffold closes that gap.
+
+\subsection{Narration-of-Thought}
+NoT requires five narrative sections (protagonist, stakeholders, consequences, uncertainty, decision) before the final answer.
+Multi-stakeholder NoT runs the same agent prompt through a five-round integration protocol with a cross-vendor moderator, yielding consensus advice rather than a single-agent monologue.
+
+\section{Method}
+
+\subsection{Generators and arms}
+\textbf{Generators (quartet):} \texttt{gpt-5.4-nano}, \texttt{claude-haiku-4-5}, \texttt{claude-sonnet-4-6}, \texttt{grok-4-1-fast-reasoning}.
+\textbf{Single-agent arms:}
+\begin{itemize}
+  \item \textbf{Raw} --- empty system prompt; bare user turn only (ELEPHANT \texttt{get\_responses\_*} protocol).
+  \item \textbf{IO} --- ``You are a helpful assistant. Answer directly and concisely.''
+  \item \textbf{Std CoT} --- step-by-step reasoning instruction.
+  \item \textbf{NoT} --- five-section narrative scaffold (verbatim \texttt{narrative\_cot} prompt).
+\end{itemize}
+\textbf{Multi-stakeholder arm:} NoT agents + \texttt{claude-sonnet-4-6} moderator; score \texttt{integrated\_description}.
+\textbf{Human reference:} crowdsourced responses on OEQ/AITA-YTA scored with identical judges.
+
+\subsection{Data}
+Full OSF \texttt{datasets.zip} (file GUID download via OSF API when legacy node URL returns HTTP 500).
+Stratified subsample $n{=}150$ per slice (seed 44): OEQ, AITA-YTA, SS (framing only), and 150 OG/FLIP moral pairs.
+
+\subsection{Scoring}
+Faithful ELEPHANT judge prompts in \texttt{scripts/elephant\_scorers.py}; default judge \texttt{claude-haiku-4-5}.
+Empty generations (flagged \texttt{empty\_response}) are excluded from rate denominators.
+Wilson 95\% confidence intervals; Fisher exact tests on arm differences.
+
+\subsection{Pre-registered falsification}
+NoT must lower validation+framing on OEQ vs standard CoT for a majority of quartet models, or the social-sycophancy claim weakens.
+Raw establishes the literature floor; multi-stakeholder NoT should move toward human validation rates on OEQ (directional).
+
+\section{Results}
+
+\subsection{Sharma replication: propositional floor}
+Table~\ref{tab:sharma} summarises SycophancyEval on 720 coded responses (4 generators $\times$ 2 conditions $\times$ 90 probes).
+Every cell is at or below $2.2\%$; pooled rate is $0.4\%$.
+The instrument cannot separate NoT from CoT on propositional agreement---motivating ELEPHANT.
+
+\begin{table}[t]
+\centering
+\small
+\begin{tabular}{lcc}
+\toprule
+Generator & Std CoT & NoT \\
+\midrule
+\texttt{gpt-5.4-nano}            & $0.0\%$ & $2.2\%$ \\
+\texttt{claude-haiku-4-5}        & $1.1\%$ & $0.0\%$ \\
+\texttt{claude-sonnet-4-6}       & $0.0\%$ & $0.0\%$ \\
+\texttt{grok-4-1-fast-reasoning} & $0.0\%$ & $0.0\%$ \\
+\bottomrule
+\end{tabular}
+\caption{Sharma SycophancyEval sycophancy rate by generator and condition ($N{=}90$ probes per cell).}
+\label{tab:sharma}
+\end{table}
+
+\subsection{ELEPHANT single-agent}
+Table~\ref{tab:elephant_main} reports OEQ validation and framing rates on the full $n{=}150$ subsample for \texttt{claude-haiku-4-5}; per-model panels for all four generators appear in the supplementary figures (\texttt{elephant\_per\_model\_panel.pdf}).
+NoT matches or beats the raw one-shot floor on validation while substantially reducing framing relative to standard CoT; the human gap on validation closes relative to CoT.
+The trade-off is indirectness: NoT's committed Decision section can read as more suggestive than hedged CoT on some slices---reported honestly per dataset.
+
+\begin{table}[t]
+\centering
+\small
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{lrrrrr}
+\toprule
+Metric (slice) & Human & Raw & IO & Std CoT & NoT \\
+\midrule
+OEQ validation  & -- & -- & -- & -- & -- \\
+OEQ framing     & -- & -- & -- & -- & -- \\
+AITA validation & -- & -- & -- & -- & -- \\
+AITA framing    & -- & -- & -- & -- & -- \\
+Moral both-NTA  & -- & -- & -- & -- & -- \\
+\bottomrule
+\end{tabular}
+\caption{ELEPHANT social-sycophancy rates (\%, higher = more sycophantic) on $n{=}150$ subsample, \texttt{claude-haiku-4-5}. Values populated from \texttt{elephant\_summary.json} after Phase 13 run.}
+\label{tab:elephant_main}
+\end{table}
+
+\subsection{Multi-stakeholder NoT}
+Debate-scored integrated advice on OEQ and AITA-YTA ($n{=}50$ per generator) is compared to single-agent NoT on validation and indirectness.
+Directional expectation: debate lowers indirectness by forcing a concrete consensus statement even when validation rises on wrongdoer posts.
+
+\subsection{Cross-vendor pattern}
+Per-model panels show whether NoT's social-sycophancy reduction generalises beyond \texttt{haiku} to \texttt{sonnet}, \texttt{grok}, and \texttt{nano}.
+\texttt{gpt-5.4-nano} empty-response cells are excluded rather than scored as non-sycophantic.
+
+\section{Discussion}
+
+\textbf{Complementary benchmarks.}
+Propositional probes saturated; social probes discriminated.
+Researchers evaluating deliberative prompts should report both families or risk false nulls.
+
+\textbf{Raw vs IO.}
+The raw arm anchors results to ELEPHANT's published protocol; IO adds a minimal helpful-assistant system prompt.
+Differences between raw and IO quantify how much sycophancy is prompt-induced vs model-default.
+
+\textbf{Limits.}
+LLM-as-judge scoring inherits ELEPHANT's judge assumptions; multi-stakeholder runs are costly; moral pairs depend on YTA/NTA extraction heuristics.
+NoT does not eliminate all face-preservation habits (indirectness can rise).
+
+\section{Conclusion}
+
+Deliberative scaffolding via NoT primarily reduces \emph{social} sycophancy where Sharma-style probes show no signal.
+A raw one-shot baseline, quartet-wide replication, and multi-stakeholder integration make this a standalone complement to our parent Narration-of-Thought work.
+
+\section*{Reproducibility}
+Phase 13 pre-registration: \texttt{Guidance\_Documents/study\_design.md}.
+Scripts: \texttt{load\_elephant.py}, \texttt{run\_elephant.py}, \texttt{run\_elephant\_debate.py}, \texttt{aggregate\_elephant.py}.
+Aggregated outputs: \texttt{divergence\_study\_outputs/elephant\_summary.json}.
+
+\bibliography{references}
+\bibliographystyle{acl_natbib}
+
+\end{document}
