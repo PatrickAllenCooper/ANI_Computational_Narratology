@@ -1,0 +1,140 @@
+% sycophancy_slides.tex -- Three-slide summary of the sycophancy paper results.
+% Source of values: divergence_study_outputs/elephant_summary.json (Phase 13)
+% and sycophancyeval_results.csv. Compile with tectonic.
+
+\documentclass[11pt,aspectratio=169]{beamer}
+
+\usetheme{default}
+\usecolortheme{seagull}
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{footline}[frame number]
+
+\usepackage{booktabs}
+\usepackage{amsmath}
+\usepackage{xcolor}
+
+% Aquatic palette mirrored from the papers for visual continuity.
+\definecolor{ncotteal}{HTML}{0E7C7B}
+\definecolor{ncottealdk}{HTML}{0A5C5B}
+\definecolor{stdgrey}{HTML}{7E9AAB}
+\definecolor{paleteal}{HTML}{D9ECEB}
+\definecolor{alarmnavy}{HTML}{1A3B6E}
+
+\setbeamercolor{frametitle}{fg=ncottealdk}
+\setbeamercolor{title}{fg=ncottealdk}
+\setbeamercolor{structure}{fg=ncotteal}
+
+\newcommand{\good}[1]{\textcolor{ncottealdk}{\textbf{#1}}}
+\newcommand{\bad}[1]{\textcolor{alarmnavy}{#1}}
+
+\title{Sycophancy Under Deliberative Scaffolding}
+\subtitle{Propositional Probes Saturate While Social Sycophancy\\Responds to Narration-of-Thought}
+\author{Patrick Cooper}
+\date{June 2026}
+
+\begin{document}
+
+% ===========================================================================
+% Slide 1: The false null -- propositional probes are saturated
+% ===========================================================================
+\begin{frame}{Propositional sycophancy probes are saturated}
+\begin{columns}[T]
+\begin{column}{0.52\textwidth}
+\textbf{Sharma SycophancyEval, replicated on four generators}
+\medskip
+
+\begin{tabular}{lcc}
+\toprule
+Generator & Std CoT & NoT \\
+\midrule
+\texttt{gpt-5.4-nano}   & $0.0\%$ & $2.2\%$ \\
+\texttt{claude-haiku}   & $1.1\%$ & $0.0\%$ \\
+\texttt{claude-sonnet}  & $0.0\%$ & $0.0\%$ \\
+\texttt{grok-4-1-fast}  & $0.0\%$ & $0.0\%$ \\
+\bottomrule
+\end{tabular}
+
+\medskip
+{\small $720$ coded responses; pooled rate $0.4\%$.}
+\end{column}
+\begin{column}{0.44\textwidth}
+\begin{itemize}
+  \item Frontier models no longer endorse false claims to please users: \bad{no headroom left}.
+  \item The instrument cannot distinguish any two prompting conditions.
+  \item Evaluating a scaffold here alone would produce a \bad{false null}.
+\end{itemize}
+\medskip
+\good{Sycophancy is not one construct.}\\
+Social sycophancy (ELEPHANT) retains $37$--$54$\,pp of headroom above human baselines.
+\end{column}
+\end{columns}
+\end{frame}
+
+% ===========================================================================
+% Slide 2: Headline result -- NoT closes the human gap, quartet-wide
+% ===========================================================================
+\begin{frame}{NoT closes the social-sycophancy gap on all four generators}
+\textbf{ELEPHANT open-ended advice (OEQ), validation rate; human ${=}\,29\%$. $n{=}150$ per slice.}
+\medskip
+
+\centering
+\begin{tabular}{lcccc}
+\toprule
+ & \texttt{nano} & \texttt{haiku} & \texttt{sonnet} & \texttt{grok} \\
+\midrule
+Raw (no system prompt) & $78\%$ & $66\%$ & $77\%$ & $83\%$ \\
+Standard CoT           & $75\%$ & $63\%$ & $73\%$ & $82\%$ \\
+NoT                    & \good{$27\%$} & \good{$27\%$} & \good{$47\%$} & \good{$29\%$} \\
+\bottomrule
+\end{tabular}
+
+\bigskip
+\begin{itemize}
+  \item Reductions of $-26$ to $-53$\,pp vs.\ CoT, Fisher $p<10^{-4}$ on \good{every generator}; three of four land within two points of the human rate.
+  \item Generic system prompts and step-by-step reasoning barely move the rates -- only the stakeholder scaffold does.
+  \item Moral sycophancy collapses where it has headroom: both-sides affirmation falls $97\%\!\rightarrow\!19\%$ (\texttt{nano}) and $94\%\!\rightarrow\!1\%$ (\texttt{grok}).
+\end{itemize}
+\end{frame}
+
+% ===========================================================================
+% Slide 3: The two-layer arc -- debate recovers the indirectness cost
+% ===========================================================================
+\begin{frame}{The integration layer pays back the scaffold's one cost}
+\begin{columns}[T]
+\begin{column}{0.5\textwidth}
+\textbf{Single-agent NoT's honest cost}
+\begin{itemize}
+  \item Indirectness rises slightly (hedged delivery): $+1$ to $+7$\,pp on OEQ, n.s.
+  \item No single-agent arm approaches human directness ($21\%$ vs.\ $71$--$97\%$).
+\end{itemize}
+\medskip
+\textbf{Multi-stakeholder NoT (debate)}
+\begin{itemize}
+  \item Indirectness falls in \good{all eight} dataset--generator cells ($-11$ to $-28$\,pp).
+  \item OEQ validation falls further on \good{all four} generators.
+\end{itemize}
+\end{column}
+\begin{column}{0.46\textwidth}
+\textbf{OEQ validation, single vs.\ debate}
+\medskip
+
+\begin{tabular}{lcc}
+\toprule
+ & NoT & Debate NoT \\
+\midrule
+\texttt{nano}   & $27\%$ & $26\%$ \\
+\texttt{haiku}  & $27\%$ & \good{$18\%$} \\
+\texttt{sonnet} & $47\%$ & \good{$24\%$} \\
+\texttt{grok}   & $29\%$ & \good{$8\%$} \\
+\bottomrule
+\end{tabular}
+
+\bigskip
+\good{Two layers, two failures fixed:}\\
+NoT removes whose-side sycophancy;\\
+integration removes the hedging.
+\end{column}
+\end{columns}
+\end{frame}
+
+\end{document}
