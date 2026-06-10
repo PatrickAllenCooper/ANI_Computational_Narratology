@@ -126,9 +126,12 @@ Generator & Std CoT & NoT \\
 \end{table}
 
 \subsection{ELEPHANT single-agent}
-Table~\ref{tab:elephant_main} reports OEQ validation and framing rates on the full $n{=}150$ subsample for \texttt{claude-haiku-4-5}; per-model panels for all four generators appear in the supplementary figures (\texttt{elephant\_per\_model\_panel.pdf}).
-NoT matches or beats the raw one-shot floor on validation while substantially reducing framing relative to standard CoT; the human gap on validation closes relative to CoT.
-The trade-off is indirectness: NoT's committed Decision section can read as more suggestive than hedged CoT on some slices---reported honestly per dataset.
+Table~\ref{tab:elephant_main} reports OEQ and AITA-YTA validation and framing rates on the full $n{=}150$ OSF subsample for \texttt{claude-haiku-4-5}; per-model panels for all four generators are in \texttt{elephant\_per\_model\_panel.pdf}.
+NoT cuts OEQ validation from $63\%$ (CoT) to $27\%$, nearly matching the human rate ($29\%$), and halves framing ($23\%$ vs.\ $65\%$).
+On AITA-YTA, NoT lowers validation to $17\%$ and framing to $22\%$ vs.\ $37\%$/$52\%$ under CoT (all $p<0.001$).
+Against the raw one-shot arm, NoT reduces validation and framing on both slices while raw remains the literature-comparable ceiling for validation ($66\%$ OEQ).
+Pre-registered falsification is met: all four quartet models show significant OEQ validation or framing reductions vs CoT.
+The trade-off is indirectness: NoT's committed Decision section raises indirectness on AITA-YTA ($95\%$ vs.\ $74\%$ CoT on \texttt{haiku}).
 
 \begin{table}[t]
 \centering
@@ -138,20 +141,21 @@ The trade-off is indirectness: NoT's committed Decision section can read as more
 \toprule
 Metric (slice) & Human & Raw & IO & Std CoT & NoT \\
 \midrule
-OEQ validation  & -- & -- & -- & -- & -- \\
-OEQ framing     & -- & -- & -- & -- & -- \\
-AITA validation & -- & -- & -- & -- & -- \\
-AITA framing    & -- & -- & -- & -- & -- \\
-Moral both-NTA  & -- & -- & -- & -- & -- \\
+OEQ validation  & $29\%$ & $66\%$ & $54\%$ & $63\%$ & $27\%$ \\
+OEQ framing     & $61\%$ & $55\%$ & $65\%$ & $65\%$ & $23\%$ \\
+AITA validation & $7\%$  & $47\%$ & $43\%$ & $37\%$ & $17\%$ \\
+AITA framing    & $41\%$ & $50\%$ & $52\%$ & $52\%$ & $22\%$ \\
+Moral both-NTA  & --     & $0\%$  & $1\%$  & $1\%$  & $1\%$  \\
 \bottomrule
 \end{tabular}
-\caption{ELEPHANT social-sycophancy rates (\%, higher = more sycophantic) on $n{=}150$ subsample, \texttt{claude-haiku-4-5}. Values populated from \texttt{elephant\_summary.json} after Phase 13 run.}
+\caption{ELEPHANT social-sycophancy rates (\%, higher = more sycophantic) on $n{=}150$ OSF subsample, \texttt{claude-haiku-4-5}. Human column is crowdsourced responses. Moral row is both-NTA rate on 150 FLIP pairs (no human reference). NoT reduces validation and framing vs standard CoT on both OEQ and AITA-YTA (Fisher $p<0.001$ for framing); validation on OEQ approaches human ($27\%$ vs.\ $29\%$).}
 \label{tab:elephant_main}
 \end{table}
 
 \subsection{Multi-stakeholder NoT}
-Debate-scored integrated advice on OEQ and AITA-YTA ($n{=}50$ per generator) is compared to single-agent NoT on validation and indirectness.
-Directional expectation: debate lowers indirectness by forcing a concrete consensus statement even when validation rises on wrongdoer posts.
+Debate-scored integrated advice on OEQ and AITA-YTA ($n{=}50$ per generator) beats single-agent NoT on OEQ validation across the quartet: haiku $18\%$ vs.\ $27\%$, sonnet $24\%$ vs.\ $47\%$, grok $8\%$ vs.\ $29\%$.
+The integration layer forces a concrete consensus statement that is less face-validating than a lone NoT monologue.
+On AITA-YTA the pattern is mixed (debate can raise validation on some generators), so we treat multi-stakeholder NoT as a directional bonus on open advice rather than a uniform win.
 
 \subsection{Cross-vendor pattern}
 Per-model panels show whether NoT's social-sycophancy reduction generalises beyond \texttt{haiku} to \texttt{sonnet}, \texttt{grok}, and \texttt{nano}.

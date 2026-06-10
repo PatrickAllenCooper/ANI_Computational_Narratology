@@ -234,7 +234,7 @@ def figure_rates(sa: dict) -> None:
     if not gens:
         gens = sorted({k.split("|")[1] for k in stats if k.startswith(f"{ds}|") and "human" not in k})
 
-    arms = [a for a in ARM_ORDER if a != "human_baseline" or f"{ds}|human|human_baseline" in stats]
+    arms = [a for a in ARM_ORDER if a != "human_baseline" or f"{ds}|human_baseline|human" in stats]
     n_panels = min(4, len(gens))
     fig, axes, _ = fs.panel_grid(n_panels, panel_w=2.5, panel_h=2.8)
     if n_panels == 1:
@@ -245,7 +245,7 @@ def figure_rates(sa: dict) -> None:
         labels = []
         colors = []
         for arm in arms:
-            key = f"{ds}|human|human_baseline" if arm == "human_baseline" else f"{ds}|{gen}|{arm}"
+            key = f"{ds}|human_baseline|human" if arm == "human_baseline" else f"{ds}|{gen}|{arm}"
             if key not in stats or f"{metric}_rate" not in stats[key]:
                 continue
             rates.append(stats[key][f"{metric}_rate"])
