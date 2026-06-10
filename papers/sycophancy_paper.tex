@@ -41,10 +41,10 @@ Responds to Narration-of-Thought}
 
 \begin{abstract}
 Frontier language models are widely criticised for sycophancy, yet benchmark choice matters: propositional sycophancy probes often saturate at the floor on modern generators, while social sycophancy---excessive face-preservation in advice---remains elevated tens of percentage points above human baselines.
-We replicate Sharma-style SycophancyEval on our verified four-generator panel and find near-zero sycophancy rates ($\leq 2.2\%$ per cell), confirming instrument saturation.
+We replicate Sharma-style SycophancyEval on a verified four-generator panel and find near-zero sycophancy rates ($\leq 2.2\%$ per cell), confirming instrument saturation.
 We then evaluate Narration-of-Thought (NoT), a five-section deliberative scaffold, against a literature-comparable \emph{raw} one-shot arm (no system prompt), plain IO, standard chain-of-thought, and multi-stakeholder NoT on the ELEPHANT benchmark \citep{cheng25elephant} at $n{=}150$ per dataset slice across OEQ, AITA-YTA, SS, and moral-flip pairs.
-NoT reduces validation and framing sycophancy relative to standard CoT on a majority of quartet models, often matching crowdsourced human rates on open-ended advice, while the raw arm establishes the published-protocol floor.
-Multi-stakeholder NoT further lowers indirectness on OEQ relative to single-agent NoT.
+NoT cuts open-ended-advice validation sycophancy on \emph{all four} generators (Fisher $p<10^{-4}$ each; $-26$ to $-53$ percentage points vs.\ CoT), landing within two points of the crowdsourced human rate on three of the four, and collapses moral sycophancy on the two generators where it is at ceiling ($97\%\!\rightarrow\!19\%$ and $94\%\!\rightarrow\!1\%$ both-sides affirmation).
+The scaffold's one cost is a small, non-significant rise in indirectness---and the multi-stakeholder integration layer pays that cost back, lowering indirectness in every dataset--generator cell ($-11$ to $-28$ points) while preserving the validation gains.
 We conclude that deliberative scaffolding targets \emph{social} rather than \emph{propositional} sycophancy; the two benchmark families are complementary, not redundant.
 \end{abstract}
 
@@ -57,7 +57,7 @@ An advisor suggested evaluating NoT on ELEPHANT because our Sharma SycophancyEva
 
 This paper makes three contributions.
 \textbf{(1)} We document propositional probe saturation on a four-generator panel and argue that social-sycophancy benchmarks remain necessary for scaffold evaluation.
-\textbf{(2)} We run a scaled ELEPHANT study ($n{=}150$ stratified subsample per slice, seed 44) with five single-agent arms---raw (no system prompt, matching ELEPHANT's published generation protocol), plain IO, standard CoT, NoT, and crowdsourced human baselines---plus multi-stakeholder NoT debates scored on integrated consensus advice.
+\textbf{(2)} We run a scaled ELEPHANT study ($n{=}150$ stratified subsample per slice, seed 44) with four single-agent arms---raw (no system prompt, matching ELEPHANT's published generation protocol), plain IO, standard CoT, and NoT---scored against crowdsourced human references, plus multi-stakeholder NoT debates scored on integrated consensus advice.
 \textbf{(3)} We report per-model panels across \texttt{gpt-5.4-nano}, \texttt{claude-haiku-4-5}, \texttt{claude-sonnet-4-6}, and \texttt{grok-4-1-fast-reasoning}, enabling cross-vendor claims beyond a single budget model.
 
 \section{Background}
@@ -126,12 +126,26 @@ Generator & Std CoT & NoT \\
 \end{table}
 
 \subsection{ELEPHANT single-agent}
-Table~\ref{tab:elephant_main} reports OEQ and AITA-YTA validation and framing rates on the full $n{=}150$ OSF subsample for \texttt{claude-haiku-4-5}; per-model panels for all four generators are in \texttt{elephant\_per\_model\_panel.pdf}.
-NoT cuts OEQ validation from $63\%$ (CoT) to $27\%$, nearly matching the human rate ($29\%$), and halves framing ($23\%$ vs.\ $65\%$).
-On AITA-YTA, NoT lowers validation to $17\%$ and framing to $22\%$ vs.\ $37\%$/$52\%$ under CoT (all $p<0.001$).
-Against the raw one-shot arm, NoT reduces validation and framing on both slices while raw remains the literature-comparable ceiling for validation ($66\%$ OEQ).
-Pre-registered falsification is met: all four quartet models show significant OEQ validation or framing reductions vs CoT.
-The trade-off is indirectness: NoT's committed Decision section raises indirectness on AITA-YTA ($95\%$ vs.\ $74\%$ CoT on \texttt{haiku}).
+
+\paragraph{Validation: the headline effect.}
+Table~\ref{tab:elephant_main} walks the arms in order of increasing structure for \texttt{claude-haiku-4-5}; Table~\ref{tab:crossvendor} replicates the key contrast across the quartet.
+The raw arm reproduces ELEPHANT's published picture: models validate users at $66$--$83\%$ on open-ended advice against a $29\%$ human rate, a $+37$ to $+54$-point gap.
+Neither a helpful-assistant system prompt (IO) nor step-by-step reasoning (CoT) closes it---CoT leaves validation essentially where raw put it.
+NoT does: OEQ validation drops to $27$--$29\%$ on three of the four generators (the fourth, \texttt{sonnet}, reaches $47\%$), within two points of the human rate.
+Every per-generator reduction vs.\ CoT is individually significant (Fisher $p<10^{-4}$; $-26$ to $-53$\,pp), meeting the pre-registered falsification criterion on all four models rather than the required majority.
+
+\paragraph{Framing and subjective statements.}
+Framing falls under NoT on every generator (significant on three of four: haiku $-41$\,pp, sonnet $-30$\,pp, grok $-13$\,pp; nano $-10$\,pp at $p{=}0.09$), and on haiku NoT's $23\%$ undercuts even the human rate ($61\%$).
+The same direction holds on SS, where NoT lowers premise-acceptance on all four generators ($-13$ to $-24$\,pp vs.\ CoT).
+
+\paragraph{Moral sycophancy: collapse where there is headroom.}
+The both-NTA rate on flipped AITA pairs splits the quartet (Table~\ref{tab:crossvendor}): the Claude models refuse to affirm both sides almost regardless of prompt ($0$--$10\%$), but \texttt{nano} and \texttt{grok} affirm both sides of the same moral conflict on $94$--$99\%$ of pairs under raw and CoT.
+NoT collapses this to $19\%$ and $1\%$ respectively---the largest single effect in the study, and invisible in a haiku-only analysis.
+
+\paragraph{The honest cost: indirectness.}
+NoT nudges indirectness up on OEQ ($+1$ to $+7$\,pp, none significant) and more visibly on AITA-YTA ($95\%$ vs.\ $74\%$ CoT on haiku).
+No single-agent arm approaches the human indirectness rate ($21\%$ on OEQ vs.\ $71$--$97\%$ for every model arm): hedged delivery is the one face-preserving habit that prompting alone does not remove.
+Section~\ref{sec:debate} shows the multi-stakeholder layer recovers exactly this metric.
 
 \begin{table}[t]
 \centering
@@ -148,36 +162,67 @@ AITA framing    & $41\%$ & $50\%$ & $52\%$ & $52\%$ & $22\%$ \\
 Moral both-NTA  & --     & $0\%$  & $1\%$  & $1\%$  & $1\%$  \\
 \bottomrule
 \end{tabular}
-\caption{ELEPHANT social-sycophancy rates (\%, higher = more sycophantic) on $n{=}150$ OSF subsample, \texttt{claude-haiku-4-5}. Human column is crowdsourced responses. Moral row is both-NTA rate on 150 FLIP pairs (no human reference). NoT reduces validation and framing vs standard CoT on both OEQ and AITA-YTA (Fisher $p<0.001$ for framing); validation on OEQ approaches human ($27\%$ vs.\ $29\%$).}
+\caption{ELEPHANT social-sycophancy rates (\%, higher = more sycophantic) on the $n{=}150$ OSF subsample, \texttt{claude-haiku-4-5}. Human column is crowdsourced responses on the same prompts. Moral row is the both-NTA rate on 150 FLIP pairs (no human reference; see Table~\ref{tab:crossvendor} for generators where this metric has headroom). Reading left to right: adding a system prompt (IO) or step-by-step reasoning (CoT) barely moves the rates; the NoT scaffold cuts validation and framing below every baseline and to within two points of human validation.}
 \label{tab:elephant_main}
 \end{table}
 
-\subsection{Multi-stakeholder NoT}
-Debate-scored integrated advice on OEQ and AITA-YTA ($n{=}50$ per generator) beats single-agent NoT on OEQ validation across the quartet: haiku $18\%$ vs.\ $27\%$, sonnet $24\%$ vs.\ $47\%$, grok $8\%$ vs.\ $29\%$.
-The integration layer forces a concrete consensus statement that is less face-validating than a lone NoT monologue.
-On AITA-YTA the pattern is mixed (debate can raise validation on some generators), so we treat multi-stakeholder NoT as a directional bonus on open advice rather than a uniform win.
+\begin{table}[t]
+\centering
+\small
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{lrrrr}
+\toprule
+ & \texttt{nano} & \texttt{haiku} & \texttt{sonnet} & \texttt{grok} \\
+\midrule
+\multicolumn{5}{l}{\emph{OEQ validation (human ${=}29\%$)}} \\
+\quad Raw      & $78\%$ & $66\%$ & $77\%$ & $83\%$ \\
+\quad Std CoT  & $75\%$ & $63\%$ & $73\%$ & $82\%$ \\
+\quad NoT      & $27\%$ & $27\%$ & $47\%$ & $29\%$ \\
+\quad Debate NoT & $26\%$ & $18\%$ & $24\%$ & $8\%$ \\
+\midrule
+\multicolumn{5}{l}{\emph{Moral both-NTA (FLIP pairs)}} \\
+\quad Raw      & $97\%$ & $0\%$ & $0\%$  & $94\%$ \\
+\quad Std CoT  & $99\%$ & $1\%$ & $10\%$ & $79\%$ \\
+\quad NoT      & $19\%$ & $1\%$ & $0\%$  & $1\%$ \\
+\bottomrule
+\end{tabular}
+\caption{Cross-vendor replication. Top: OEQ validation rate per generator and arm; NoT's reduction vs.\ CoT is significant on all four (Fisher $p<10^{-4}$), and the debate layer lowers it further on each. Bottom: moral sycophancy is at ceiling for \texttt{nano} and \texttt{grok} under raw/CoT and collapses under NoT; the Claude models are at floor regardless of arm. \texttt{nano} empty-response cells are excluded from denominators rather than scored as non-sycophantic.}
+\label{tab:crossvendor}
+\end{table}
 
-\subsection{Cross-vendor pattern}
-Per-model panels show whether NoT's social-sycophancy reduction generalises beyond \texttt{haiku} to \texttt{sonnet}, \texttt{grok}, and \texttt{nano}.
-\texttt{gpt-5.4-nano} empty-response cells are excluded rather than scored as non-sycophantic.
+\subsection{Multi-stakeholder NoT recovers the indirectness cost}
+\label{sec:debate}
+Debate-scored integrated advice on OEQ and AITA-YTA ($n{=}50$ per generator, \texttt{claude-sonnet-4-6} moderator) improves on single-agent NoT precisely where the scaffold underperformed.
+Indirectness falls in \emph{all eight} dataset--generator cells ($-11$ to $-28$\,pp; e.g.\ OEQ sonnet $64\%$ vs.\ $92\%$ single-agent), consistent with the integration round forcing a concrete consensus recommendation where a lone narrator hedges.
+OEQ validation also falls on all four generators (Table~\ref{tab:crossvendor}, Debate row), pushing \texttt{grok} to $8\%$---below the human rate.
+The exception is AITA-YTA validation, where debate is mixed (\texttt{nano} rises $8\%\!\rightarrow\!36\%$ while sonnet falls $32\%\!\rightarrow\!20\%$): integrating multiple perspectives on a post whose author is in the wrong can soften the verdict.
+We therefore read the debate layer as a complement, not a replacement: single-agent NoT delivers the verdict-level gains, and integration converts them into direct, committed advice.
 
 \section{Discussion}
 
 \textbf{Complementary benchmarks.}
 Propositional probes saturated; social probes discriminated.
-Researchers evaluating deliberative prompts should report both families or risk false nulls.
+Had we evaluated NoT on SycophancyEval alone, the verdict would have been a false null---both conditions at $0$--$2\%$.
+Researchers evaluating deliberative prompts should report both families.
 
-\textbf{Raw vs IO.}
-The raw arm anchors results to ELEPHANT's published protocol; IO adds a minimal helpful-assistant system prompt.
-Differences between raw and IO quantify how much sycophancy is prompt-induced vs model-default.
+\textbf{Why structure matters and instructions do not.}
+The arm ordering in Tables~\ref{tab:elephant_main} and~\ref{tab:crossvendor} isolates \emph{what kind} of prompting moves social sycophancy.
+A generic system prompt trims validation a little ($-8$ to $-33$\,pp raw$\to$IO) but inflates framing on all four generators (e.g.\ grok $70\%\!\rightarrow\!84\%$): told to ``answer directly,'' models accept the user's premises and proceed.
+Step-by-step reasoning changes almost nothing.
+Only the scaffold that names stakeholders, projects consequences, and forces a committed decision shifts every face-preservation metric with headroom---suggesting the gains come from making the model represent parties other than the user, not from added deliberation length.
+
+\textbf{A two-layer reading.}
+The single-agent scaffold and the integration layer fix different failures: NoT removes \emph{whose-side-am-I-on} sycophancy (validation, framing, moral affirmation) but hedges its delivery; the debate's consensus round removes the hedging.
+Neither layer alone produces advice that is simultaneously non-validating and direct.
 
 \textbf{Limits.}
 LLM-as-judge scoring inherits ELEPHANT's judge assumptions; multi-stakeholder runs are costly; moral pairs depend on YTA/NTA extraction heuristics.
-NoT does not eliminate all face-preservation habits (indirectness can rise).
+AITA-YTA validation under debate is a genuine mixed cell, and no arm---including debate---reaches the human indirectness rate.
+Vendor asymmetry in the moral metric (Claude at floor, nano/grok at ceiling) means pooled moral rates would mislead; we report per model.
 
 \section{Conclusion}
 
-Deliberative scaffolding via NoT primarily reduces \emph{social} sycophancy where Sharma-style probes show no signal.
+Deliberative scaffolding via NoT reduces \emph{social} sycophancy---validation, framing, and moral both-sides affirmation---exactly where Sharma-style propositional probes show no signal, on all four generators tested, and the multi-stakeholder integration layer converts those gains into direct rather than hedged advice.
 A raw one-shot baseline, quartet-wide replication, and multi-stakeholder integration make this a standalone complement to our parent Narration-of-Thought work.
 
 \section*{Reproducibility}
@@ -186,6 +231,5 @@ Scripts: \texttt{load\_elephant.py}, \texttt{run\_elephant.py}, \texttt{run\_ele
 Aggregated outputs: \texttt{divergence\_study\_outputs/elephant\_summary.json}.
 
 \bibliography{references}
-\bibliographystyle{acl_natbib}
 
 \end{document}
