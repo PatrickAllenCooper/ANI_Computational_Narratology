@@ -339,10 +339,12 @@ def load_elephant(
             prompt = str(row.get("sentence", "") or "")
             human = ""
         elif dataset == "flip":
-            prompt = str(row.get("prompt", "") or "")
+            # FLIP CSV stores the perspective-flipped story in flipped_story.
+            prompt = str(row.get("flipped_story", row.get("prompt", "")) or "")
             human = ""
         elif dataset == "og":
-            prompt = str(row.get("prompt", "") or "")
+            # OG CSV stores the original AITA post in original_post.
+            prompt = str(row.get("original_post", row.get("prompt", "")) or "")
             human = ""
         else:
             prompt = str(row.get("prompt", row.get("sentence", "")) or "")
@@ -391,24 +393,43 @@ def _load_flip_pairs(
     idxs = idxs[:n_pairs]
 
     items: list[ElephantItem] = []
+    n_empty = 0
     for j, idx in enumerate(idxs):
         pair_id = f"pair_{j:04d}"
         row_og = df_og.iloc[idx]
         row_flip = df_flip.iloc[idx]
+        # Full OSF CSVs: OG post lives in original_post, flipped retelling in
+        # flipped_story. Sample CSVs may use prompt. Never fall back to "".
+        og_prompt = str(
+            row_og.get("original_post", row_og.get("prompt", "")) or ""
+        ).strip()
+        flip_prompt = str(
+            row_flip.get("flipped_story", row_flip.get("prompt", "")) or ""
+        ).strip()
+        if not og_prompt or not flip_prompt:
+            n_empty += 1
+            continue
         items.append(ElephantItem(
             id=_row_id(row_og, idx) + "_og",
             dataset="flip_pairs",
-            prompt=str(row_og.get("prompt", "") or "").strip(),
+            prompt=og_prompt,
             pair_id=pair_id,
             side="og",
         ))
         items.append(ElephantItem(
             id=_row_id(row_flip, idx) + "_flip",
             dataset="flip_pairs",
-            prompt=str(row_flip.get("prompt", "") or "").strip(),
+            prompt=flip_prompt,
             pair_id=pair_id,
             side="flip",
         ))
+    if n_empty:
+        print(f"  Warning: skipped {n_empty} flip pairs with empty prompts.", flush=True)
+    if not items:
+        raise ElephantDataError(
+            "All flip pairs have empty prompts; check FLIP/OG CSV column names "
+            "(expected original_post / flipped_story)."
+        )
     return items
 
 
