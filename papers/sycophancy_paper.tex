@@ -198,6 +198,38 @@ OEQ validation also falls on all four generators (Table~\ref{tab:crossvendor}, D
 The exception is AITA-YTA validation, where debate is mixed (\texttt{nano} rises $8\%\!\rightarrow\!36\%$ while sonnet falls $32\%\!\rightarrow\!20\%$): integrating multiple perspectives on a post whose author is in the wrong can soften the verdict.
 We therefore read the debate layer as a complement, not a replacement: single-agent NoT delivers the verdict-level gains, and integration converts them into direct, committed advice.
 
+\section{Phase 14: Narrative Gradients for Social Sycophancy}
+\label{sec:phase14}
+
+Phase 13 established that hand-designed NoT reduces ELEPHANT social sycophancy.
+Phases 10--10b optimised NoT for deliberative \emph{depth} (stakeholder count, uncertainty score) but never evaluated those prompts on ELEPHANT.
+Phase 14 joins the narrative-gradient line to the sycophancy benchmark and compares optimizer families on a shared sycophancy loss.
+
+\subsection{Track 1: Depth-optimised NoT on ELEPHANT}
+We evaluate \texttt{narrative\_cot\_v2} (Phase 10, in-family training judge) and \texttt{narrative\_cot\_v3} (Phase 10b, cross-family judge) on the Phase 13 ELEPHANT grid ($n{=}150$, seed 44).
+This tests whether depth-targeted optimisation preserves the hand prompt's social-sycophancy reduction or trades it away.
+
+\subsection{Track 2: Sycophancy-targeted prompt optimisation}
+We run textual-gradient descent initialised at verbatim NoT, optimising
+$L = \mathrm{mean}(\text{validation} + \text{indirectness} + \text{framing})$
+on a disjoint OEQ train split (indices 150--249 of the seed-44 shuffle; $n{=}100$).
+Holdout evaluation uses the Phase 13 OEQ set (indices 0--149) plus FLIP moral pairs.
+Training uses \texttt{claude-haiku-4-5} as generator, \texttt{grok-4-1-fast-reasoning} as cross-family training judge (following Phase 10b), and \texttt{claude-sonnet-4-6} as optimiser \citep{yuksekgonul2024textgrad}.
+
+\subsection{Optimizer baselines}
+On the identical loss and train split we compare:
+\textbf{(i)} TextGrad-on-standard-CoT (init \texttt{standard\_cot});
+\textbf{(ii)} OPRO \citep{yang2023opro} (trajectory meta-prompt, no textual gradient step);
+\textbf{(iii)} APE \citep{zhou2022ape} (one-shot candidate sampling and selection).
+Each baseline receives $\sim$10 prompt evaluations.
+Explicit ``do not be sycophantic'' instructions underperform structural mitigation \citep{askdonttell2026}; our optimisers target scaffold structure rather than negation.
+
+\subsection{Degeneracy guard}
+Holdout responses are re-coded with the Phase 1 deliberative rubric (stakeholder count, uncertainty score) to detect whether the optimiser gutted the narrative scaffold to win on sycophancy metrics.
+
+Scripts: \texttt{syco\_loss.py}, \texttt{run\_phase14\_syco\_grad.py}, \texttt{run\_phase14\_tg\_cot.py}, \texttt{run\_phase14\_opro.py}, \texttt{run\_phase14\_ape.py}, \texttt{run\_phase14\_holdout.py}, \texttt{aggregate\_phase14.py}.
+Pre-registration: Phase 14 block in \texttt{Guidance\_Documents/study\_design.md}.
+
 \section{Discussion}
 
 \textbf{Complementary benchmarks.}
@@ -226,9 +258,9 @@ Deliberative scaffolding via NoT reduces \emph{social} sycophancy---validation, 
 A raw one-shot baseline, quartet-wide replication, and multi-stakeholder integration make this a standalone complement to our parent Narration-of-Thought work.
 
 \section*{Reproducibility}
-Phase 13 pre-registration: \texttt{Guidance\_Documents/study\_design.md}.
-Scripts: \texttt{load\_elephant.py}, \texttt{run\_elephant.py}, \texttt{run\_elephant\_debate.py}, \texttt{aggregate\_elephant.py}.
-Aggregated outputs: \texttt{divergence\_study\_outputs/elephant\_summary.json}.
+Phase 13--14 pre-registration: \texttt{Guidance\_Documents/study\_design.md}.
+Scripts: \texttt{load\_elephant.py}, \texttt{run\_elephant.py}, \texttt{run\_elephant\_debate.py}, \texttt{aggregate\_elephant.py}; Phase 14: \texttt{syco\_loss.py}, \texttt{run\_phase14\_*.py}, \texttt{aggregate\_phase14.py}.
+Aggregated outputs: \texttt{divergence\_study\_outputs/elephant\_summary.json}, \texttt{phase14\_summary.json}.
 
 \bibliography{references}
 

@@ -285,6 +285,7 @@ def load_elephant(
     data_dir: Path = DATA_DIR,
     *,
     allow_sample: bool = False,
+    offset: int = 0,
 ) -> list[ElephantItem]:
     """Load stratified subsample of an ELEPHANT dataset."""
     dataset = dataset.lower().replace("-", "_")
@@ -294,7 +295,10 @@ def load_elephant(
     _validate_n(dataset, n, data_dir, allow_sample)
 
     if dataset == "flip_pairs":
-        return _load_flip_pairs(n=n, seed=seed, data_dir=data_dir, allow_sample=allow_sample)
+        return _load_flip_pairs(
+            n=n, seed=seed, data_dir=data_dir,
+            allow_sample=allow_sample, offset=offset,
+        )
 
     csv_path = _resolve_csv(dataset, data_dir, allow_sample=allow_sample)
     df = pd.read_csv(csv_path)
@@ -302,15 +306,25 @@ def load_elephant(
         raise ElephantDataError(
             f"Requested n={n} but only sample file {csv_path.name} ({len(df)} rows) is present."
         )
-    if n is not None:
-        if n > len(df):
-            print(f"  Warning: requested n={n} but {dataset} has {len(df)} rows; using all.", flush=True)
-            n = len(df)
-        if n < len(df):
-            rng = random.Random(seed)
-            idxs = list(range(len(df)))
-            rng.shuffle(idxs)
-            df = df.iloc[idxs[:n]].reset_index(drop=True)
+    if n is not None or offset > 0:
+        rng = random.Random(seed)
+        idxs = list(range(len(df)))
+        rng.shuffle(idxs)
+        if offset > 0:
+            if offset >= len(idxs):
+                raise ElephantDataError(
+                    f"offset={offset} exceeds dataset {dataset} size {len(idxs)}"
+                )
+            idxs = idxs[offset:]
+        take = n if n is not None else len(idxs)
+        if take > len(idxs):
+            print(
+                f"  Warning: requested n={take} but only {len(idxs)} rows after "
+                f"offset={offset}; using all.",
+                flush=True,
+            )
+            take = len(idxs)
+        df = df.iloc[idxs[:take]].reset_index(drop=True)
 
     items: list[ElephantItem] = []
     for i, row in df.iterrows():
@@ -353,6 +367,7 @@ def _load_flip_pairs(
     data_dir: Path,
     *,
     allow_sample: bool = False,
+    offset: int = 0,
 ) -> list[ElephantItem]:
     """Return paired OG+FLIP items sharing pair_id for moral sycophancy."""
     flip_path = _resolve_csv("flip", data_dir, allow_sample=allow_sample)
@@ -360,11 +375,19 @@ def _load_flip_pairs(
     df_flip = pd.read_csv(flip_path)
     df_og = pd.read_csv(og_path)
     n_pairs = min(len(df_flip), len(df_og))
-    if n is not None:
-        n_pairs = min(n, n_pairs)
     rng = random.Random(seed)
     idxs = list(range(min(len(df_flip), len(df_og))))
     rng.shuffle(idxs)
+    if offset > 0:
+        if offset >= len(idxs):
+            raise ElephantDataError(
+                f"offset={offset} exceeds flip pair count {len(idxs)}"
+            )
+        idxs = idxs[offset:]
+    if n is not None:
+        n_pairs = min(n, len(idxs))
+    else:
+        n_pairs = len(idxs)
     idxs = idxs[:n_pairs]
 
     items: list[ElephantItem] = []

@@ -36,10 +36,38 @@ from scripts.run_phase1_quartet import PROMPTS, _safe, OUT_DIR
 BUDGET_GENERATORS = ["gpt-5.4-nano", "claude-haiku-4-5", "grok-4-1-fast-reasoning"]
 ALL_GENERATORS = BUDGET_GENERATORS + ["claude-sonnet-4-6"]
 SINGLE_AGENT_ARMS = ["raw", "baseline_io", "standard_cot", "narrative_cot"]
+OPTIMIZED_NOT_ARMS = ["narrative_cot_v2", "narrative_cot_v3"]
 AITA_BINARY_SUFFIX = "\nOutput only YTA or NTA."
 EMPTY_SCORE = -1
 
 OUT_CSV = OUT_DIR / "elephant_singleagent_raw.csv"
+
+
+def _merge_rows(existing: list[dict], new_rows: list[dict], arms: list[str]) -> list[dict]:
+    """Keep prior rows for arms not re-run; replace cells for arms in this run."""
+    arms_set = set(arms)
+    gens_in_run = {r.get("generator") for r in new_rows if r.get("generator")}
+    datasets_in_run = {r.get("dataset") for r in new_rows if r.get("dataset")}
+
+    def _replace(r: dict) -> bool:
+        if r.get("arm") not in arms_set:
+            return False
+        if r.get("dataset") not in datasets_in_run:
+            return False
+        gen = r.get("generator", "")
+        if gen == "human":
+            return r.get("arm") in arms_set
+        return gen in gens_in_run
+
+    kept = [r for r in existing if not _replace(r)]
+    return kept + new_rows
+
+
+def _read_existing_csv() -> list[dict]:
+    if not OUT_CSV.exists():
+        return []
+    with OUT_CSV.open(newline="", encoding="utf-8") as f:
+        return list(csv.DictReader(f))
 
 
 def _gen_cache_path(dataset: str, item_id: str, gen: str, arm: str) -> Path:
@@ -49,7 +77,7 @@ def _gen_cache_path(dataset: str, item_id: str, gen: str, arm: str) -> Path:
 def _max_tokens_for(gen_model: str, arm: str) -> int:
     if gen_model == "gpt-5.4-nano":
         return 2048
-    if arm == "narrative_cot":
+    if arm in ("narrative_cot", "narrative_cot_v2", "narrative_cot_v3"):
         return 2048
     return 1024
 
@@ -324,12 +352,17 @@ def main() -> int:
         print("No rows collected.")
         return 1
 
-    fieldnames = sorted({k for r in rows for k in r})
+    existing = _read_existing_csv()
+    merged = _merge_rows(existing, rows, arms) if existing else rows
+    fieldnames = sorted({k for r in merged for k in r})
     with OUT_CSV.open("w", newline="", encoding="utf-8") as f:
         w = csv.DictWriter(f, fieldnames=fieldnames, extrasaction="ignore")
         w.writeheader()
-        w.writerows(rows)
-    print(f"Wrote {len(rows)} rows to {OUT_CSV}")
+        w.writerows(merged)
+    print(
+        f"Wrote {len(merged)} rows to {OUT_CSV} "
+        f"({len(rows)} new, {len(existing)} prior)",
+    )
     return 0
 
 

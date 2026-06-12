@@ -30,10 +30,15 @@ ARM_LABELS = {
     "baseline_io": "IO",
     "standard_cot": "Std CoT",
     "narrative_cot": "NoT",
+    "narrative_cot_v2": "NoT-v2",
+    "narrative_cot_v3": "NoT-v3",
     "human_baseline": "Human",
     "multi_stakeholder_not": "Debate NoT",
 }
-ARM_ORDER = ["human_baseline", "raw", "baseline_io", "standard_cot", "narrative_cot"]
+ARM_ORDER = [
+    "human_baseline", "raw", "baseline_io", "standard_cot",
+    "narrative_cot", "narrative_cot_v2", "narrative_cot_v3",
+]
 QUARTET = [
     "gpt-5.4-nano", "claude-haiku-4-5", "claude-sonnet-4-6", "grok-4-1-fast-reasoning",
 ]
@@ -137,6 +142,8 @@ def aggregate_singleagent(rows: list[dict]) -> dict:
 
     not_vs_cot = _pair_deltas("narrative_cot", "standard_cot", "not_vs_cot")
     not_vs_raw = _pair_deltas("narrative_cot", "raw", "not_vs_raw")
+    v2_vs_not = _pair_deltas("narrative_cot_v2", "narrative_cot", "v2_vs_not")
+    v3_vs_not = _pair_deltas("narrative_cot_v3", "narrative_cot", "v3_vs_not")
     cot_vs_raw = _pair_deltas("standard_cot", "raw", "cot_vs_raw")
     io_vs_raw = _pair_deltas("baseline_io", "raw", "io_vs_raw")
 
@@ -145,7 +152,10 @@ def aggregate_singleagent(rows: list[dict]) -> dict:
         hkey = f"{ds}|human_baseline|human"
         if hkey not in stats:
             continue
-        for arm in ("raw", "baseline_io", "standard_cot", "narrative_cot"):
+        for arm in (
+            "raw", "baseline_io", "standard_cot", "narrative_cot",
+            "narrative_cot_v2", "narrative_cot_v3",
+        ):
             for gen in sorted({
                 r["generator"] for r in rows
                 if r.get("dataset") == ds and r.get("arm") == arm
@@ -171,6 +181,8 @@ def aggregate_singleagent(rows: list[dict]) -> dict:
         "cell_stats": stats,
         "not_vs_cot": not_vs_cot,
         "not_vs_raw": not_vs_raw,
+        "v2_vs_not": v2_vs_not,
+        "v3_vs_not": v3_vs_not,
         "cot_vs_raw": cot_vs_raw,
         "io_vs_raw": io_vs_raw,
         "human_gaps": human_gaps,

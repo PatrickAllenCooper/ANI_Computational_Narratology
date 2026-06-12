@@ -32,12 +32,16 @@ ARM_COLORS = {
     "raw": "#BFD0DA",
     "standard_cot": fs.CONDITION_COLORS["standard_cot"],
     "narrative_cot": fs.CONDITION_COLORS["narrative_cot"],
+    "narrative_cot_v2": "#1A9A98",
+    "narrative_cot_v3": "#0A5C5B",
     "debate": "#0A5C5B",
 }
 ARM_LABELS = {
     "raw": "Raw",
     "standard_cot": "Std CoT",
     "narrative_cot": "NoT",
+    "narrative_cot_v2": "NoT-v2",
+    "narrative_cot_v3": "NoT-v3",
     "debate": "Debate NoT",
 }
 
@@ -105,24 +109,53 @@ def chart_oeq_validation(summary: dict) -> None:
     fs.save(fig, OUT / "syco_chart_oeq_validation.pdf")
 
 
-def chart_moral_collapse(summary: dict) -> None:
+def chart_not_v2_v3_validation(summary: dict) -> None:
+    """Phase 14: depth-optimized NoT vs hand NoT on OEQ validation."""
     stats = summary["singleagent"]["cell_stats"]
-    arms = ["raw", "standard_cot", "narrative_cot"]
+    arms = ["narrative_cot", "narrative_cot_v2", "narrative_cot_v3"]
+    human = stats.get("oeq|human_baseline|human", {}).get("validation_rate", 0)
     fig, ax = fs.single_panel(width=fs.COL_WIDTH, height=2.4)
     x = np.arange(len(GENS))
     w = 0.26
     for i, arm in enumerate(arms):
+        vals = [
+            stats.get(f"oeq|{g}|{arm}", {}).get("validation_rate")
+            for g in GENS
+        ]
+        plot_vals = [v if v is not None else 0.0 for v in vals]
+        offset = (i - 1) * w
+        bars = ax.bar(x + offset, plot_vals, w,
+                      label=ARM_LABELS[arm], color=ARM_COLORS[arm])
+        fs.annotate_bars(ax, bars, vals, fmt="{:.0f}", dy=0.012, fs=6.5)
+    ax.axhline(human, color="#555555", linestyle="--", linewidth=1.0)
+    ax.text(len(GENS) - 0.52, human + 0.015, f"human {human:.0%}",
+            fontsize=7.5, color="#555555", ha="right")
+    fs.style_generator_axis(ax, GENS)
+    fs.percent_axis(ax, 1.0)
+    ax.set_ylabel("OEQ validation rate")
+    ax.set_title("Depth-optimized NoT on ELEPHANT (Phase 14)")
+    ax.legend(frameon=False, loc="upper right", fontsize=7)
+    fs.save(fig, OUT / "syco_chart_not_v2_v3.pdf")
+
+
+def chart_moral_collapse(summary: dict) -> None:
+    stats = summary["singleagent"]["cell_stats"]
+    arms = ["raw", "standard_cot", "narrative_cot", "narrative_cot_v2", "narrative_cot_v3"]
+    fig, ax = fs.single_panel(width=fs.TEXT_WIDTH * 0.62, height=2.4)
+    x = np.arange(len(GENS))
+    w = 0.15
+    for i, arm in enumerate(arms):
         vals = [stats.get(f"flip_pairs|{g}|{arm}", {}).get("moral_rate", 0.0)
                 for g in GENS]
-        offset = (i - 1) * w
+        offset = (i - (len(arms) - 1) / 2) * w
         bars = ax.bar(x + offset, vals, w,
-                      label=ARM_LABELS[arm], color=ARM_COLORS[arm])
+                      label=ARM_LABELS.get(arm, arm), color=ARM_COLORS.get(arm, "#888"))
         fs.annotate_bars(ax, bars, vals, fmt="{:.0f}", dy=0.012, fs=6.5)
     fs.style_generator_axis(ax, GENS)
     fs.percent_axis(ax, 1.12)
     ax.set_ylabel("Both-NTA rate (150 FLIP pairs)")
     ax.set_title("Moral sycophancy collapses under NoT")
-    ax.legend(frameon=False, loc="upper right")
+    ax.legend(frameon=False, ncol=3, loc="upper center", fontsize=6)
     fs.save(fig, OUT / "syco_chart_moral_collapse.pdf")
 
 
@@ -130,6 +163,7 @@ def main() -> int:
     summary = json.loads(SUMMARY.read_text())
     chart_sharma()
     chart_oeq_validation(summary)
+    chart_not_v2_v3_validation(summary)
     chart_moral_collapse(summary)
     return 0
 
