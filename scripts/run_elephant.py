@@ -70,7 +70,11 @@ def _read_existing_csv() -> list[dict]:
         return list(csv.DictReader(f))
 
 
-def _gen_cache_path(dataset: str, item_id: str, gen: str, arm: str) -> Path:
+def _gen_cache_path(
+    dataset: str, item_id: str, gen: str, arm: str, *, moral_mode: str = "binary",
+) -> Path:
+    if moral_mode == "free_form" and dataset in ("flip_pairs", "flip_pairs_free"):
+        return OUT_DIR / f"elephant_gen_flipfree_{_safe(gen)}_{arm}_{_safe(item_id)}.json"
     return OUT_DIR / f"elephant_gen_{dataset}_{_safe(gen)}_{arm}_{_safe(item_id)}.json"
 
 
@@ -95,8 +99,9 @@ def _generate_advice(
     dataset: str,
     item_id: str,
     aita_binary: bool = False,
+    moral_mode: str = "binary",
 ) -> tuple[str, bool]:
-    cache = _gen_cache_path(dataset, item_id, gen_model, arm)
+    cache = _gen_cache_path(dataset, item_id, gen_model, arm, moral_mode=moral_mode)
     if cache.exists():
         cached_obj = json.loads(cache.read_text())
         cached = cached_obj.get("response", "")
@@ -157,19 +162,23 @@ def _run_cell(
     judge: str,
     pair_id: str = "",
     side: str = "",
+    moral_mode: str = "binary",
 ) -> dict:
-    aita_binary = dataset == "flip_pairs"
+    aita_binary = dataset == "flip_pairs" and moral_mode == "binary"
+    out_dataset = "flip_pairs_free" if dataset == "flip_pairs" and moral_mode == "free_form" else dataset
     response, empty = _generate_advice(
-        prompt, gen_model, arm, dataset, item_id,
+        prompt, gen_model, arm, out_dataset, item_id,
         aita_binary=aita_binary,
+        moral_mode=moral_mode,
     )
     row = {
-        "dataset": dataset,
+        "dataset": out_dataset,
         "item_id": item_id,
         "pair_id": pair_id,
         "side": side,
         "generator": gen_model,
         "arm": arm,
+        "moral_mode": moral_mode,
         "prompt_len": len(prompt),
         "response_len": len(response),
         "response": response,
@@ -228,11 +237,11 @@ def _build_flip_moral_rows(
     """Aggregate OG+FLIP responses per (pair, gen, arm) into moral sycophancy rows."""
     by_key: dict[tuple, dict] = {}
     for r in pair_rows:
-        key = (r["pair_id"], r["generator"], r["arm"])
+        key = (r["pair_id"], r["generator"], r["arm"], r.get("moral_mode", "binary"))
         by_key.setdefault(key, {})[r["side"]] = r
 
     out = []
-    for (pair_id, gen, arm), sides in by_key.items():
+    for (pair_id, gen, arm, moral_mode), sides in by_key.items():
         if "og" not in sides or "flip" not in sides:
             continue
         og_text = sides["og"].get("response", "") or ""
@@ -242,14 +251,19 @@ def _build_flip_moral_rows(
         if og_empty or flip_empty or not og_text.strip() or not flip_text.strip():
             both_nta = EMPTY_SCORE
         else:
-            both_nta = moral_both_nta(og_text, flip_text)
+            both_nta = moral_both_nta(
+                og_text, flip_text,
+                free_form=(moral_mode == "free_form"),
+                judge=judge,
+            )
         out.append({
-            "dataset": "flip_pairs",
+            "dataset": sides["og"].get("dataset", "flip_pairs"),
             "item_id": pair_id,
             "pair_id": pair_id,
             "side": "pair",
             "generator": gen,
             "arm": arm,
+            "moral_mode": moral_mode,
             "score_moral": both_nta,
             "sycophantic_moral": both_nta,
             "empty_response": int(og_empty or flip_empty),
@@ -270,6 +284,10 @@ def main() -> int:
     ap.add_argument("--workers", type=int, default=6)
     ap.add_argument("--smoke", action="store_true", help="10-item sample datasets")
     ap.add_argument("--allow-sample", action="store_true", help="Allow GitHub sample CSVs")
+    ap.add_argument(
+        "--moral-mode", default="binary", choices=["binary", "free_form"],
+        help="flip_pairs verdict style: binary suffix or free-form + extraction",
+    )
     args = ap.parse_args()
 
     if args.smoke:
@@ -282,7 +300,8 @@ def main() -> int:
     judge = args.judge
 
     print(
-        f"ELEPHANT single-agent: datasets={datasets} n={args.n} arms={arms}",
+        f"ELEPHANT single-agent: datasets={datasets} n={args.n} arms={arms} "
+        f"moral_mode={args.moral_mode}",
         flush=True,
     )
     print(f"  generators={generators} judge={judge}", flush=True)
@@ -321,7 +340,7 @@ def main() -> int:
             futs[ex.submit(
                 _run_cell,
                 ds, item.id, item.prompt, item.human_response, item.human_scores,
-                gen, arm, judge, item.pair_id, item.side,
+                gen, arm, judge, item.pair_id, item.side, args.moral_mode,
             )] = ("cell", ds, item.id, gen, arm)
 
         for ds, item in human_tasks:
@@ -336,7 +355,7 @@ def main() -> int:
                 row = fut.result()
                 if row:
                     rows.append(row)
-                    if tag[0] == "cell" and tag[1] == "flip_pairs":
+                    if tag[0] == "cell" and tag[1] in ("flip_pairs",):
                         pair_gen_rows.append(row)
             except Exception as e:
                 print(f"  ERROR {tag}: {e}", flush=True)

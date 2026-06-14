@@ -1022,3 +1022,71 @@ Same train items, loss, judge, $\sim$10 prompt evaluations each:
 6. `scripts/aggregate_phase14.py` — merge into `elephant_summary.json` + optimizer chart.
 7. Extend `run_elephant.py`, `aggregate_elephant.py`, `make_sycophancy_charts.py` for v2/v3 arms.
 8. Update `papers/sycophancy_paper.tex`, `references.bib`; append v1.12 execution log.
+
+---
+
+## Phase 15 — Judge Reliability Panel: Pre-Registration
+
+Pre-registered before execution. Phase 14 revealed that **indirectness** scores diverge across judge families (grok 5% vs haiku 81% on the same optimized responses) while validation and framing agree. This phase establishes whether each ELEPHANT metric is reliable enough to report.
+
+**Headline question.** Which ELEPHANT social-sycophancy metrics (validation, indirectness, framing) achieve acceptable inter-judge reliability across a cross-family panel, and which require majority-vote or retraction?
+
+**Panel.** Three judge families on a stratified OEQ sample ($n{=}60$): `gpt-5.4-nano`, `claude-haiku-4-5`, `grok-4-1-fast-reasoning`. Re-score validation/indirectness/framing via verbatim `elephant_scorers.py` prompts.
+
+**Gold standard.** Crowdsourced human scores from OEQ OSF (`validation_human`, `indirectness_human`, `framing_human`) on human responses; extended sample in `data/judge_gold.jsonl`.
+
+**Analyses.** Krippendorff's $\alpha$ per metric across panel; pairwise Cohen's $\kappa$ (judge vs human, judge vs judge). Reporting rule: metrics with $\alpha < 0.67$ flagged low-reliability; headline rates use majority vote where needed.
+
+**Scripts.** `scripts/judge_panel.py`, `scripts/aggregate_judge_reliability.py`, `scripts/krippendorff.py`.
+
+---
+
+## Phase 16 — BrokenMath Propositional Sycophancy: Pre-Registration
+
+Pre-registered before execution. Sharma-style hand-written probes saturated at $\sim 0\%$; BrokenMath (Petrov et al., 2025; HuggingFace `INSAIT-Institute/BrokenMath`, 451 expert-verified false-premise olympiad problems) shows 29%+ sycophancy on GPT-5. This phase tests whether propositional headroom exists on frontier models and whether NoT reduces it.
+
+**Headline question.** On a rigorous external propositional benchmark, do models show discriminating sycophancy rates, and does NoT outperform standard CoT?
+
+**Benchmark.** BrokenMath `benchmark` split ($n{=}451$ adversarial). Scorer: 4-category LLM judge (Sycophant / Detected / Corrected / Ideal); primary outcome = Sycophant rate.
+
+**Grid.** Quartet $\times$ {`raw`, `standard_cot`, `narrative_cot`}.
+
+**Hypotheses.**
+1. BrokenMath shows $>10\%$ sycophancy on at least two quartet models (instrument not saturated).
+2. NoT $\leq$ standard CoT sycophancy rate (negative delta); falsified if $|Δ| < 5$pp everywhere.
+
+**Scripts.** `scripts/load_brokenmath.py`, `scripts/brokenmath_scorer.py`, `scripts/run_brokenmath.py`, `scripts/aggregate_brokenmath.py`.
+
+---
+
+## Phase 17 — Moral Sycophancy Un-Confounded: Pre-Registration
+
+Pre-registered before execution. Phase 13 moral both-NTA was null after fixing the flip loader; additionally `AITA_BINARY_SUFFIX` suppresses the NoT scaffold. This phase runs a **free-form** moral arm (no binary suffix; full reasoning then verdict extraction).
+
+**Headline question.** Does moral both-NTA respond to NoT when the scaffold is allowed to operate, and how does the construct differ from validation/framing (cross-prompt consistency vs single-response face-preservation)?
+
+**Arms.** `raw`, `standard_cot`, `narrative_cot` on flip_pairs, `--moral-mode free_form`, $n{=}150$ pairs, quartet.
+
+**Analyses.** Side-by-side binary vs free_form both-NTA; construct comparison documented in aggregate output.
+
+**Scripts.** Extend `scripts/run_elephant.py` (`--moral-mode`), `scripts/elephant_scorers.py` (verdict extraction), `scripts/aggregate_elephant.py`.
+
+---
+
+## Execution log v1.13 — Phases 15–17 deepening (2026-06-12)
+
+**Phase 15 (judge panel).** Implemented `scripts/krippendorff.py`, `scripts/judge_panel.py`, `scripts/aggregate_judge_reliability.py`, `scripts/build_judge_gold.py`. Gold set: 30 OEQ human responses with crowdsourced labels in `data/judge_gold.jsonl`. Smoke panel: $n{=}6$ OEQ responses $\times$ 3 judges $\times$ 3 metrics $\rightarrow$ `judge_panel_raw.csv`. Full $n{=}60$ panel queued. Reporting rule: $\alpha < 0.67$ $\Rightarrow$ majority vote / low-reliability flag.
+
+**Phase 16 (BrokenMath).** Implemented `load_brokenmath.py` (451 benchmark rows cached to `data/brokenmath/`), `brokenmath_scorer.py` (4-category judge), `run_brokenmath.py`, `aggregate_brokenmath.py`. Smoke: 5 problems $\times$ haiku $\times$ 3 arms. Full quartet grid ($451 \times 4 \times 3$) pre-registered, not yet executed (cost).
+
+**Phase 17 (moral free-form).** Extended `run_elephant.py` with `--moral-mode {binary,free_form}`; cache namespace `elephant_gen_flipfree_*`; dataset key `flip_pairs_free` in CSV. `elephant_scorers.extract_verdict_llm` for post-hoc YTA/NTA. Smoke: 10 pairs $\times$ haiku $\times$ 3 arms (free_form both-NTA $57\%$ on $n{=}30$ vs binary pooled $34\%$). Full quartet run ($n{=}150$) launched in background.
+
+**Moral retraction (confirmed).** Re-aggregated `elephant_summary.json` with corrected flip loader. Binary both-NTA null-to-mixed (e.g. nano $\approx 50\%$ all arms; haiku $15$--$23\%$). No systematic NoT reduction. Prior $97\%\!\rightarrow\!19\%$ collapse claims retracted in `sycophancy_paper.tex`.
+
+**Phase 14 status.** Narrative grad full run complete (`sg_summary.json`: holdout validation $76\%\!\rightarrow\!1\%$ training judge; third-judge indirectness $81\%$ contested). OEQ v2/v3 ELEPHANT grid and full TextGrad/OPRO/APE baselines still in flight (`/tmp/phase14_finish.log`, job 88100).
+
+**Paper.** Rewrote `papers/sycophancy_paper.tex`: moral retraction, BrokenMath framing, Phase 14/15/17 sections; added `petrov2025brokenmath`, `fanous2025syceval`, `krippendorff2004` to `references.bib`.
+
+**Tests.** Extended `scripts/test_phase14.py` with Krippendorff-$\alpha$ and verdict-extraction unit checks (all pass offline).
+
+**Bookkeeping.** `datasets` added to README deps; gitignore extended for `bm_*`, `judge_panel_*`, `elephant_gen_flipfree_*`, `data/brokenmath/`.

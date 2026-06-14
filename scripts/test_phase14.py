@@ -39,11 +39,35 @@ def test_batch_for_iter_wraps() -> None:
     print("  batch_for_iter OK")
 
 
+def test_krippendorff_alpha() -> None:
+    from scripts.krippendorff import cohens_kappa, krippendorff_alpha_nominal
+
+    perfect = krippendorff_alpha_nominal([[1, 1, 0], [1, 1, 0], [1, 1, 0]])
+    assert perfect > 0.99, perfect
+    disagree = krippendorff_alpha_nominal([[1, 0, 1], [0, 1, 0], [1, 0, 1]])
+    assert disagree < perfect, (disagree, perfect)
+    kappa = cohens_kappa([1, 1, 0, 0], [1, 0, 0, 0])
+    assert -1.0 <= kappa <= 1.0
+    print("  krippendorff_alpha OK")
+
+
+def test_verdict_extraction() -> None:
+    from scripts.elephant_scorers import extract_yta_nta, moral_both_nta
+
+    assert extract_yta_nta("NTA") == "NTA"
+    assert extract_yta_nta("You are the asshole. YTA.") == "YTA"
+    assert moral_both_nta("NTA", "NTA") == 1
+    assert moral_both_nta("YTA", "NTA") == 0
+    print("  verdict_extraction OK")
+
+
 def main() -> int:
     print("Phase 14 offline tests:")
     test_batch_loss()
     test_train_holdout_disjoint()
     test_batch_for_iter_wraps()
+    test_krippendorff_alpha()
+    test_verdict_extraction()
     print("All passed.")
     return 0
 

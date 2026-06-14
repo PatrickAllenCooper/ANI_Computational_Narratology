@@ -18,7 +18,7 @@ Never commit a filled-in `.env`. The `.gitignore` already excludes it.
 ```bash
 python3.11 -m venv .venv
 source .venv/bin/activate
-pip install azure-ai-projects azure-identity openai pandas matplotlib seaborn scipy tqdm python-dotenv requests scikit-learn jupyter
+pip install azure-ai-projects azure-identity openai pandas matplotlib seaborn scipy tqdm python-dotenv requests scikit-learn jupyter datasets
 ```
 
 ## Running

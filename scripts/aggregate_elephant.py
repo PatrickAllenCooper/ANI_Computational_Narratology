@@ -95,6 +95,8 @@ def aggregate_singleagent(rows: list[dict]) -> dict:
         ds, gen, arm, side = key
         if ds == "flip_pairs" and side in ("og", "flip"):
             continue
+        if ds == "flip_pairs_free" and side in ("og", "flip"):
+            continue
         entry = {"dataset": ds, "generator": gen, "arm": arm, "n_rows": len(grp)}
         for m in METRICS:
             col = f"sycophantic_{m}"
@@ -186,6 +188,84 @@ def aggregate_singleagent(rows: list[dict]) -> dict:
         "cot_vs_raw": cot_vs_raw,
         "io_vs_raw": io_vs_raw,
         "human_gaps": human_gaps,
+        "moral_construct": aggregate_moral_construct(rows),
+    }
+
+
+def aggregate_moral_construct(rows: list[dict]) -> dict:
+    """Phase 17: binary vs free_form moral both-NTA comparison."""
+    moral_rows = [
+        r for r in rows
+        if r.get("side") == "pair" and r.get("score_moral", r.get("sycophantic_moral")) != ""
+    ]
+    if not moral_rows:
+        return {"note": "No moral pair rows"}
+
+    by_mode: dict[str, list[dict]] = defaultdict(list)
+    for r in moral_rows:
+        mode = r.get("moral_mode", "binary")
+        ds = r.get("dataset", "flip_pairs")
+        if ds == "flip_pairs_free":
+            mode = "free_form"
+        by_mode[mode].append(r)
+
+    mode_stats = {}
+    for mode, grp in by_mode.items():
+        s, n, p, ci = _rate(grp, "sycophantic_moral")
+        if n == 0:
+            s, n, p, ci = _rate(grp, "score_moral")
+        mode_stats[mode] = {"n": n, "rate": p, "wilson_ci": ci, "positives": s}
+
+    # Per-generator arm comparison within each mode
+    per_cell = {}
+    for r in moral_rows:
+        mode = r.get("moral_mode", "binary")
+        if r.get("dataset") == "flip_pairs_free":
+            mode = "free_form"
+        key = f"{mode}|{r.get('generator')}|{r.get('arm')}"
+        per_cell.setdefault(key, []).append(r)
+
+    cell_rates = {}
+    for key, grp in per_cell.items():
+        s, n, p, ci = _rate(grp, "sycophantic_moral")
+        if n == 0:
+            s, n, p, ci = _rate(grp, "score_moral")
+        if n:
+            cell_rates[key] = {"rate": p, "n": n, "wilson_ci": ci}
+
+    # NoT vs CoT within free_form
+    ff_deltas = []
+    for gen in sorted({r["generator"] for r in moral_rows}):
+        not_key = f"free_form|{gen}|narrative_cot"
+        cot_key = f"free_form|{gen}|standard_cot"
+        bin_not_key = f"binary|{gen}|narrative_cot"
+        bin_cot_key = f"binary|{gen}|standard_cot"
+        if not_key in cell_rates and cot_key in cell_rates:
+            ff_deltas.append({
+                "generator": gen,
+                "not_rate": cell_rates[not_key]["rate"],
+                "cot_rate": cell_rates[cot_key]["rate"],
+                "diff_pp": (cell_rates[not_key]["rate"] - cell_rates[cot_key]["rate"]) * 100,
+                "mode": "free_form",
+            })
+        if bin_not_key in cell_rates and bin_cot_key in cell_rates:
+            ff_deltas.append({
+                "generator": gen,
+                "not_rate": cell_rates[bin_not_key]["rate"],
+                "cot_rate": cell_rates[bin_cot_key]["rate"],
+                "diff_pp": (cell_rates[bin_not_key]["rate"] - cell_rates[bin_cot_key]["rate"]) * 100,
+                "mode": "binary",
+            })
+
+    return {
+        "mode_stats": mode_stats,
+        "cell_rates": cell_rates,
+        "not_vs_cot_by_mode": ff_deltas,
+        "construct_note": (
+            "Validation/framing are single-response face-preservation metrics; "
+            "moral both-NTA is cross-prompt consistency (OG+FLIP both NTA). "
+            "Binary mode suppresses NoT scaffold via AITA_BINARY_SUFFIX."
+        ),
     }
 
 
@@ -377,6 +457,11 @@ def main() -> int:
             print(f"  {d['dataset']:12s} {d['generator'][:20]:20s} {d['metric']:12s} "
                   f"NoT={d['rate_a']:.0%} raw={d['rate_b']:.0%} diff={d['diff_pp']:+.1f}pp")
         print(f"\n  Falsification: {summary['falsification']}")
+        moral = sa.get("moral_construct", {})
+        if moral.get("mode_stats"):
+            print("\n  --- Moral construct (binary vs free_form) ---")
+            for mode, st in moral["mode_stats"].items():
+                print(f"    {mode:10s} both-NTA={st['rate']:.1%} n={st['n']}")
         try:
             figure_rates(sa)
             figure_per_model_panel(sa)
