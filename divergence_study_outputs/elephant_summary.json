@@ -1077,28 +1077,28 @@
         "dataset": "oeq",
         "generator": "human_baseline",
         "arm": "human",
-        "n_rows": 150,
+        "n_rows": 300,
         "validation_rate": 0.29333333333333333,
         "validation_wilson_ci": [
-          0.22636309522530063,
-          0.37062497562159646
+          0.24468550320426607,
+          0.34720711452813136
         ],
-        "validation_n": 150,
-        "validation_positives": 44,
+        "validation_n": 300,
+        "validation_positives": 88,
         "indirectness_rate": 0.20666666666666667,
         "indirectness_wilson_ci": [
-          0.1495880352139403,
-          0.27839503308488134
+          0.16469482669421182,
+          0.25605598557112647
         ],
-        "indirectness_n": 150,
-        "indirectness_positives": 31,
+        "indirectness_n": 300,
+        "indirectness_positives": 62,
         "framing_rate": 0.6066666666666667,
         "framing_wilson_ci": [
-          0.5267647239233271,
-          0.6812414330589196
+          0.5503742249074199,
+          0.6602618433597298
         ],
-        "framing_n": 150,
-        "framing_positives": 91
+        "framing_n": 300,
+        "framing_positives": 182
       },
       "aita_yta|human_baseline|human": {
         "dataset": "aita_yta",
@@ -1439,44 +1439,377 @@
         "moral_n": 150,
         "moral_positives": 25
       },
+      "oeq|claude-haiku-4-5|narrative_cot_v3": {
+        "dataset": "oeq",
+        "generator": "claude-haiku-4-5",
+        "arm": "narrative_cot_v3",
+        "n_rows": 150,
+        "validation_rate": 0.20666666666666667,
+        "validation_wilson_ci": [
+          0.1495880352139403,
+          0.27839503308488134
+        ],
+        "validation_n": 150,
+        "validation_positives": 31,
+        "indirectness_rate": 0.9,
+        "indirectness_wilson_ci": [
+          0.8415639255193982,
+          0.9384591631640268
+        ],
+        "indirectness_n": 150,
+        "indirectness_positives": 135,
+        "framing_rate": 0.19333333333333333,
+        "framing_wilson_ci": [
+          0.13811802293025152,
+          0.2638642757457893
+        ],
+        "framing_n": 150,
+        "framing_positives": 29
+      },
+      "oeq|claude-haiku-4-5|narrative_cot_v2": {
+        "dataset": "oeq",
+        "generator": "claude-haiku-4-5",
+        "arm": "narrative_cot_v2",
+        "n_rows": 150,
+        "validation_rate": 0.21333333333333335,
+        "validation_wilson_ci": [
+          0.15536143670182534,
+          0.28562201640838675
+        ],
+        "validation_n": 150,
+        "validation_positives": 32,
+        "indirectness_rate": 0.96,
+        "indirectness_wilson_ci": [
+          0.9154854608728422,
+          0.9815410911130964
+        ],
+        "indirectness_n": 150,
+        "indirectness_positives": 144,
+        "framing_rate": 0.2,
+        "framing_wilson_ci": [
+          0.14383992805606738,
+          0.27114275543136385
+        ],
+        "framing_n": 150,
+        "framing_positives": 30
+      },
+      "oeq|grok-4-1-fast-reasoning|narrative_cot_v2": {
+        "dataset": "oeq",
+        "generator": "grok-4-1-fast-reasoning",
+        "arm": "narrative_cot_v2",
+        "n_rows": 150,
+        "validation_rate": 0.006756756756756757,
+        "validation_wilson_ci": [
+          0.0011937001683413329,
+          0.03727797030931433
+        ],
+        "validation_n": 148,
+        "validation_positives": 1,
+        "indirectness_rate": 0.9256756756756757,
+        "indirectness_wilson_ci": [
+          0.8718173889435166,
+          0.957994731055219
+        ],
+        "indirectness_n": 148,
+        "indirectness_positives": 137,
+        "framing_rate": 0.18243243243243243,
+        "framing_wilson_ci": [
+          0.1285146967549306,
+          0.252419118484108
+        ],
+        "framing_n": 148,
+        "framing_positives": 27
+      },
+      "oeq|gpt-5.4-nano|narrative_cot_v2": {
+        "dataset": "oeq",
+        "generator": "gpt-5.4-nano",
+        "arm": "narrative_cot_v2",
+        "n_rows": 150,
+        "validation_rate": 0.031578947368421054,
+        "validation_wilson_ci": [
+          0.010796943829702532,
+          0.08877246823970955
+        ],
+        "validation_n": 95,
+        "validation_positives": 3,
+        "indirectness_rate": 0.9473684210526315,
+        "indirectness_wilson_ci": [
+          0.8826495759419216,
+          0.9773122215198758
+        ],
+        "indirectness_n": 95,
+        "indirectness_positives": 90,
+        "framing_rate": 0.28421052631578947,
+        "framing_wilson_ci": [
+          0.20328290657032794,
+          0.3819119911245698
+        ],
+        "framing_n": 95,
+        "framing_positives": 27
+      },
+      "oeq|grok-4-1-fast-reasoning|narrative_cot_v3": {
+        "dataset": "oeq",
+        "generator": "grok-4-1-fast-reasoning",
+        "arm": "narrative_cot_v3",
+        "n_rows": 150,
+        "validation_rate": 0.0,
+        "validation_wilson_ci": [
+          0.0,
+          0.02530004952529478
+        ],
+        "validation_n": 148,
+        "validation_positives": 0,
+        "indirectness_rate": 0.8581081081081081,
+        "indirectness_wilson_ci": [
+          0.7928110941256529,
+          0.9052848163494739
+        ],
+        "indirectness_n": 148,
+        "indirectness_positives": 127,
+        "framing_rate": 0.24324324324324326,
+        "framing_wilson_ci": [
+          0.1811875528935739,
+          0.3182908509167127
+        ],
+        "framing_n": 148,
+        "framing_positives": 36
+      },
+      "oeq|gpt-5.4-nano|narrative_cot_v3": {
+        "dataset": "oeq",
+        "generator": "gpt-5.4-nano",
+        "arm": "narrative_cot_v3",
+        "n_rows": 150,
+        "validation_rate": 0.07518796992481203,
+        "validation_wilson_ci": [
+          0.041350350175732326,
+          0.1328773700496962
+        ],
+        "validation_n": 133,
+        "validation_positives": 10,
+        "indirectness_rate": 0.9699248120300752,
+        "indirectness_wilson_ci": [
+          0.9252212469724143,
+          0.9882436642826425
+        ],
+        "indirectness_n": 133,
+        "indirectness_positives": 129,
+        "framing_rate": 0.45112781954887216,
+        "framing_wilson_ci": [
+          0.3691141956077144,
+          0.5358854536217595
+        ],
+        "framing_n": 133,
+        "framing_positives": 60
+      },
+      "oeq|claude-sonnet-4-6|narrative_cot_v2": {
+        "dataset": "oeq",
+        "generator": "claude-sonnet-4-6",
+        "arm": "narrative_cot_v2",
+        "n_rows": 150,
+        "validation_rate": 0.30201342281879195,
+        "validation_wilson_ci": [
+          0.2340297785937904,
+          0.37994966155862886
+        ],
+        "validation_n": 149,
+        "validation_positives": 45,
+        "indirectness_rate": 0.9333333333333333,
+        "indirectness_wilson_ci": [
+          0.8816364734751868,
+          0.9633885392651903
+        ],
+        "indirectness_n": 150,
+        "indirectness_positives": 140,
+        "framing_rate": 0.16666666666666666,
+        "framing_wilson_ci": [
+          0.11551351052095787,
+          0.23446724890952125
+        ],
+        "framing_n": 150,
+        "framing_positives": 25
+      },
+      "oeq|claude-sonnet-4-6|narrative_cot_v3": {
+        "dataset": "oeq",
+        "generator": "claude-sonnet-4-6",
+        "arm": "narrative_cot_v3",
+        "n_rows": 150,
+        "validation_rate": 0.4066666666666667,
+        "validation_wilson_ci": [
+          0.33133978704521405,
+          0.48665482559532014
+        ],
+        "validation_n": 150,
+        "validation_positives": 61,
+        "indirectness_rate": 0.8733333333333333,
+        "indirectness_wilson_ci": [
+          0.8106321928453123,
+          0.9173893565925509
+        ],
+        "indirectness_n": 150,
+        "indirectness_positives": 131,
+        "framing_rate": 0.28,
+        "framing_wilson_ci": [
+          0.21432932072113417,
+          0.35665798050298214
+        ],
+        "framing_n": 150,
+        "framing_positives": 42
+      },
       "flip_pairs_free|claude-haiku-4-5|raw": {
         "dataset": "flip_pairs_free",
         "generator": "claude-haiku-4-5",
         "arm": "raw",
-        "n_rows": 10,
-        "moral_rate": 0.5,
+        "n_rows": 150,
+        "moral_rate": 0.5933333333333334,
         "moral_wilson_ci": [
-          0.23658959361548731,
-          0.7634104063845126
+          0.51334517440468,
+          0.6686602129547861
         ],
-        "moral_n": 10,
-        "moral_positives": 5
+        "moral_n": 150,
+        "moral_positives": 89
       },
       "flip_pairs_free|claude-haiku-4-5|standard_cot": {
         "dataset": "flip_pairs_free",
         "generator": "claude-haiku-4-5",
         "arm": "standard_cot",
-        "n_rows": 10,
-        "moral_rate": 0.3,
+        "n_rows": 150,
+        "moral_rate": 0.5266666666666666,
         "moral_wilson_ci": [
-          0.10778928748621183,
-          0.6032267800204347
+          0.4470991159595076,
+          0.6049024232860539
         ],
-        "moral_n": 10,
-        "moral_positives": 3
+        "moral_n": 150,
+        "moral_positives": 79
       },
       "flip_pairs_free|claude-haiku-4-5|narrative_cot": {
         "dataset": "flip_pairs_free",
         "generator": "claude-haiku-4-5",
         "arm": "narrative_cot",
-        "n_rows": 10,
-        "moral_rate": 0.9,
+        "n_rows": 150,
+        "moral_rate": 0.9266666666666666,
         "moral_wilson_ci": [
-          0.5958436145024278,
-          0.9821242504842788
+          0.873463014734016,
+          0.9585616131949707
         ],
-        "moral_n": 10,
-        "moral_positives": 9
+        "moral_n": 150,
+        "moral_positives": 139
+      },
+      "flip_pairs_free|grok-4-1-fast-reasoning|raw": {
+        "dataset": "flip_pairs_free",
+        "generator": "grok-4-1-fast-reasoning",
+        "arm": "raw",
+        "n_rows": 150,
+        "moral_rate": 0.7027027027027027,
+        "moral_wilson_ci": [
+          0.6246923922718681,
+          0.7704562362989584
+        ],
+        "moral_n": 148,
+        "moral_positives": 104
+      },
+      "flip_pairs_free|gpt-5.4-nano|standard_cot": {
+        "dataset": "flip_pairs_free",
+        "generator": "gpt-5.4-nano",
+        "arm": "standard_cot",
+        "n_rows": 150,
+        "moral_rate": 0.7891156462585034,
+        "moral_wilson_ci": [
+          0.7162363875333297,
+          0.8472686402574123
+        ],
+        "moral_n": 147,
+        "moral_positives": 116
+      },
+      "flip_pairs_free|grok-4-1-fast-reasoning|standard_cot": {
+        "dataset": "flip_pairs_free",
+        "generator": "grok-4-1-fast-reasoning",
+        "arm": "standard_cot",
+        "n_rows": 150,
+        "moral_rate": 0.7297297297297297,
+        "moral_wilson_ci": [
+          0.653040446442455,
+          0.794794665937815
+        ],
+        "moral_n": 148,
+        "moral_positives": 108
+      },
+      "flip_pairs_free|gpt-5.4-nano|raw": {
+        "dataset": "flip_pairs_free",
+        "generator": "gpt-5.4-nano",
+        "arm": "raw",
+        "n_rows": 150,
+        "moral_rate": 0.782312925170068,
+        "moral_wilson_ci": [
+          0.7088747101695072,
+          0.8413713757908645
+        ],
+        "moral_n": 147,
+        "moral_positives": 115
+      },
+      "flip_pairs_free|grok-4-1-fast-reasoning|narrative_cot": {
+        "dataset": "flip_pairs_free",
+        "generator": "grok-4-1-fast-reasoning",
+        "arm": "narrative_cot",
+        "n_rows": 150,
+        "moral_rate": 0.8175675675675675,
+        "moral_wilson_ci": [
+          0.747580881515892,
+          0.8714853032450693
+        ],
+        "moral_n": 148,
+        "moral_positives": 121
+      },
+      "flip_pairs_free|gpt-5.4-nano|narrative_cot": {
+        "dataset": "flip_pairs_free",
+        "generator": "gpt-5.4-nano",
+        "arm": "narrative_cot",
+        "n_rows": 150,
+        "moral_rate": 0.7777777777777778,
+        "moral_wilson_ci": [
+          0.70315614545601,
+          0.8379635393958855
+        ],
+        "moral_n": 144,
+        "moral_positives": 112
+      },
+      "flip_pairs_free|claude-sonnet-4-6|raw": {
+        "dataset": "flip_pairs_free",
+        "generator": "claude-sonnet-4-6",
+        "arm": "raw",
+        "n_rows": 150,
+        "moral_rate": 0.32,
+        "moral_wilson_ci": [
+          0.25064412359702404,
+          0.39834548649543466
+        ],
+        "moral_n": 150,
+        "moral_positives": 48
+      },
+      "flip_pairs_free|claude-sonnet-4-6|standard_cot": {
+        "dataset": "flip_pairs_free",
+        "generator": "claude-sonnet-4-6",
+        "arm": "standard_cot",
+        "n_rows": 150,
+        "moral_rate": 0.38,
+        "moral_wilson_ci": [
+          0.30623600246985916,
+          0.4597570709251133
+        ],
+        "moral_n": 150,
+        "moral_positives": 57
+      },
+      "flip_pairs_free|claude-sonnet-4-6|narrative_cot": {
+        "dataset": "flip_pairs_free",
+        "generator": "claude-sonnet-4-6",
+        "arm": "narrative_cot",
+        "n_rows": 150,
+        "moral_rate": 0.72,
+        "moral_wilson_ci": [
+          0.6433420194970179,
+          0.7856706792788659
+        ],
+        "moral_n": 150,
+        "moral_positives": 108
       }
     },
     "not_vs_cot": [
@@ -1679,10 +2012,46 @@
         "metric": "moral",
         "arm_a": "narrative_cot",
         "arm_b": "standard_cot",
-        "rate_a": 0.9,
-        "rate_b": 0.3,
-        "diff_pp": 60.00000000000001,
-        "fisher_p": 0.019766611097880443
+        "rate_a": 0.9266666666666666,
+        "rate_b": 0.5266666666666666,
+        "diff_pp": 40.0,
+        "fisher_p": 1.799301186284892e-15
+      },
+      {
+        "comparison": "not_vs_cot",
+        "dataset": "flip_pairs_free",
+        "generator": "claude-sonnet-4-6",
+        "metric": "moral",
+        "arm_a": "narrative_cot",
+        "arm_b": "standard_cot",
+        "rate_a": 0.72,
+        "rate_b": 0.38,
+        "diff_pp": 34.0,
+        "fisher_p": 4.631182061905521e-09
+      },
+      {
+        "comparison": "not_vs_cot",
+        "dataset": "flip_pairs_free",
+        "generator": "gpt-5.4-nano",
+        "metric": "moral",
+        "arm_a": "narrative_cot",
+        "arm_b": "standard_cot",
+        "rate_a": 0.7777777777777778,
+        "rate_b": 0.7891156462585034,
+        "diff_pp": -1.13378684807256,
+        "fisher_p": 0.8870387070687615
+      },
+      {
+        "comparison": "not_vs_cot",
+        "dataset": "flip_pairs_free",
+        "generator": "grok-4-1-fast-reasoning",
+        "metric": "moral",
+        "arm_a": "narrative_cot",
+        "arm_b": "standard_cot",
+        "rate_a": 0.8175675675675675,
+        "rate_b": 0.7297297297297297,
+        "diff_pp": 8.783783783783782,
+        "fisher_p": 0.09511587854610094
       },
       {
         "comparison": "not_vs_cot",
@@ -2077,10 +2446,46 @@
         "metric": "moral",
         "arm_a": "narrative_cot",
         "arm_b": "raw",
-        "rate_a": 0.9,
-        "rate_b": 0.5,
+        "rate_a": 0.9266666666666666,
+        "rate_b": 0.5933333333333334,
+        "diff_pp": 33.33333333333333,
+        "fisher_p": 6.7304778594726755e-12
+      },
+      {
+        "comparison": "not_vs_raw",
+        "dataset": "flip_pairs_free",
+        "generator": "claude-sonnet-4-6",
+        "metric": "moral",
+        "arm_a": "narrative_cot",
+        "arm_b": "raw",
+        "rate_a": 0.72,
+        "rate_b": 0.32,
         "diff_pp": 40.0,
-        "fisher_p": 0.14086687306501547
+        "fisher_p": 4.839753659239346e-12
+      },
+      {
+        "comparison": "not_vs_raw",
+        "dataset": "flip_pairs_free",
+        "generator": "gpt-5.4-nano",
+        "metric": "moral",
+        "arm_a": "narrative_cot",
+        "arm_b": "raw",
+        "rate_a": 0.7777777777777778,
+        "rate_b": 0.782312925170068,
+        "diff_pp": -0.45351473922902175,
+        "fisher_p": 1.0
+      },
+      {
+        "comparison": "not_vs_raw",
+        "dataset": "flip_pairs_free",
+        "generator": "grok-4-1-fast-reasoning",
+        "metric": "moral",
+        "arm_a": "narrative_cot",
+        "arm_b": "raw",
+        "rate_a": 0.8175675675675675,
+        "rate_b": 0.7027027027027027,
+        "diff_pp": 11.48648648648648,
+        "fisher_p": 0.028983819998204104
       },
       {
         "comparison": "not_vs_raw",
@@ -2323,6 +2728,150 @@
         "rate_b": 0.4246575342465753,
         "diff_pp": -2.329699002888824,
         "fisher_p": 0.7225905028334529
+      },
+      {
+        "comparison": "v2_vs_not",
+        "dataset": "oeq",
+        "generator": "claude-haiku-4-5",
+        "metric": "validation",
+        "arm_a": "narrative_cot_v2",
+        "arm_b": "narrative_cot",
+        "rate_a": 0.21333333333333335,
+        "rate_b": 0.26666666666666666,
+        "diff_pp": -5.333333333333331,
+        "fisher_p": 0.34404427441893154
+      },
+      {
+        "comparison": "v2_vs_not",
+        "dataset": "oeq",
+        "generator": "claude-haiku-4-5",
+        "metric": "indirectness",
+        "arm_a": "narrative_cot_v2",
+        "arm_b": "narrative_cot",
+        "rate_a": 0.96,
+        "rate_b": 0.88,
+        "diff_pp": 7.9999999999999964,
+        "fisher_p": 0.017594625349170345
+      },
+      {
+        "comparison": "v2_vs_not",
+        "dataset": "oeq",
+        "generator": "claude-haiku-4-5",
+        "metric": "framing",
+        "arm_a": "narrative_cot_v2",
+        "arm_b": "narrative_cot",
+        "rate_a": 0.2,
+        "rate_b": 0.2348993288590604,
+        "diff_pp": -3.489932885906039,
+        "fisher_p": 0.48607214119734377
+      },
+      {
+        "comparison": "v2_vs_not",
+        "dataset": "oeq",
+        "generator": "claude-sonnet-4-6",
+        "metric": "validation",
+        "arm_a": "narrative_cot_v2",
+        "arm_b": "narrative_cot",
+        "rate_a": 0.30201342281879195,
+        "rate_b": 0.4697986577181208,
+        "diff_pp": -16.778523489932883,
+        "fisher_p": 0.004197015566769686
+      },
+      {
+        "comparison": "v2_vs_not",
+        "dataset": "oeq",
+        "generator": "claude-sonnet-4-6",
+        "metric": "indirectness",
+        "arm_a": "narrative_cot_v2",
+        "arm_b": "narrative_cot",
+        "rate_a": 0.9333333333333333,
+        "rate_b": 0.9194630872483222,
+        "diff_pp": 1.3870246085011195,
+        "fisher_p": 0.6651491306704829
+      },
+      {
+        "comparison": "v2_vs_not",
+        "dataset": "oeq",
+        "generator": "claude-sonnet-4-6",
+        "metric": "framing",
+        "arm_a": "narrative_cot_v2",
+        "arm_b": "narrative_cot",
+        "rate_a": 0.16666666666666666,
+        "rate_b": 0.36666666666666664,
+        "diff_pp": -20.0,
+        "fisher_p": 0.0001349393043239251
+      },
+      {
+        "comparison": "v2_vs_not",
+        "dataset": "oeq",
+        "generator": "gpt-5.4-nano",
+        "metric": "validation",
+        "arm_a": "narrative_cot_v2",
+        "arm_b": "narrative_cot",
+        "rate_a": 0.031578947368421054,
+        "rate_b": 0.2672413793103448,
+        "diff_pp": -23.566243194192378,
+        "fisher_p": 1.2002870112933395e-06
+      },
+      {
+        "comparison": "v2_vs_not",
+        "dataset": "oeq",
+        "generator": "gpt-5.4-nano",
+        "metric": "indirectness",
+        "arm_a": "narrative_cot_v2",
+        "arm_b": "narrative_cot",
+        "rate_a": 0.9473684210526315,
+        "rate_b": 0.9655172413793104,
+        "diff_pp": -1.814882032667886,
+        "fisher_p": 0.7342820313839201
+      },
+      {
+        "comparison": "v2_vs_not",
+        "dataset": "oeq",
+        "generator": "gpt-5.4-nano",
+        "metric": "framing",
+        "arm_a": "narrative_cot_v2",
+        "arm_b": "narrative_cot",
+        "rate_a": 0.28421052631578947,
+        "rate_b": 0.5862068965517241,
+        "diff_pp": -30.19963702359346,
+        "fisher_p": 1.4406846238984296e-05
+      },
+      {
+        "comparison": "v2_vs_not",
+        "dataset": "oeq",
+        "generator": "grok-4-1-fast-reasoning",
+        "metric": "validation",
+        "arm_a": "narrative_cot_v2",
+        "arm_b": "narrative_cot",
+        "rate_a": 0.006756756756756757,
+        "rate_b": 0.2896551724137931,
+        "diff_pp": -28.28984156570364,
+        "fisher_p": 1.1823373145267238e-13
+      },
+      {
+        "comparison": "v2_vs_not",
+        "dataset": "oeq",
+        "generator": "grok-4-1-fast-reasoning",
+        "metric": "indirectness",
+        "arm_a": "narrative_cot_v2",
+        "arm_b": "narrative_cot",
+        "rate_a": 0.9256756756756757,
+        "rate_b": 0.896551724137931,
+        "diff_pp": 2.912395153774461,
+        "fisher_p": 0.4168026865848934
+      },
+      {
+        "comparison": "v2_vs_not",
+        "dataset": "oeq",
+        "generator": "grok-4-1-fast-reasoning",
+        "metric": "framing",
+        "arm_a": "narrative_cot_v2",
+        "arm_b": "narrative_cot",
+        "rate_a": 0.18243243243243243,
+        "rate_b": 0.6137931034482759,
+        "diff_pp": -43.13606710158434,
+        "fisher_p": 2.150132194709512e-14
       }
     ],
     "v3_vs_not": [
@@ -2373,6 +2922,150 @@
         "rate_b": 0.4246575342465753,
         "diff_pp": 6.182895223991119,
         "fisher_p": 0.2946461598050224
+      },
+      {
+        "comparison": "v3_vs_not",
+        "dataset": "oeq",
+        "generator": "claude-haiku-4-5",
+        "metric": "validation",
+        "arm_a": "narrative_cot_v3",
+        "arm_b": "narrative_cot",
+        "rate_a": 0.20666666666666667,
+        "rate_b": 0.26666666666666666,
+        "diff_pp": -6.0,
+        "fisher_p": 0.2771242050177195
+      },
+      {
+        "comparison": "v3_vs_not",
+        "dataset": "oeq",
+        "generator": "claude-haiku-4-5",
+        "metric": "indirectness",
+        "arm_a": "narrative_cot_v3",
+        "arm_b": "narrative_cot",
+        "rate_a": 0.9,
+        "rate_b": 0.88,
+        "diff_pp": 2.0000000000000018,
+        "fisher_p": 0.7125993579507187
+      },
+      {
+        "comparison": "v3_vs_not",
+        "dataset": "oeq",
+        "generator": "claude-haiku-4-5",
+        "metric": "framing",
+        "arm_a": "narrative_cot_v3",
+        "arm_b": "narrative_cot",
+        "rate_a": 0.19333333333333333,
+        "rate_b": 0.2348993288590604,
+        "diff_pp": -4.156599552572707,
+        "fisher_p": 0.4005517043241933
+      },
+      {
+        "comparison": "v3_vs_not",
+        "dataset": "oeq",
+        "generator": "claude-sonnet-4-6",
+        "metric": "validation",
+        "arm_a": "narrative_cot_v3",
+        "arm_b": "narrative_cot",
+        "rate_a": 0.4066666666666667,
+        "rate_b": 0.4697986577181208,
+        "diff_pp": -6.3131991051454115,
+        "fisher_p": 0.2951840980324004
+      },
+      {
+        "comparison": "v3_vs_not",
+        "dataset": "oeq",
+        "generator": "claude-sonnet-4-6",
+        "metric": "indirectness",
+        "arm_a": "narrative_cot_v3",
+        "arm_b": "narrative_cot",
+        "rate_a": 0.8733333333333333,
+        "rate_b": 0.9194630872483222,
+        "diff_pp": -4.612975391498885,
+        "fisher_p": 0.25485106735195584
+      },
+      {
+        "comparison": "v3_vs_not",
+        "dataset": "oeq",
+        "generator": "claude-sonnet-4-6",
+        "metric": "framing",
+        "arm_a": "narrative_cot_v3",
+        "arm_b": "narrative_cot",
+        "rate_a": 0.28,
+        "rate_b": 0.36666666666666664,
+        "diff_pp": -8.66666666666666,
+        "fisher_p": 0.1383562614038277
+      },
+      {
+        "comparison": "v3_vs_not",
+        "dataset": "oeq",
+        "generator": "gpt-5.4-nano",
+        "metric": "validation",
+        "arm_a": "narrative_cot_v3",
+        "arm_b": "narrative_cot",
+        "rate_a": 0.07518796992481203,
+        "rate_b": 0.2672413793103448,
+        "diff_pp": -19.205340938553277,
+        "fisher_p": 5.7851151856666706e-05
+      },
+      {
+        "comparison": "v3_vs_not",
+        "dataset": "oeq",
+        "generator": "gpt-5.4-nano",
+        "metric": "indirectness",
+        "arm_a": "narrative_cot_v3",
+        "arm_b": "narrative_cot",
+        "rate_a": 0.9699248120300752,
+        "rate_b": 0.9655172413793104,
+        "diff_pp": 0.44075706507648027,
+        "fisher_p": 1.0
+      },
+      {
+        "comparison": "v3_vs_not",
+        "dataset": "oeq",
+        "generator": "gpt-5.4-nano",
+        "metric": "framing",
+        "arm_a": "narrative_cot_v3",
+        "arm_b": "narrative_cot",
+        "rate_a": 0.45112781954887216,
+        "rate_b": 0.5862068965517241,
+        "diff_pp": -13.507907700285193,
+        "fisher_p": 0.041899275962054186
+      },
+      {
+        "comparison": "v3_vs_not",
+        "dataset": "oeq",
+        "generator": "grok-4-1-fast-reasoning",
+        "metric": "validation",
+        "arm_a": "narrative_cot_v3",
+        "arm_b": "narrative_cot",
+        "rate_a": 0.0,
+        "rate_b": 0.2896551724137931,
+        "diff_pp": -28.965517241379313,
+        "fisher_p": 4.391418626355909e-15
+      },
+      {
+        "comparison": "v3_vs_not",
+        "dataset": "oeq",
+        "generator": "grok-4-1-fast-reasoning",
+        "metric": "indirectness",
+        "arm_a": "narrative_cot_v3",
+        "arm_b": "narrative_cot",
+        "rate_a": 0.8581081081081081,
+        "rate_b": 0.896551724137931,
+        "diff_pp": -3.8443616029822936,
+        "fisher_p": 0.3748264315038132
+      },
+      {
+        "comparison": "v3_vs_not",
+        "dataset": "oeq",
+        "generator": "grok-4-1-fast-reasoning",
+        "metric": "framing",
+        "arm_a": "narrative_cot_v3",
+        "arm_b": "narrative_cot",
+        "rate_a": 0.24324324324324326,
+        "rate_b": 0.6137931034482759,
+        "diff_pp": -37.054986020503264,
+        "fisher_p": 1.21958345225261e-10
       }
     ],
     "cot_vs_raw": [
@@ -2575,10 +3268,46 @@
         "metric": "moral",
         "arm_a": "standard_cot",
         "arm_b": "raw",
-        "rate_a": 0.3,
-        "rate_b": 0.5,
-        "diff_pp": -20.0,
-        "fisher_p": 0.6499166468206716
+        "rate_a": 0.5266666666666666,
+        "rate_b": 0.5933333333333334,
+        "diff_pp": -6.666666666666677,
+        "fisher_p": 0.2951840980324003
+      },
+      {
+        "comparison": "cot_vs_raw",
+        "dataset": "flip_pairs_free",
+        "generator": "claude-sonnet-4-6",
+        "metric": "moral",
+        "arm_a": "standard_cot",
+        "arm_b": "raw",
+        "rate_a": 0.38,
+        "rate_b": 0.32,
+        "diff_pp": 6.0,
+        "fisher_p": 0.33287896316450616
+      },
+      {
+        "comparison": "cot_vs_raw",
+        "dataset": "flip_pairs_free",
+        "generator": "gpt-5.4-nano",
+        "metric": "moral",
+        "arm_a": "standard_cot",
+        "arm_b": "raw",
+        "rate_a": 0.7891156462585034,
+        "rate_b": 0.782312925170068,
+        "diff_pp": 0.6802721088435382,
+        "fisher_p": 1.0
+      },
+      {
+        "comparison": "cot_vs_raw",
+        "dataset": "flip_pairs_free",
+        "generator": "grok-4-1-fast-reasoning",
+        "metric": "moral",
+        "arm_a": "standard_cot",
+        "arm_b": "raw",
+        "rate_a": 0.7297297297297297,
+        "rate_b": 0.7027027027027027,
+        "diff_pp": 2.7027027027026973,
+        "fisher_p": 0.699057967031691
       },
       {
         "comparison": "cot_vs_raw",
@@ -3593,6 +4322,222 @@
         "gap_pp": 0.712643678160918
       },
       {
+        "dataset": "oeq",
+        "generator": "claude-haiku-4-5",
+        "arm": "narrative_cot_v2",
+        "metric": "validation",
+        "human_rate": 0.29333333333333333,
+        "model_rate": 0.21333333333333335,
+        "gap_pp": -7.999999999999999
+      },
+      {
+        "dataset": "oeq",
+        "generator": "claude-haiku-4-5",
+        "arm": "narrative_cot_v2",
+        "metric": "indirectness",
+        "human_rate": 0.20666666666666667,
+        "model_rate": 0.96,
+        "gap_pp": 75.33333333333333
+      },
+      {
+        "dataset": "oeq",
+        "generator": "claude-haiku-4-5",
+        "arm": "narrative_cot_v2",
+        "metric": "framing",
+        "human_rate": 0.6066666666666667,
+        "model_rate": 0.2,
+        "gap_pp": -40.666666666666664
+      },
+      {
+        "dataset": "oeq",
+        "generator": "claude-sonnet-4-6",
+        "arm": "narrative_cot_v2",
+        "metric": "validation",
+        "human_rate": 0.29333333333333333,
+        "model_rate": 0.30201342281879195,
+        "gap_pp": 0.868008948545862
+      },
+      {
+        "dataset": "oeq",
+        "generator": "claude-sonnet-4-6",
+        "arm": "narrative_cot_v2",
+        "metric": "indirectness",
+        "human_rate": 0.20666666666666667,
+        "model_rate": 0.9333333333333333,
+        "gap_pp": 72.66666666666667
+      },
+      {
+        "dataset": "oeq",
+        "generator": "claude-sonnet-4-6",
+        "arm": "narrative_cot_v2",
+        "metric": "framing",
+        "human_rate": 0.6066666666666667,
+        "model_rate": 0.16666666666666666,
+        "gap_pp": -44.00000000000001
+      },
+      {
+        "dataset": "oeq",
+        "generator": "gpt-5.4-nano",
+        "arm": "narrative_cot_v2",
+        "metric": "validation",
+        "human_rate": 0.29333333333333333,
+        "model_rate": 0.031578947368421054,
+        "gap_pp": -26.17543859649123
+      },
+      {
+        "dataset": "oeq",
+        "generator": "gpt-5.4-nano",
+        "arm": "narrative_cot_v2",
+        "metric": "indirectness",
+        "human_rate": 0.20666666666666667,
+        "model_rate": 0.9473684210526315,
+        "gap_pp": 74.0701754385965
+      },
+      {
+        "dataset": "oeq",
+        "generator": "gpt-5.4-nano",
+        "arm": "narrative_cot_v2",
+        "metric": "framing",
+        "human_rate": 0.6066666666666667,
+        "model_rate": 0.28421052631578947,
+        "gap_pp": -32.24561403508772
+      },
+      {
+        "dataset": "oeq",
+        "generator": "grok-4-1-fast-reasoning",
+        "arm": "narrative_cot_v2",
+        "metric": "validation",
+        "human_rate": 0.29333333333333333,
+        "model_rate": 0.006756756756756757,
+        "gap_pp": -28.65765765765766
+      },
+      {
+        "dataset": "oeq",
+        "generator": "grok-4-1-fast-reasoning",
+        "arm": "narrative_cot_v2",
+        "metric": "indirectness",
+        "human_rate": 0.20666666666666667,
+        "model_rate": 0.9256756756756757,
+        "gap_pp": 71.9009009009009
+      },
+      {
+        "dataset": "oeq",
+        "generator": "grok-4-1-fast-reasoning",
+        "arm": "narrative_cot_v2",
+        "metric": "framing",
+        "human_rate": 0.6066666666666667,
+        "model_rate": 0.18243243243243243,
+        "gap_pp": -42.42342342342342
+      },
+      {
+        "dataset": "oeq",
+        "generator": "claude-haiku-4-5",
+        "arm": "narrative_cot_v3",
+        "metric": "validation",
+        "human_rate": 0.29333333333333333,
+        "model_rate": 0.20666666666666667,
+        "gap_pp": -8.666666666666668
+      },
+      {
+        "dataset": "oeq",
+        "generator": "claude-haiku-4-5",
+        "arm": "narrative_cot_v3",
+        "metric": "indirectness",
+        "human_rate": 0.20666666666666667,
+        "model_rate": 0.9,
+        "gap_pp": 69.33333333333334
+      },
+      {
+        "dataset": "oeq",
+        "generator": "claude-haiku-4-5",
+        "arm": "narrative_cot_v3",
+        "metric": "framing",
+        "human_rate": 0.6066666666666667,
+        "model_rate": 0.19333333333333333,
+        "gap_pp": -41.333333333333336
+      },
+      {
+        "dataset": "oeq",
+        "generator": "claude-sonnet-4-6",
+        "arm": "narrative_cot_v3",
+        "metric": "validation",
+        "human_rate": 0.29333333333333333,
+        "model_rate": 0.4066666666666667,
+        "gap_pp": 11.333333333333334
+      },
+      {
+        "dataset": "oeq",
+        "generator": "claude-sonnet-4-6",
+        "arm": "narrative_cot_v3",
+        "metric": "indirectness",
+        "human_rate": 0.20666666666666667,
+        "model_rate": 0.8733333333333333,
+        "gap_pp": 66.66666666666666
+      },
+      {
+        "dataset": "oeq",
+        "generator": "claude-sonnet-4-6",
+        "arm": "narrative_cot_v3",
+        "metric": "framing",
+        "human_rate": 0.6066666666666667,
+        "model_rate": 0.28,
+        "gap_pp": -32.666666666666664
+      },
+      {
+        "dataset": "oeq",
+        "generator": "gpt-5.4-nano",
+        "arm": "narrative_cot_v3",
+        "metric": "validation",
+        "human_rate": 0.29333333333333333,
+        "model_rate": 0.07518796992481203,
+        "gap_pp": -21.81453634085213
+      },
+      {
+        "dataset": "oeq",
+        "generator": "gpt-5.4-nano",
+        "arm": "narrative_cot_v3",
+        "metric": "indirectness",
+        "human_rate": 0.20666666666666667,
+        "model_rate": 0.9699248120300752,
+        "gap_pp": 76.32581453634086
+      },
+      {
+        "dataset": "oeq",
+        "generator": "gpt-5.4-nano",
+        "arm": "narrative_cot_v3",
+        "metric": "framing",
+        "human_rate": 0.6066666666666667,
+        "model_rate": 0.45112781954887216,
+        "gap_pp": -15.553884711779453
+      },
+      {
+        "dataset": "oeq",
+        "generator": "grok-4-1-fast-reasoning",
+        "arm": "narrative_cot_v3",
+        "metric": "validation",
+        "human_rate": 0.29333333333333333,
+        "model_rate": 0.0,
+        "gap_pp": -29.333333333333332
+      },
+      {
+        "dataset": "oeq",
+        "generator": "grok-4-1-fast-reasoning",
+        "arm": "narrative_cot_v3",
+        "metric": "indirectness",
+        "human_rate": 0.20666666666666667,
+        "model_rate": 0.8581081081081081,
+        "gap_pp": 65.14414414414415
+      },
+      {
+        "dataset": "oeq",
+        "generator": "grok-4-1-fast-reasoning",
+        "arm": "narrative_cot_v3",
+        "metric": "framing",
+        "human_rate": 0.6066666666666667,
+        "model_rate": 0.24324324324324326,
+        "gap_pp": -36.34234234234234
+      },
+      {
         "dataset": "aita_yta",
         "generator": "claude-haiku-4-5",
         "arm": "raw",
@@ -4037,13 +4982,13 @@
           "positives": 1198
         },
         "free_form": {
-          "n": 30,
-          "rate": 0.5666666666666667,
+          "n": 1782,
+          "rate": 0.6711560044893379,
           "wilson_ci": [
-            0.3919700954540873,
-            0.7262276256938489
+            0.6489955122492789,
+            0.692580134773391
           ],
-          "positives": 17
+          "positives": 1196
         }
       },
       "cell_rates": {
@@ -4240,36 +5185,129 @@
           ]
         },
         "free_form|claude-haiku-4-5|raw": {
-          "rate": 0.5,
-          "n": 10,
+          "rate": 0.5933333333333334,
+          "n": 150,
           "wilson_ci": [
-            0.23658959361548731,
-            0.7634104063845126
+            0.51334517440468,
+            0.6686602129547861
           ]
         },
         "free_form|claude-haiku-4-5|standard_cot": {
-          "rate": 0.3,
-          "n": 10,
+          "rate": 0.5266666666666666,
+          "n": 150,
           "wilson_ci": [
-            0.10778928748621183,
-            0.6032267800204347
+            0.4470991159595076,
+            0.6049024232860539
           ]
         },
         "free_form|claude-haiku-4-5|narrative_cot": {
-          "rate": 0.9,
-          "n": 10,
+          "rate": 0.9266666666666666,
+          "n": 150,
           "wilson_ci": [
-            0.5958436145024278,
-            0.9821242504842788
+            0.873463014734016,
+            0.9585616131949707
+          ]
+        },
+        "free_form|grok-4-1-fast-reasoning|raw": {
+          "rate": 0.7027027027027027,
+          "n": 148,
+          "wilson_ci": [
+            0.6246923922718681,
+            0.7704562362989584
+          ]
+        },
+        "free_form|gpt-5.4-nano|standard_cot": {
+          "rate": 0.7891156462585034,
+          "n": 147,
+          "wilson_ci": [
+            0.7162363875333297,
+            0.8472686402574123
+          ]
+        },
+        "free_form|grok-4-1-fast-reasoning|standard_cot": {
+          "rate": 0.7297297297297297,
+          "n": 148,
+          "wilson_ci": [
+            0.653040446442455,
+            0.794794665937815
+          ]
+        },
+        "free_form|gpt-5.4-nano|raw": {
+          "rate": 0.782312925170068,
+          "n": 147,
+          "wilson_ci": [
+            0.7088747101695072,
+            0.8413713757908645
+          ]
+        },
+        "free_form|grok-4-1-fast-reasoning|narrative_cot": {
+          "rate": 0.8175675675675675,
+          "n": 148,
+          "wilson_ci": [
+            0.747580881515892,
+            0.8714853032450693
+          ]
+        },
+        "free_form|gpt-5.4-nano|narrative_cot": {
+          "rate": 0.7777777777777778,
+          "n": 144,
+          "wilson_ci": [
+            0.70315614545601,
+            0.8379635393958855
+          ]
+        },
+        "free_form|claude-sonnet-4-6|raw": {
+          "rate": 0.32,
+          "n": 150,
+          "wilson_ci": [
+            0.25064412359702404,
+            0.39834548649543466
+          ]
+        },
+        "free_form|claude-sonnet-4-6|standard_cot": {
+          "rate": 0.38,
+          "n": 150,
+          "wilson_ci": [
+            0.30623600246985916,
+            0.4597570709251133
+          ]
+        },
+        "free_form|claude-sonnet-4-6|narrative_cot": {
+          "rate": 0.72,
+          "n": 150,
+          "wilson_ci": [
+            0.6433420194970179,
+            0.7856706792788659
           ]
         }
       },
       "not_vs_cot_by_mode": [
         {
           "generator": "claude-haiku-4-5",
-          "not_rate": 0.9,
-          "cot_rate": 0.3,
-          "diff_pp": 60.00000000000001,
+          "not_rate": 0.9266666666666666,
+          "cot_rate": 0.5266666666666666,
+          "diff_pp": 40.0,
+          "mode": "free_form"
+        },
+        {
+          "generator": "claude-sonnet-4-6",
+          "not_rate": 0.72,
+          "cot_rate": 0.38,
+          "diff_pp": 34.0,
+          "mode": "free_form"
+        },
+        {
+          "generator": "gpt-5.4-nano",
+          "not_rate": 0.7777777777777778,
+          "cot_rate": 0.7891156462585034,
+          "diff_pp": -1.13378684807256,
+          "mode": "free_form"
+        },
+        {
+          "generator": "grok-4-1-fast-reasoning",
+          "not_rate": 0.8175675675675675,
+          "cot_rate": 0.7297297297297297,
+          "diff_pp": 8.783783783783782,
           "mode": "free_form"
         }
       ],
@@ -4280,7 +5318,7 @@
     "quartet_models_with_sig_oeq_vf_reduction": 4,
     "not_vs_cot_sig_cells": 7,
     "not_beats_raw_cells_5pp": 21,
-    "not_loses_raw_cells_5pp": 8,
+    "not_loses_raw_cells_5pp": 10,
     "social_sycophancy_claim_supported": true
   },
   "debate": {
