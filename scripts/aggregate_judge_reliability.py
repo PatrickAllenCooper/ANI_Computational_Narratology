@@ -14,12 +14,20 @@ import json
 from collections import defaultdict
 from pathlib import Path
 
+from scripts.elephant_scorers import score_response
 from scripts.krippendorff import cohens_kappa, krippendorff_alpha_nominal
 
 OUT = Path("./divergence_study_outputs")
 PANEL_CSV = OUT / "judge_panel_raw.csv"
 GOLD_PATH = Path("data/judge_gold.jsonl")
+GOLD_SCORES_PATH = OUT / "judge_gold_scores.jsonl"
 ALPHA_THRESHOLD = 0.67
+PANEL_JUDGES = [
+    "gpt-5.4-nano",
+    "claude-haiku-4-5",
+    "grok-4-1-fast-reasoning",
+]
+METRICS = ("validation", "indirectness", "framing")
 
 
 def _read_panel() -> list[dict]:
@@ -46,6 +54,48 @@ def _majority_vote(scores: list[int]) -> int:
     if not valid:
         return -1
     return 1 if sum(valid) > len(valid) / 2 else 0
+
+
+def score_gold_responses(
+    gold: list[dict],
+    judges: list[str] | None = None,
+) -> list[dict]:
+    """Score each gold human response with each panel judge; cache to JSONL."""
+    judges = judges or PANEL_JUDGES
+    if GOLD_SCORES_PATH.exists():
+        rows = []
+        with GOLD_SCORES_PATH.open(encoding="utf-8") as f:
+            for line in f:
+                if line.strip():
+                    rows.append(json.loads(line))
+        # Reuse if complete
+        expected = len(gold) * len(judges) * len(METRICS)
+        valid = sum(1 for r in rows if int(r.get("score", -1)) >= 0)
+        if valid >= expected * 0.9 and len(rows) >= expected * 0.9:
+            return rows
+
+    rows = []
+    for g in gold:
+        prompt = g.get("prompt", "")
+        response = g.get("response", "")
+        if not prompt or not response:
+            continue
+        for judge in judges:
+            for metric in METRICS:
+                s = score_response(metric, prompt, response, judge=judge)
+                row = {
+                    "item_id": g["item_id"],
+                    "judge": judge,
+                    "metric": metric,
+                    "score": s,
+                }
+                rows.append(row)
+
+    GOLD_SCORES_PATH.parent.mkdir(parents=True, exist_ok=True)
+    with GOLD_SCORES_PATH.open("w", encoding="utf-8") as f:
+        for row in rows:
+            f.write(json.dumps(row, ensure_ascii=False) + "\n")
+    return rows
 
 
 def aggregate_panel(rows: list[dict]) -> dict:
@@ -95,13 +145,6 @@ def aggregate_panel(rows: list[dict]) -> dict:
                     "n": sum(1 for x, y in zip(a, b) if x >= 0 and y >= 0),
                 })
 
-        # Majority vs original primary judge scores
-        disagreements = 0
-        for k in items:
-            panel_scores = [by_item_metric[k].get(j) for j in judges]
-            maj = _majority_vote([s for s in panel_scores if s is not None and s >= 0])
-            if maj >= 0:
-                disagreements += 0  # placeholder for future original comparison
         majority_flags[metric] = alpha_by_metric[metric]["low_reliability"]
 
     return {
@@ -112,41 +155,30 @@ def aggregate_panel(rows: list[dict]) -> dict:
     }
 
 
-def aggregate_gold(gold: list[dict], panel_rows: list[dict]) -> dict:
-    """Judge vs human gold Cohen's kappa per metric."""
+def aggregate_gold(gold: list[dict], gold_scores: list[dict]) -> dict:
+    """Judge vs crowdsourced human labels on the same human responses."""
     if not gold:
         return {"note": "No judge_gold.jsonl; human kappa skipped."}
 
-    gold_by_id = {g["item_id"]: g for g in gold}
-    judges = sorted({r["judge"] for r in panel_rows}) if panel_rows else []
-
-    # Also score gold items directly from gold file judge columns if present
+    human_by_id = {g["item_id"]: g for g in gold}
     kappa_vs_human = []
-    for metric in ("validation", "indirectness", "framing"):
+
+    for metric in METRICS:
         human_key = f"human_{metric}"
-        for judge in judges:
+        for judge in PANEL_JUDGES:
             human_vals = []
             judge_vals = []
-            for g in gold:
-                if human_key not in g:
+            for gs in gold_scores:
+                if gs.get("metric") != metric or gs.get("judge") != judge:
+                    continue
+                item_id = gs.get("item_id", "")
+                g = human_by_id.get(item_id)
+                if not g or human_key not in g:
                     continue
                 try:
                     hv = int(g[human_key])
-                except (ValueError, TypeError):
-                    continue
-                # Panel score for same item if available
-                panel_match = [
-                    r for r in panel_rows
-                    if r["item_id"] == g["item_id"] and r["metric"] == metric and r["judge"] == judge
-                ]
-                if panel_match:
-                    try:
-                        jv = int(float(panel_match[0]["score"]))
-                    except (ValueError, TypeError):
-                        continue
-                elif f"judge_{metric}" in g:
-                    jv = int(g[f"judge_{metric}"])
-                else:
+                    jv = int(gs["score"])
+                except (ValueError, TypeError, KeyError):
                     continue
                 if hv >= 0 and jv >= 0:
                     human_vals.append(hv)
@@ -157,12 +189,15 @@ def aggregate_gold(gold: list[dict], panel_rows: list[dict]) -> dict:
                     "judge": judge,
                     "kappa_vs_human": cohens_kappa(judge_vals, human_vals),
                     "n": len(human_vals),
+                    "agreement_rate": sum(
+                        1 for a, b in zip(judge_vals, human_vals) if a == b
+                    ) / len(human_vals),
                 })
 
     return {
         "gold_n": len(gold),
+        "gold_scores_n": len(gold_scores),
         "kappa_vs_human": kappa_vs_human,
-        "gold_by_id_count": len(gold_by_id),
     }
 
 
@@ -183,12 +218,14 @@ def main() -> int:
         print(f"Missing {PANEL_CSV} (run judge_panel first)")
         summary["panel"] = {}
 
-    summary["gold"] = aggregate_gold(gold, panel)
+    gold_scores = score_gold_responses(gold) if gold else []
+    summary["gold"] = aggregate_gold(gold, gold_scores)
     if gold:
-        print("\n=== Judge vs human gold ===")
+        print("\n=== Judge vs human gold (same human responses) ===")
         for row in summary["gold"].get("kappa_vs_human", []):
             print(f"  {row['metric']:14s} {row['judge'][:24]:24s} "
-                  f"kappa={row['kappa_vs_human']:.3f} n={row['n']}")
+                  f"kappa={row['kappa_vs_human']:.3f} n={row['n']} "
+                  f"agree={row['agreement_rate']:.1%}")
 
     (OUT / "judge_reliability_summary.json").write_text(
         json.dumps(summary, indent=2, default=str),

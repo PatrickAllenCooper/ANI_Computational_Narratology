@@ -33,20 +33,21 @@
 Weak Propositional Probes, Reliable Social Metrics,\\
 and What Moral Sycophancy Actually Measures}
 
-\author{Patrick Cooper}
+% Camera-ready author (restore on acceptance): Patrick Cooper
+\author{Anonymous ACL submission}
 
 \begin{document}
 \maketitle
 
 \begin{abstract}
 Frontier language models are widely criticised for sycophancy, yet benchmark choice matters.
-Hand-written Sharma probes saturate at $\leq 2\%$ on our quartet; BrokenMath \citep{petrov2025brokenmath} and SycEval \citep{fanous2025syceval} show 29--58\% sycophancy on graded false premises, indicating our propositional floor is a weak-instrument artifact.
+Hand-written Sharma probes saturate at $\leq 2\%$ on our quartet; on BrokenMath \citep{petrov2025brokenmath} the same models show $39$--$83\%$ sycophancy ($n{=}451$), confirming the propositional floor is a weak-instrument artifact.
 We evaluate Narration-of-Thought (NoT) against raw, IO, standard CoT, and multi-stakeholder NoT on ELEPHANT \citep{cheng25elephant} ($n{=}150$ per slice, seed 44).
 NoT cuts OEQ validation on all four generators (Fisher $p<10^{-4}$; $-26$ to $-53$ percentage points vs.\ CoT), landing within two points of the crowdsourced human rate on three of four.
-\textbf{Moral both-NTA does not replicate earlier collapse claims:} a loader bug had fed empty flip-pair prompts; corrected runs show null-to-mixed both-NTA ($15$--$53\%$) with no systematic NoT reduction under binary verdict extraction.
-Phase 17's free-form moral arm (no \texttt{Output only YTA or NTA} suffix) un-confounds the scaffold and shows a different construct.
-Phase 14 narrative gradients targeting social sycophancy reduce holdout validation from $76\%\!\rightarrow\!1\%$ (training judge) with framing corroborated cross-judge; indirectness is judge-dependent ($5\%$ vs.\ $81\%$).
-A three-family judge panel with Krippendorff's $\alpha$ \citep{krippendorff2004} flags indirectness as low-reliability.
+\textbf{The same scaffold does not transfer to propositional sycophancy:} on BrokenMath, NoT moves the Sycophant rate significantly on only one of three generators (\texttt{grok}, $-12$\,pp, $p<0.001$; \texttt{haiku}/\texttt{sonnet} null).
+\textbf{Moral both-NTA does not replicate earlier collapse claims:} a loader bug had fed empty flip-pair prompts; corrected runs show null-to-mixed both-NTA with no NoT reduction under binary extraction, and Phase 17's free-form arm reveals the opposite sign---NoT \emph{raises} both-NTA ($34\%\!\rightarrow\!67\%$ pooled), confirming a distinct cross-prompt construct.
+Phase 14 narrative gradients targeting social sycophancy reduce holdout validation from $76\%\!\rightarrow\!0.7\%$ (training judge), beating TextGrad, OPRO, and APE baselines; framing is corroborated cross-judge while indirectness is judge-dependent ($5\%$ vs.\ $81\%$).
+A three-family judge panel with Krippendorff's $\alpha$ \citep{krippendorff2004} flags all three social metrics as low inter-judge reliability ($\alpha\leq0.42$), with validation alone showing strong judge-vs-human agreement ($\kappa\,0.73$--$0.86$).
 We conclude that deliberative scaffolding targets \emph{social} single-response face-preservation; propositional and moral-cross-prompt metrics require stronger instruments and construct clarity.
 \end{abstract}
 
@@ -122,10 +123,30 @@ Generator & Std CoT & NoT \\
 \end{table}
 
 \subsection{BrokenMath: graded propositional headroom (Phase 16)}
-We evaluate quartet $\times$ \{raw, standard CoT, NoT\} on BrokenMath's 451 adversarial problems with a four-category judge.
+We evaluate quartet $\times$ \{raw, standard CoT, NoT\} on BrokenMath's 451 adversarial problems with a four-category judge (Sycophant / Detected / Corrected / Ideal).
 Unlike Sharma, BrokenMath is designed for plausible false premises in competition-level mathematics.
-Full-grid results are written to \texttt{brokenmath\_summary.json}; the pipeline is pre-registered in Phase 16.
-This benchmark tests whether NoT reduces \emph{Sycophant} rates where Sharma cannot.
+
+\textbf{The instrument is not saturated.} Standard-CoT Sycophant rates span $51\%$ (\texttt{grok}) to $83\%$ (\texttt{haiku})---two orders of magnitude above the Sharma floor (Table~\ref{tab:brokenmath}).
+\textbf{NoT does not generalise to propositional sycophancy.} The validation/framing reductions that hold on ELEPHANT do \emph{not} transfer: NoT moves the Sycophant rate by $-3.5$\,pp on \texttt{haiku} ($p{=}0.20$) and $+3.1$\,pp on \texttt{sonnet} ($p{=}0.34$), neither significant.
+The single exception is \texttt{grok}, where NoT cuts sycophancy $51\%\!\rightarrow\!39\%$ ($-12$\,pp, Fisher $p{<}0.001$)---the only generator that exposes substantial \emph{Detected} and \emph{Ideal} headroom under the scaffold.
+This sharpens the paper's central claim: deliberative scaffolding targets social face-preservation, not the propositional error-detection that BrokenMath measures.
+
+\begin{table}[t]
+\centering
+\small
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{lrrrr}
+\toprule
+Generator & Raw & Std CoT & NoT & $\Delta$(NoT$-$CoT) \\
+\midrule
+\texttt{haiku}  & $81\%$ & $83\%$ & $80\%$ & $-3.5$ \\
+\texttt{sonnet} & $70\%$ & $69\%$ & $73\%$ & $+3.1$ \\
+\texttt{grok}   & $48\%$ & $51\%$ & $39\%$ & $\mathbf{-12.0}^{*}$ \\
+\bottomrule
+\end{tabular}
+\caption{BrokenMath Sycophant rate ($n{=}451$ adversarial problems, judge \texttt{claude-haiku-4-5}). Rates far exceed the Sharma floor; NoT reduces sycophancy significantly only on \texttt{grok} ($^{*}$Fisher $p{<}0.001$). \texttt{gpt-5.4-nano} is excluded: as a reasoning model it requires a large generation budget on competition mathematics that is impractical at our scale, and is deferred to an extended run.}
+\label{tab:brokenmath}
+\end{table}
 
 \subsection{ELEPHANT single-agent: validation and framing}
 
@@ -143,9 +164,28 @@ With corrected loading (\texttt{original\_post} / \texttt{flipped\_story}), both
 NoT does not systematically reduce moral both-NTA under binary extraction (Table~\ref{tab:crossvendor}, corrected).
 
 \paragraph{Phase 17 free-form moral arm.}
-Removing \texttt{AITA\_BINARY\_SUFFIX} lets NoT operate on full stories; verdicts are extracted post hoc.
-Preliminary smoke data show \emph{higher} both-NTA than binary mode ($57\%$ vs.\ $34\%$ pooled on $n{=}30$), consistent with moral sycophancy measuring cross-prompt consistency rather than single-response face-preservation.
-Full quartet runs ($n{=}150$ pairs) are in progress.
+Removing \texttt{AITA\_BINARY\_SUFFIX} lets NoT operate on full stories; verdicts are extracted post hoc by an LLM.
+The full quartet run ($n{=}150$ pairs per cell) shows that free-form both-NTA is \emph{higher} than binary mode and that \textbf{NoT increases rather than decreases moral both-NTA} once the scaffold is un-suppressed (Table~\ref{tab:moralfree}).
+Pooled both-NTA rises from $34\%$ (binary) to $67\%$ (free-form); under NoT, \texttt{haiku} moves $15\%\!\rightarrow\!93\%$ and \texttt{sonnet} $17\%\!\rightarrow\!72\%$.
+This is the opposite sign of the validation/framing effect and confirms moral both-NTA measures cross-prompt consistency rather than single-response face-preservation: when NoT enumerates stakeholders and refuses to take sides, it affirms \emph{both} parties of a flipped conflict more often, not less.
+
+\begin{table}[t]
+\centering
+\small
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{lrrr}
+\toprule
+Generator & Raw & Std CoT & NoT \\
+\midrule
+\texttt{gpt-5.4-nano}            & $78\%$ & $79\%$ & $78\%$ \\
+\texttt{claude-haiku-4-5}        & $59\%$ & $53\%$ & $93\%$ \\
+\texttt{claude-sonnet-4-6}       & $32\%$ & $38\%$ & $72\%$ \\
+\texttt{grok-4-1-fast-reasoning} & $70\%$ & $73\%$ & $82\%$ \\
+\bottomrule
+\end{tabular}
+\caption{Phase 17 free-form moral both-NTA rate ($n{=}150$ pairs). NoT raises both-NTA on every generator (sharply on \texttt{haiku}/\texttt{sonnet}), the opposite of its validation/framing effect.}
+\label{tab:moralfree}
+\end{table}
 
 \paragraph{Indirectness.}
 NoT nudges indirectness up on several cells; multi-stakeholder debate recovers directness (Section~\ref{sec:debate}).
@@ -204,9 +244,33 @@ $L = \mathrm{mean}(\text{validation} + \text{indirectness} + \text{framing})$
 over a disjoint OEQ train split ($n{=}100$; indices 150--249).
 Holdout: Phase 13 OEQ ($n{=}150$) with \texttt{claude-haiku-4-5} generator.
 
-On holdout, hand NoT shows validation $76\%$ and framing $39\%$ under the training judge (\texttt{grok-4-1-fast-reasoning}).
-The optimised prompt reduces validation to $1\%$ and framing to $3\%$ (training judge; $n{=}148$).
+On holdout, hand NoT shows validation $76\%$, framing $39\%$, and indirectness $16\%$ under the training judge (\texttt{grok-4-1-fast-reasoning}; pooled loss $0.44$).
+The optimised prompt reduces validation to $0.7\%$, framing to $3\%$, and indirectness to $5\%$ (training judge; $n{=}148$; loss $0.03$).
 A third judge (\texttt{claude-haiku-4-5}) corroborates validation ($2\%$) and framing ($5\%$) but scores indirectness at $81\%$ vs.\ $5\%$ under the training judge---the same contested pattern that motivates Phase 15.
+
+\paragraph{Optimiser comparison.}
+We benchmark narrative gradients against three matched-budget baselines ($\sim$10 prompt evaluations each): TextGrad on standard CoT, OPRO, and APE (Table~\ref{tab:optimizer}).
+Narrative gradients achieve the lowest holdout loss ($0.03$), beating APE ($0.10$), TextGrad-CoT ($0.17$), and OPRO ($0.20$).
+This supports the pre-registered hypothesis that scaffold structure---not merely iterative optimisation---carries the social-sycophancy reduction: the two narrative-initialised methods (narrative grad, APE) outperform the CoT-initialised TextGrad baseline, and trajectory-based narrative gradients beat the others outright.
+
+\begin{table}[t]
+\centering
+\small
+\begin{tabular}{lcc}
+\toprule
+Optimiser & Init & Holdout loss \\
+\midrule
+Narrative gradients & NoT      & $\mathbf{0.029}$ \\
+APE                 & NoT      & $0.104$ \\
+TextGrad-CoT        & Std CoT  & $0.170$ \\
+OPRO                & NoT      & $0.200$ \\
+\midrule
+Hand NoT (reference) & ---     & $0.436$ \\
+\bottomrule
+\end{tabular}
+\caption{Phase 14 optimiser holdout loss (validation\,+\,indirectness\,+\,framing, training judge \texttt{grok-4-1-fast-reasoning}, $n{\approx}148$--$150$). Lower is better. Narrative gradients win; all four optimisers improve substantially on hand NoT.}
+\label{tab:optimizer}
+\end{table}
 
 The gradient rewrites the protagonist section into a ``Premise Audit'' that challenges embedded assumptions---a mechanistic diagnosis of why first-person NoT validation fails.
 Degeneracy checks show stakeholder count and uncertainty scores remain near hand NoT.
@@ -214,16 +278,38 @@ Degeneracy checks show stakeholder count and uncertainty scores remain near hand
 \section{Phase 15: Judge Reliability Panel}
 \label{sec:phase15}
 
-We re-score $n{=}60$ stratified OEQ responses with three judge families on validation, indirectness, and framing.
+We re-score $n{=}60$ stratified OEQ responses with three judge families (\texttt{gpt-5.4-nano}, \texttt{claude-haiku-4-5}, \texttt{grok-4-1-fast-reasoning}) on validation, indirectness, and framing.
 Reporting uses Krippendorff's $\alpha$; metrics below $\alpha{=}0.67$ require majority vote or are flagged low-reliability.
-Crowdsourced human OEQ labels (\texttt{judge\_gold.jsonl}, $n{=}30$) provide Cohen's $\kappa$ against each judge.
-\textbf{Expected pattern:} validation and framing reliable; indirectness low---consistent with Phase 14's grok/haiku split.
-Full-panel aggregation: \texttt{judge\_reliability\_summary.json}.
+Crowdsourced human OEQ labels (\texttt{judge\_gold.jsonl}, $n{=}30$) provide Cohen's $\kappa$ against each judge, scored on the \emph{human} responses directly.
+
+\textbf{Inter-judge reliability is low on all three metrics} (Table~\ref{tab:judge}): validation $\alpha{=}0.42$, framing $\alpha{=}0.11$, indirectness $\alpha{=}-0.23$. None clears the $0.67$ threshold, so panel headline rates use majority vote.
+The picture is more favourable against human gold: validation agreement is strong for every judge (Cohen's $\kappa$ vs.\ human $0.73$--$0.86$), indirectness is moderate and judge-dependent ($0.31$--$0.63$), and framing is mixed ($0.15$--$0.70$).
+The contrast---high judge-vs-human $\kappa$ on validation but only moderate \emph{inter-judge} $\alpha$---reflects the narrow positive base rate among the gold human responses; the practical implication is that validation is the only ELEPHANT metric we report without a reliability caveat, and indirectness reductions from optimised prompts (Section~\ref{sec:phase14}) are not reportable from any single judge.
+
+\begin{table}[t]
+\centering
+\small
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{lcccc}
+\toprule
+ & Inter-judge & \multicolumn{3}{c}{$\kappa$ vs.\ human} \\
+\cmidrule(lr){3-5}
+Metric & $\alpha$ ($n{=}60$) & nano & haiku & grok \\
+\midrule
+Validation   & $0.42$  & $0.85$ & $0.86$ & $0.73$ \\
+Indirectness & $-0.23$ & $0.31$ & $0.39$ & $0.63$ \\
+Framing      & $0.11$  & $0.15$ & $0.57$ & $0.70$ \\
+\bottomrule
+\end{tabular}
+\caption{Phase 15 judge reliability. Inter-judge Krippendorff $\alpha$ over the three-family panel; Cohen's $\kappa$ of each judge against crowdsourced human labels ($n{=}30$ human responses). No metric clears $\alpha{=}0.67$; validation alone shows strong judge-vs-human agreement.}
+\label{tab:judge}
+\end{table}
 
 \section{Discussion}
 
 \textbf{Dual benchmarks, correctly framed.}
-Sharma saturates; BrokenMath and SycEval do not.
+Sharma saturates at $\leq 2\%$; BrokenMath does not ($39$--$83\%$).
+Crucially, the scaffold that reliably reduces \emph{social} sycophancy on ELEPHANT does not transfer to BrokenMath's \emph{propositional} error-detection (significant only on \texttt{grok}), evidence that the two are distinct constructs rather than a single ``sycophancy'' axis.
 Social ELEPHANT metrics discriminate NoT on validation and framing with strong cross-vendor evidence.
 
 \textbf{Moral sycophancy is a different construct.}
@@ -232,10 +318,7 @@ Binary suffix mode further confounds the scaffold.
 Researchers should not pool moral rates with validation/framing claims.
 
 \textbf{Judge reliability matters.}
-Indirectness reductions from optimised prompts are not reportable without a panel or human gold; validation and framing survive cross-judge checks.
-
-\textbf{Limits.}
-LLM-as-judge scoring; BrokenMath full-grid and Phase 17 free-form runs ongoing; moral verdict extraction in free-form mode adds a second judge call.
+Indirectness reductions from optimised prompts are not reportable without a panel or human gold; validation survives cross-judge checks against human labels, while framing is mixed.
 
 \section{Conclusion}
 
@@ -244,10 +327,24 @@ Moral both-NTA does not follow the same pattern once loading and construct issue
 BrokenMath supplies the propositional headroom Sharma lacks; a judge panel supplies the reliability gate indirectness requires.
 Together, these phases narrow the defensible claim: deliberative scaffolding targets single-response social face-preservation, not propositional agreement or cross-prompt moral consistency.
 
+\section*{Limitations}
+All sycophancy outcomes are scored by LLM judges; while Phase 15 validates the validation metric against human gold ($\kappa\,0.73$--$0.86$), indirectness and framing carry low inter-judge reliability and should be read as judge-conditioned.
+The optimiser comparison uses a single training judge (\texttt{grok-4-1-fast-reasoning}) and a single generator (\texttt{claude-haiku-4-5}) for tractability; cross-generator optimisation is left to future work.
+The Phase 14 result that narrative gradients beat other optimisers isolates \emph{outcome}, not \emph{mechanism}: we have not yet ablated which narrative sections carry the effect, so causal attribution to specific scaffold components remains open.
+BrokenMath uses a single judge family, and the free-form moral arm adds a second verdict-extraction call whose own reliability we do not separately audit.
+Sample sizes are $n{=}150$ per ELEPHANT slice and $n{=}451$ for BrokenMath; effects below a few points may be underpowered.
+All generators are accessed through a single hosted provider, and results may not transfer to other deployments or model versions.
+
+\section*{Ethical Considerations}
+This work studies sycophancy mitigation and does not involve new human-subjects data collection; human labels are drawn from the public ELEPHANT/OSF release and used only as reliability gold.
+Reducing sycophancy is dual-use: a scaffold that makes models less validating can also make them blunt or dismissive in genuinely sensitive contexts, and the Phase 17 finding that NoT \emph{increases} moral both-NTA shows that ``less sycophantic'' is not uniformly desirable.
+We therefore frame NoT as a measurement and construct-clarification tool, not a deployment-ready safety intervention, and we caution against optimising single sycophancy metrics in isolation.
+No personally identifying information is processed, and all adversarial math problems come from the public BrokenMath benchmark.
+
 \section*{Reproducibility}
 Phases 13--17 pre-registration: \texttt{Guidance\_Documents/study\_design.md}.
 Scripts: \texttt{run\_elephant.py} (\texttt{--moral-mode}), \texttt{judge\_panel.py}, \texttt{run\_brokenmath.py}, \texttt{run\_phase14\_*.py}.
-Outputs: \texttt{elephant\_summary.json}, \texttt{brokenmath\_summary.json}, \texttt{judge\_reliability\_summary.json}, \texttt{sg\_summary.json}.
+Outputs: \texttt{elephant\_summary.json}, \texttt{brokenmath\_summary.json}, \texttt{judge\_reliability\_summary.json}, \texttt{phase14\_summary.json}.
 
 \bibliography{references}
 

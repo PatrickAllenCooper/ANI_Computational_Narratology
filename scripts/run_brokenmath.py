@@ -24,7 +24,7 @@ except ImportError:
     pass
 
 from scripts.brokenmath_scorer import score_brokenmath_response
-from scripts.generators import generate
+from scripts.generators import _is_reasoning, generate
 from scripts.load_brokenmath import load_brokenmath
 from scripts.run_phase1_quartet import PROMPTS, _safe, OUT_DIR
 
@@ -54,6 +54,8 @@ def _generate(problem: str, gen: str, arm: str, problem_id: str) -> tuple[str, b
             return text, False
     sys_prompt = _system_prompt(arm)
     max_tokens = 2048 if arm == "narrative_cot" else 1536
+    if _is_reasoning(gen):
+        max_tokens = max(max_tokens, 8192)
     text = ""
     for attempt in range(3):
         result = generate(gen, sys_prompt, problem, sample_idx=attempt, max_tokens=max_tokens)

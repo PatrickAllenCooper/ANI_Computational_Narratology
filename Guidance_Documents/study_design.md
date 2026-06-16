@@ -1090,3 +1090,27 @@ Pre-registered before execution. Phase 13 moral both-NTA was null after fixing t
 **Tests.** Extended `scripts/test_phase14.py` with Krippendorff-$\alpha$ and verdict-extraction unit checks (all pass offline).
 
 **Bookkeeping.** `datasets` added to README deps; gitignore extended for `bm_*`, `judge_panel_*`, `elephant_gen_flipfree_*`, `data/brokenmath/`.
+
+---
+
+## Execution log v1.14 — Results hardening + ARR target (2026-06-15)
+
+**Target venue.** ACL Rolling Review, **August 2026 cycle, submission deadline August 3, 2026** (firm; OpenReview). Scope decision: submit current phases (13--17) on Aug 3; component ablation of the NoT scaffold (per-section knockout, length/judge/benchmark controls) deferred — inclusion to be decided once the BrokenMath full grid lands. ARR compliance items tracked: named Limitations section, Ethics/Responsible NLP checklist, anonymized review PDF, all-author reviewer registration within 48h of submission.
+
+**Judge token bug (root cause + fix).** `gpt-5.4-nano` is a reasoning model; judge calls capped at `max_tokens=8` returned empty `message.content` and scored `-1`, corrupting any panel/scorer cell that used a reasoning judge. Fixed via `_judge_text()` in `scripts/elephant_scorers.py` and `scripts/brokenmath_scorer.py`: reasoning judges now get `max_tokens=2048`, `reasoning_effort="minimal"`. Cache busted with `_r2` suffix; `judge_panel.py` updated likewise. Live smoke confirms nano judge returns valid 0/1.
+
+**Gold comparison fix.** `aggregate_judge_reliability.py` previously joined on `item_id` against model-panel scores (spurious, n=2). Rewritten to score the **human** gold responses directly per judge, then Cohen's $\kappa$ vs human labels.
+
+**Judge panel (full n=60).** 540 rows in `judge_panel_raw.csv`; `judge_reliability_summary.json` + `judge_gold_scores.jsonl`. Inter-judge Krippendorff $\alpha$: validation 0.42, indirectness $-0.23$, framing 0.12 — all below the 0.67 reporting threshold (majority-vote / low-reliability flag). Judge-vs-human $\kappa$ on the same human responses: validation strong (nano 0.85, haiku 0.86, grok 0.73), indirectness moderate, framing mixed.
+
+**Optimizer baselines (full holdout, n≈148--149).** Holdout loss ranking: narrative_grad 0.029 < APE 0.104 < TextGrad-CoT 0.170 < OPRO 0.200. Winner narrative_grad; `phase14_holdout.json` + `phase14_summary.json` refreshed, optimizer-comparison figure regenerated.
+
+**BrokenMath full grid.** $451 \times$ quartet $\times$ 3 arms = 5412 cells, haiku judge, running. One silent stall (hung API call with no per-call timeout) at ~3650/5412; killed and restarted (cache-resumable — generations and judge scores persist per-cell). ~3100+ gen caches and ~3100+ score caches on disk at restart. `brokenmath_raw.csv` writes once at completion. Follow-up: add per-call timeout to `generators.py` and/or incremental CSV/marker writes to make restarts skip finished cells.
+
+**BrokenMath full grid (complete).** 5412/5412 cells; `brokenmath_summary.json` regenerated. Standard-CoT Sycophant rates: haiku 83.4%, sonnet 69.4%, grok 50.8% (instrument not saturated). NoT vs CoT: grok $-12.0$pp (Fisher $p<0.001$, only significant cell), haiku $-3.5$pp ($p=0.20$), sonnet $+3.1$pp ($p=0.34$). Conclusion: the social-sycophancy scaffold does **not** transfer to propositional error-detection except on grok.
+
+**Nano generator bug (second instance of reasoning-token starvation).** `gpt-5.4-nano` BrokenMath cells came back ~445/451 UNKNOWN (empty generations), not connection errors. Root cause: `generate()` defaults `reasoning_effort="medium"`, and `run_brokenmath._generate` capped reasoning models at 1536--2048 completion tokens; nano's reasoning consumed the entire budget, leaving empty content. Fix: `run_brokenmath._generate` now raises reasoning generators to `max(base, 8192)` tokens (imports `_is_reasoning`). Smoke confirms nano emits 700--1600-char proofs. However, at the fair config (medium reasoning effort, 8192-token budget) nano is impractically slow on olympiad proofs (>1 day for 1353 cells), so for the Aug 3 submission BrokenMath reports the three non-nano generators (haiku/sonnet/grok) and excludes nano with a caption note; a budget-tier nano run is deferred to the revision. The `_is_reasoning` generation-budget fix in `run_brokenmath.py` is retained.
+
+**Paper integration (sycophancy_paper.tex).** Replaced all promissory text with real numbers: BrokenMath results table (Table: brokenmath), Phase 15 judge reliability table (alpha + judge-vs-human kappa), Phase 14 optimizer comparison table (narrative_grad 0.029 < APE 0.104 < TG-CoT 0.170 < OPRO 0.200), Phase 17 free-form moral table (NoT raises both-NTA: pooled 34%->67%; haiku 15%->93%, sonnet 17%->72%). Updated abstract and discussion. Added named Limitations section and Ethical Considerations section (ARR-required). Anonymized author to "Anonymous ACL submission" (real author preserved in comment for camera-ready).
+
+**Pending for Aug 3.** Compile PDF and proofread (done: 6 pages, clean build); commit hardening changes; decide ablation inclusion; optional budget-tier nano BrokenMath run for revision.

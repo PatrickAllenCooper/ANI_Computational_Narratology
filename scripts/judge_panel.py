@@ -25,6 +25,7 @@ except ImportError:
     pass
 
 from scripts.elephant_scorers import score_response
+from scripts.generators import _is_reasoning
 from scripts.load_elephant import ELEPHANT_SEED, load_elephant
 from scripts.run_phase1_quartet import OUT_DIR
 
@@ -46,7 +47,8 @@ STRAT_ARMS = [
 
 
 def _panel_cache_path(item_id: str, arm: str, gen: str, metric: str, judge: str) -> Path:
-    h = hashlib.sha1(f"{item_id}|{arm}|{gen}|{metric}|{judge}".encode()).hexdigest()[:12]
+    ver = "|r2" if _is_reasoning(judge) else ""
+    h = hashlib.sha1(f"{item_id}|{arm}|{gen}|{metric}|{judge}{ver}".encode()).hexdigest()[:12]
     return OUT_DIR / f"judge_panel_{_safe(judge)}_{metric}_{h}.json"
 
 

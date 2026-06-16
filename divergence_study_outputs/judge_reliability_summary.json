@@ -3,20 +3,20 @@
   "panel": {
     "alpha_by_metric": {
       "framing": {
-        "alpha": -0.4096385542168679,
-        "n_items": 6,
+        "alpha": 0.11483253588516773,
+        "n_items": 60,
         "low_reliability": true,
         "reporting_rule": "majority_vote"
       },
       "indirectness": {
-        "alpha": -0.36363636363636376,
-        "n_items": 6,
+        "alpha": -0.22685185185185186,
+        "n_items": 60,
         "low_reliability": true,
         "reporting_rule": "majority_vote"
       },
       "validation": {
-        "alpha": -0.4096385542168679,
-        "n_items": 6,
+        "alpha": 0.4196428571428571,
+        "n_items": 60,
         "low_reliability": true,
         "reporting_rule": "majority_vote"
       }
@@ -26,64 +26,64 @@
         "metric": "framing",
         "judge_a": "claude-haiku-4-5",
         "judge_b": "gpt-5.4-nano",
-        "kappa": NaN,
-        "n": 0
+        "kappa": 0.14736842105263168,
+        "n": 60
       },
       {
         "metric": "framing",
         "judge_a": "claude-haiku-4-5",
         "judge_b": "grok-4-1-fast-reasoning",
-        "kappa": 0.0,
-        "n": 6
+        "kappa": 0.2350332594235033,
+        "n": 60
       },
       {
         "metric": "framing",
         "judge_a": "gpt-5.4-nano",
         "judge_b": "grok-4-1-fast-reasoning",
-        "kappa": NaN,
-        "n": 0
+        "kappa": 0.177142857142857,
+        "n": 60
       },
       {
         "metric": "indirectness",
         "judge_a": "claude-haiku-4-5",
         "judge_b": "gpt-5.4-nano",
-        "kappa": NaN,
-        "n": 0
+        "kappa": -0.049999999999999815,
+        "n": 60
       },
       {
         "metric": "indirectness",
         "judge_a": "claude-haiku-4-5",
         "judge_b": "grok-4-1-fast-reasoning",
-        "kappa": -0.28571428571428586,
-        "n": 6
+        "kappa": 0.039999999999999966,
+        "n": 60
       },
       {
         "metric": "indirectness",
         "judge_a": "gpt-5.4-nano",
         "judge_b": "grok-4-1-fast-reasoning",
-        "kappa": NaN,
-        "n": 0
+        "kappa": -0.09042553191489366,
+        "n": 60
       },
       {
         "metric": "validation",
         "judge_a": "claude-haiku-4-5",
         "judge_b": "gpt-5.4-nano",
-        "kappa": NaN,
-        "n": 0
+        "kappa": 0.41913439635535304,
+        "n": 60
       },
       {
         "metric": "validation",
         "judge_a": "claude-haiku-4-5",
         "judge_b": "grok-4-1-fast-reasoning",
-        "kappa": 0.0,
-        "n": 6
+        "kappa": 0.5076586433260394,
+        "n": 60
       },
       {
         "metric": "validation",
         "judge_a": "gpt-5.4-nano",
         "judge_b": "grok-4-1-fast-reasoning",
-        "kappa": NaN,
-        "n": 0
+        "kappa": 0.38587512794268164,
+        "n": 60
       }
     ],
     "judges": [
@@ -99,44 +99,71 @@
   },
   "gold": {
     "gold_n": 30,
+    "gold_scores_n": 270,
     "kappa_vs_human": [
       {
         "metric": "validation",
+        "judge": "gpt-5.4-nano",
+        "kappa_vs_human": 0.8481675392670156,
+        "n": 29,
+        "agreement_rate": 0.9310344827586207
+      },
+      {
+        "metric": "validation",
         "judge": "claude-haiku-4-5",
-        "kappa_vs_human": 1.0,
-        "n": 2
+        "kappa_vs_human": 0.8585365853658536,
+        "n": 29,
+        "agreement_rate": 0.9310344827586207
       },
       {
         "metric": "validation",
         "judge": "grok-4-1-fast-reasoning",
-        "kappa_vs_human": 0.0,
-        "n": 2
+        "kappa_vs_human": 0.7264150943396226,
+        "n": 29,
+        "agreement_rate": 0.8620689655172413
+      },
+      {
+        "metric": "indirectness",
+        "judge": "gpt-5.4-nano",
+        "kappa_vs_human": 0.31372549019607876,
+        "n": 30,
+        "agreement_rate": 0.7666666666666667
       },
       {
         "metric": "indirectness",
         "judge": "claude-haiku-4-5",
-        "kappa_vs_human": 0.0,
-        "n": 2
+        "kappa_vs_human": 0.39393939393939376,
+        "n": 30,
+        "agreement_rate": 0.7333333333333333
       },
       {
         "metric": "indirectness",
         "judge": "grok-4-1-fast-reasoning",
-        "kappa_vs_human": 0.0,
-        "n": 2
+        "kappa_vs_human": 0.6296296296296295,
+        "n": 30,
+        "agreement_rate": 0.8666666666666667
+      },
+      {
+        "metric": "framing",
+        "judge": "gpt-5.4-nano",
+        "kappa_vs_human": 0.15254237288135603,
+        "n": 30,
+        "agreement_rate": 0.6666666666666666
       },
       {
         "metric": "framing",
         "judge": "claude-haiku-4-5",
-        "kappa_vs_human": 0.0,
-        "n": 2
+        "kappa_vs_human": 0.5693779904306221,
+        "n": 30,
+        "agreement_rate": 0.8
       },
       {
         "metric": "framing",
         "judge": "grok-4-1-fast-reasoning",
-        "kappa_vs_human": 0.0,
-        "n": 2
+        "kappa_vs_human": 0.7014925373134329,
+        "n": 30,
+        "agreement_rate": 0.8666666666666667
       }
-    ],
-    "gold_by_id_count": 30
+    ]
   }
 }

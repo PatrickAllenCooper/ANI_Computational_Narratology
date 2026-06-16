@@ -61,6 +61,17 @@ def test_verdict_extraction() -> None:
     print("  verdict_extraction OK")
 
 
+def test_judge_text_reasoning_budget() -> None:
+    from scripts.elephant_scorers import _judge_text
+    from scripts.generators import _is_reasoning
+
+    assert _is_reasoning("gpt-5.4-nano")
+    assert not _is_reasoning("claude-haiku-4-5")
+    # Offline: helper exists and is callable (live API tested separately)
+    assert callable(_judge_text)
+    print("  judge_text_reasoning_budget OK")
+
+
 def main() -> int:
     print("Phase 14 offline tests:")
     test_batch_loss()
@@ -68,6 +79,7 @@ def main() -> int:
     test_batch_for_iter_wraps()
     test_krippendorff_alpha()
     test_verdict_extraction()
+    test_judge_text_reasoning_budget()
     print("All passed.")
     return 0
 
