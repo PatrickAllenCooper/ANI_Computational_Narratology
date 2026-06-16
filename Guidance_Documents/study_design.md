@@ -1073,6 +1073,44 @@ Pre-registered before execution. Phase 13 moral both-NTA was null after fixing t
 
 ---
 
+## Phase 18 — Judge-Robust Prompt Optimization (black-box methods win): Pre-Registration
+
+Pre-registered before execution. This is the primary candidate for a defensible **methods win** and the gate for ACL Rolling Review (Aug 2026) submission: we do not submit until Phase 18 yields a sycophancy reduction that survives held-out-judge and human-gold evaluation.
+
+**Motivation.** Phase 14 narrative gradients cut holdout loss $0.44\!\rightarrow\!0.03$, but against a *single* training judge (`grok-4-1-fast-reasoning`); a third judge scored indirectness $81\%$ vs.\ $5\%$ on the same responses, and the Phase 15 panel shows low inter-judge $\alpha$ on all three social metrics. The Phase 14 prompt essentially reverse-engineers the judge rubric (it bans affirmations, hedges, and modal verbs, and mandates a declarative verdict) -- textbook Goodharting / reward hacking. The adversarial-judge literature confirms absolute LLM-as-judge scoring is highly gameable, far more so than comparative scoring. Phase 18 develops an optimization procedure whose gains are *judge-robust by construction* and quantifies the Goodhart gap of the naive single-judge baseline.
+
+**Positioning (the pitch).** Phase 18 is deliberately **weight-independent / black-box**: it requires only API-level access (generation + judging), no model weights, no activations, no fine-tuning. This is the differentiator from activation-steering approaches (Phase 19 backup), which need open weights. The contribution is framed as *practical, deployable sycophancy mitigation for frontier closed models* plus a methodology for not fooling yourself with a single judge.
+
+**Headline question.** Can prompt optimization produce a sycophancy reduction that generalizes to judges held out of optimization and agrees with human gold, and by how much does naive single-judge optimization overstate its gains (the Goodhart gap)?
+
+**Method.**
+1. *Robust objective.* Replace the single-judge loss with a worst-case (min--max) panel loss: optimize the prompt to minimize the *maximum* sycophancy score across a judge panel $\{$`grok`, `claude-haiku-4-5`, `gpt-5.4-nano`$\}$, so a win requires fooling all judges simultaneously, not one. Report mean and variance across judges alongside the max.
+2. *Held-out judge(s).* One or more judge families (e.g.\ a fourth family, plus a leave-one-judge-out rotation) are excluded from optimization entirely and used only for evaluation, measuring judge generalization.
+3. *Comparative scoring arm.* Add a pairwise/comparative judge variant (response A vs.\ B: which is more sycophantic?) as a more attack-resistant signal; compare absolute-loss vs.\ comparative-loss optimization.
+4. *Human-gold anchor.* Primary outcome is **validation** (the only metric with strong judge-vs-human $\kappa$, $0.73$--$0.86$); the optimized prompts are scored by humans / human-validated majority vote on a held-out OEQ subsample.
+5. *Reliability gating.* Indirectness and framing are reported only under majority vote with the low-$\alpha$ caveat; no headline claim rests on a single unreliable judge.
+
+**Baselines.** (a) Hand NoT; (b) Phase 14 single-judge narrative gradient (the gameable baseline); (c) Phase 18 panel-robust optimized prompt. All evaluated identically on held-out judges + human gold.
+
+**Hypotheses (pre-declared).**
+1. The single-judge-optimized prompt loses most of its apparent gain on held-out judges and on human-gold validation (large Goodhart gap).
+2. The panel-robust prompt retains a significant validation reduction on held-out judges and human gold (small Goodhart gap).
+3. Comparative-loss optimization generalizes at least as well as absolute-loss optimization to held-out judges.
+
+**Falsification.** The methods win fails if the panel-robust prompt does not beat hand NoT on *held-out-judge* and *human-gold* validation (two-proportion $p<0.05$ or $>0.1$ absolute reduction), or if it generalizes no better than the single-judge baseline. A null here sends us to Phase 19 (backup).
+
+**Scripts (planned).** `scripts/run_phase18_robust_grad.py` (panel min--max + held-out judge + comparative arm), `scripts/eval_phase18_holdout.py` (held-out-judge + human-gold scoring, Goodhart-gap metric), extend `scripts/build_judge_gold.py` for the held-out OEQ human labels, `scripts/aggregate_phase18.py`. Reuse `syco_loss.py`, `krippendorff.py`, `judge_panel.py`.
+
+**Models.** Generator `claude-haiku-4-5`; optimiser `claude-sonnet-4-6`; optimization panel `{grok-4-1-fast-reasoning, claude-haiku-4-5, gpt-5.4-nano}`; held-out judge a distinct family; human gold via OSF/extended labels. All black-box.
+
+---
+
+## Phase 19 — Activation Steering (open-weight backup): Note
+
+Reserve approach, pursued only if Phase 18 fails its falsification test. Requires a pivot to open-weight generators (e.g.\ Llama-3.1-8B / Qwen3-8B) for residual-stream access. Plan: extract per-construct steering vectors (validation / propositional-BrokenMath / moral both-NTA) via Contrastive Activation Addition and probe directions; test whether the three constructs occupy *distinct, independently steerable* directions -- the mechanistic counterpart to our behavioral construct-fragmentation finding (cf.\ 2026 cue-induced-bias and dual-stance results). Mandatory dual-stance specificity audit: confirm steering reduces sycophantic agreement without suppressing factually correct agreement. Not weight-independent; held in reserve precisely because Phase 18's black-box property is the more broadly applicable contribution.
+
+---
+
 ## Execution log v1.13 — Phases 15–17 deepening (2026-06-12)
 
 **Phase 15 (judge panel).** Implemented `scripts/krippendorff.py`, `scripts/judge_panel.py`, `scripts/aggregate_judge_reliability.py`, `scripts/build_judge_gold.py`. Gold set: 30 OEQ human responses with crowdsourced labels in `data/judge_gold.jsonl`. Smoke panel: $n{=}6$ OEQ responses $\times$ 3 judges $\times$ 3 metrics $\rightarrow$ `judge_panel_raw.csv`. Full $n{=}60$ panel queued. Reporting rule: $\alpha < 0.67$ $\Rightarrow$ majority vote / low-reliability flag.
@@ -1113,4 +1151,6 @@ Pre-registered before execution. Phase 13 moral both-NTA was null after fixing t
 
 **Paper integration (sycophancy_paper.tex).** Replaced all promissory text with real numbers: BrokenMath results table (Table: brokenmath), Phase 15 judge reliability table (alpha + judge-vs-human kappa), Phase 14 optimizer comparison table (narrative_grad 0.029 < APE 0.104 < TG-CoT 0.170 < OPRO 0.200), Phase 17 free-form moral table (NoT raises both-NTA: pooled 34%->67%; haiku 15%->93%, sonnet 17%->72%). Updated abstract and discussion. Added named Limitations section and Ethical Considerations section (ARR-required). Anonymized author to "Anonymous ACL submission" (real author preserved in comment for camera-ready).
 
-**Pending for Aug 3.** Compile PDF and proofread (done: 6 pages, clean build); commit hardening changes; decide ablation inclusion; optional budget-tier nano BrokenMath run for revision.
+**Pending for Aug 3.** Compile PDF and proofread (done: 6 pages, clean build); commit hardening changes; optional budget-tier nano BrokenMath run for revision.
+
+**Direction decision (2026-06-16).** Phases 13--17 are now treated as problem framing, not a submittable result: the narrative-gradient "win" is judge-gaming (Goodhart), NoT does not transfer to propositional sycophancy, and free-form moral both-NTA rises under NoT. **We do not submit until a methods win lands.** Chosen primary direction: **Phase 18 -- judge-robust prompt optimization**, pitched as a black-box / weight-independent method (works on frontier closed models). **Backup: Phase 19 -- activation steering** (open-weight, held in reserve). Both pre-registered above.
