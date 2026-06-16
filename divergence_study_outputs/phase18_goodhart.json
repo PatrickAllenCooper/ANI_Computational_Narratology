@@ -1,0 +1,125 @@
+{
+  "gen_model": "claude-haiku-4-5",
+  "train_judge": "grok-4-1-fast-reasoning",
+  "heldout_judges": [
+    "claude-haiku-4-5",
+    "gpt-5.4-nano",
+    "claude-sonnet-4-6"
+  ],
+  "scored_rates": {
+    "hand_ncot": {
+      "grok-4-1-fast-reasoning": {
+        "validation": 0.6891891891891891,
+        "validation_n": 148,
+        "indirectness": 0.1554054054054054,
+        "indirectness_n": 148,
+        "framing": 0.41216216216216217,
+        "framing_n": 148,
+        "n": 150
+      },
+      "claude-haiku-4-5": {
+        "validation": 0.2,
+        "validation_n": 150,
+        "indirectness": 0.8733333333333333,
+        "indirectness_n": 150,
+        "framing": 0.2733333333333333,
+        "framing_n": 150,
+        "n": 150
+      },
+      "gpt-5.4-nano": {
+        "validation": 0.2866666666666667,
+        "validation_n": 150,
+        "indirectness": 0.7333333333333333,
+        "indirectness_n": 150,
+        "framing": 0.92,
+        "framing_n": 150,
+        "n": 150
+      },
+      "claude-sonnet-4-6": {
+        "validation": 0.1,
+        "validation_n": 150,
+        "indirectness": 0.41333333333333333,
+        "indirectness_n": 150,
+        "framing": 0.8933333333333333,
+        "framing_n": 150,
+        "n": 150
+      }
+    },
+    "optimised": {
+      "grok-4-1-fast-reasoning": {
+        "validation": 0.013513513513513514,
+        "validation_n": 148,
+        "indirectness": 0.060810810810810814,
+        "indirectness_n": 148,
+        "framing": 0.02702702702702703,
+        "framing_n": 148,
+        "n": 150
+      },
+      "claude-haiku-4-5": {
+        "validation": 0.02,
+        "validation_n": 150,
+        "indirectness": 0.8666666666666667,
+        "indirectness_n": 150,
+        "framing": 0.04,
+        "framing_n": 150,
+        "n": 150
+      },
+      "gpt-5.4-nano": {
+        "validation": 0.03333333333333333,
+        "validation_n": 150,
+        "indirectness": 0.5866666666666667,
+        "indirectness_n": 150,
+        "framing": 0.26666666666666666,
+        "framing_n": 150,
+        "n": 150
+      },
+      "claude-sonnet-4-6": {
+        "validation": 0.0,
+        "validation_n": 150,
+        "indirectness": 0.1,
+        "indirectness_n": 150,
+        "framing": 0.52,
+        "framing_n": 150,
+        "n": 150
+      }
+    }
+  },
+  "goodhart_gap": {
+    "validation": {
+      "train_judge_reduction": 0.6756756756756757,
+      "heldout_mean_reduction": 0.17777777777777778,
+      "goodhart_gap": 0.49789789789789785,
+      "heldout_reductions": {
+        "claude-haiku-4-5": 0.18000000000000002,
+        "gpt-5.4-nano": 0.25333333333333335,
+        "claude-sonnet-4-6": 0.1
+      },
+      "optimised_worstcase_rate": 0.03333333333333333,
+      "optimised_train_rate": 0.013513513513513514
+    },
+    "indirectness": {
+      "train_judge_reduction": 0.09459459459459459,
+      "heldout_mean_reduction": 0.15555555555555553,
+      "goodhart_gap": -0.060960960960960944,
+      "heldout_reductions": {
+        "claude-haiku-4-5": 0.006666666666666599,
+        "gpt-5.4-nano": 0.1466666666666666,
+        "claude-sonnet-4-6": 0.31333333333333335
+      },
+      "optimised_worstcase_rate": 0.8666666666666667,
+      "optimised_train_rate": 0.060810810810810814
+    },
+    "framing": {
+      "train_judge_reduction": 0.38513513513513514,
+      "heldout_mean_reduction": 0.41999999999999993,
+      "goodhart_gap": -0.034864864864864786,
+      "heldout_reductions": {
+        "claude-haiku-4-5": 0.2333333333333333,
+        "gpt-5.4-nano": 0.6533333333333333,
+        "claude-sonnet-4-6": 0.3733333333333333
+      },
+      "optimised_worstcase_rate": 0.52,
+      "optimised_train_rate": 0.02702702702702703
+    }
+  }
+}

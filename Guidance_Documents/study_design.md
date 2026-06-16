@@ -1103,6 +1103,30 @@ Pre-registered before execution. This is the primary candidate for a defensible 
 
 **Models.** Generator `claude-haiku-4-5`; optimiser `claude-sonnet-4-6`; optimization panel `{grok-4-1-fast-reasoning, claude-haiku-4-5, gpt-5.4-nano}`; held-out judge a distinct family; human gold via OSF/extended labels. All black-box.
 
+### Phase 18a result — Goodhart-gap measurement on existing Phase 14 holdout (2026-06-16)
+
+Cheap diagnostic completed before building the robust optimiser. `scripts/run_phase18_goodhart.py` re-scores the *existing* Phase 14 holdout generations (hand NoT vs. the single-judge-optimised winner, generator `claude-haiku-4-5`, $n{=}150$ OEQ) across the full panel: training judge `grok-4-1-fast-reasoning` plus three held-out judges `{claude-haiku-4-5, gpt-5.4-nano, claude-sonnet-4-6}`. No regeneration (generation caches reused); scoring is parallelised and resilient to transient API failures (per-cell caches make re-runs resume). Output: `divergence_study_outputs/phase18_goodhart.json`.
+
+Reduction = hand-rate $-$ optimised-rate, per judge. `opt_worst` = worst-case optimised rate across the four-judge panel (what a min--max objective would see).
+
+| Metric | Train (grok) reduction | Held-out mean reduction | Goodhart gap | Optimised @ train | Optimised worst-case |
+|---|---|---|---|---|---|
+| validation | $67.6$ pp | $17.8$ pp | $49.8$ pp | $1.4\%$ | $3.3\%$ |
+| indirectness | $9.5$ pp | $15.6$ pp | $-6.1$ pp | $6.1\%$ | $86.7\%$ |
+| framing | $38.5$ pp | $42.0$ pp | $-3.5$ pp | $2.7\%$ | $52.0\%$ |
+
+Per-judge optimised rates (the discriminating numbers):
+- **validation** — grok $1\%$, haiku $2\%$, nano $3\%$, sonnet $0\%$. Low on *every* judge.
+- **indirectness** — grok $6\%$, haiku $87\%$, nano $59\%$, sonnet $10\%$.
+- **framing** — grok $3\%$, haiku $4\%$, nano $27\%$, sonnet $52\%$.
+
+**Findings.**
+1. **Validation reduction is robust** (H2 supported for this construct). Optimised validation is $0$--$3\%$ on all four judges (worst-case $3.3\%$). The large headline gap ($49.8$ pp) is driven almost entirely by *baseline* disagreement — grok rates hand NoT at $69\%$ validation vs. $10$--$29\%$ for the other judges — not by the optimised prompt gaming grok. The optimiser genuinely killed validation sycophancy.
+2. **Indirectness reduction is a Goodhart artifact** (H1 confirmed, sharply). Grok reads optimised indirectness at $6\%$, but the worst-case held-out judge (haiku) reads $87\%$ — identical to the hand-NoT baseline ($87\%$). The single-judge "indirectness $5\%$" claim does **not** survive a held-out judge: held-out judges see essentially no improvement.
+3. **Framing is partially robust.** Reduced on grok/haiku/nano but `claude-sonnet-4-6` still reads $52\%$. Real but judge-dependent.
+
+**Implication for the robust objective.** The `opt_worst` column is exactly the quantity Phase 18 must optimise. A min--max-over-panel (or held-out-judge) loss would (a) refuse to credit the indirectness "win" that only grok sees, and (b) preserve the validation win that all judges agree on. This validates the Phase 18 design and tells us indirectness/framing need either better-specified rubrics or comparative scoring before they are optimisable at all. Human-gold anchoring on the *optimised model responses* (not yet labelled) is the remaining non-cheap step.
+
 ---
 
 ## Phase 19 — Activation Steering (open-weight backup): Note
