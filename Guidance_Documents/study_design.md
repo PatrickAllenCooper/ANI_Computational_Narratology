@@ -1157,7 +1157,27 @@ Held-out judge `claude-sonnet-4-6` (never optimised against), $n{=}150$:
 - The validation Goodhart-gap metric is uninformative here because the held-out judge rates the hand-NoT baseline at only $10\%$ validation (little headroom); the win is in framing/indirectness, not validation.
 - No human-gold anchor yet on the optimised *model* responses (only on the 30 ELEPHANT human responses). Human labelling of robust-prompt outputs on validation/indirectness/framing is the remaining non-cheap step before a publishable claim.
 
-**Next steps.** (a) Replicate the robust prompt across the quartet generators on holdout; (b) add a fourth judge family (new provider) as a stricter held-out check; (c) collect human-gold labels on robust outputs; (d) degeneracy guard (stakeholder/uncertainty) on the robust prompt. Only then integrate into the paper as the methods contribution.
+**Next steps (completed 2026-06-16 hardening).** See Phase 18c--18e below.
+
+### Phase 18c--18e — Hardening results (2026-06-16)
+
+**18c: DeepSeek out-of-family held-out judge.** Added `DeepSeek-R1` routing via Azure Foundry unified inference (`scripts/generators.py`; deployment `DeepSeek-R1`). `scripts/eval_phase18_heldout.py` re-scores cached hand / single-judge / robust holdout responses under `claude-sonnet-4-6` and `deepseek-r1` ($n{=}150$, generator `claude-haiku-4-5`). Output: `phase18_heldout.json`.
+
+Held-out rates (val / ind / fram):
+
+| Config | sonnet | DeepSeek |
+|---|---|---|
+| hand NoT | 10 / 41 / 89% | 53 / 78 / 68% |
+| single-judge | 0 / 10 / 52% | 6 / 74 / 13% |
+| **robust** | **0 / 0 / 11%** | **13 / 4 / 5%** |
+
+Robust vs single-judge: sonnet framing $p{=}3.7{\times}10^{-14}$, indirectness $p{=}7.1{\times}10^{-5}$; DeepSeek indirectness $p{\approx}0$, framing $p{=}0.015$. The single-judge indirectness "win" collapses on DeepSeek ($74\%$ vs robust $4\%$).
+
+**18d: Author validation gold on optimised outputs.** `scripts/label_optimized_gold.py` (resumable CLI) + `scripts/batch_author_validation_labels.py` + `scripts/aggregate_optimized_gold.py`. Stratified $n{=}40$ sample (`data/optimized_gold.jsonl`). Author validation rate: hand $35\%$ $\rightarrow$ robust $0\%$. Judge--author $\kappa$ on validation: $0.13$--$0.27$ (haiku $0.27$, DeepSeek $0.26$). Output: `optimized_gold_summary.json`.
+
+**18e: Degeneracy guard + quartet replication.** `scripts/run_phase18_degeneracy.py`: stakeholders $4.73{\rightarrow}4.77$, uncertainty $2.83{\rightarrow}1.0$ (robust preserves depth, lowers hedged uncertainty). `scripts/run_phase18_quartet.py` + `scripts/aggregate_phase18_quartet.py`: quartet holdout replication with panel + held-out (sonnet, DeepSeek). Haiku full ($n{=}150$): panel-max validation $69\%{\rightarrow}9\%$. Partial cells: sonnet robust $n{=}57$, nano robust $n{=}65$; grok in progress. Output: `phase18_quartet.json`.
+
+**BrokenMath nano (in progress).** Full 4-generator grid restarted with reasoning budget (`max_tokens{\geq}8192`); resumable `bm_gen_*` caches. Re-aggregate when complete; add nano row to paper Table brokenmath.
 
 ---
 

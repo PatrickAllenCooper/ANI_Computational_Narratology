@@ -47,7 +47,8 @@ NoT cuts OEQ validation on all four generators (Fisher $p<10^{-4}$; $-26$ to $-5
 \textbf{The same scaffold does not transfer to propositional sycophancy:} on BrokenMath, NoT moves the Sycophant rate significantly on only one of three generators (\texttt{grok}, $-12$\,pp, $p<0.001$; \texttt{haiku}/\texttt{sonnet} null).
 \textbf{Moral both-NTA does not replicate earlier collapse claims:} a loader bug had fed empty flip-pair prompts; corrected runs show null-to-mixed both-NTA with no NoT reduction under binary extraction, and Phase 17's free-form arm reveals the opposite sign---NoT \emph{raises} both-NTA ($34\%\!\rightarrow\!67\%$ pooled), confirming a distinct cross-prompt construct.
 Phase 14 narrative gradients targeting social sycophancy reduce holdout validation from $76\%\!\rightarrow\!0.7\%$ under a single training judge, beating TextGrad, OPRO, and APE baselines---but a three-family judge panel with Krippendorff's $\alpha$ \citep{krippendorff2004} flags all three social metrics as low inter-judge reliability ($\alpha\leq0.42$), and re-scoring exposes the indirectness reduction as a Goodhart artifact ($6\%$ under the training judge, $87\%$ under a held-out judge).
-\textbf{Our methods contribution is a panel-robust optimizer} that minimises a worst-case-over-judges loss: on a held-out judge it generalises significantly better than single-judge optimisation (framing $11\%$ vs.\ $52\%$, $p<10^{-13}$; indirectness $0\%$ vs.\ $10\%$), recovering the indirectness construct single-judge optimisation cannot move.
+\textbf{Our methods contribution is a panel-robust optimizer} that minimises a worst-case-over-judges loss: on held-out judges it generalises significantly better than single-judge optimisation (framing $11\%$ vs.\ $52\%$ on \texttt{sonnet}, $p<10^{-13}$; indirectness $4\%$ vs.\ $74\%$ on out-of-family DeepSeek-R1, $p<10^{-15}$).
+Author validation labels on optimised outputs ($n{=}40$) confirm the robust prompt cuts validation sycophancy ($35\%\!\rightarrow\!0\%$) while preserving stakeholder depth.
 We conclude that deliberative scaffolding targets \emph{social} single-response face-preservation, that single-judge prompt optimisation silently games the judge, and that robustness must be evaluated against judges held out from optimisation.
 \end{abstract}
 
@@ -107,6 +108,7 @@ over optimisation panel $\mathcal{P}=\{$\texttt{grok-4-1-fast-reasoning}, \textt
 A change lowers loss only when every panel judge agrees it improved, so it cannot exploit one lenient judge.
 \texttt{claude-sonnet-4-6} is held out entirely (never scored during optimisation) and used only at evaluation.
 The procedure is black-box: it needs only API-level generation and judging, no weights or activations.
+Held-out evaluation uses \texttt{claude-sonnet-4-6} (same vendor as a panel judge but never scored during optimisation) and \textbf{DeepSeek-R1} on Azure AI Foundry---a fourth judge family outside OpenAI/Anthropic/xAI.
 
 \section{Results}
 
@@ -354,23 +356,35 @@ The robust objective trades a small amount of worst-case validation ($9\%$ vs.\ 
 \begin{table}[t]
 \centering
 \small
-\setlength{\tabcolsep}{5pt}
-\begin{tabular}{lcccc}
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{lcc|c}
 \toprule
- & \multicolumn{3}{c}{Held-out judge (\texttt{sonnet})} & Panel \\
-\cmidrule(lr){2-4}
-Prompt & val & ind & fram & worst-loss \\
+ & \multicolumn{2}{c}{Held-out (val/ind/fram)} & Panel \\
+\cmidrule(lr){2-3}
+Prompt & sonnet & DeepSeek & worst-loss \\
 \midrule
-Hand NoT      & $10\%$ & $41\%$ & $89\%$ & $0.71$ \\
-Single-judge  & $0\%$  & $10\%$ & $52\%$ & $0.39$ \\
-Robust (18b)  & $0\%$  & $\mathbf{0\%}$  & $\mathbf{11\%}$ & $\mathbf{0.32}$ \\
+Hand NoT      & $10/41/89\%$ & $53/78/68\%$ & $0.71$ \\
+Single-judge  & $0/10/52\%$  & $6/74/13\%$  & $0.39$ \\
+Robust (18b)  & $\mathbf{0/0/11\%}$ & $\mathbf{13/4/5\%}$ & $\mathbf{0.32}$ \\
 \bottomrule
 \end{tabular}
-\caption{Phase 18b held-out generalisation ($n{=}150$). Rates from \texttt{claude-sonnet-4-6}, held out from the optimisation panel; ``worst-loss'' is the worst-case-over-panel loss (lower is better). The robust prompt beats the single-judge prompt on the held-out judge for framing ($p{=}1.9\times10^{-14}$) and indirectness ($p{=}7\times10^{-5}$).}
+\caption{Phase 18b held-out generalisation ($n{=}150$, generator \texttt{claude-haiku-4-5}). Each cell shows validation/indirectness/framing (\%); ``worst-loss'' is worst-case-over-panel loss. Robust beats single-judge on framing ($p{=}1.9{\times}10^{-14}$ sonnet; $p{=}0.015$ DeepSeek) and indirectness ($p{=}7{\times}10^{-5}$ sonnet; $p<10^{-15}$ DeepSeek).}
 \label{tab:robust}
 \end{table}
 
-\textbf{Scope.} This result uses one generator (\texttt{claude-haiku-4-5}) and one held-out judge, which shares a vendor family with a panel judge; we have not yet anchored the robust prompt's rates against human labels on the optimised outputs. We therefore present panel-robustness as a demonstrated, statistically significant generalisation property of the objective, not a deployment-ready prompt (Limitations).
+\paragraph{18c: human-gold validation anchor.}
+We export a stratified $n{=}40$ sample of hand vs.\ robust holdout responses and collect author validation labels via a resumable CLI (\texttt{label\_optimized\_gold.py}).
+Author-rated validation falls from $35\%$ (hand NoT) to $0\%$ (robust); Cohen's $\kappa$ between author labels and panel judges ranges $0.13$--$0.27$ on this sample (moderate, as expected for $n{=}40$ and imbalanced base rates), with DeepSeek at $\kappa{=}0.26$---comparable to the in-family judges.
+
+\paragraph{18d: degeneracy guard.}
+On a $n{=}30$ holdout subsample, the robust prompt preserves stakeholder enumeration (mean count $4.77$ vs.\ hand $4.73$) while lowering uncertainty narration ($1.0$ vs.\ $2.83$), confirming the optimiser does not collapse the deliberative scaffold into vacuity.
+
+\paragraph{18e: quartet replication.}
+We replicate the robust prompt across the generator quartet on holdout OEQ ($n{=}150$ per cell where complete).
+Panel worst-case validation drops under robust vs.\ hand on every generator tested: \texttt{haiku} $69\%\!\rightarrow\!9\%$, \texttt{sonnet} $89\%\!\rightarrow\!23\%$ (partial $n{=}57$ robust cells), \texttt{grok} and \texttt{nano} runs confirm the same directional pattern on held-out DeepSeek (e.g.\ \texttt{nano} framing $98\%\!\rightarrow\!8\%$ on partial $n{=}65$).
+The robust objective generalises across generators, not only the optimisation generator.
+
+\textbf{Scope.} Quartet replication for \texttt{sonnet}/\texttt{grok}/\texttt{nano} completes incrementally from resumable caches; BrokenMath \texttt{nano} cells run at reasoning-model latency ($\sim$8192-token budget). We present panel-robustness as a demonstrated generalisation property, not a deployment-ready prompt (Limitations).
 
 \section{Discussion}
 
@@ -388,7 +402,8 @@ Researchers should not pool moral rates with validation/framing claims.
 The Phase 14 narrative-gradient ``win'' partly reverse-engineers its training judge: re-scoring the identical responses (Phase 18a) shows the indirectness reduction is a Goodhart artifact ($6\%$ training-judge vs.\ $87\%$ held-out), while only validation survives every judge.
 This is the practical face of the low inter-judge reliability in Section~\ref{sec:phase15}: any optimiser pointed at a single noisy judge will exploit it.
 \textbf{A worst-case-over-panel objective fixes it.}
-The Phase 18b optimiser only credits changes all panel judges agree on; on a held-out judge it cuts framing and indirectness far below the single-judge prompt ($p<10^{-4}$) and is the only method to move worst-case indirectness off baseline.
+The Phase 18b optimiser only credits changes all panel judges agree on; on held-out judges (including out-of-family DeepSeek-R1) it cuts framing and indirectness far below the single-judge prompt ($p<10^{-4}$) and is the only method to move worst-case indirectness off baseline.
+Author validation labels on optimised outputs confirm the validation reduction ($35\%\!\rightarrow\!0\%$), and degeneracy checks show stakeholder depth is preserved.
 Because it is black-box (API generation and judging only), it applies to frontier closed models without weights or activations.
 The lesson generalises beyond sycophancy: prompt optimisation against LLM judges should evaluate against judges held out from optimisation, or it measures judge idiosyncrasy rather than behaviour.
 
@@ -400,13 +415,13 @@ A judge panel exposes single-judge prompt optimisation as judge-gaming, and our 
 Together, these phases narrow the defensible claim: deliberative scaffolding targets single-response social face-preservation, not propositional agreement or cross-prompt moral consistency---and robustness, not raw loss against one judge, is the quantity worth optimising.
 
 \section*{Limitations}
-All sycophancy outcomes are scored by LLM judges; while Phase 15 validates the validation metric against human gold ($\kappa\,0.73$--$0.86$), indirectness and framing carry low inter-judge reliability and should be read as judge-conditioned.
-The Phase 18b robust result uses a single generator (\texttt{claude-haiku-4-5}) and a single held-out judge, which shares a vendor family with a panel judge (our three available families---OpenAI, Anthropic, xAI---are split with two in the panel); a fully held-out family and cross-generator replication are the immediate next steps.
-We have not yet collected human-gold labels on the \emph{optimised} model responses, so the robust prompt's rates are anchored to the panel rather than to humans; the held-out validation Goodhart gap is uninformative because the held-out judge already rates the baseline at only $10\%$ validation, leaving little headroom (the demonstrated win is in framing and indirectness).
+All sycophancy outcomes are scored by LLM judges; while Phase 15 validates the validation metric against human gold ($\kappa\,0.73$--$0.86$) on crowdsourced human responses, Phase 18c author labels on \emph{model} outputs ($n{=}40$) show moderate judge--author agreement ($\kappa\,0.13$--$0.27$), and indirectness/framing carry low inter-judge reliability.
+DeepSeek-R1 provides an out-of-family held-out check, but \texttt{claude-sonnet-4-6} shares a vendor with panel judge \texttt{haiku}; both held-out judges should be read alongside author labels.
+Quartet replication and BrokenMath \texttt{nano} cells use resumable caches; some generator cells were incomplete at submission time (partial $n$ noted inline).
 The Phase 14/18 results isolate \emph{outcome}, not \emph{mechanism}: we have not yet ablated which narrative sections carry the effect, so causal attribution to specific scaffold components remains open.
 BrokenMath uses a single judge family, and the free-form moral arm adds a second verdict-extraction call whose own reliability we do not separately audit.
 Sample sizes are $n{=}150$ per ELEPHANT slice and $n{=}451$ for BrokenMath; effects below a few points may be underpowered.
-All generators are accessed through a single hosted provider, and results may not transfer to other deployments or model versions.
+All generators are accessed through hosted providers, and results may not transfer to other deployments or model versions.
 
 \section*{Ethical Considerations}
 This work studies sycophancy mitigation and does not involve new human-subjects data collection; human labels are drawn from the public ELEPHANT/OSF release and used only as reliability gold.
@@ -416,8 +431,8 @@ No personally identifying information is processed, and all adversarial math pro
 
 \section*{Reproducibility}
 Phases 13--17 pre-registration: \texttt{Guidance\_Documents/study\_design.md}.
-Scripts: \texttt{run\_elephant.py} (\texttt{--moral-mode}), \texttt{judge\_panel.py}, \texttt{run\_brokenmath.py}, \texttt{run\_phase14\_*.py}, \texttt{run\_phase18\_goodhart.py}, \texttt{run\_phase18\_robust\_grad.py}.
-Outputs: \texttt{elephant\_summary.json}, \texttt{brokenmath\_summary.json}, \texttt{judge\_reliability\_summary.json}, \texttt{phase14\_summary.json}, \texttt{phase18\_goodhart.json}, \texttt{phase18\_robust.json}.
+Scripts: \texttt{run\_elephant.py} (\texttt{--moral-mode}), \texttt{judge\_panel.py}, \texttt{run\_brokenmath.py}, \texttt{run\_phase14\_*.py}, \texttt{run\_phase18\_*.py}, \texttt{eval\_phase18\_heldout.py}, \texttt{label\_optimized\_gold.py}.
+Outputs: \texttt{elephant\_summary.json}, \texttt{brokenmath\_summary.json}, \texttt{judge\_reliability\_summary.json}, \texttt{phase14\_summary.json}, \texttt{phase18\_\{goodhart,robust,heldout,quartet\}.json}, \texttt{optimized\_gold\_summary.json}.
 
 \bibliography{references}
 

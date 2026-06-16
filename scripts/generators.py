@@ -7,6 +7,7 @@ API surfaces based on the model name:
   * OpenAI / Azure-OpenAI-compatible (gpt-5.4-nano, gpt-4o, ...)
   * Anthropic Messages API on Azure Foundry (claude-haiku-4-5, claude-sonnet-4-6)
   * xAI OpenAI-compatible endpoint (grok-4-1-fast-reasoning)
+  * DeepSeek on Azure AI Foundry unified inference (/models/chat/completions)
 
 All three surfaces return a uniform GenerationResult dataclass so the
 caller does not need to know which backend was used.
@@ -16,6 +17,11 @@ Environment variables (load from .env with python-dotenv before calling):
   AZURE_AI_API_KEY          -- Foundry key (covers OpenAI + Anthropic surfaces)
   AZURE_AI_API_VERSION      -- optional, defaults to 2025-04-01-preview
   XAI_API_KEY               -- xAI key for Grok models
+  DEEPSEEK_ENDPOINT         -- Azure Foundry unified inference URL (optional;
+                               defaults to {base}/models/chat/completions)
+  DEEPSEEK_API_KEY          -- api-key for DeepSeek endpoint (optional;
+                               defaults to AZURE_AI_API_KEY)
+  DEEPSEEK_MODEL            -- deployment name for deepseek-* judge aliases
   ANTHROPIC_ENDPOINT        -- override the Anthropic Messages URL if needed
                                (defaults to {AZURE_AI_PROJECT_ENDPOINT}/anthropic/v1/messages)
 
@@ -52,10 +58,12 @@ from typing import Optional
 _REASONING_HINTS = ("gpt-5", "o1", "o3", "o4", "reasoning")
 _ANTHROPIC_PREFIXES = ("claude",)
 _XAI_PREFIXES = ("grok",)
+_DEEPSEEK_PREFIXES = ("deepseek",)
 
 
 def _is_reasoning(model: str) -> bool:
-    return any(h in model.lower() for h in _REASONING_HINTS)
+    m = model.lower()
+    return any(h in m for h in _REASONING_HINTS) or "deepseek-r" in m
 
 
 def _is_anthropic(model: str) -> bool:
@@ -64,6 +72,10 @@ def _is_anthropic(model: str) -> bool:
 
 def _is_xai(model: str) -> bool:
     return any(model.lower().startswith(p) for p in _XAI_PREFIXES)
+
+
+def _is_deepseek(model: str) -> bool:
+    return any(model.lower().startswith(p) for p in _DEEPSEEK_PREFIXES)
 
 
 # ---------------------------------------------------------------------------
@@ -380,6 +392,133 @@ def _call_xai(
 
 
 # ---------------------------------------------------------------------------
+# DeepSeek surface (Azure AI Foundry unified inference)
+# ---------------------------------------------------------------------------
+
+_DEEPSEEK_SESSION: object = None
+_THINKING_RE = re.compile(
+    r"<(?:redacted_thinking|think)>.*?</(?:redacted_thinking|think)>",
+    re.DOTALL | re.IGNORECASE,
+)
+
+
+def _deepseek_endpoint() -> str:
+    override = os.environ.get("DEEPSEEK_ENDPOINT", "").strip()
+    if override:
+        return override.split("?")[0]
+    endpoint_raw = os.environ.get("AZURE_AI_PROJECT_ENDPOINT", "").rstrip("/")
+    base = endpoint_raw.split("/api/projects")[0].rstrip("/")
+    return f"{base}/models/chat/completions"
+
+
+def _deepseek_api_version() -> str:
+    override = os.environ.get("DEEPSEEK_ENDPOINT", "")
+    if "api-version=" in override:
+        return override.split("api-version=")[-1].split("&")[0]
+    return os.environ.get("DEEPSEEK_API_VERSION", "2024-05-01-preview")
+
+
+def _deepseek_deployment(model: str) -> str:
+    """Map logical judge alias to Azure deployment name."""
+    explicit = os.environ.get("DEEPSEEK_MODEL", "").strip()
+    if explicit:
+        return explicit
+    m = model.lower()
+    if "r1" in m:
+        return "DeepSeek-R1"
+    return "DeepSeek-R1"
+
+
+def _get_deepseek_session():
+    global _DEEPSEEK_SESSION
+    if _DEEPSEEK_SESSION is not None:
+        return _DEEPSEEK_SESSION
+    import requests
+    from requests.adapters import HTTPAdapter
+    from urllib3.util.retry import Retry
+    session = requests.Session()
+    adapter = HTTPAdapter(pool_connections=16, pool_maxsize=16, max_retries=Retry(total=0))
+    session.mount("https://", adapter)
+    session.mount("http://", adapter)
+    _DEEPSEEK_SESSION = session
+    return session
+
+
+def _strip_deepseek_reasoning(text: str) -> str:
+    if not text:
+        return ""
+    cleaned = _THINKING_RE.sub("", text).strip()
+    return cleaned
+
+
+def _call_deepseek(
+    model: str,
+    system: str,
+    user: str,
+    *,
+    sample_idx: int,
+    max_tokens: int,
+    json_mode: bool = False,
+) -> GenerationResult:
+    session = _get_deepseek_session()
+    endpoint = _deepseek_endpoint()
+    api_key = os.environ.get("DEEPSEEK_API_KEY") or os.environ.get("AZURE_AI_API_KEY", "")
+    deployment = _deepseek_deployment(model)
+    params = {"api-version": _deepseek_api_version()}
+    headers = {"api-key": api_key, "Content-Type": "application/json"}
+    messages = []
+    if system and system.strip():
+        messages.append({"role": "system", "content": system})
+    messages.append({"role": "user", "content": user})
+    payload: dict = {
+        "model": deployment,
+        "messages": messages,
+        "max_tokens": max_tokens,
+        "temperature": 0.7,
+        "seed": sample_idx,
+    }
+    if json_mode:
+        payload["response_format"] = {"type": "json_object"}
+    last_err: Optional[Exception] = None
+    for attempt in range(5):
+        try:
+            t0 = time.monotonic()
+            r = session.post(
+                endpoint, params=params, json=payload, headers=headers, timeout=300,
+            )
+            latency = time.monotonic() - t0
+            if r.status_code == 429:
+                wait = int(r.headers.get("Retry-After", 30))
+                time.sleep(wait + random.uniform(0, 2))
+                continue
+            if r.status_code >= 400:
+                msg = r.text[:500]
+                if any(k in msg.lower() for k in ("content_filter", "policy")):
+                    return GenerationResult(text="", finish_reason="content_filter", model=model)
+                raise RuntimeError(f"DeepSeek HTTP {r.status_code}: {msg}")
+            data = r.json()
+            choice = (data.get("choices") or [{}])[0]
+            raw = (choice.get("message") or {}).get("content") or ""
+            text = _strip_deepseek_reasoning(raw)
+            usage = data.get("usage") or {}
+            return GenerationResult(
+                text=text,
+                finish_reason=choice.get("finish_reason", ""),
+                model=model,
+                prompt_tokens=usage.get("prompt_tokens", 0),
+                completion_tokens=usage.get("completion_tokens", 0),
+                latency_s=latency,
+                meta={"deployment": deployment},
+            )
+        except Exception as e:
+            last_err = e
+            if _is_content_filter(e):
+                return GenerationResult(text="", finish_reason="content_filter", model=model)
+            _retry_sleep(attempt, e)
+    raise RuntimeError(f"DeepSeek generation failed after 5 attempts: {last_err}") from last_err
+
+
+# ---------------------------------------------------------------------------
 # Public dispatch interface
 # ---------------------------------------------------------------------------
 
@@ -407,6 +546,14 @@ def generate(
     """
     if _is_anthropic(model):
         return _call_anthropic(model, system, user, max_tokens=max_tokens)
+    if _is_deepseek(model):
+        eff_tokens = max(max_tokens, 8192) if _is_reasoning(model) else max_tokens
+        return _call_deepseek(
+            model, system, user,
+            sample_idx=sample_idx,
+            max_tokens=eff_tokens,
+            json_mode=json_mode,
+        )
     if _is_xai(model):
         return _call_xai(
             model, system, user,
