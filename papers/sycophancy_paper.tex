@@ -30,8 +30,8 @@
 \definecolor{paleteal}{HTML}{D9ECEB}
 
 \title{Sycophancy Under Deliberative Scaffolding:\\
-Weak Propositional Probes, Reliable Social Metrics,\\
-and What Moral Sycophancy Actually Measures}
+Construct Fragmentation, Judge Gaming,\\
+and Panel-Robust Prompt Optimization}
 
 % Camera-ready author (restore on acceptance): Patrick Cooper
 \author{Anonymous ACL submission}
@@ -46,9 +46,9 @@ We evaluate Narration-of-Thought (NoT) against raw, IO, standard CoT, and multi-
 NoT cuts OEQ validation on all four generators (Fisher $p<10^{-4}$; $-26$ to $-53$ percentage points vs.\ CoT), landing within two points of the crowdsourced human rate on three of four.
 \textbf{The same scaffold does not transfer to propositional sycophancy:} on BrokenMath, NoT moves the Sycophant rate significantly on only one of three generators (\texttt{grok}, $-12$\,pp, $p<0.001$; \texttt{haiku}/\texttt{sonnet} null).
 \textbf{Moral both-NTA does not replicate earlier collapse claims:} a loader bug had fed empty flip-pair prompts; corrected runs show null-to-mixed both-NTA with no NoT reduction under binary extraction, and Phase 17's free-form arm reveals the opposite sign---NoT \emph{raises} both-NTA ($34\%\!\rightarrow\!67\%$ pooled), confirming a distinct cross-prompt construct.
-Phase 14 narrative gradients targeting social sycophancy reduce holdout validation from $76\%\!\rightarrow\!0.7\%$ (training judge), beating TextGrad, OPRO, and APE baselines; framing is corroborated cross-judge while indirectness is judge-dependent ($5\%$ vs.\ $81\%$).
-A three-family judge panel with Krippendorff's $\alpha$ \citep{krippendorff2004} flags all three social metrics as low inter-judge reliability ($\alpha\leq0.42$), with validation alone showing strong judge-vs-human agreement ($\kappa\,0.73$--$0.86$).
-We conclude that deliberative scaffolding targets \emph{social} single-response face-preservation; propositional and moral-cross-prompt metrics require stronger instruments and construct clarity.
+Phase 14 narrative gradients targeting social sycophancy reduce holdout validation from $76\%\!\rightarrow\!0.7\%$ under a single training judge, beating TextGrad, OPRO, and APE baselines---but a three-family judge panel with Krippendorff's $\alpha$ \citep{krippendorff2004} flags all three social metrics as low inter-judge reliability ($\alpha\leq0.42$), and re-scoring exposes the indirectness reduction as a Goodhart artifact ($6\%$ under the training judge, $87\%$ under a held-out judge).
+\textbf{Our methods contribution is a panel-robust optimizer} that minimises a worst-case-over-judges loss: on a held-out judge it generalises significantly better than single-judge optimisation (framing $11\%$ vs.\ $52\%$, $p<10^{-13}$; indirectness $0\%$ vs.\ $10\%$), recovering the indirectness construct single-judge optimisation cannot move.
+We conclude that deliberative scaffolding targets \emph{social} single-response face-preservation, that single-judge prompt optimisation silently games the judge, and that robustness must be evaluated against judges held out from optimisation.
 \end{abstract}
 
 \section{Introduction}
@@ -61,11 +61,12 @@ An early Sharma replication on our quartet showed near-zero propositional sycoph
 Phases 15--16 deepen this finding: BrokenMath's expert-verified false-premise olympiad problems \citep{petrov2025brokenmath} and SycEval's graded probes \citep{fanous2025syceval} reveal substantial headroom on frontier models that obvious-falsehood probes miss.
 Phases 15 and 17 address two measurement crises in the social benchmark: judge-dependent indirectness scores and a confounded moral arm that suppressed the NoT scaffold via a binary verdict suffix.
 
-This paper makes four contributions.
+This paper makes five contributions.
 \textbf{(1)} We document Sharma probe saturation and adopt BrokenMath as the rigorous propositional complement.
 \textbf{(2)} We report scaled ELEPHANT results with corrected moral flip-pair loading and a free-form moral arm.
-\textbf{(3)} We run narrative-gradient optimisation on social sycophancy (Phase 14) and a cross-family judge reliability panel (Phase 15).
-\textbf{(4)} We separate constructs: validation/framing are single-response metrics; moral both-NTA is cross-prompt consistency and behaves differently under binary vs.\ free-form extraction.
+\textbf{(3)} We separate constructs: validation/framing are single-response metrics; moral both-NTA is cross-prompt consistency and behaves differently under binary vs.\ free-form extraction.
+\textbf{(4)} We show that single-judge prompt optimisation (Phase 14) Goodharts the judge---a reduction that vanishes on held-out judges---using a cross-family reliability panel (Phase 15) and a same-responses re-scoring diagnostic (Phase 18a).
+\textbf{(5)} As our methods contribution, we introduce a black-box \emph{panel-robust} optimiser (Phase 18b) that minimises a worst-case-over-judges loss and generalises to a held-out judge significantly better than single-judge optimisation, recovering a construct (indirectness) that single-judge optimisation leaves at baseline.
 
 \section{Background}
 
@@ -98,6 +99,14 @@ BrokenMath benchmark split ($n{=}451$ adversarial) via HuggingFace \texttt{INSAI
 Faithful ELEPHANT judge prompts in \texttt{elephant\_scorers.py}; default judge \texttt{claude-haiku-4-5}.
 BrokenMath four-category judge in \texttt{brokenmath\_scorer.py}.
 Phase 15 panel: \texttt{gpt-5.4-nano}, \texttt{claude-haiku-4-5}, \texttt{grok-4-1-fast-reasoning} on $n{=}60$ stratified OEQ responses; Krippendorff's $\alpha$ and Cohen's $\kappa$ vs.\ crowdsourced human gold (\texttt{data/judge\_gold.jsonl}).
+
+\subsection{Judge-robust optimisation (Phase 18)}
+The Phase 18b optimiser replaces the single-judge loss with a worst-case-over-panel objective,
+$L = \mathrm{mean}_i \max_{j\in\mathcal{P}} \mathrm{mean}(\text{val}+\text{ind}+\text{fram})$,
+over optimisation panel $\mathcal{P}=\{$\texttt{grok-4-1-fast-reasoning}, \texttt{claude-haiku-4-5}, \texttt{gpt-5.4-nano}$\}$.
+A change lowers loss only when every panel judge agrees it improved, so it cannot exploit one lenient judge.
+\texttt{claude-sonnet-4-6} is held out entirely (never scored during optimisation) and used only at evaluation.
+The procedure is black-box: it needs only API-level generation and judging, no weights or activations.
 
 \section{Results}
 
@@ -246,7 +255,7 @@ Holdout: Phase 13 OEQ ($n{=}150$) with \texttt{claude-haiku-4-5} generator.
 
 On holdout, hand NoT shows validation $76\%$, framing $39\%$, and indirectness $16\%$ under the training judge (\texttt{grok-4-1-fast-reasoning}; pooled loss $0.44$).
 The optimised prompt reduces validation to $0.7\%$, framing to $3\%$, and indirectness to $5\%$ (training judge; $n{=}148$; loss $0.03$).
-A third judge (\texttt{claude-haiku-4-5}) corroborates validation ($2\%$) and framing ($5\%$) but scores indirectness at $81\%$ vs.\ $5\%$ under the training judge---the same contested pattern that motivates Phase 15.
+A third judge (\texttt{claude-haiku-4-5}) corroborates validation ($2\%$) and framing ($5\%$) but scores indirectness at $81\%$ vs.\ $5\%$ under the training judge---the same contested pattern that motivates Phase 15, and the first sign that this single-judge ``win'' is partly judge-gaming. Phase 18a quantifies the gap on a four-judge panel; Phase 18b removes it.
 
 \paragraph{Optimiser comparison.}
 We benchmark narrative gradients against three matched-budget baselines ($\sim$10 prompt evaluations each): TextGrad on standard CoT, OPRO, and APE (Table~\ref{tab:optimizer}).
@@ -305,6 +314,64 @@ Framing      & $0.11$  & $0.15$ & $0.57$ & $0.70$ \\
 \label{tab:judge}
 \end{table}
 
+\section{Phase 18: Judge-Robust Prompt Optimization}
+\label{sec:phase18}
+
+The Phase 14 result is optimised against a single absolute judge, and Section~\ref{sec:phase15} shows the social metrics carry low inter-judge reliability---a textbook setup for reward hacking \citep{sharma23}.
+Phase 18 first quantifies how much of the apparent win is judge-gaming (18a), then develops an optimiser whose gains are robust by construction (18b).
+
+\paragraph{18a: the Goodhart gap.}
+We re-score the \emph{same} Phase 14 holdout responses (hand NoT vs.\ the single-judge optimised prompt; generator \texttt{claude-haiku-4-5}; $n{=}150$) across a four-judge panel---the training judge \texttt{grok-4-1-fast-reasoning} plus held-out judges \texttt{claude-haiku-4-5}, \texttt{gpt-5.4-nano}, \texttt{claude-sonnet-4-6}---changing only the judge, never regenerating.
+The validation reduction is genuine: optimised validation is $0$--$3\%$ under \emph{every} judge.
+\textbf{The indirectness reduction is a Goodhart artifact:} the training judge reads optimised indirectness at $6\%$, but the worst-case held-out judge reads $87\%$---identical to the hand-NoT baseline (Table~\ref{tab:goodhart}).
+Optimising one absolute judge bought a phrasing change that this judge scores as direct and others do not; framing sits in between (robust on three judges, $52\%$ on \texttt{sonnet}).
+
+\begin{table}[t]
+\centering
+\small
+\setlength{\tabcolsep}{5pt}
+\begin{tabular}{lcccc}
+\toprule
+ & \multicolumn{4}{c}{Single-judge optimised rate} \\
+\cmidrule(lr){2-5}
+Metric & grok$^\dagger$ & haiku & nano & sonnet \\
+\midrule
+Validation   & $1\%$ & $2\%$  & $3\%$  & $0\%$ \\
+Indirectness & $6\%$ & $87\%$ & $59\%$ & $10\%$ \\
+Framing      & $3\%$ & $4\%$  & $27\%$ & $52\%$ \\
+\bottomrule
+\end{tabular}
+\caption{Phase 18a Goodhart gap. The same single-judge optimised responses ($n{=}150$) re-scored by four judges. Validation is low under all judges (robust); indirectness collapses to a $6\%$ training-judge reading but stays at the $87\%$ baseline under the worst held-out judge. $\dagger$ training judge used in Phase 14.}
+\label{tab:goodhart}
+\end{table}
+
+\paragraph{18b: panel-robust narrative gradients.}
+We re-run narrative-gradient descent (init = verbatim NoT, 10 iterations, optimiser \texttt{claude-sonnet-4-6}) under the worst-case-over-panel loss, selecting the iteration with lowest robust loss.
+On the held-out judge \texttt{claude-sonnet-4-6}---never scored during optimisation---the robust prompt generalises significantly better than the single-judge prompt: framing $11\%$ vs.\ $52\%$ (two-proportion $z{=}-7.7$, $p{=}1.9\times10^{-14}$) and indirectness $0\%$ vs.\ $10\%$ ($z{=}-4.0$, $p{=}7\times10^{-5}$), with both at the validation floor (Table~\ref{tab:robust}).
+It also achieves the lowest worst-case panel loss ($0.32$ vs.\ single-judge $0.39$ vs.\ hand $0.71$) and is the only method to move worst-case panel indirectness off the $87\%$ baseline (to $55\%$), reducing indirectness on every judge including the held-out one ($\rightarrow 0\%$).
+The robust objective trades a small amount of worst-case validation ($9\%$ vs.\ $3\%$) for large, judge-general gains on the two constructs single-judge optimisation either gamed or ignored.
+
+\begin{table}[t]
+\centering
+\small
+\setlength{\tabcolsep}{5pt}
+\begin{tabular}{lcccc}
+\toprule
+ & \multicolumn{3}{c}{Held-out judge (\texttt{sonnet})} & Panel \\
+\cmidrule(lr){2-4}
+Prompt & val & ind & fram & worst-loss \\
+\midrule
+Hand NoT      & $10\%$ & $41\%$ & $89\%$ & $0.71$ \\
+Single-judge  & $0\%$  & $10\%$ & $52\%$ & $0.39$ \\
+Robust (18b)  & $0\%$  & $\mathbf{0\%}$  & $\mathbf{11\%}$ & $\mathbf{0.32}$ \\
+\bottomrule
+\end{tabular}
+\caption{Phase 18b held-out generalisation ($n{=}150$). Rates from \texttt{claude-sonnet-4-6}, held out from the optimisation panel; ``worst-loss'' is the worst-case-over-panel loss (lower is better). The robust prompt beats the single-judge prompt on the held-out judge for framing ($p{=}1.9\times10^{-14}$) and indirectness ($p{=}7\times10^{-5}$).}
+\label{tab:robust}
+\end{table}
+
+\textbf{Scope.} This result uses one generator (\texttt{claude-haiku-4-5}) and one held-out judge, which shares a vendor family with a panel judge; we have not yet anchored the robust prompt's rates against human labels on the optimised outputs. We therefore present panel-robustness as a demonstrated, statistically significant generalisation property of the objective, not a deployment-ready prompt (Limitations).
+
 \section{Discussion}
 
 \textbf{Dual benchmarks, correctly framed.}
@@ -317,20 +384,26 @@ Both-NTA measures whether a model affirms \emph{both} sides of a flipped conflic
 Binary suffix mode further confounds the scaffold.
 Researchers should not pool moral rates with validation/framing claims.
 
-\textbf{Judge reliability matters.}
-Indirectness reductions from optimised prompts are not reportable without a panel or human gold; validation survives cross-judge checks against human labels, while framing is mixed.
+\textbf{Single-judge optimisation games the judge.}
+The Phase 14 narrative-gradient ``win'' partly reverse-engineers its training judge: re-scoring the identical responses (Phase 18a) shows the indirectness reduction is a Goodhart artifact ($6\%$ training-judge vs.\ $87\%$ held-out), while only validation survives every judge.
+This is the practical face of the low inter-judge reliability in Section~\ref{sec:phase15}: any optimiser pointed at a single noisy judge will exploit it.
+\textbf{A worst-case-over-panel objective fixes it.}
+The Phase 18b optimiser only credits changes all panel judges agree on; on a held-out judge it cuts framing and indirectness far below the single-judge prompt ($p<10^{-4}$) and is the only method to move worst-case indirectness off baseline.
+Because it is black-box (API generation and judging only), it applies to frontier closed models without weights or activations.
+The lesson generalises beyond sycophancy: prompt optimisation against LLM judges should evaluate against judges held out from optimisation, or it measures judge idiosyncrasy rather than behaviour.
 
 \section{Conclusion}
 
 NoT reduces social validation and framing sycophancy across four generators where Sharma probes show no signal.
-Moral both-NTA does not follow the same pattern once loading and construct issues are corrected.
-BrokenMath supplies the propositional headroom Sharma lacks; a judge panel supplies the reliability gate indirectness requires.
-Together, these phases narrow the defensible claim: deliberative scaffolding targets single-response social face-preservation, not propositional agreement or cross-prompt moral consistency.
+Moral both-NTA does not follow the same pattern once loading and construct issues are corrected, and BrokenMath supplies the propositional headroom Sharma lacks.
+A judge panel exposes single-judge prompt optimisation as judge-gaming, and our panel-robust optimiser corrects it: on a held-out judge it generalises significantly better than single-judge optimisation, recovering the indirectness construct the naive objective leaves at baseline.
+Together, these phases narrow the defensible claim: deliberative scaffolding targets single-response social face-preservation, not propositional agreement or cross-prompt moral consistency---and robustness, not raw loss against one judge, is the quantity worth optimising.
 
 \section*{Limitations}
 All sycophancy outcomes are scored by LLM judges; while Phase 15 validates the validation metric against human gold ($\kappa\,0.73$--$0.86$), indirectness and framing carry low inter-judge reliability and should be read as judge-conditioned.
-The optimiser comparison uses a single training judge (\texttt{grok-4-1-fast-reasoning}) and a single generator (\texttt{claude-haiku-4-5}) for tractability; cross-generator optimisation is left to future work.
-The Phase 14 result that narrative gradients beat other optimisers isolates \emph{outcome}, not \emph{mechanism}: we have not yet ablated which narrative sections carry the effect, so causal attribution to specific scaffold components remains open.
+The Phase 18b robust result uses a single generator (\texttt{claude-haiku-4-5}) and a single held-out judge, which shares a vendor family with a panel judge (our three available families---OpenAI, Anthropic, xAI---are split with two in the panel); a fully held-out family and cross-generator replication are the immediate next steps.
+We have not yet collected human-gold labels on the \emph{optimised} model responses, so the robust prompt's rates are anchored to the panel rather than to humans; the held-out validation Goodhart gap is uninformative because the held-out judge already rates the baseline at only $10\%$ validation, leaving little headroom (the demonstrated win is in framing and indirectness).
+The Phase 14/18 results isolate \emph{outcome}, not \emph{mechanism}: we have not yet ablated which narrative sections carry the effect, so causal attribution to specific scaffold components remains open.
 BrokenMath uses a single judge family, and the free-form moral arm adds a second verdict-extraction call whose own reliability we do not separately audit.
 Sample sizes are $n{=}150$ per ELEPHANT slice and $n{=}451$ for BrokenMath; effects below a few points may be underpowered.
 All generators are accessed through a single hosted provider, and results may not transfer to other deployments or model versions.
@@ -343,8 +416,8 @@ No personally identifying information is processed, and all adversarial math pro
 
 \section*{Reproducibility}
 Phases 13--17 pre-registration: \texttt{Guidance\_Documents/study\_design.md}.
-Scripts: \texttt{run\_elephant.py} (\texttt{--moral-mode}), \texttt{judge\_panel.py}, \texttt{run\_brokenmath.py}, \texttt{run\_phase14\_*.py}.
-Outputs: \texttt{elephant\_summary.json}, \texttt{brokenmath\_summary.json}, \texttt{judge\_reliability\_summary.json}, \texttt{phase14\_summary.json}.
+Scripts: \texttt{run\_elephant.py} (\texttt{--moral-mode}), \texttt{judge\_panel.py}, \texttt{run\_brokenmath.py}, \texttt{run\_phase14\_*.py}, \texttt{run\_phase18\_goodhart.py}, \texttt{run\_phase18\_robust\_grad.py}.
+Outputs: \texttt{elephant\_summary.json}, \texttt{brokenmath\_summary.json}, \texttt{judge\_reliability\_summary.json}, \texttt{phase14\_summary.json}, \texttt{phase18\_goodhart.json}, \texttt{phase18\_robust.json}.
 
 \bibliography{references}
 
