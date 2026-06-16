@@ -1127,6 +1127,38 @@ Per-judge optimised rates (the discriminating numbers):
 
 **Implication for the robust objective.** The `opt_worst` column is exactly the quantity Phase 18 must optimise. A min--max-over-panel (or held-out-judge) loss would (a) refuse to credit the indirectness "win" that only grok sees, and (b) preserve the validation win that all judges agree on. This validates the Phase 18 design and tells us indirectness/framing need either better-specified rubrics or comparative scoring before they are optimisable at all. Human-gold anchoring on the *optimised model responses* (not yet labelled) is the remaining non-cheap step.
 
+### Phase 18b result — panel-robust optimizer (2026-06-16)
+
+`scripts/run_phase18_robust_grad.py` runs textual-gradient descent (init = verbatim N-CoT) against the **worst-case-over-panel** loss: $L = \text{mean}_i \max_{j\in\text{panel}} \text{mean}(\text{val}+\text{ind}+\text{fram})$, panel $=\{$grok, haiku, nano$\}$, optimiser `claude-sonnet-4-6`, generator `claude-haiku-4-5`, train OEQ offset 150 $n{=}100$, 10 iterations. The gradient prompt surfaces the worst-case judge per metric and instructs against single-judge phrasing tricks. Best iteration by robust loss is selected. Holdout ($n{=}150$ OEQ) compares hand NoT, the Phase 14 single-judge winner, and the robust prompt across the panel **plus a held-out judge `claude-sonnet-4-6`** (never in the optimisation panel). Output: `divergence_study_outputs/{rg_summary,phase18_robust}.json`.
+
+Holdout panel worst-case rates (max over grok/haiku/nano) and robust loss:
+
+| Config | val (worst) | ind (worst) | fram (worst) | robust loss |
+|---|---|---|---|---|
+| hand NoT | $69\%$ | $87\%$ | $92\%$ | $0.711$ |
+| single-judge (Phase 14) | $3\%$ | $87\%$ | $27\%$ | $0.391$ |
+| **robust (Phase 18)** | $9\%$ | $\mathbf{55\%}$ | $31\%$ | $\mathbf{0.324}$ |
+
+Held-out judge `claude-sonnet-4-6` (never optimised against), $n{=}150$:
+
+| Config | validation | indirectness | framing |
+|---|---|---|---|
+| hand NoT | $10\%$ | $41\%$ | $89\%$ |
+| single-judge | $0\%$ | $10\%$ | $52\%$ |
+| **robust** | $\mathbf{0\%}$ | $\mathbf{0\%}$ | $\mathbf{11\%}$ |
+
+**Findings (this is the methods win, with caveats).**
+1. **Robust optimisation generalises to a held-out judge significantly better than single-judge optimisation.** On `claude-sonnet-4-6`, the robust prompt beats the single-judge prompt on framing ($11\%$ vs.\ $52\%$, two-proportion $z{=}-7.65$, $p{=}1.9\times10^{-14}$) and indirectness ($0\%$ vs.\ $10\%$, $z{=}-3.97$, $p{=}7.1\times10^{-5}$); both reach the validation floor ($0\%$). vs.\ hand NoT the robust prompt cuts held-out framing $89\%\!\rightarrow\!11\%$ ($p<10^{-15}$) and indirectness $41\%\!\rightarrow\!0\%$ ($p<10^{-15}$).
+2. **It rescues the indirectness construct that single-judge optimisation could not move.** Single-judge left worst-case panel indirectness at $87\%$ (identical to hand, the Phase 18a Goodhart artifact); robust moved it $87\%\!\rightarrow\!55\%$, and reduced indirectness on *every* judge (grok $0\%$, haiku $55\%$, nano $37\%$, held-out sonnet $0\%$).
+3. **Lowest worst-case panel loss** ($0.324$ vs.\ single-judge $0.391$ vs.\ hand $0.711$), at a small cost on worst-case validation ($9\%$ vs.\ single-judge $3\%$).
+
+**Honest caveats (block a clean submission claim until addressed).**
+- Single generator (`claude-haiku-4-5`) and single held-out judge; the held-out `claude-sonnet-4-6` shares a *family* with panel judge `claude-haiku-4-5` (our three available families are openai/anthropic/xai, and openai+xai are both in the panel). A fully held-out *family* is not available without adding a provider.
+- The validation Goodhart-gap metric is uninformative here because the held-out judge rates the hand-NoT baseline at only $10\%$ validation (little headroom); the win is in framing/indirectness, not validation.
+- No human-gold anchor yet on the optimised *model* responses (only on the 30 ELEPHANT human responses). Human labelling of robust-prompt outputs on validation/indirectness/framing is the remaining non-cheap step before a publishable claim.
+
+**Next steps.** (a) Replicate the robust prompt across the quartet generators on holdout; (b) add a fourth judge family (new provider) as a stricter held-out check; (c) collect human-gold labels on robust outputs; (d) degeneracy guard (stakeholder/uncertainty) on the robust prompt. Only then integrate into the paper as the methods contribution.
+
 ---
 
 ## Phase 19 — Activation Steering (open-weight backup): Note
