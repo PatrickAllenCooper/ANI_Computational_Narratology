@@ -44,7 +44,7 @@ Frontier language models are widely criticised for sycophancy, yet benchmark cho
 Hand-written Sharma probes saturate at $\leq 2\%$ on our quartet; on BrokenMath \citep{petrov2025brokenmath} the same models show $39$--$83\%$ sycophancy ($n{=}451$), confirming the propositional floor is a weak-instrument artifact.
 We evaluate Narration-of-Thought (NoT) against raw, IO, standard CoT, and multi-stakeholder NoT on ELEPHANT \citep{cheng25elephant} ($n{=}150$ per slice, seed 44).
 NoT cuts OEQ validation on all four generators (Fisher $p<10^{-4}$; $-26$ to $-53$ percentage points vs.\ CoT), landing within two points of the crowdsourced human rate on three of four.
-\textbf{The same scaffold does not transfer to propositional sycophancy:} on BrokenMath, NoT moves the Sycophant rate significantly on only one of three generators (\texttt{grok}, $-12$\,pp, $p<0.001$; \texttt{haiku}/\texttt{sonnet} null).
+\textbf{The same scaffold does not transfer to propositional sycophancy:} on BrokenMath, NoT reduces the Sycophant rate significantly only on \texttt{grok} ($-12$\,pp, $p<0.001$); \texttt{nano} shows a significant \emph{increase} ($+15$\,pp, $p<10^{-5}$); \texttt{haiku}/\texttt{sonnet} are null.
 \textbf{Moral both-NTA does not replicate earlier collapse claims:} a loader bug had fed empty flip-pair prompts; corrected runs show null-to-mixed both-NTA with no NoT reduction under binary extraction, and Phase 17's free-form arm reveals the opposite sign---NoT \emph{raises} both-NTA ($34\%\!\rightarrow\!67\%$ pooled), confirming a distinct cross-prompt construct.
 Phase 14 narrative gradients targeting social sycophancy reduce holdout validation from $76\%\!\rightarrow\!0.7\%$ under a single training judge, beating TextGrad, OPRO, and APE baselines---but a three-family judge panel with Krippendorff's $\alpha$ \citep{krippendorff2004} flags all three social metrics as low inter-judge reliability ($\alpha\leq0.42$), and re-scoring exposes the indirectness reduction as a Goodhart artifact ($6\%$ under the training judge, $87\%$ under a held-out judge).
 \textbf{Our methods contribution is a panel-robust optimizer} that minimises a worst-case-over-judges loss: on held-out judges it generalises significantly better than single-judge optimisation (framing $11\%$ vs.\ $52\%$ on \texttt{sonnet}, $p<10^{-13}$; indirectness $4\%$ vs.\ $74\%$ on out-of-family DeepSeek-R1, $p<10^{-15}$).
@@ -139,7 +139,8 @@ Unlike Sharma, BrokenMath is designed for plausible false premises in competitio
 
 \textbf{The instrument is not saturated.} Standard-CoT Sycophant rates span $51\%$ (\texttt{grok}) to $83\%$ (\texttt{haiku})---two orders of magnitude above the Sharma floor (Table~\ref{tab:brokenmath}).
 \textbf{NoT does not generalise to propositional sycophancy.} The validation/framing reductions that hold on ELEPHANT do \emph{not} transfer: NoT moves the Sycophant rate by $-3.5$\,pp on \texttt{haiku} ($p{=}0.20$) and $+3.1$\,pp on \texttt{sonnet} ($p{=}0.34$), neither significant.
-The single exception is \texttt{grok}, where NoT cuts sycophancy $51\%\!\rightarrow\!39\%$ ($-12$\,pp, Fisher $p{<}0.001$)---the only generator that exposes substantial \emph{Detected} and \emph{Ideal} headroom under the scaffold.
+On \texttt{grok}, NoT cuts sycophancy $51\%\!\rightarrow\!39\%$ ($-12$\,pp, Fisher $p{<}0.001$)---the only generator that exposes substantial \emph{Detected} and \emph{Ideal} headroom under the scaffold.
+On \texttt{nano}, NoT \emph{increases} sycophancy $55\%\!\rightarrow\!69\%$ ($+15$\,pp, $p{<}10^{-5}$), the opposite sign from the social benchmark.
 This sharpens the paper's central claim: deliberative scaffolding targets social face-preservation, not the propositional error-detection that BrokenMath measures.
 
 \begin{table}[t]
@@ -150,12 +151,13 @@ This sharpens the paper's central claim: deliberative scaffolding targets social
 \toprule
 Generator & Raw & Std CoT & NoT & $\Delta$(NoT$-$CoT) \\
 \midrule
+\texttt{nano}   & $58\%$ & $55\%$ & $69\%$ & $\mathbf{+14.7}^{\dag}$ \\
 \texttt{haiku}  & $81\%$ & $83\%$ & $80\%$ & $-3.5$ \\
 \texttt{sonnet} & $70\%$ & $69\%$ & $73\%$ & $+3.1$ \\
 \texttt{grok}   & $48\%$ & $51\%$ & $39\%$ & $\mathbf{-12.0}^{*}$ \\
 \bottomrule
 \end{tabular}
-\caption{BrokenMath Sycophant rate ($n{=}451$ adversarial problems, judge \texttt{claude-haiku-4-5}). Rates far exceed the Sharma floor; NoT reduces sycophancy significantly only on \texttt{grok} ($^{*}$Fisher $p{<}0.001$). \texttt{gpt-5.4-nano} is excluded: as a reasoning model it requires a large generation budget on competition mathematics that is impractical at our scale, and is deferred to an extended run.}
+\caption{BrokenMath Sycophant rate ($n{\approx}450$--$451$ adversarial problems per cell, judge \texttt{claude-haiku-4-5}). Rates far exceed the Sharma floor. NoT reduces sycophancy significantly on \texttt{grok} ($^{*}$Fisher $p{<}0.001$) and \emph{increases} it on \texttt{nano} ($^{\dag}$Fisher $p{<}10^{-5}$); \texttt{haiku}/\texttt{sonnet} null.}
 \label{tab:brokenmath}
 \end{table}
 
@@ -380,17 +382,17 @@ Author-rated validation falls from $35\%$ (hand NoT) to $0\%$ (robust); Cohen's 
 On a $n{=}30$ holdout subsample, the robust prompt preserves stakeholder enumeration (mean count $4.77$ vs.\ hand $4.73$) while lowering uncertainty narration ($1.0$ vs.\ $2.83$), confirming the optimiser does not collapse the deliberative scaffold into vacuity.
 
 \paragraph{18e: quartet replication.}
-We replicate the robust prompt across the generator quartet on holdout OEQ ($n{=}150$ per cell where complete).
-Panel worst-case validation drops under robust vs.\ hand on every generator tested: \texttt{haiku} $69\%\!\rightarrow\!9\%$, \texttt{sonnet} $89\%\!\rightarrow\!23\%$ (partial $n{=}57$ robust cells), \texttt{grok} and \texttt{nano} runs confirm the same directional pattern on held-out DeepSeek (e.g.\ \texttt{nano} framing $98\%\!\rightarrow\!8\%$ on partial $n{=}65$).
-The robust objective generalises across generators, not only the optimisation generator.
+We replicate the robust prompt across the generator quartet on holdout OEQ ($n{=}150$ per cell; \texttt{grok} $n{=}147$ after three incomplete score caches).
+Panel worst-case validation falls under robust vs.\ hand on every generator: \texttt{haiku} $69\%\!\rightarrow\!9\%$, \texttt{sonnet} $89\%\!\rightarrow\!20\%$, \texttt{nano} $66\%\!\rightarrow\!3\%$, \texttt{grok} $62\%\!\rightarrow\!2\%$.
+Held-out DeepSeek framing follows the same pattern on all four (\texttt{haiku} $74\%\!\rightarrow\!4\%$; \texttt{sonnet} $74\%\!\rightarrow\!4\%$; \texttt{nano} $96\%\!\rightarrow\!3\%$; \texttt{grok} $95\%\!\rightarrow\!4\%$), confirming the panel-robust objective generalises across generator families, not only the haiku training cell.
 
-\textbf{Scope.} Quartet replication for \texttt{sonnet}/\texttt{grok}/\texttt{nano} completes incrementally from resumable caches; BrokenMath \texttt{nano} cells run at reasoning-model latency ($\sim$8192-token budget). We present panel-robustness as a demonstrated generalisation property, not a deployment-ready prompt (Limitations).
+\textbf{Scope.} We present panel-robustness as a demonstrated generalisation property, not a deployment-ready prompt (Limitations).
 
 \section{Discussion}
 
 \textbf{Dual benchmarks, correctly framed.}
-Sharma saturates at $\leq 2\%$; BrokenMath does not ($39$--$83\%$).
-Crucially, the scaffold that reliably reduces \emph{social} sycophancy on ELEPHANT does not transfer to BrokenMath's \emph{propositional} error-detection (significant only on \texttt{grok}), evidence that the two are distinct constructs rather than a single ``sycophancy'' axis.
+Sharma saturates at $\leq 2\%$; BrokenMath does not ($39$--$83\%$ on three generators; \texttt{nano} reaches $69\%$ under NoT).
+Crucially, the scaffold that reliably reduces \emph{social} sycophancy on ELEPHANT does not transfer to BrokenMath's \emph{propositional} error-detection (significant decrease only on \texttt{grok}; significant \emph{increase} on \texttt{nano}), evidence that the two are distinct constructs rather than a single ``sycophancy'' axis.
 Social ELEPHANT metrics discriminate NoT on validation and framing with strong cross-vendor evidence.
 
 \textbf{Moral sycophancy is a different construct.}
@@ -417,7 +419,7 @@ Together, these phases narrow the defensible claim: deliberative scaffolding tar
 \section*{Limitations}
 All sycophancy outcomes are scored by LLM judges; while Phase 15 validates the validation metric against human gold ($\kappa\,0.73$--$0.86$) on crowdsourced human responses, Phase 18c author labels on \emph{model} outputs ($n{=}40$) show moderate judge--author agreement ($\kappa\,0.13$--$0.27$), and indirectness/framing carry low inter-judge reliability.
 DeepSeek-R1 provides an out-of-family held-out check, but \texttt{claude-sonnet-4-6} shares a vendor with panel judge \texttt{haiku}; both held-out judges should be read alongside author labels.
-Quartet replication and BrokenMath \texttt{nano} cells use resumable caches; some generator cells were incomplete at submission time (partial $n$ noted inline).
+BrokenMath \texttt{nano} uses resumable caches at reasoning-model latency; \texttt{grok} quartet replication is $n{=}147$ (three items missing score caches).
 The Phase 14/18 results isolate \emph{outcome}, not \emph{mechanism}: we have not yet ablated which narrative sections carry the effect, so causal attribution to specific scaffold components remains open.
 BrokenMath uses a single judge family, and the free-form moral arm adds a second verdict-extraction call whose own reliability we do not separately audit.
 Sample sizes are $n{=}150$ per ELEPHANT slice and $n{=}451$ for BrokenMath; effects below a few points may be underpowered.

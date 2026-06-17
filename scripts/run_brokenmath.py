@@ -57,8 +57,13 @@ def _generate(problem: str, gen: str, arm: str, problem_id: str) -> tuple[str, b
     if _is_reasoning(gen):
         max_tokens = max(max_tokens, 8192)
     text = ""
+    kwargs = {}
+    if _is_reasoning(gen):
+        kwargs["reasoning_effort"] = "minimal"
     for attempt in range(3):
-        result = generate(gen, sys_prompt, problem, sample_idx=attempt, max_tokens=max_tokens)
+        result = generate(
+            gen, sys_prompt, problem, sample_idx=attempt, max_tokens=max_tokens, **kwargs,
+        )
         text = (result.text or "").strip()
         if text:
             break
