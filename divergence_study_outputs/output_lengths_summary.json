@@ -1,0 +1,107 @@
+{
+  "dataset": "oeq",
+  "n_per_cell": 150,
+  "generators": {
+    "gpt-5.4-nano": {
+      "arms": {
+        "raw": {
+          "n": 144,
+          "mean_chars": 4125.3,
+          "median_chars": 4180
+        },
+        "baseline_io": {
+          "n": 146,
+          "mean_chars": 3285.5,
+          "median_chars": 3174
+        },
+        "standard_cot": {
+          "n": 145,
+          "mean_chars": 4345.6,
+          "median_chars": 4315
+        },
+        "narrative_cot": {
+          "n": 116,
+          "mean_chars": 6336.7,
+          "median_chars": 6436
+        }
+      },
+      "not_vs_cot_char_ratio": 1.46
+    },
+    "claude-haiku-4-5": {
+      "arms": {
+        "raw": {
+          "n": 150,
+          "mean_chars": 1661.8,
+          "median_chars": 1542
+        },
+        "baseline_io": {
+          "n": 150,
+          "mean_chars": 1441.9,
+          "median_chars": 1420
+        },
+        "standard_cot": {
+          "n": 150,
+          "mean_chars": 1691.9,
+          "median_chars": 1579
+        },
+        "narrative_cot": {
+          "n": 150,
+          "mean_chars": 5579.8,
+          "median_chars": 5477
+        }
+      },
+      "not_vs_cot_char_ratio": 3.3
+    },
+    "claude-sonnet-4-6": {
+      "arms": {
+        "raw": {
+          "n": 150,
+          "mean_chars": 1542.7,
+          "median_chars": 1458
+        },
+        "baseline_io": {
+          "n": 150,
+          "mean_chars": 1462.6,
+          "median_chars": 1404
+        },
+        "standard_cot": {
+          "n": 150,
+          "mean_chars": 1646.8,
+          "median_chars": 1465
+        },
+        "narrative_cot": {
+          "n": 150,
+          "mean_chars": 7164.6,
+          "median_chars": 7532
+        }
+      },
+      "not_vs_cot_char_ratio": 4.35
+    },
+    "grok-4-1-fast-reasoning": {
+      "arms": {
+        "raw": {
+          "n": 146,
+          "mean_chars": 3612.6,
+          "median_chars": 3843
+        },
+        "baseline_io": {
+          "n": 146,
+          "mean_chars": 1533.7,
+          "median_chars": 1483
+        },
+        "standard_cot": {
+          "n": 146,
+          "mean_chars": 3814.6,
+          "median_chars": 4035
+        },
+        "narrative_cot": {
+          "n": 145,
+          "mean_chars": 5072.7,
+          "median_chars": 5170
+        }
+      },
+      "not_vs_cot_char_ratio": 1.33
+    }
+  },
+  "note": "Character counts from response_len in elephant_singleagent_raw.csv."
+}

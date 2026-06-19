@@ -1230,3 +1230,27 @@ Reserve approach, pursued only if Phase 18 fails its falsification test. Require
 **Pending for Aug 3.** Compile PDF and proofread (done: 6 pages, clean build); commit hardening changes; optional budget-tier nano BrokenMath run for revision.
 
 **Direction decision (2026-06-16).** Phases 13--17 are now treated as problem framing, not a submittable result: the narrative-gradient "win" is judge-gaming (Goodhart), NoT does not transfer to propositional sycophancy, and free-form moral both-NTA rises under NoT. **We do not submit until a methods win lands.** Chosen primary direction: **Phase 18 -- judge-robust prompt optimization**, pitched as a black-box / weight-independent method (works on frontier closed models). **Backup: Phase 19 -- activation steering** (open-weight, held in reserve). Both pre-registered above.
+
+---
+
+## Execution log v1.15 — Referee-audit pass on `sycophancy_paper.tex` (2026-06-19)
+
+**Goal.** Close remaining MAJOR/MOD/MINOR audit gaps in the standalone sycophancy paper without new expensive arms (no naive "don't be sycophantic" arm, no length-matched verbose-CoT arm, no BrokenMath second judge).
+
+**Minimal data additions (no new generation grid).**
+- `scripts/aggregate_output_lengths.py` $\rightarrow$ `divergence_study_outputs/output_lengths_summary.json`. OEQ mean chars (CoT $\rightarrow$ NoT): nano $4346\!\rightarrow\!6337$ ($1.46\times$), haiku $1692\!\rightarrow\!5580$ ($3.3\times$), sonnet $1647\!\rightarrow\!7165$ ($4.35\times$), grok $3815\!\rightarrow\!5073$ ($1.33\times$). Folded into `\S\ref{sec:social}` length caveat and Appendix Table~\ref{tab:lengths}.
+- `scripts/blind_label_optimized_gold.py` $\rightarrow$ `divergence_study_outputs/optimized_gold_blinded.json`. Out-of-family proxy judge (DeepSeek-R1, held out from optimisation) re-labels $n{=}40$ hand vs robust holdout responses: validation $70\%\!\rightarrow\!5\%$; proxy--author $\kappa{=}0.28$. Author labels ($35\%\!\rightarrow\!0\%$) demoted to secondary sanity check in `\S\ref{sec:robust}` with COI note.
+- `scripts/bootstrap_reliability_cis.py` $\rightarrow$ `divergence_study_outputs/reliability_bootstrap_cis.json`. Bootstrap 95\% item-CIs ($n{=}60$, $2000$ resamples) on inter-judge $\alpha$: validation $0.42$ $[0.25, 0.59]$, indirectness $-0.23$ $[-0.32, -0.12]$, framing $0.11$ $[-0.05, 0.28]$; reported in `\S\ref{sec:judges}` with sub-chance $\alpha$ interpretation (cross-judge coherence, not latent construct recovery). **Bug fixed:** the bootstrap originally keyed items on `(item_id, metric)` and complete-case-filtered to $n{=}50$, yielding $\alpha_{\text{val}}{=}0.49$ that disagreed with the canonical full-panel $0.42$; re-keyed to `(item_id, arm, generator, metric)` with native missing-data handling so point estimates now match `judge_reliability_summary.json` exactly.
+
+**Paper text (claim tightening).**
+- **B3 anchor:** `\S\ref{sec:robust}` leads with blinded proxy validation rates; author labels secondary.
+- **B4 indirectness:** "recover/recovery of construct" $\rightarrow$ "cross-judge-coherent reduction" throughout; sub-chance $\alpha$ explained in `\S\ref{sec:judges}`.
+- **B5 length:** measured quartet lengths in text + `tab:lengths`; length-matched control deferred in Limitations.
+- **B6 moral:** within free-form NoT-vs-CoT contrast first; binary$\leftrightarrow$free-form instrument change demoted; ELEPHANT $\approx48\%$ bridge sentence added.
+- **B7 baseline:** Discussion/Limitations note missing naive anti-sycophancy arm; cite `\citet{dubois26ask}`.
+- **C4--C8:** bootstrap CIs on load-bearing $\alpha$ anchors; BrokenMath single-judge caveat for nano $+14.7$ pp; rate-matching $\neq$ item-level correctness in `\S\ref{sec:social}`; new Statistical testing subsection (Fisher vs two-proportion $z$; paired Goodhart tables; McNemar noted).
+- **D/E nits:** nano delta standardised to $+14.7$ pp; Sharma caption clarified ($30$ probes $\times$ $3$ samples $=90$ judgments); abstract $p{=}1.9\times10^{-14}$ aligned with body; de-anonymizing camera-ready comment removed from paper (slides retain named author).
+
+**Build.** `papers/build.sh sycophancy` (xelatex/docker).
+
+**Out of scope (this pass).** Direct-instruction anti-sycophancy arm; length-matched verbose-CoT; BrokenMath panel re-score; second construct-taxonomy figure (Table~\ref{tab:constructs} retained).
