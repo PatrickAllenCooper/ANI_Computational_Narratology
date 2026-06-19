@@ -372,7 +372,7 @@ exploitation for non-haiku generators but exposes residual within-family bias.
   Verdict: H1=3/4, H3 fails only for haiku generator (within-family bias, not
   exploitation). Sonnet kappa 0→1.0. Guidance document updated to record
   both the gap and the v3 findings before paper prose drafting begins.
-- v0.3 (2026-05-26): Paper drafted at papers/followup_paper.tex. On
+- v0.3 (2026-05-26): Paper drafted at `papers/followup/followup_paper.tex`. On
   re-examining the v2 cross-judge data more carefully, the original
   "judge exploitation" framing was found to be overstated:
   * On grok and sonnet the v2 third judge actually saw LARGER stakeholder

@@ -2,7 +2,15 @@
 
 A minimum-viable empirical test of whether narrative-structured prompting produces systematically different ethical reasoning outputs than standard chain-of-thought, across two generation model families and two cross-vendor judges.
 
-The canonical study design lives in `Guidance_Documents/study_design.md`. The submission-formatted draft targeting Association for Computational Linguistics Rolling Review (ARR)---ACL template, long paper---is `papers/ACL_paper.tex`. Earlier drafts live under `papers/archive/`. Implementation is `ncot_divergence_pilot.ipynb`. Per-run artifacts (CSVs and figures) are in `divergence_study_outputs/`; per-sample cache JSON is gitignored and regenerated from the notebook.
+The canonical study design lives in `Guidance_Documents/study_design.md`. LaTeX drafts live under `papers/`, one project folder per paper:
+
+| Project | Path | Build |
+|---------|------|-------|
+| Main ARR paper | `papers/acl/ACL_paper.tex` | `papers/build.sh acl` |
+| Sycophancy study | `papers/sycophancy/sycophancy_paper.tex` | `papers/build.sh sycophancy` |
+| TextGrad follow-up | `papers/followup/followup_paper.tex` | `papers/build.sh followup` |
+
+Shared ACL style files and `references.bib` are in `papers/shared/`. Earlier drafts live under `papers/archive/`. Implementation is `ncot_divergence_pilot.ipynb`. Per-run artifacts (CSVs and figures) are in `divergence_study_outputs/`; per-sample cache JSON is gitignored and regenerated from the notebook.
 
 ## Credential rotation
 

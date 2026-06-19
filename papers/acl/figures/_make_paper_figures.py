@@ -1,9 +1,9 @@
 """Regenerates the four-stage debate convergence arc figure.
 
-    python papers/figures/_make_paper_figures.py
+    python papers/acl/figures/_make_paper_figures.py
 
 Reads divergence_study_outputs/debate_full_arc.csv and writes both PNG
-(300 DPI) and PDF (vector) versions of papers/figures/debate_full_arc.{png,pdf}.
+(300 DPI) and PDF (vector) versions of papers/acl/figures/debate_full_arc.{png,pdf}.
 
 The figure uses the project-wide palette in scripts/figure_style.py so that
 its colors agree with every other figure in the paper. Specifically, the two
@@ -22,8 +22,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
-REPO_ROOT = Path(__file__).resolve().parents[2]
-FIG_DIR = REPO_ROOT / "papers" / "figures"
+REPO_ROOT = Path(__file__).resolve().parents[3]
+FIG_DIR = Path(__file__).resolve().parent
 DATA_DIR = REPO_ROOT / "divergence_study_outputs"
 FIG_DIR.mkdir(parents=True, exist_ok=True)
 

@@ -1,6 +1,6 @@
 """
 scripts/stage_figures.py -- Copy generated figure PDFs from
-divergence_study_outputs/ to papers/figures/ so tectonic can include them.
+divergence_study_outputs/ to papers/acl/figures/ so tectonic can include them.
 
 Run after any phase's aggregation step, before compiling the paper.
 
@@ -14,7 +14,7 @@ import sys
 from pathlib import Path
 
 OUT_DIR = Path("./divergence_study_outputs")
-FIG_DIR = Path("./papers/figures")
+FIG_DIR = Path("./papers/acl/figures")
 FIG_DIR.mkdir(parents=True, exist_ok=True)
 
 FIGURE_MAP = {

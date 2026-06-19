@@ -19,16 +19,16 @@ followup_v3_per_generator.csv. We hand-pin them here so the headline
 figure is reproducible without re-reading the CSVs.
 
 Usage:
-    python3 papers/figures/_make_headline_v3_vs_v2.py
+    python3 papers/followup/figures/_make_headline_v3_vs_v2.py
 Outputs:
-    papers/figures/v3_vs_v2_headline.pdf
+    papers/followup/figures/v3_vs_v2_headline.pdf
 """
 from __future__ import annotations
 
 import sys
 from pathlib import Path
 
-REPO = Path(__file__).resolve().parents[2]
+REPO = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(REPO / "scripts"))
 
 from figure_style import (  # noqa: E402
@@ -155,7 +155,7 @@ def main() -> None:
         fontsize=11, color="#0A5C5B", weight="bold", y=1.04,
     )
 
-    out = REPO / "papers" / "figures" / "v3_vs_v2_headline.pdf"
+    out = Path(__file__).resolve().parent / "v3_vs_v2_headline.pdf"
     out.parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(out, bbox_inches="tight", pad_inches=0.04)
     plt.close(fig)

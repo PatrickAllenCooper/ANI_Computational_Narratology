@@ -130,7 +130,7 @@ The cell-level cache in `divergence_study_outputs/` keys every artifact by *both
 
 ## Repository
 
-`PatrickAllenCooper/ANI_Computational_Narratology` --- the notebook, this guidance document, the analysis artefacts in `divergence_study_outputs/`, and the ARR-facing paper draft `papers/ACL_paper.tex` are the canonical record (`papers/archive/` holds prior variants).
+`PatrickAllenCooper/ANI_Computational_Narratology` --- the notebook, this guidance document, the analysis artefacts in `divergence_study_outputs/`, and the paper drafts under `papers/` are the canonical record. Each paper has its own project folder (`papers/acl/`, `papers/sycophancy/`, `papers/followup/`); shared LaTeX assets live in `papers/shared/`; prior variants are in `papers/archive/`.
 
 ## Scaled DailyDilemmas pilot (Section 12)
 
@@ -941,7 +941,7 @@ Pre-registered here before any Phase 13 runs are executed. Phase 12 smoke result
 - *Multi-stakeholder bonus:* debate NoT $\leq$ single-agent NoT on OEQ validation (directional; not a hard gate).
 - *Sharma complementarity:* propositional probes remain at floor; ELEPHANT must show discriminating signal between arms or the unified paper's dual-benchmark framing fails.
 
-**Cache namespaces.** `elephant_gen_*`, `elephant_score_*`, `e2_elephant_*` (debate). Outputs: `elephant_singleagent_raw.csv`, `elephant_debate_raw.csv`, `elephant_summary.json`, `papers/sycophancy_paper.tex`.
+**Cache namespaces.** `elephant_gen_*`, `elephant_score_*`, `e2_elephant_*` (debate). Outputs: `elephant_singleagent_raw.csv`, `elephant_debate_raw.csv`, `elephant_summary.json`, `papers/sycophancy/sycophancy_paper.tex`.
 
 **Implementation checklist.**
 1. Harden `scripts/load_elephant.py` -- OSF file API + mirror fallbacks; fail loudly when $n>10$ and only samples available.
@@ -950,7 +950,7 @@ Pre-registered here before any Phase 13 runs are executed. Phase 12 smoke result
 4. Run single-agent grid ($4$ datasets $\times$ $150$ $\times$ $4$ arms $\times$ quartet).
 5. Run multi-stakeholder debate (OEQ + AITA-YTA, quartet agents).
 6. Extend `scripts/aggregate_elephant.py` -- per-model panels, deltas vs human/raw/CoT.
-7. Compose `papers/sycophancy_paper.tex`; update ACL Appendix L pointer.
+7. Compose `papers/sycophancy/sycophancy_paper.tex`; update ACL Appendix L pointer.
 8. Append v1.11 execution-log entry with full-data results and falsification verdict.
 
 ---
@@ -1021,7 +1021,7 @@ Same train items, loss, judge, $\sim$10 prompt evaluations each:
 5. `scripts/run_phase14_holdout.py` — holdout eval + quartet winner replication.
 6. `scripts/aggregate_phase14.py` — merge into `elephant_summary.json` + optimizer chart.
 7. Extend `run_elephant.py`, `aggregate_elephant.py`, `make_sycophancy_charts.py` for v2/v3 arms.
-8. Update `papers/sycophancy_paper.tex`, `references.bib`; append v1.12 execution log.
+8. Update `papers/sycophancy/sycophancy_paper.tex`, `papers/shared/references.bib`; append v1.12 execution log.
 
 ---
 
@@ -1199,7 +1199,7 @@ Reserve approach, pursued only if Phase 18 fails its falsification test. Require
 
 **Phase 14 status.** Narrative grad full run complete (`sg_summary.json`: holdout validation $76\%\!\rightarrow\!1\%$ training judge; third-judge indirectness $81\%$ contested). OEQ v2/v3 ELEPHANT grid and full TextGrad/OPRO/APE baselines still in flight (`/tmp/phase14_finish.log`, job 88100).
 
-**Paper.** Rewrote `papers/sycophancy_paper.tex`: moral retraction, BrokenMath framing, Phase 14/15/17 sections; added `petrov2025brokenmath`, `fanous2025syceval`, `krippendorff2004` to `references.bib`.
+**Paper.** Rewrote `papers/sycophancy/sycophancy_paper.tex`: moral retraction, BrokenMath framing, Phase 14/15/17 sections; added `petrov2025brokenmath`, `fanous2025syceval`, `krippendorff2004` to `papers/shared/references.bib`.
 
 **Tests.** Extended `scripts/test_phase14.py` with Krippendorff-$\alpha$ and verdict-extraction unit checks (all pass offline).
 
