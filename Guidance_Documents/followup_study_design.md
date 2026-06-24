@@ -390,3 +390,15 @@ exploitation for non-haiku generators but exposes residual within-family bias.
   claims are pegged to per-generator effect sizes and the cross-judge
   continuous-metric gap directly. This reframing is documented here for
   transparency about the post-registration analytical adjustment.
+- v0.4 (2026-06-24): The follow-up study has been integrated into the
+  parent ACL submission (`papers/acl/ACL_paper.tex`) to form a single
+  publication rather than two separate papers. The cross-family-vs-in-family
+  head-to-head is now main-body subsection 4.2 ("Optimising the Scaffold:
+  Cross-Family Textual-Gradient Descent") and the fifth reported result;
+  the full method, tables, headline figure, verbatim v2/v3 prompts, and
+  training curves live in the parent's expanded Appendix G ("Textual-Gradient
+  Optimisation of the Scaffold"), with the prior optimise-from-CoT control
+  retained as subsection G.6. The standalone `papers/followup/followup_paper.tex`
+  is kept as the originating draft; the parent paper is now canonical. See the
+  v1.13 entry in `study_design.md` for the integration detail and the preserved
+  8-page main-body budget.

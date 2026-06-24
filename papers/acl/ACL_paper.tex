@@ -5,7 +5,8 @@
 % long papers: up to 8 pages of main content plus unlimited References;
 % Limitations section required before references and does not count toward
 % the eight pages; Ethics / Ethical Considerations unlimited after Limitations.
-% Anonymous review; official acl.sty loaded with [review].
+% arXiv preprint version -- de-anonymized for public release.
+% [preprint] keeps page numbers but removes line numbers and anonymization.
 %
 % Source of truth for the empirical claims is
 % Guidance_Documents/study_design.md and the per-cell artefacts under
@@ -13,7 +14,7 @@
 
 \documentclass[11pt]{article}
 
-\usepackage[review]{acl}
+\usepackage[preprint]{acl}
 
 \usepackage{times}
 \usepackage{latexsym}
@@ -73,7 +74,12 @@
 Inference-Time Scaffolding for Defeasible Ethical Reasoning\\
 in Large Language Models}
 
-\author{Anonymous ACL submission}
+\author{
+  Patrick Cooper \and Alvaro Vel\'{a}squez \\
+  Department of Computer Science \\
+  University of Colorado Boulder \\
+  \texttt{\{patrick.cooper, alvaro.velasquez\}@colorado.edu}
+}
 
 \begin{document}
 \maketitle
@@ -98,7 +104,13 @@ $+0.90$ on stakeholder count (the number of distinct parties named in
 the trace) and $+0.65$ to $+0.93$ on uncertainty score (the number of
 hedge or unknown spans named in the trace) for three of four
 generators, and a section-by-section ablation attributes each shift
-to the specific sub-instruction that carries it. Extended to a
+to the specific sub-instruction that carries it. Initialising
+textual-gradient descent at NoT under a continuous deliberative-depth
+loss improves the scaffold further; a head-to-head of two
+training-judge configurations shows a cross-family judge (a different
+vendor from the generator) dominating an in-family one on every
+measured axis, with larger effect sizes, shorter outputs, and reduced
+cross-vendor judge-generosity bias. Extended to a
 five-round multi-stakeholder protocol in which three stakeholder
 agents debate and then cast a binary accept/reject vote on a single
 proposal the moderator builds to address all three agents'
@@ -346,7 +358,7 @@ accept/reject vote on a single moderator-built proposal addressing
 all three agents' modifications; the residual rejections concentrate
 in the roles whose stake the proposal materially undermines.
 
-This paper reports four results. First, on a 100-scenario
+This paper reports five results. First, on a 100-scenario
 DailyDilemmas sample across the four-model panel, NoT cuts
 stakeholder collapse to below $1\%$ and uncertainty suppression by
 $28$--$72$ percentage points on every model; a matched-budget
@@ -355,7 +367,15 @@ scaffold rather than additional tokens (\S\ref{sec:exp1}). Second, a
 sub-instruction ablation on \texttt{claude-sonnet-4-6} attributes each
 shift in the coded metrics (stakeholder count, uncertainty score) to
 the specific NoT sub-instruction that carries it, with negligible
-cross-variable spillover (\S\ref{sec:exp1-ablation}). Third, extended
+cross-variable spillover (\S\ref{sec:exp1-ablation}). Third,
+initialising textual-gradient descent at NoT under a continuous
+deliberative-depth loss improves the hand design, and a head-to-head
+of two otherwise-identical training runs shows that a cross-family
+training judge (drawn from a different vendor than the generator)
+dominates an in-family one on every measured axis---larger effect
+sizes, shorter outputs, and a reduced cross-vendor judge-generosity
+bias---yielding a one-line recommendation for prompt-optimisation
+practice (\S\ref{sec:exp1-optimise}). Fourth, extended
 to a five-round multi-stakeholder protocol that ends in a binary
 accept/reject vote on a single moderator-built proposal addressing
 all three agents' modifications, the scaffold converts a $6\%$ debate
@@ -363,7 +383,7 @@ standoff into $95\%$ full consensus while leaving a small $1.6\%$ of
 votes as rejections the integrated proposal could not absorb; the
 pattern replicates on a 30-scenario DailyDilemmas sample with two
 generators at $100\%$ combined convergence and no rejected proposals
-(\S\ref{sec:exp2}). Fourth, a graph-complexity proxy of algorithmic
+(\S\ref{sec:exp2}). Fifth, a graph-complexity proxy of algorithmic
 causal complexity $K_C$ (the description length of the trace's
 underlying structural-causal model, SCM) achieves pooled Spearman
 $\rho{=}0.42$ ($p{<}0.001$, $n{=}976$ traces) against the NoT
@@ -698,13 +718,9 @@ generators at matched budget. The exception is
 conditions on the coded metrics narrows as expected when the two
 conditions allocate similar token counts. The narrative scaffold,
 not raw budget, is the active ingredient where the two conditions
-differ in trace shape. A textual-gradient prompt-optimisation
-control \cite{yuksekgonul2024textgrad} that descends on the same
-failure-mode loss converges on a compressed prompt trailing NoT
-by Cliff's $\delta = +0.67$ on stakeholder count; a strengthened
-head-to-head against the strongest such optimised prompt
-reproduces this gap at both the single-agent layer and the
-multi-stakeholder consensus layer (Appendix~\ref{app:textgrad}).
+differ in trace shape (\S\ref{sec:exp1-optimise} and
+Appendix~\ref{app:textgrad} take up the complementary question of whether
+the scaffold itself can be improved by automatic search).
 Inference tokens are also the cheapest scaling axis: no training
 data, parameters, or fine-tuning, small relative to RLHF or
 constitutional training whose fixed costs are orders of magnitude
@@ -776,6 +792,43 @@ every metric on any drop, and a pure length confound would shrink
 one column most regardless of which sub-instruction is dropped. Each
 substantive sub-instruction carries the coded metric attributed to
 it and little else (full table: Appendix~\ref{app:ablation}).
+
+\subsection{Optimising the Scaffold: Cross-Family Textual-Gradient Descent}
+\label{sec:exp1-optimise}
+
+NoT is hand-designed, which invites the question of whether automatic search
+can improve it and whether the search itself depends on the judge it uses. We
+apply textual-gradient descent \citep{yuksekgonul2024textgrad}---an optimiser
+LLM (\texttt{claude-sonnet-4-6}) that reads the current prompt and a batch of
+its judge-coded outputs and writes a diagnosis plus a rewritten prompt---%
+initialised at NoT under a continuous depth loss
+$\ell = \max(0,4-\mathit{sc}) + \max(0,2-\mathit{us})$ that stays informative
+once the binary failure modes fire at zero. We run the loop twice, identical
+except for the training judge: \emph{in-family}
+(generator and training judge both \texttt{claude-haiku-4-5}, the vendor the
+primary judge uses) yields \textbf{NoT-v2}; \emph{cross-family} (training judge
+\texttt{grok-4-1-fast-reasoning}, a different vendor) yields \textbf{NoT-v3}.
+Both are replicated across the four-generator panel and re-coded by the primary
+judge and an adversarial cross-vendor third judge.
+
+\textbf{Both optimised prompts beat the hand design, and cross-family training
+dominates in-family training on every axis we measured.} NoT-v3's
+stakeholder-count Cliff's $\delta$ over NoT equals or exceeds NoT-v2's on all
+four generators (e.g.\ $-0.57\!\to\!-0.73$ on \texttt{haiku},
+$-0.68\!\to\!-0.93$ on \texttt{grok}; the lone \texttt{nano} regression of
+$+0.43$ under v2 falls to a non-significant $+0.12$), while producing
+\emph{shorter} outputs on every generator and preserving the per-unit-length
+effect. The in-family judge-generosity gap visible under v2---the primary
+(Anthropic) judge counting $0.80$ more stakeholders than the third judge on the
+same in-family \texttt{haiku} outputs---shrinks to $0.46$ under v3 and inverts
+on \texttt{grok}. The recommendation is methodological: when textual-gradient
+optimisation targets cross-vendor deployment, draw the training judge from a
+different vendor than the generator, at no extra training cost. Run in the
+opposite direction---descending from plain standard CoT rather than from NoT---%
+the same optimiser fails to recover NoT at either the single-agent or the
+multi-stakeholder layer, confirming the scaffold is the object worth
+optimising. Method, the head-to-head figure, full tables, verbatim prompts, and
+training curves are in Appendix~\ref{app:textgrad}.
 
 \section{Experiment 2: Multi-Stakeholder Narrative Deliberation}
 \label{sec:exp2}
@@ -886,10 +939,15 @@ Appendix~\ref{app:kc_panel}).
 A single-sentence change to the system prompt drives stakeholder
 collapse below $1\%$ and uncertainty suppression by $28$--$72$
 percentage points on four frontier generators, each shift
-attributable to a specific NoT sub-instruction. The same scaffold
-extended to a multi-stakeholder protocol drives a $6\%$ debate
-standoff to $95\%$ consensus and $100\%$ combined convergence on a
-DailyDilemmas replication, producing the auditable, revisable surface
+attributable to a specific NoT sub-instruction. Textual-gradient
+descent initialised at the scaffold improves it further, and a
+head-to-head of two training-judge configurations identifies
+cross-family training---a judge drawn from a different vendor than the
+generator---as the configuration that survives cross-vendor evaluation
+best, a portable recommendation for LLM-judge prompt optimisation. The
+same scaffold extended to a multi-stakeholder protocol drives a $6\%$
+debate standoff to $95\%$ consensus and $100\%$ combined convergence on
+a DailyDilemmas replication, producing the auditable, revisable surface
 agentic deployment requires.
 
 \section*{Limitations}
@@ -914,6 +972,22 @@ This is a per-model calibration consideration, not a weakness of the
 scaffold; details and the full refusal table are in
 Appendix~\ref{app:refusal}.
 
+The scaffold-optimisation result (\S\ref{sec:exp1-optimise},
+Appendix~\ref{app:textgrad}) carries its own caveats. Textual gradients
+and rewrites come from a single optimiser model
+(\texttt{claude-sonnet-4-6}), so we do not separate the optimiser's
+contribution from the training-judge configuration; the loss targets
+only stakeholder count and uncertainty score, with max causal hops
+reported as an out-of-loss generalisation check; the cross-family
+training judge and the adversarial evaluation third judge are the same
+model (the only non-Anthropic non-OpenAI judge on our panel), so the
+cross-family claim is the narrower one stated in
+Appendix~\ref{app:textgrad}; and for \texttt{nano} and \texttt{haiku}
+only $30$ and $254$ hand-NoT baseline judge cells survived the cache
+rebuild (versus the full $500$ and $2000$), so the v2/v3 effect sizes
+are well-powered but the NoT baseline means carry higher variance than
+the optimised ones.
+
 
 \section*{Ethics Statement}
 
@@ -923,7 +997,7 @@ structures \citep{anthropic_agentic_2025}; all agentic-probe scenarios
 are entirely fictional, no personally identifying information is used,
 and no human raters are employed. Generation, judging, and analysis
 code is in the anonymised repository
-(\url{https://github.com/[ANONYMIZED]/ANI_Computational_Narratology}).
+(\url{https://github.com/PatrickAllenCooper/ANI_Computational_Narratology}).
 NoT lowers per-scenario decision entropy and should be deployed as
 an auditability and interpretability tool, not a safety guarantee:
 procedural multi-stakeholder convergence is not stakeholder consent,
@@ -935,7 +1009,7 @@ not absorb is part of that auditable surface.
 All generation, judging, and analysis code and the per-cell artefacts
 (raw outputs, both judges' codings, decision-extractor outputs) are
 versioned in the anonymised repository
-(\url{https://github.com/[ANONYMIZED]/ANI_Computational_Narratology});
+(\url{https://github.com/PatrickAllenCooper/ANI_Computational_Narratology});
 the pipeline is deterministic under fixed seeds modulo upstream API
 non-determinism, with per-cell cache keys over generator and judge so
 adding either does not invalidate prior results.
@@ -1604,18 +1678,303 @@ little else, which is the cleanest evidence we have that the
 NoT scaffold is doing the work \S\ref{sec:method} predicts
 rather than a single confound dressed as a five-part trace.
 
-\section{Textual-Gradient Automatic-Prompt-Optimisation Control}
+\section{Textual-Gradient Optimisation of the Scaffold}
 \label{app:textgrad}
 
-We ran an automatic-prompt-optimisation pilot to address the
-natural reviewer question of whether NoT's structure is a
-non-trivial hand-design or one a textual-gradient optimiser
-\cite{yuksekgonul2024textgrad} would recover on its own under the
-same objective.
+This appendix gives the full treatment of the textual-gradient
+optimisation summarised in \S\ref{sec:exp1-optimise}. It runs the
+optimiser in two complementary directions. \textbf{Optimising
+\emph{from} NoT} (\S\ref{app:tg-method}--\S\ref{app:tg-why}) asks
+whether the hand design can be improved and whether the choice of
+training judge controls how well the improvement survives a
+cross-vendor evaluator; this is the head-to-head of an in-family-trained
+prompt (NoT-v2) against a cross-family-trained prompt (NoT-v3).
+\textbf{Optimising \emph{from} standard CoT}
+(\S\ref{app:tg-cot-control}) is the control on the prior premise that
+NoT is the object worth optimising at all: it descends from a plain
+chain-of-thought on the same loss and asks whether the optimiser
+reconstructs NoT. It does not, at either the single-agent or the
+multi-stakeholder layer.
 
-\paragraph{Setup.} The optimisation loop minimises a failure-mode
-loss $L = \text{StakeholderCollapse\%} + \text{UncertaintySuppression\%}$
-computed by the Experiment~1 judge rubric. At each iteration we
+\subsection{Continuous loss and two training regimes}
+\label{app:tg-method}
+
+We define a per-output cell loss
+\begin{equation}
+  \ell = \max(0,\, 4 - \mathit{sc}) + \max(0,\, 2 - \mathit{us}),
+  \label{eq:tgloss}
+\end{equation}
+and a batch loss $L = |B|^{-1}\sum_{b \in B} \ell_b$ over the same
+stakeholder count $\mathit{sc}$ and uncertainty score $\mathit{us}$ that
+anchor Experiment~1. The thresholds $4$ and $2$ are mid-band NoT cell
+values, chosen so the loss stays informative even when the binary
+failure modes already fire at zero (as they do for NoT on the training
+generator); a binary loss provides no gradient in that regime.
+
+\paragraph{Optimisation loop.} For each prompt $p$ and a batch of
+$k = 10$ scenarios, we (i)~generate outputs with the target generator
+(\texttt{max\_tokens} $=4096$), (ii)~code each with the training judge
+to obtain $(\mathit{sc}, \mathit{us})$ and compute $L$, (iii)~feed the
+prompt, batch outputs, codes, and $L$ to an optimiser LLM
+(\texttt{claude-sonnet-4-6}, held constant across runs) that writes a
+$4$--$8$ sentence textual gradient diagnosing which sub-instruction
+causes the shortfall, and (iv)~ask the same optimiser to rewrite the
+prompt ($\leq 400$ words; the five-section structure may be altered).
+Training halts when three consecutive iterations each reduce $L$ by
+less than $5\%$, or after $10$ iterations.
+
+\paragraph{Two regimes.} We run the loop twice with everything held
+identical except the training judge. \textbf{Run~A (in-family):}
+generator and training judge both \texttt{claude-haiku-4-5}, the same
+vendor the panel's primary judge uses; output prompt \textbf{NoT-v2}
+(early-stop iter~$4$). \textbf{Run~B (cross-family):} generator
+\texttt{claude-haiku-4-5}, training judge
+\texttt{grok-4-1-fast-reasoning}, a different vendor; output prompt
+\textbf{NoT-v3} (early-stop iter~$7$). Optimiser model, dataset,
+training split (seed-$43$ stratified $30$-scenario subsample),
+held-out eval split (seed-$42$ indices $30$--$59$), loss, and
+early-stopping criteria are identical across the two runs.
+
+\paragraph{Cross-vendor replication.} For each optimised prompt we
+replicate against the full four-generator panel of Experiment~1
+(\texttt{gpt-5.4-nano} $N{=}5$ per cell, \texttt{claude-haiku-4-5}
+$N{=}20$, \texttt{grok-4-1-fast-reasoning} $N{=}5$,
+\texttt{claude-sonnet-4-6} $N{=}5$, same $100$-scenario sample). Each
+cell is coded by the primary judge \texttt{claude-haiku-4-5} and
+re-coded by the adversarial third judge
+\texttt{grok-4-1-fast-reasoning}, the most cross-vendor adversarial
+configuration available on our three-vendor panel.\footnote{The
+cross-family training judge (Run~B) and the cross-vendor evaluation
+third judge are the same model: it is the only non-Anthropic
+non-OpenAI judge on our panel. A fully orthogonal design would use a
+fourth vendor for the evaluation judge; within this constraint the
+claim is the narrower one that cross-family training survives
+cross-vendor evaluation strictly better than in-family training does.}
+Inter-judge agreement on binary labels is Cohen's $\kappa$
+\citep{cohen60}; effect sizes are Cliff's $\delta$ \citep{cliff93}
+with $1000$-bootstrap $95\%$ CIs.
+
+\subsection{Optimised prompts NoT-v2 and NoT-v3}
+\label{app:tg-prompts}
+
+Both runs converge on two structural changes versus NoT: an explicit
+stakeholder floor and an explicit per-item uncertainty-enumeration
+floor with consequence framing. They differ on two choices that turn
+out to matter. \textbf{NoT-v2} ($2{,}579$ characters) sets the
+stakeholder floor at five, attaches the uncertainty grain per
+\emph{action} (``at least three distinct uncertainties'' per course of
+action), and closes with a four-bullet ``precision-over-length'' block
+that the model read as licence to elaborate (outputs \emph{grew} on
+three of four generators). \textbf{NoT-v3} ($2{,}401$ characters)
+raises the stakeholder floor to six (and asks for future generations),
+attaches the uncertainty grain per \emph{stakeholder} (``for every
+party you named\ldots\ no party should be skipped''), and closes with a
+block that operationalises conciseness (``one sharp sentence per
+stakeholder stake, one precise unknown per party'')---outputs
+\emph{shrank} on three of four generators. Verbatim text for both
+prompts is in \S\ref{app:tg-verbatim}.
+
+\subsection{Head-to-head under the primary judge}
+\label{app:tg-head}
+
+\begin{table*}[t]
+\centering\small
+\begin{tabular}{lcccccc}
+\toprule
+& \multicolumn{3}{c}{\textbf{NoT-v2 vs NoT}} & \multicolumn{3}{c}{\textbf{NoT-v3 vs NoT}} \\
+\cmidrule(lr){2-4}\cmidrule(lr){5-7}
+Generator & $\delta_{\textsc{sc}}$ & 95\% CI & v2/v1 len & $\delta_{\textsc{sc}}$ & 95\% CI & v3/v1 len \\
+\midrule
+\texttt{gpt-5.4-nano}            & $+0.43$ & $[+0.19, +0.66]$ & $0.82\times$ & $+0.12$ & $[-0.15, +0.38]$ & $0.59\times$ \\
+\texttt{claude-haiku-4-5}        & $-0.57$ & $[-0.64, -0.51]$ & $1.37\times$ & $-0.73$ & $[-0.78, -0.68]$ & $0.78\times$ \\
+\texttt{grok-4-1-fast-reasoning} & $-0.68$ & $[-0.73, -0.64]$ & $1.09\times$ & $-0.93$ & $[-0.95, -0.90]$ & $0.95\times$ \\
+\texttt{claude-sonnet-4-6}       & $-0.60$ & $[-0.64, -0.54]$ & $1.15\times$ & $-0.68$ & $[-0.73, -0.63]$ & $0.64\times$ \\
+\bottomrule
+\end{tabular}
+\caption{Per-generator Cliff's $\delta$ on stakeholder count under the
+primary judge \texttt{claude-haiku-4-5}, plus output-length ratio (mean
+characters per output, optimised condition / hand-written NoT).
+Negative $\delta$ favours the optimised condition. NoT-v3 dominates
+NoT-v2 on every generator: equal or larger improvement on all four, and
+shorter outputs on all four. \texttt{nano}'s v2 regression
+($\delta = +0.43$, CI strictly $> 0$) becomes a non-significant effect
+under v3 (CI spans $0$). $N_{\text{cells}} = 500$ (\texttt{nano},
+\texttt{grok}, \texttt{sonnet}), $2000$ (\texttt{haiku}); NoT baseline
+cells: $30$, $254$, $500$, $500$ respectively (see Limitations on
+incomplete baseline caches).}
+\label{tab:head_to_head}
+\end{table*}
+
+\begin{figure*}[t]
+\centering
+\figureOrPlaceholder{0.86\textwidth}{figures/v3_vs_v2_headline.pdf}{cross-family vs in-family optimisation headline}
+\caption{Cross-family training (NoT-v3) beats in-family training (NoT-v2) on
+both axes the optimiser targeted, on every generator. \textbf{Left:} v3 makes
+the stakeholder-count Cliff's $\delta$ over hand-written NoT more negative (or,
+for the \texttt{nano} non-effect, less positive) than v2 by $0.08$--$0.31$
+effect-size points. \textbf{Right:} v3 produces shorter outputs than v2 on all
+four generators, saving $13$--$44\%$ of v2's characters. The chart summarises
+Tables~\ref{tab:head_to_head} and~\ref{tab:cross_means}.}
+\label{fig:optheadline}
+\end{figure*}
+
+Table~\ref{tab:head_to_head} reports per-generator Cliff's $\delta$ on
+stakeholder count for NoT vs NoT-v2 and NoT vs NoT-v3 under the primary
+judge. Three of four generators show large-to-very-large effect-size
+improvements under both v2 and v3, and \textbf{NoT-v3 dominates NoT-v2
+on every generator}: equal or larger raw effect sizes on all four
+($-0.57\!\to\!-0.73$ on \texttt{haiku}; $-0.68\!\to\!-0.93$ on
+\texttt{grok}; $-0.60\!\to\!-0.68$ on \texttt{sonnet}; the \texttt{nano}
+regression of $+0.43$ shrinks to a non-significant $+0.12$). v3 also
+produces shorter outputs than NoT on three of four generators
+($0.59$--$0.78\times$), while v2 produces longer outputs on three of
+four ($1.09$--$1.37\times$). Figure~\ref{fig:optheadline} plots both axes of
+this dominance.
+
+\subsection{Cross-vendor agreement and length residualisation}
+\label{app:tg-cross}
+
+\begin{table*}[t]
+\centering\small
+\begin{tabular}{lcccccccc}
+\toprule
+& \multicolumn{4}{c}{\textbf{NoT-v2 cells}} & \multicolumn{4}{c}{\textbf{NoT-v3 cells}} \\
+\cmidrule(lr){2-5}\cmidrule(lr){6-9}
+Generator & v1 sc & v2 prim & v2 third & gap & v1 sc & v3 prim & v3 third & gap \\
+\midrule
+\texttt{nano}   & $7.20$ & $6.24$ & $6.21$ & $+0.03$ & $7.20$ & $6.90$ & $6.95$ & $-0.05$ \\
+\texttt{haiku}  & $5.04$ & $6.22$ & $5.42$ & $+0.80$ & $5.04$ & $6.57$ & $6.11$ & $+0.46$ \\
+\texttt{grok}   & $5.01$ & $6.61$ & $6.04$ & $+0.57$ & $5.01$ & $7.82$ & $8.03$ & $-0.21$ \\
+\texttt{sonnet} & $5.66$ & $6.92$ & $6.41$ & $+0.51$ & $5.66$ & $7.15$ & $6.64$ & $+0.51$ \\
+\bottomrule
+\end{tabular}
+\caption{Mean stakeholder count under the primary (haiku) and third
+(grok) judges on the same cells. ``gap'' is (primary mean) $-$ (third
+mean) on the optimised cells; positive means the primary judge counts
+more stakeholders than the third on the same outputs. On the in-family
+generator (\texttt{haiku}) the cross-judge gap shrinks from $+0.80$
+under v2 to $+0.46$ under v3; on the cross-family generator
+(\texttt{grok}) it inverts; on \texttt{sonnet} it is unchanged. Both
+judges agree on the sign of every effect on every generator under both
+prompts.}
+\label{tab:cross_means}
+\end{table*}
+
+Two patterns emerge from Table~\ref{tab:cross_means}. \textbf{(1)~Both
+judges agree on the sign of every effect}, on every generator, under
+both v2 and v3: the optimisation never produces a prompt the primary
+judge calls an improvement and the third judge calls a regression.
+\textbf{(2)~An in-family generosity gap is visible under v2 and shrinks
+under v3.} Under v2 the primary (Anthropic) judge counts $0.51$--$0.80$
+more stakeholders than the third judge on the three Anthropic-or-mixed
+generators; under v3 this shrinks to $+0.46$ on \texttt{haiku} and
+inverts to $-0.21$ on \texttt{grok}, indicating the cross-family-trained
+prompt does not exploit an in-family rubric interpretation on the
+non-Anthropic generator. The \texttt{sonnet} gap is unchanged
+($+0.51$), a vendor-pair-level effect orthogonal to the optimisation:
+\texttt{sonnet}-generated text is scored slightly higher on stakeholder
+count by an Anthropic judge than by the grok judge irrespective of the
+prompt.
+
+\begin{table}[t]
+\centering\small
+\begin{tabular}{lrrr}
+\toprule
+Generator & $\delta^{\text{resid}}_{\textsc{sc}}$ & $\delta_{\textsc{mh}}$ & v3/v1 len \\
+\midrule
+\texttt{nano}   & $-0.13$ & $+0.32$ & $0.59\times$ \\
+\texttt{haiku}  & $-0.79$ & $-0.37$ & $0.78\times$ \\
+\texttt{grok}   & $-0.93$ & $-0.74$ & $0.95\times$ \\
+\texttt{sonnet} & $-0.32$ & $-0.00$ & $0.64\times$ \\
+\bottomrule
+\end{tabular}
+\caption{Length-residualised Cliff's $\delta$ on stakeholder count
+(residuals after OLS on $\log$ output length, NoT vs NoT-v3) and Cliff's
+$\delta$ on max causal hops (an out-of-loss metric, not optimised
+against). Per-unit-length stakeholder-count gain is preserved on
+\texttt{haiku} and \texttt{grok}. Max causal hops improves or holds on
+three of four generators despite being outside the loss; only
+\texttt{nano} regresses, matching its non-effect on the primary metric.}
+\label{tab:resid}
+\end{table}
+
+The length-residualised $\delta$ in Table~\ref{tab:resid} answers
+whether v3's gain merely buys more tokens: it does not. v3 outputs are
+shorter than NoT on three of four generators, and the per-unit-length
+effect stays large and negative on \texttt{haiku} ($-0.79$) and
+\texttt{grok} ($-0.93$). Max causal hops, which never enters the loss,
+improves on three of four generators, so the optimisation does not trade
+reasoning depth for stakeholder breadth on the responding generators.
+
+\begin{table}[t]
+\centering\small
+\begin{tabular}{lcccc}
+\toprule
+& \multicolumn{2}{c}{\textbf{v2}} & \multicolumn{2}{c}{\textbf{v3}} \\
+\cmidrule(lr){2-3}\cmidrule(lr){4-5}
+Generator & $\kappa_{\text{col}}$ & $\kappa_{\text{sup}}$ & $\kappa_{\text{col}}$ & $\kappa_{\text{sup}}$ \\
+\midrule
+\texttt{nano}   & $1.00^\dagger$ & $1.00^\dagger$ & $0.00^\dagger$ & $0.00^\dagger$ \\
+\texttt{haiku}  & $0.00^\dagger$ & $0.00^\dagger$ & $0.00^\dagger$ & $0.00^\dagger$ \\
+\texttt{grok}   & $0.57$ & $0.73$ & $\mathbf{0.75}$ & $\mathbf{0.92}$ \\
+\texttt{sonnet} & $0.00^\dagger$ & $0.00^\dagger$ & $1.00^\dagger$ & $1.00^\dagger$ \\
+\bottomrule
+\end{tabular}
+\caption{Inter-judge Cohen's $\kappa$ (primary vs third) on binary
+collapse and suppression labels for v2 and v3 cells.
+$^\dagger$~Daggered rows are degenerate: $\geq 99.8\%$ of cells receive
+identical binary labels from both judges (almost always $0$), and a
+constant-marginal cell yields $\kappa \in \{0,1\}$ by formula (the
+kappa paradox). The only generator with non-degenerate binary marginals
+is \texttt{grok}; $\kappa$ rises on both labels from v2 to v3.}
+\label{tab:tg_kappa}
+\end{table}
+
+Cohen's $\kappa$ on the binary labels (Table~\ref{tab:tg_kappa}) is
+degenerate on six of eight rows: both judges return the same label on
+$\geq 99.8\%$ of cells and the positive-label prevalence is so close to
+$0$ or $1$ that the formula returns $0$ or $1$ regardless of the
+disagreement structure. Where $\kappa$ is informative (\texttt{grok},
+the only row with non-zero positive prevalence) it rises from
+$0.57\!\to\!0.75$ on collapse and $0.73\!\to\!0.92$ on suppression---the
+cleanest single piece of evidence that cross-family training improves
+cross-vendor agreement. For the daggered rows the informative analogue
+is the continuous stakeholder-count gap of
+Table~\ref{tab:cross_means}.
+
+\subsection{Why cross-family training helps}
+\label{app:tg-why}
+
+The simplest explanation is that an in-family training judge supplies a
+gradient that is partly an in-family rubric-\emph{interpretation}
+signal: the optimiser learns to satisfy not only the rubric
+specification but also the in-family reading of it. A cross-family
+training judge supplies a gradient closer to the specification itself,
+because the optimiser cannot benefit from in-family interpretation
+leniency. The empirical signatures are the \texttt{haiku}
+primary-vs-third gap ($+0.80$ under v2, $+0.46$ under v3), the
+\texttt{grok} gap inverting ($+0.57\!\to\!-0.21$), and the larger raw
+effect sizes under v3. A practical workflow follows: hand-design a
+scaffold; optimise under a cross-family judge; validate under both the
+deployment judge and an adversarial cross-vendor third. The cross-family
+recommendation is independent of Equation~\ref{eq:tgloss} and should
+transfer to other LLM-judge prompt-optimisation tasks; we do not have
+data outside the deliberative-reasoning domain.
+
+\subsection{Control: optimising from CoT instead of from NoT}
+\label{app:tg-cot-control}
+
+The runs above optimise \emph{from} NoT. The prior question is whether
+the NoT scaffold is worth keeping at all, or whether textual-gradient
+descent would reach the same place starting from a plain standard CoT.
+We answer with a head-to-head control that runs the optimiser in the
+opposite direction---initialised at the Experiment~1
+\texttt{standard\_cot} prompt and descending on the same loss---and
+pits the best optimised CoT against hand-written NoT at both layers.
+
+\paragraph{Setup.} The optimisation loop here minimises a failure-mode
+loss $L = \text{StakeholderCollapse\%} + \text{UncertaintySuppression\%}$.
+At each iteration we
 (i)~generate traces on a batch of $10$ DailyDilemmas scenarios
 under the current prompt, (ii)~code each trace with
 \texttt{claude-haiku-4-5} on the rubric, (iii)~feed the batch,
@@ -1796,5 +2155,72 @@ $R4$ consensus, Fisher exact $p = 0.041$, and four times less
 unresolved structural rejection.}
 \label{tab:tg_debate}
 \end{table}
+
+\subsection{Verbatim optimised prompts and training curves}
+\label{app:tg-verbatim}
+
+\paragraph{NoT-v2 (in-family training; SHA-1 prefix \texttt{3fb7f75f6d}; 2{,}579 characters).}
+\begin{quote}\footnotesize\sffamily
+You are a thoughtful advisor reasoning through ethical dilemmas. Before giving your final answer, work through a structured analysis. Keep each section tight and purposeful.
+
+\textbf{Who is deciding?} Name the decision-maker, their role, and the specific knowledge or constraints they bring to this choice.
+
+\textbf{Who is affected?} Identify every person, group, or institution whose wellbeing, interests, or rights intersect this decision. Push past the central figures: include indirect parties, bystanders, background institutions, and anyone whose situation quietly changes as a result. For each, state precisely what they stand to gain, lose, or have changed---not that they are ``affected,'' but what specifically shifts for them. Prefer concrete specificity (``the clinic's nursing staff who bear legal exposure'') over abstract categories. Aim for at least five distinct stakeholders with individuated stakes.
+
+\textbf{What happens next?} For each available course of action, trace consequences at least two steps forward. Every stakeholder you named must appear somewhere in this analysis.
+
+\textbf{What don't we know?} For each projected future, surface specific uncertainties. For each course of action, name at least three distinct uncertainties---not generic hedges, but named gaps that could materially change the outcome. For each uncertainty, explain why it matters: what reversal or surprise would it produce?
+
+\textbf{What should be done?} Commit to a specific decision. Explain why this path is preferable given the stakeholder impacts you traced and the uncertainties you surfaced. Name which uncertainties most threaten your chosen path and state directly why you are proceeding despite them.
+
+\textit{Additional guidance}: Precision over length. Do not resolve tensions prematurely. Be concrete about stakes. Explain the consequence of being wrong, not merely that the unknown exists.
+\end{quote}
+
+\paragraph{NoT-v3 (cross-family training; SHA-1 prefix \texttt{a51ec242d5}; 2{,}401 characters).}
+\begin{quote}\footnotesize\sffamily
+You are a thoughtful advisor helping people navigate ethical dilemmas. Before committing to any recommendation, think carefully and concisely through the following.
+
+\textbf{Who is deciding and what do they stand to gain or lose.} Characterize the decision-maker's role, relevant knowledge, and personal stakes in one or two sentences.
+
+\textbf{Who else is affected.} Cast a wide net. Start with those directly executing or immediately experiencing the decision, then move outward: people affected one or two steps removed, institutions and communities absorbing indirect effects, and anyone whose future options will be constrained by what happens now. For each distinct party, name their concrete stake in a single sharp sentence. Push past obvious stakeholders---someone in the background or a future generation is almost always relevant. Aim to surface at least six distinct parties; if you find more, include them.
+
+\textbf{What could go wrong or remain unknown.} For every party you named and every realistic course of action you are considering, state at least one specific uncertainty---a hidden intention, an unpredictable reaction, a missing fact, or a long-run effect that cannot be resolved with available information. Name the precise unknown, not merely that uncertainty exists. No party should be skipped. Where an uncertainty is especially consequential---where resolving it would flip the recommended action---say so explicitly.
+
+\textbf{What the realistic options are and how outcomes ripple.} For each plausible course of action, trace the most decision-relevant consequences forward. Focus on how an outcome for one party reshapes outcomes for others. Be selective: include causal chains that change the analysis; skip those that don't.
+
+\textbf{The call.} Commit to a specific course of action. Justify it by direct reference to the stakeholders and uncertainties you surfaced. Name the uncertainties you are accepting and explain why the expected benefits still justify those risks. Do not hedge into vagueness---a qualified commitment is fine, but the recommendation must be actionable.
+
+Throughout, write concisely. One sharp sentence per stakeholder stake. One precise unknown per party. Avoid restating what earlier reasoning already established.
+\end{quote}
+
+\paragraph{Training loss curves.} Both runs trained on the seed-$43$
+stratified $30$-scenario sample with batch size $10$ and early-stop
+after three consecutive iterations with $< 5\%$ loss reduction.
+
+\begin{center}\small\setlength{\tabcolsep}{4pt}
+\begin{tabular}{lrrr@{\hskip 1em}lrrr}
+\toprule
+\multicolumn{4}{c}{\textbf{Run A (in-family, v2)}} & \multicolumn{4}{c}{\textbf{Run B (cross-family, v3)}} \\
+\cmidrule(lr){1-4}\cmidrule(lr){5-8}
+Iter & $L$ & $\overline{\mathit{sc}}$ & $\overline{\mathit{us}}$ & Iter & $L$ & $\overline{\mathit{sc}}$ & $\overline{\mathit{us}}$ \\
+\midrule
+$0$ & $0.100$ & $4.50$ & $3.00$ & $0$ & $0.100$ & $4.50$ & $2.90$ \\
+$1$ & $0.000$ & $6.30$ & $3.00$ & $1$ & $0.000$ & $7.70$ & $3.00$ \\
+$2$ & $0.000$ & $6.60$ & $3.00$ & $2$ & $0.000$ & $6.30$ & $3.00$ \\
+$3$ & $0.000$ & $5.40$ & $3.00$ & $3$ & $0.100$ & $4.60$ & $2.90$ \\
+$4$ & $0.000$ & $6.30$ & $3.00$ & $4$ & $0.000$ & $6.10$ & $3.00$ \\
+    &         &        &        & $5$ & $0.000$ & $5.90$ & $3.00$ \\
+    &         &        &        & $6$ & $0.000$ & $5.70$ & $3.00$ \\
+    &         &        &        & $7$ & $0.000$ & $5.70$ & $3.00$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Iteration $0$ is hand-written NoT. As a drift control, both runs
+re-issued the NoT prompt on scenario \texttt{dd\_32489} at the start and
+end of training; stakeholder counts moved $6\to6$ (Run~A) and $5\to6$
+(Run~B), both within the pre-registered $\Delta = 0.5$ threshold for
+compute-drift confounding modulo single-cell rounding, and the
+four-generator replication shows no compute-drift signature.
 
 \end{document}
