@@ -60,15 +60,6 @@
 \urlstyle{tt}
 \DeclareUrlCommand\path{\urlstyle{tt}}
 
-% Convenience command: show figure if file exists, else a labelled placeholder box.
-% Usage: \figureOrPlaceholder{width}{filename}{description}
-\newcommand{\figureOrPlaceholder}[3]{%
-  \IfFileExists{#2}{%
-    \includegraphics[width=#1]{#2}%
-  }{%
-    \fbox{\parbox{#1}{\centering\vspace{1.8cm}\textit{[Figure to be generated after experiment runs: #3]}\vspace{1.8cm}}}%
-  }%
-}
 
 \title{Narration-of-Thought:\\
 Inference-Time Scaffolding for Defeasible Ethical Reasoning\\
@@ -644,7 +635,7 @@ the same drop annotations.}
 
 \begin{figure*}[!tbp]
 \centering
-\figureOrPlaceholder{0.92\textwidth}{figures/failure_mode_firing_quartet.pdf}{failure-mode firing rates, four generators}
+\includegraphics[width=0.92\textwidth]{figures/failure_mode_firing_quartet.pdf}
 \caption{Failure-mode firing rates (standard CoT vs.\ NoT) across
 the four-model panel (\texttt{gpt-5.4-nano}, \texttt{claude-haiku-4-5},
 \texttt{grok-4-1-fast-reasoning}, \texttt{claude-sonnet-4-6}). The
@@ -766,7 +757,7 @@ NoT control on the two headline coded metrics.
 
 \begin{figure}[!tbp]
 \centering
-\figureOrPlaceholder{\columnwidth}{figures/subinstruction_attribution.pdf}{sub-instruction ablation heatmap}
+\includegraphics[width=\columnwidth]{figures/subinstruction_attribution.pdf}
 \caption{Sub-instruction ablation on \texttt{claude-sonnet-4-6}:
 Cliff's $\delta$ for each drop-one-section condition vs.\ the full
 NoT control on stakeholder count and uncertainty score. Negative
@@ -851,7 +842,7 @@ consensus signal is not moderator-specific.
 
 \begin{figure*}[!tbp]
 \centering
-\figureOrPlaceholder{0.92\textwidth}{figures/debate_full_arc.pdf}{debate convergence arc (original two generators)}
+\includegraphics[width=0.92\textwidth]{figures/debate_full_arc.pdf}
 \caption{Consensus rates across four progressively more structured
 debate designs (five scenarios, two generators). \emph{Closed taxonomy}
 (agents must choose from a fixed action list) and \emph{open action
@@ -1222,7 +1213,7 @@ the coded metrics ride predominantly with output length.}
 
 \begin{figure*}[!tbp]
 \centering
-\figureOrPlaceholder{0.92\textwidth}{figures/tier1_effect_sizes_quartet.pdf}{tier-1 effect sizes across four generators}
+\includegraphics[width=0.92\textwidth]{figures/tier1_effect_sizes_quartet.pdf}
 \caption{Visualisation of Table~\ref{tab:effects_full}. Tier-1 Cliff's
 $\delta$ effect sizes (NoT vs.\ standard CoT) on the four structural
 variables, with bootstrap $95\%$ CIs. All four generators show large
@@ -1601,7 +1592,7 @@ alignment layer.
 
 \begin{figure*}[!tbp]
 \centering
-\figureOrPlaceholder{\textwidth}{figures/agentic_probe_rates.pdf}{agentic probe clean-refusal rates}
+\includegraphics[width=\textwidth]{figures/agentic_probe_rates.pdf}
 \caption{Clean-refusal rate per generator and scaffold on each agentic
 scenario ($N{=}3$ per cell, $48$ long-context generations). Bars are
 the share of generations that emit an explicit refusal; the
@@ -1807,7 +1798,7 @@ incomplete baseline caches).}
 
 \begin{figure*}[t]
 \centering
-\figureOrPlaceholder{0.86\textwidth}{figures/v3_vs_v2_headline.pdf}{cross-family vs in-family optimisation headline}
+\includegraphics[width=0.86\textwidth]{figures/v3_vs_v2_headline.pdf}
 \caption{Cross-family training (NoT-v3) beats in-family training (NoT-v2) on
 both axes the optimiser targeted, on every generator. \textbf{Left:} v3 makes
 the stakeholder-count Cliff's $\delta$ over hand-written NoT more negative (or,
