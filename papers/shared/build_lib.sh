@@ -91,9 +91,11 @@ build_tex_document () {
 
   if command -v docker >/dev/null 2>&1 && docker info >/dev/null 2>&1; then
     echo "[build.sh] no local xelatex found; using docker image texlive/texlive"
+    local shared_dir
+    shared_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
     docker run --rm \
       -v "$(pwd):/work" \
-      -v "$(cd ../shared && pwd):/shared:ro" \
+      -v "$shared_dir:/shared:ro" \
       -w /work \
       -e TEXINPUTS="/shared//:${TEXINPUTS:-}" \
       -e BIBINPUTS="/shared//:${BIBINPUTS:-}" \

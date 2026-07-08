@@ -28,7 +28,7 @@ Required env vars:
   AZURE_AI_MODELS_GENERATION (optional; defaults to "gpt-5.4-nano,gpt-4o")
 
 Usage:
-  python run_debate_std_cot_ablation.py [--samples N] [--generators MODEL,MODEL]
+  python scripts/run_debate_std_cot_ablation.py [--samples N] [--generators MODEL,MODEL]
                                          [--scenarios sid1,sid2,...]
 """
 from __future__ import annotations

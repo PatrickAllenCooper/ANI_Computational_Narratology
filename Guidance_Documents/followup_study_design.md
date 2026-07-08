@@ -402,3 +402,8 @@ exploitation for non-haiku generators but exposes residual within-family bias.
   is kept as the originating draft; the parent paper is now canonical. See the
   v1.13 entry in `study_design.md` for the integration detail and the preserved
   8-page main-body budget.
+- v0.5 (2026-07-08): Repository reorganization for onboarding. The standalone
+  follow-up project moved from `papers/followup/` to `papers/archive/followup/`
+  to make its superseded status explicit; the parent ACL paper remains the
+  canonical home of the optimisation result. See the v1.16 entry in
+  `study_design.md`.

@@ -49,12 +49,11 @@ from scripts.generators import generate as _generate
 
 # Import shared data structures from the ablation script
 sys.path.insert(0, str(Path(__file__).parent.parent))
-from run_debate_std_cot_ablation import (
+from scripts.run_debate_std_cot_ablation import (
     SCENARIOS, SCENARIO_BY_ID, PERSPECTIVES, PERSPECTIVES_BY_SCENARIO,
     MP_STD_COT_SYSTEM, MP_STD_COT_USER_TEMPLATE,
     R1_USER_TEMPLATE, R2_OPEN_USER_TEMPLATE,
-    OPEN_MOD_SYSTEM, OPEN_MOD_USER_TEMPLATE,
-    SYNTH_R3_SYSTEM, SYNTH_R3_USER_TEMPLATE,
+    OPEN_MODERATOR_SYSTEM, OPEN_MODERATOR_USER_TEMPLATE,
     SYNTH_R3_EXTRACT_SYSTEM, SYNTH_R3_EXTRACT_USER_TEMPLATE,
     SYNTH_FINAL_MOD_SYSTEM, SYNTH_FINAL_MOD_USER_TEMPLATE,
     INTEG_MOD_SYSTEM, INTEG_MOD_USER_TEMPLATE,
@@ -251,12 +250,12 @@ def run_open_mod(s: Scenario, idx: int, gen_model: str, arm: str,
     taxonomy_str = "\n".join(
         f"  {k}: {v}" for k, v in s.decision_taxonomy.items()
     )
-    user = OPEN_MOD_USER_TEMPLATE.format(
+    user = OPEN_MODERATOR_USER_TEMPLATE.format(
         scenario=s.prompt,
         taxonomy=taxonomy_str,
         transcript=transcript,
     )
-    result = _call_mod(OPEN_MOD_SYSTEM, user, seed=idx + 5000)
+    result = _call_mod(OPEN_MODERATOR_SYSTEM, user, seed=idx + 5000)
     key.write_text(json.dumps(result, indent=2))
     return result
 

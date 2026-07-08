@@ -50,7 +50,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 from scripts.generators import generate as _generate
 
 # Import shared debate data (scenarios, perspectives, prompts)
-from run_debate_std_cot_ablation import (
+from scripts.run_debate_std_cot_ablation import (
     SCENARIOS, SCENARIO_BY_ID, PERSPECTIVES_BY_SCENARIO,
     MP_STD_COT_SYSTEM,
     OPEN_MODERATOR_SYSTEM, OPEN_MODERATOR_USER_TEMPLATE,

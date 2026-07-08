@@ -1,16 +1,68 @@
-# ANI — Narrative Chain-of-Thought Divergence Pilot
+# ANI — Narrative Chain-of-Thought Divergence Study
 
-A minimum-viable empirical test of whether narrative-structured prompting produces systematically different ethical reasoning outputs than standard chain-of-thought, across two generation model families and two cross-vendor judges.
+An empirical study of whether narrative-structured prompting (Narration-of-Thought, NoT) produces systematically different ethical reasoning than standard chain-of-thought, across four frontier generators from three vendors and multiple cross-vendor judges.
 
-The canonical study design lives in `Guidance_Documents/study_design.md`. LaTeX drafts live under `papers/`, one project folder per paper:
+The canonical study design lives in `Guidance_Documents/study_design.md`. The notebook and scripts implement it; when the design changes, the guidance doc is updated in the same commit.
 
-| Project | Path | Build |
-|---------|------|-------|
-| Main ARR paper | `papers/acl/ACL_paper.tex` | `papers/build.sh acl` |
-| Sycophancy study | `papers/sycophancy/sycophancy_paper.tex` | `papers/build.sh sycophancy` |
-| TextGrad follow-up | `papers/followup/followup_paper.tex` | `papers/build.sh followup` |
+## Project map
 
-Shared ACL style files and `references.bib` are in `papers/shared/`. Earlier drafts live under `papers/archive/`. Implementation is `ncot_divergence_pilot.ipynb`. Per-run artifacts (CSVs and figures) are in `divergence_study_outputs/`; per-sample cache JSON is gitignored and regenerated from the notebook.
+| Path | What it is |
+|------|------------|
+| `Guidance_Documents/` | Source of truth: study design, pre-registrations, execution logs |
+| `papers/` | LaTeX projects, one folder per paper (see status table below) |
+| `ncot_divergence_pilot.ipynb` | Main-study implementation (generation, judging, analysis) |
+| `scripts/` | All phase runners, aggregators, and shared library code |
+| `data/` | Probe sets and gold labels (large benchmark downloads are gitignored) |
+| `divergence_study_outputs/` | Run artifacts: analysis CSVs and figures are committed; per-sample cache JSON is gitignored and regeneratable |
+
+## Papers and their status
+
+| Paper | Path | Status | Build |
+|-------|------|--------|-------|
+| Narration-of-Thought (main paper) | `papers/acl/ACL_paper.tex` | Canonical and most complete. arXiv preprint prepared 2026-06-24; incorporates the textual-gradient follow-up study as Section 4.2 and Appendix G. | `papers/build.sh acl` |
+| Sycophancy under deliberative scaffolding | `papers/sycophancy/sycophancy_paper.tex` | Active. Phase 18 (judge-robust prompt optimization) is the gate for the ACL Rolling Review submission; referee-audit hardening pass completed 2026-06-19. | `papers/build.sh sycophancy` |
+| TextGrad follow-up | `papers/archive/followup/followup_paper.tex` | Superseded. Fully integrated into the main paper on 2026-06-24; kept as the originating draft. | `papers/archive/followup/build.sh` |
+| Early drafts (position, framing, NeurIPS) | `papers/archive/` | Historical only. | — |
+
+Shared ACL style files and `references.bib` are in `papers/shared/`. The prepared arXiv bundle is `papers/acl/arxiv_submission.zip`.
+
+## Current areas of development
+
+1. Main paper (`papers/acl`): arXiv preprint is prepared; remaining work is the ARR submission cycle (camera-ready polish, reviewer response).
+2. Sycophancy paper (`papers/sycophancy`): Phase 18 judge-robust optimization results are in and hardened (held-out judge, human gold, full quartet, BrokenMath replication). Submission is gated on the methods win holding up; Phase 19 (activation steering, open-weight) is the pre-registered backup direction.
+3. Deferred: Tier-3 human pairwise preference study (`Guidance_Documents/tier3_preregistration.md`) awaits IRB and funding.
+
+The phase-by-phase history, pre-registrations, and execution logs are in `Guidance_Documents/study_design.md` (main study, Phases 1-19) and `Guidance_Documents/followup_study_design.md` (optimisation follow-up).
+
+## Onboarding quickstart
+
+```bash
+python3.11 -m venv .venv
+source .venv/bin/activate
+pip install azure-ai-projects azure-identity openai pandas matplotlib seaborn scipy tqdm python-dotenv requests scikit-learn jupyter datasets
+cp .env.template .env   # then fill in keys; never commit .env
+```
+
+Run the smoke tests before anything expensive:
+
+```bash
+python -m scripts.test_phase14
+python -m scripts.smoke_generators   # requires live API keys
+```
+
+Reproduce the main study (long-running; results are cached per `(generator, judge, scenario, condition, sample)` so re-runs only do new work):
+
+```bash
+jupyter nbconvert --to notebook --execute ncot_divergence_pilot.ipynb \
+  --output ncot_divergence_pilot.ipynb \
+  --ExecutePreprocessor.timeout=7200
+```
+
+Phase runners under `scripts/` are standalone; run them from the repository root (they write to `divergence_study_outputs/` relative to the working directory). Model configuration comes from `.env`; see `.env.template` for every variable.
+
+## Reading the results
+
+Start with the auto-generated headline summary in section 7f of the notebook, then the per-generator comparisons in section 9. Interpretation thresholds are in section 8 of the notebook and in `Guidance_Documents/study_design.md`. Committed analysis tables and figures live in `divergence_study_outputs/`.
 
 ## Credential rotation
 
@@ -21,48 +73,10 @@ Any API key that has left the local machine (pasted into chat, email, or any web
 
 Never commit a filled-in `.env`. The `.gitignore` already excludes it.
 
-## Setup
-
-```bash
-python3.11 -m venv .venv
-source .venv/bin/activate
-pip install azure-ai-projects azure-identity openai pandas matplotlib seaborn scipy tqdm python-dotenv requests scikit-learn jupyter datasets
-```
-
-## Running
-
-The notebook reads its model configuration from environment variables. Set these before launching Jupyter (do not commit the values):
-
-```bash
-export AZURE_AI_PROJECT_ENDPOINT="https://<resource>.cognitiveservices.azure.com"
-export AZURE_AI_API_KEY="<your-key>"
-export AZURE_AI_API_VERSION="2025-04-01-preview"
-export AZURE_AI_MODELS_GENERATION="gpt-5.4-nano,gpt-4o"
-export AZURE_AI_MODEL_JUDGE="claude-sonnet-4-6"
-export AZURE_AI_MODEL_JUDGE_2="gpt-4o-mini"
-export AZURE_AI_MODEL_DECISION="gpt-4o-mini"
-
-jupyter nbconvert --to notebook --execute ncot_divergence_pilot.ipynb \
-  --output ncot_divergence_pilot.ipynb \
-  --ExecutePreprocessor.timeout=7200
-```
-
-Generation, judging, and decision-extractor results are cached per `(generator, judge, scenario, condition, sample)`; re-running with a new generator or judge does not re-do prior work.
-
-## What the notebook produces
-
-Per-cell artifacts (gitignored): `divergence_study_outputs/gen_*.json`, `judge_*.json`, `decision_*.json`.
-
-Analysis tables (committed): `coded_results_judge1.csv`, `coded_results_judge2.csv`, `decisions.csv`, `interjudge_agreement.csv`, `tier1_effect_sizes.csv`, `tier2_summary.csv`, `failure_mode_profile.csv`, `failure_mode_aggregate.csv`, `length_residualized_effects.csv`, `cross_judge_effect_sizes.csv`, `decision_entropy.csv`, `cross_generator_tier1.csv`, `cross_generator_tier2.csv`, `cross_generator_excess_matrix.csv`, `per_generator_failure_modes.csv`.
-
-Figures (committed): `tier1_structural_metrics.png`, `tier1_refusal.png`, `tier2_decision_distributions.png`, `divergence_profile_heatmap.png`, `cross_generator_heatmaps.png`.
-
-## Reading the results
-
-Start with the auto-generated headline summary in section 7f of the notebook, then the per-generator comparisons in section 9. Detailed interpretation thresholds are in section 8 (Interpretation guide) and in `Guidance_Documents/study_design.md`.
-
 ## Repository discipline
 
 - The author is Patrick Cooper. All commits are made by him.
-- `Guidance_Documents/study_design.md` is the source of truth. The notebook implements it. When the design changes, the guidance doc is updated in the same commit.
+- `Guidance_Documents/study_design.md` is the source of truth. When the design changes, the guidance doc is updated in the same commit.
+- Markdown is consolidated to this README and `Guidance_Documents/`; no other markdown files.
 - API keys are never committed. The `.gitignore` excludes `.env`, `*.key`, and similar.
+- Keep commits short and frequent.

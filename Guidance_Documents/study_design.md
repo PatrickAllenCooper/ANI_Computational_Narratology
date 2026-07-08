@@ -130,7 +130,7 @@ The cell-level cache in `divergence_study_outputs/` keys every artifact by *both
 
 ## Repository
 
-`PatrickAllenCooper/ANI_Computational_Narratology` --- the notebook, this guidance document, the analysis artefacts in `divergence_study_outputs/`, and the paper drafts under `papers/` are the canonical record. Each paper has its own project folder (`papers/acl/`, `papers/sycophancy/`, `papers/followup/`); shared LaTeX assets live in `papers/shared/`; prior variants are in `papers/archive/`.
+`PatrickAllenCooper/ANI_Computational_Narratology` --- the notebook, this guidance document, the analysis artefacts in `divergence_study_outputs/`, and the paper drafts under `papers/` are the canonical record. Each active paper has its own project folder (`papers/acl/`, `papers/sycophancy/`); shared LaTeX assets live in `papers/shared/`; superseded drafts, including the standalone follow-up paper (integrated into the ACL paper on 2026-06-24), are in `papers/archive/`. All phase runners and analysis scripts live under `scripts/` (nothing executable at the repository root besides the notebook).
 
 ## Scaled DailyDilemmas pilot (Section 12)
 
@@ -1255,3 +1255,17 @@ Reserve approach, pursued only if Phase 18 fails its falsification test. Require
 **Build.** `papers/build.sh sycophancy` (xelatex/docker).
 
 **Out of scope (this pass).** Direct-instruction anti-sycophancy arm; length-matched verbose-CoT; BrokenMath panel re-score; second construct-taxonomy figure (Table~\ref{tab:constructs} retained).
+
+---
+
+## Execution log v1.16 — Repository reorganization for onboarding (2026-07-08)
+
+**Goal.** Streamline the repository layout ahead of onboarding an additional team member; no scientific content changed.
+
+**Changes.**
+- `papers/followup/` moved to `papers/archive/followup/`. Its content was fully integrated into `papers/acl/ACL_paper.tex` on 2026-06-24 (see v1.13); the standalone draft is retained for provenance only. `papers/build.sh` now accepts `{acl|sycophancy}`; the archived project keeps a working local `build.sh`.
+- Root-level scripts `run_debate_std_cot_ablation.py` and `run_phase_c.py` moved into `scripts/` so every runner lives in one place. Importers (`scripts/run_phase3_debate.py`, `scripts/run_cross_vendor_moderator.py`) updated to `from scripts.run_debate_std_cot_ablation import ...`; `.env.template` path comments updated. Runners are still invoked from the repository root (output paths are cwd-relative).
+- `arxiv_submission.zip` moved to `papers/acl/arxiv_submission.zip` alongside the supplementary zip it belongs with.
+- `README.md` rewritten as the onboarding entry point: project map, per-paper status table (canonical = `papers/acl/ACL_paper.tex`; active = `papers/sycophancy/sycophancy_paper.tex` gated on the Phase 18 methods win; superseded/archived drafts listed), current areas of development, and a quickstart (venv, `.env`, smoke tests, notebook reproduction).
+
+**Paper status at reorganization.** Main paper: arXiv preprint prepared 2026-06-24, awaiting the ARR cycle. Sycophancy paper: Phase 18 judge-robust optimization hardened (18c-18e) and referee-audit pass complete (v1.15); submission gated on the methods win; Phase 19 activation steering remains the pre-registered backup.
