@@ -1269,3 +1269,18 @@ Reserve approach, pursued only if Phase 18 fails its falsification test. Require
 - `README.md` rewritten as the onboarding entry point: project map, per-paper status table (canonical = `papers/acl/ACL_paper.tex`; active = `papers/sycophancy/sycophancy_paper.tex` gated on the Phase 18 methods win; superseded/archived drafts listed), current areas of development, and a quickstart (venv, `.env`, smoke tests, notebook reproduction).
 
 **Paper status at reorganization.** Main paper: arXiv preprint prepared 2026-06-24, awaiting the ARR cycle. Sycophancy paper: Phase 18 judge-robust optimization hardened (18c-18e) and referee-audit pass complete (v1.15); submission gated on the methods win; Phase 19 activation steering remains the pre-registered backup.
+
+---
+
+## Execution log v1.17 — Activation-Guided Thinking follow-up project seeded (2026-07-08)
+
+**Goal.** Seed the follow-up line that generalizes the project's prompt-level findings toward inference-time activation control ("Activation-Guided Thinking", AGT), sized as the incoming masters student's primary project. No experiments executed in this pass.
+
+**Deviation note (logged before execution).** The Phase 19 pre-registration above states activation steering is a "reserve approach, pursued only if Phase 18 fails its falsification test." AGT elevates it to an active parallel line regardless of Phase 18's outcome. This is a deliberate amendment: rationale is (a) advisor-identified generalization risk on the Phase 18 win, making a mechanistic parallel line the program's insurance, and (b) GPU/cluster access is now available, removing the original feasibility constraint. Phase 19's role as the formal backup direction for the sycophancy paper is unchanged. Before any scaled AGT execution, the chosen design must be pre-registered here (as Phase 20 or an amended Phase 19) with falsification criteria, matching prior phases.
+
+**Artifacts added.**
+- `activation_guided_thinking/README.md` — rough sketch of seven lines of inquiry: (1) prompt-to-vector distillation of the NoT scaffold via CAA; (2) construct geometry across validation/propositional/moral sycophancy (Phase 19 core); (3) composability of directions; (4) Goodhart resistance of steering vs prompt optimization, reusing the Phase 18 gap machinery; (5) dose-response curves; (6) cross-model transfer (Llama-3.1-8B / Qwen3-8B); (7) mandatory dual-stance specificity audit. Includes a reuse map onto existing scripts and artifacts.
+- `activation_guided_thinking/agt_bootstrap.ipynb` — single onboarding entry point, executed clean end-to-end: loads headline artifacts (`tier1_effect_sizes.csv`, `phase18_goodhart.json`, `judge_reliability_summary.json`), exposes canonical prompt texts (`run_phase1_quartet.PROMPTS`, Phase 18 robust `final_prompt`), builds 300 CAA contrast-pair specs (narration vs standard CoT, and vs matched-budget verbose control; 50 ELEPHANT OEQ train-region items + 100 DailyDilemmas scenarios) written to a gitignored `contrast_pair_specs.jsonl`, and stubs the GPU-side extraction/steering skeleton behind a guard.
+- `contrast_pair_specs.jsonl` gitignored (regeneratable); README project map updated.
+
+**Infrastructure.** GPU work targets CURC; weights and activation caches go to `/scratch/alpine`, never `/projects` (near quota). Evaluation reuses the existing instruments (`elephant_scorers`, `syco_loss`, `brokenmath_scorer`, `judge_panel`, `krippendorff`) so AGT results are directly comparable to the papers' tables.

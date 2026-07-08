@@ -12,6 +12,7 @@ The canonical study design lives in `Guidance_Documents/study_design.md`. The no
 | `papers/` | LaTeX projects, one folder per paper (see status table below) |
 | `ncot_divergence_pilot.ipynb` | Main-study implementation (generation, judging, analysis) |
 | `scripts/` | All phase runners, aggregators, and shared library code |
+| `activation_guided_thinking/` | Follow-up project sketch (inference-time activation steering); see its README and `agt_bootstrap.ipynb` |
 | `data/` | Probe sets and gold labels (large benchmark downloads are gitignored) |
 | `divergence_study_outputs/` | Run artifacts: analysis CSVs and figures are committed; per-sample cache JSON is gitignored and regeneratable |
 
