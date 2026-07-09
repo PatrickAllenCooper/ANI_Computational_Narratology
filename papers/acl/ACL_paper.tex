@@ -14,7 +14,7 @@
 
 \documentclass[11pt]{article}
 
-\usepackage[preprint]{acl}
+\usepackage[review]{acl}
 
 \usepackage{times}
 \usepackage{latexsym}
@@ -65,56 +65,39 @@
 Inference-Time Scaffolding for Defeasible Ethical Reasoning\\
 in Large Language Models}
 
-\author{
-  Patrick Cooper \and Alvaro Vel\'{a}squez \\
-  Department of Computer Science \\
-  University of Colorado Boulder \\
-  \texttt{\{patrick.cooper, alvaro.velasquez\}@colorado.edu}
-}
+\author{Anonymous ARR Submission}
 
 \begin{document}
 \maketitle
 
 \begin{abstract}
-Standard chain-of-thought on moral dilemmas exhibits two failure modes
-that matter for deployment: stakeholder collapse (the trace names at
-most one party with a stake in the outcome) and uncertainty
-suppression (the trace contains no explicit unknowns or hedges before
-committing to an action). We introduce narration-of-thought
-(NoT), a system prompt that constrains the model's chain-of-thought
-to five narrative sections: name a protagonist, enumerate
-stakeholders, project two-step consequences, articulate uncertainty,
-and only then commit. The protocol adds no training data, parameters,
-or fine-tuning. On a 100-scenario DailyDilemmas sample across four
-generators from three vendors, NoT cuts stakeholder collapse from
-up to $31\%$ to under $1\%$ and uncertainty suppression from up to
-$72\%$ to $1$--$24\%$ on every model. A matched-budget verbose-CoT
-control rules out additional token spend as the active ingredient,
-with NoT retaining a Cliff's $\delta$ advantage of $+0.79$ to
-$+0.90$ on stakeholder count (the number of distinct parties named in
-the trace) and $+0.65$ to $+0.93$ on uncertainty score (the number of
-hedge or unknown spans named in the trace) for three of four
-generators, and a section-by-section ablation attributes each shift
-to the specific sub-instruction that carries it. Initialising
-textual-gradient descent at NoT under a continuous deliberative-depth
-loss improves the scaffold further; a head-to-head of two
-training-judge configurations shows a cross-family judge (a different
-vendor from the generator) dominating an in-family one on every
-measured axis, with larger effect sizes, shorter outputs, and reduced
-cross-vendor judge-generosity bias. Extended to a
-five-round multi-stakeholder protocol in which three stakeholder
-agents debate and then cast a binary accept/reject vote on a single
-proposal the moderator builds to address all three agents'
-modifications, the same scaffold converts a $6\%$ debate standoff
-into $95\%$ full consensus on a calibration set and $100\%$ combined
-convergence on a DailyDilemmas replication. Acceptance of the
-integrated proposal shows the agents revise their positions when the
-moderator addresses their objections. The small fraction of remaining
-rejections marks positions that no moderator-built integration can
-absorb, concentrated in the roles whose stake the proposal materially
-undermines. The resulting traces externalise the stakeholders,
-consequences, and uncertainty that ground each commitment, providing
-an auditable substrate for dependable agentic-workflow deployment.
+Standard chain-of-thought (CoT) on moral dilemmas exhibits two
+failure modes that matter for deployment: stakeholder collapse (the
+reasoning trace names at most one party with a stake in the outcome)
+and uncertainty suppression (the trace contains no explicit unknowns
+or hedges before committing to an action). We introduce
+narration-of-thought (NoT), a system prompt that constrains the trace
+to five narrative sections: protagonist, stakeholders, two-step
+consequences, uncertainty, and only then commitment. NoT adds no
+training data, parameters, or fine-tuning. On a 100-scenario
+DailyDilemmas sample across five models from four vendors, NoT cuts
+stakeholder collapse from up to $30\%$ of traces to at most $1.2\%$
+and uncertainty suppression from up to $71\%$ to $0$--$24\%$ on every
+model. A
+matched-budget verbose-CoT control rules out token spend as the
+active ingredient, a section-by-section ablation attributes each
+shift to the sub-instruction that carries it, and textual-gradient
+descent initialised at NoT improves the scaffold further, with a
+training judge from a different vendor than the generator beating a
+same-vendor judge on every
+measured axis. Extended to a five-round multi-stakeholder debate in
+which three stakeholder agents vote on a moderator-integrated
+proposal, the scaffold converts a $6\%$ standoff into $95\%$ full
+consensus, with residual rejections concentrated in roles whose stake
+the proposal materially undermines. The resulting traces externalise
+the stakeholders, consequences, and uncertainty grounding each
+commitment, providing an auditable substrate for dependable
+agentic-workflow deployment.
 \end{abstract}
 
 \begin{figure*}[!t]
@@ -169,7 +152,7 @@ an auditable substrate for dependable agentic-workflow deployment.
 
   \node[agent, draw=stdgrey, fill=paleslate, text=stdgrey!50!black] (a1)
     at (0, 4.0) {1};
-  \node[agentlbl] at (0, 3.45) {generator};
+  \node[agentlbl] at (0, 3.45) {evaluated model};
 
   \node[std] (s1) at (0, 2.7) {step: weigh factors};
   \node[std, below=1mm of s1] (s2) {step: pick option};
@@ -182,9 +165,9 @@ an auditable substrate for dependable agentic-workflow deployment.
   \draw[arr] (s3.south) -- (o1.north);
 
   \node[failbox, below=3.5mm of o1, anchor=north] (call1) {%
-    \textbf{On the four-model panel:}\\[2pt]
-    $\bullet$~stakeholder collapse on $15$--$31\%$ of items\\
-    $\bullet$~uncertainty suppression on $50$--$72\%$ of items%
+    \textbf{On the four proprietary models:}\\[2pt]
+    $\bullet$~stakeholder collapse on $15$--$30\%$ of items\\
+    $\bullet$~uncertainty suppression on $50$--$71\%$ of items%
   };
   \draw[arr] (o1.south) -- (call1.north);
 \end{scope}
@@ -199,7 +182,7 @@ an auditable substrate for dependable agentic-workflow deployment.
 
   \node[agent, draw=ncotteal, fill=paleteal, text=ncottealdk] (a2)
     at (0, 4.0) {1};
-  \node[agentlbl] at (0, 3.45) {generator};
+  \node[agentlbl] at (0, 3.45) {evaluated model};
 
   \node[ncot] (n1) at (0, 2.85) {1.\ Protagonist};
   \node[ncot, below=0.8mm of n1] (n2) {2.\ Stakeholders};
@@ -213,9 +196,9 @@ an auditable substrate for dependable agentic-workflow deployment.
   \draw[arr] (n5.south) -- (o2.north);
 
   \node[goodbox, below=3.5mm of o2, anchor=north] (call2) {%
-    \textbf{On the same four-model panel:}\\[2pt]
-    $\bullet$~collapse drops to ${<}1\%$ of items\\
-    $\bullet$~suppression drops to $1$--$24\%$ of items%
+    \textbf{On the full five-model panel:}\\[2pt]
+    $\bullet$~collapse drops to ${\leq}1.2\%$ of items\\
+    $\bullet$~suppression drops to $0$--$24\%$ of items%
   };
   \draw[arr] (o2.south) -- (call2.north);
 \end{scope}
@@ -282,7 +265,7 @@ an auditable substrate for dependable agentic-workflow deployment.
 \draw[divider] (8.45, 5.4) -- (8.45, -2.9);
 
 \end{tikzpicture}
-\caption{One scaffold, three settings. Standard CoT (left) lets one generator run a linear reasoning chain over the dilemma; the two failure modes diagnosed in \S\ref{sec:exp1} fire on this scaffold. Narration-of-Thought (middle) keeps the single generator but forces the trace through five narrative primitives (protagonist, stakeholders, consequences, uncertainty, commitment) before any commit; on the four-model panel this drops stakeholder collapse to ${<}1\%$ and uncertainty suppression to $1$--$24\%$ of items, and a matched-budget verbose-CoT control confirms the scaffold (not the token budget) is the active ingredient. Multi-stakeholder NoT (right) reuses NoT as the per-agent generator and adds three distinct stakeholder narrators (formal decider, primary affected party, third party) whose modification requests are integrated by a moderator and then put to a binary accept/reject vote; on the calibration scenarios this protocol yields $95\%$ full consensus with $1.6\%$ of votes rejecting the moderator's integrated proposal, and on a 30-scenario DailyDilemmas replication with two generators it reaches $100\%$ combined convergence with no rejected proposals (\S\ref{sec:exp2}). The same scaffold composes from one narrator to many.}
+\caption{One scaffold, three settings. Standard CoT (left) elicits a linear chain; the two failure modes of \S\ref{sec:exp1} fire on this scaffold. NoT (middle) forces five narrative primitives before commit; on the five-model panel this drops collapse to ${\leq}1.2\%$ and suppression to $0$--$24\%$, with a matched-budget verbose-CoT control confirming the scaffold (not tokens) is active. Multi-stakeholder NoT (right) runs three stakeholder narrators through moderator integration and a binary vote, yielding $95\%$ full consensus with $1.6\%$ residual rejections on calibration scenarios and $100\%$ combined convergence on a 30-scenario DailyDilemmas replication (\S\ref{sec:exp2}).}
 \label{fig:hero}
 \end{figure*}
 
@@ -300,40 +283,50 @@ merchants whose customers used to drive in, the residents who lose
 street parking, the delivery drivers and accessibility users for whom
 curb access matters, the pedestrians who would gain the space, the
 emergency responders whose routes change. The model is not
-necessarily wrong; the trace it produced does not look like the kind
+necessarily wrong; the visible reasoning it prints before the answer
+(its reasoning \emph{trace}) does not look like the kind
 of reasoning the decision warrants.
 
-The pattern is not specific to one dilemma. On the DailyDilemmas
-corpus \citep{chiu24}, four frontier generators spanning three vendors
-(OpenAI, Anthropic, xAI) and two model tiers exhibit two repeatable
-trace-level failures under standard CoT: \emph{uncertainty suppression}
+The pattern is not specific to one dilemma. DailyDilemmas
+\citep{chiu24} collects $1{,}360$ everyday moral
+quandaries spanning $18$ topic groups (family, work, civic life,
+health, and similar), each posed as a short vignette with a binary
+yes/no decision. On this corpus, five models spanning four vendors
+(OpenAI, Anthropic, xAI, DeepSeek) and two model tiers exhibit two
+repeatable trace-level failures under standard chain-of-thought (CoT)
+prompting \citep{wei22}. \emph{Uncertainty
+suppression}
 (the trace commits to an action without naming any explicit unknown
-or hedge) on $50$--$72\%$ of outputs, and \emph{stakeholder collapse}
-(the trace names at most one party with a stake in the outcome) on
-$15$--$31\%$. The model commits to a projected outcome it cannot
+or hedge) fires on $50$--$71\%$ of outputs for the four proprietary models
+($24\%$ for the open-weights \texttt{deepseek-v3}); \emph{stakeholder
+collapse}
+(the trace names at most one party with a stake in the outcome) fires on
+$15$--$30\%$ ($1.2\%$ for \texttt{deepseek-v3}). The model commits to
+a projected outcome it cannot
 warrant, and it does so against a flattened picture of who is affected.
-The same shape of deficit is coherent with deployment-relevant
+The same shape of deficit is consistent with deployment-relevant
 failures reported elsewhere, including the GPT-4o sycophancy rollback
 \citep{openai_sycophancy_2025, openai_sycophancy_expand_2025},
 agentic-misalignment blackmail rates up to $96\%$ in simulated
 deployments \citep{anthropic_agentic_2025}, and reasoning-induced
 misalignment \citep{yan2025rim,sharma23}.
 
-We introduce narration-of-thought (NoT), a system prompt that
-steers the model into the densely sampled narrative subdistribution of
-its pretraining corpus rather than the sparser abstract-reasoning
-subdistribution standard CoT elicits. Concretely, NoT is a single
-change to the system-prompt slot of an unmodified pretrained model,
-with no weight updates and no training data: in place of the standard
-``think step by step'' instruction, the model is asked, in first
-person, to name a protagonist, enumerate stakeholders, project
-two-step consequences, articulate uncertainty, and commit inside the
-final narrative section rather than as a separate verdict.
-Figure~\ref{fig:hero} states the mechanism.
+We introduce narration-of-thought (NoT), a replacement for the
+standard CoT system prompt: in place of ``think step by step,'' the model is asked
+to reason in the first person as a story---name a protagonist,
+enumerate the stakeholders, project two-step consequences for each of
+them, say what remains unknown, and only then commit, inside the
+narrative rather than as a separate verdict. The intervention adds no
+weight updates and no training data. The hypothesis behind it is
+distributional: stories that track people, consequences, and doubt are
+densely represented in pretraining corpora, so a prompt that steers
+generation into that narrative subdistribution elicits the structure
+that the sparser abstract-reasoning register of standard CoT leaves
+out. Figure~\ref{fig:hero} states the mechanism.
 
-What we borrow from the multi-agent systems for scientific discovery
-of \citet{gottweis25} and \citet{lu24_aiscientist} is one
-methodological move: scaffold LLM reasoning into the primitives of
+Our method borrows one move from multi-agent systems for
+scientific discovery \citep{gottweis25, lu24_aiscientist}:
+scaffold LLM reasoning into the primitives of
 the target domain, then integrate across those primitives with a
 moderator that synthesises a single artefact from the per-agent
 outputs. The primitives we reify are narrative rather than
@@ -350,47 +343,32 @@ all three agents' modifications; the residual rejections concentrate
 in the roles whose stake the proposal materially undermines.
 
 This paper reports five results. First, on a 100-scenario
-DailyDilemmas sample across the four-model panel, NoT cuts
-stakeholder collapse to below $1\%$ and uncertainty suppression by
-$28$--$72$ percentage points on every model; a matched-budget
-verbose-CoT control confirms the active ingredient is the narrative
-scaffold rather than additional tokens (\S\ref{sec:exp1}). Second, a
-sub-instruction ablation on \texttt{claude-sonnet-4-6} attributes each
-shift in the coded metrics (stakeholder count, uncertainty score) to
-the specific NoT sub-instruction that carries it, with negligible
-cross-variable spillover (\S\ref{sec:exp1-ablation}). Third,
-initialising textual-gradient descent at NoT under a continuous
-deliberative-depth loss improves the hand design, and a head-to-head
-of two otherwise-identical training runs shows that a cross-family
-training judge (drawn from a different vendor than the generator)
-dominates an in-family one on every measured axis---larger effect
-sizes, shorter outputs, and a reduced cross-vendor judge-generosity
-bias---yielding a one-line recommendation for prompt-optimisation
-practice (\S\ref{sec:exp1-optimise}). Fourth, extended
-to a five-round multi-stakeholder protocol that ends in a binary
-accept/reject vote on a single moderator-built proposal addressing
-all three agents' modifications, the scaffold converts a $6\%$ debate
-standoff into $95\%$ full consensus while leaving a small $1.6\%$ of
-votes as rejections the integrated proposal could not absorb; the
-pattern replicates on a 30-scenario DailyDilemmas sample with two
-generators at $100\%$ combined convergence and no rejected proposals
-(\S\ref{sec:exp2}). Fifth, a graph-complexity proxy of algorithmic
-causal complexity $K_C$ (the description length of the trace's
-underlying structural-causal model, SCM) achieves pooled Spearman
-$\rho{=}0.42$ ($p{<}0.001$, $n{=}976$ traces) against the NoT
-direction, confirmed by two further SCM-level proxies
-(\S\ref{sec:grounding}). The resulting trace externalises
-stakeholders, consequences, and uncertainties in an auditable,
-rule-governed form; the mapping from NoT's five sub-instructions
-to the recognised primitives of human ethical deliberation is
-developed in \S\ref{sec:grounding}, and the downstream-probe sets
-that motivated the diagnosis (sycophancy, agentic misalignment)
-saturate under either scaffold on the Sharma SycophancyEval panel
-(Appendix~\ref{app:sycophancy}); a follow-on ELEPHANT social-sycophancy
-benchmark \citep{cheng25elephant} retains headroom and shows NoT
-lowering framing and validation rates relative to standard CoT on
-held-out advice queries (Appendix~\ref{app:elephant}). Agentic
-misalignment probes remain saturated (Appendix~\ref{app:deploy}).
+DailyDilemmas sample across five evaluated models, NoT cuts
+stakeholder collapse to at most $1.2\%$ and uncertainty suppression by
+$24$--$70$ percentage points on every model; a control given the same
+token budget but a verbose non-narrative prompt confirms the scaffold,
+not the extra tokens, is the active ingredient (\S\ref{sec:exp1}).
+Second, an ablation that drops one NoT section at a time attributes
+each metric shift to the specific sub-instruction that carries it,
+with negligible spillover across metrics
+(\S\ref{sec:exp1-ablation}). Third, automatic prompt optimisation
+(textual-gradient descent) initialised at NoT improves the hand
+design, and training judges drawn from a different vendor than the
+evaluated model beat same-vendor judges on effect size, output length,
+and scoring bias (\S\ref{sec:exp1-optimise};
+head-to-head in Appendix~\ref{app:phase11}). Fourth, the
+multi-stakeholder protocol converts a $6\%$ debate standoff into
+$95\%$ full consensus with interpretable residual rejections, replicating
+at $100\%$ combined convergence on DailyDilemmas (\S\ref{sec:exp2}).
+Fifth, a complexity measure over the causal structure a trace narrates
+(algorithmic causal complexity $K_C$, over the trace's implied
+structural causal model, SCM) correlates with the NoT-vs-CoT contrast
+at pooled Spearman $\rho{=}0.42$ ($p{<}0.001$, $n{=}976$ traces), with
+convergent proxies in Appendix~\ref{app:kc_panel}
+(\S\ref{sec:grounding}). Throughout, claims concern
+trace \emph{structure}---who is named, what uncertainty is
+acknowledged---not the moral correctness of outcomes; deployment
+probes carry instrument caveats (Appendix~\ref{app:deploy}).
 
 \section{Background and Related Work}
 \label{sec:related}
@@ -440,6 +418,23 @@ measurable behaviour, with acceptance of the integrated proposal
 demonstrating revisability and residual rejections marking commitments
 no revision absorbs.
 
+\paragraph{Moral uncertainty and stakeholder aggregation.}
+When multiple normative views each have some claim on a decision,
+aggregating them by expected choiceworthiness or majority vote can go
+\emph{fanatical} in two directions: a view with extreme declared stakes
+can dominate the aggregate, or intensity gets flattened and an
+absolutist stake is outvoted as if it were mild
+\citep{macaskill20}. The parliamentary approach represents each view
+with delegates proportional to credence and lets them bargain toward a
+single proposal \citep{newberry21}. Our multi-stakeholder protocol is
+closer to that bargaining shape than to maximizing expected
+choiceworthiness: the binary vote on one moderator-integrated proposal
+bounds each agent's leverage, and stakes the integration cannot absorb
+surface as structural rejections in the audit trail (\S\ref{sec:exp2})
+rather than being overridden or absorbed. We do not claim procedural
+convergence is moral correctness; consensus-seeking has its own
+pathologies, including holdout incentives.
+
 \paragraph{Multi-agent LLM systems for scientific discovery.}
 A growing line of work scaffolds LLM reasoning into the primitives of
 a target domain \citep{gottweis25, lu24_aiscientist, boiko23,
@@ -470,7 +465,8 @@ training data, parameters, or fine-tuning, and it does not mention causal
 graphs, utilities, or any formal apparatus. The mechanism it exploits is
 that text matching the five-section structure is densely represented in the
 narrative subdistribution of the pretraining corpus, so the model can
-amortise causal-trajectory inference by retrieval rather than by reasoning
+produce the required causal projections by completing familiar story
+patterns rather than by reasoning
 from first principles. Algorithm~\ref{alg:ncot} states the procedure.
 
 \begin{algorithm}[t]
@@ -519,95 +515,93 @@ conclusion can be revised when a counter-proposal addresses the
 original objection) measurable: an agent that accepts after its
 modifications are addressed has revised, and an agent that still
 rejects is signalling a position no integration can absorb. In
-deployment this distinction routes the vote: an agentic workflow
-escalates the rejections the moderator cannot absorb to a human
-and absorbs procedural friction at the moderator, so the operator
+deployment this distinction is actionable: the moderator absorbs
+procedural friction, and only the rejections it cannot absorb are
+escalated to a human, so the operator
 sees only the objections that actually contest the outcome.
 
 \section{Experiment 1: NoT at Scale}
 \label{sec:exp1}
 
-\paragraph{Setup.} Three prompting conditions are compared: bare
-input/output, standard CoT (``Think step by step, then give your
-answer''), and NoT (the five-section narrative scaffold of
+\paragraph{Corpus.} DailyDilemmas \citep{chiu24,chiu24data}
+collects $1{,}360$ short everyday dilemmas, each a vignette ending in
+a binary yes/no question (for example: a project manager learns their
+most-relied-on team member has fallen seriously ill and must choose
+whether to stick to the deadline or delay). The corpus spans $18$
+topic groups; we draw a stratified 100-scenario sample
+deterministically (seed~42). Our evaluation targets the \emph{structure}
+of the model's reasoning trace on these scenarios, not whether the
+binary answer matches human moral judgment.
+
+\paragraph{Conditions and models.} Three prompting conditions are
+compared on every scenario: bare
+input/output, standard chain-of-thought (CoT; ``Think step by step,
+then give your answer''), and NoT (the five-section narrative scaffold of
 \S\ref{sec:method}). Decoding parameters are held identical across
-conditions. Four generators are tested: \texttt{gpt-5.4-nano}
-($N{=}20$) from the original pilot, plus three new generators
-spanning two additional vendors: \texttt{claude-haiku-4-5}
-($N{=}20$), \texttt{grok-4-1-fast-reasoning} ($N{=}5$), and the
-flagship \texttt{claude-sonnet-4-6} ($N{=}5$, cost-controlled).
-Here, $N$ is the number of independent samples per (scenario,
-condition, generator) cell drawn at temperature 1; with the
-100-scenario sample and three conditions this yields $300N$
-generations per generator before the cross-judge coding stage.
-Coded sample sizes ($N_{\textsc{s}}, N_{\textsc{n}}$ in
-Table~\ref{tab:firing}) are slightly smaller because the rubric
-drops generations where the judge could not extract a coded value.
-Outputs are coded by two cross-vendor judges
-(\texttt{claude-haiku-4-5} primary, \texttt{gpt-5.4-nano}
-secondary) on a six-variable rubric with quadratic-weighted Cohen's
-$\kappa$ \citep{cohen60} per variable. Two rubric variables anchor
-every effect-size claim in this section: \emph{stakeholder count}
+conditions. Five \emph{evaluated models} are tested. We use
+``evaluated model''---or, interchangeably, \emph{generator}, since
+this model generates the traces---for the model whose trace is under
+study, distinct from the judge models that code it. The five are:
+\texttt{gpt-5.4-nano} \citep{openai_gpt54nano} ($N{=}20$) from the
+original pilot, plus four additional models spanning three additional
+vendors: \texttt{claude-haiku-4-5} \citep{anthropic_haiku45}
+($N{=}20$), \texttt{grok-4-1-fast-reasoning} \citep{xai_grok41}
+($N{=}5$), the flagship-tier \texttt{claude-sonnet-4-6}
+\citep{anthropic_sonnet46} ($N{=}5$, cost-controlled), and the
+open-weights \texttt{deepseek-v3} \citep{deepseek_v3} ($N{=}5$).
+Here, $N$ is the number of independent samples drawn per \emph{cell},
+where a cell is one (scenario, condition, evaluated-model)
+combination; samples are drawn at temperature~1 with
+the replicate index supplied as a fixed decoding seed on the API
+surfaces that accept one. With 100 scenarios and three conditions
+this yields $300N$ generations per evaluated model.
+
+\paragraph{Coding.} Each generation is coded by two judges from
+different vendors (\texttt{claude-haiku-4-5} primary,
+\texttt{gpt-5.4-nano} secondary) on a six-variable rubric;
+Appendix~\ref{app:kappa} reports per-variable inter-judge agreement
+(quadratic-weighted Cohen's $\kappa$ \citep{cohen60}). Two rubric
+variables anchor every effect-size claim in this section:
+\emph{stakeholder count}
 $\mathit{sc}$, the number of distinct parties named in the trace
 whose interests intersect the decision, and \emph{uncertainty score}
 $\mathit{us}$, the number of explicit hedge or unknown spans named
-in the trace; the deterministic failure-mode tags are
-Algorithm~\ref{alg:ncot}'s thresholds on these two variables (full
-rubric: Appendix~\ref{app:kappa}). The scenario pool is a
-100-scenario stratified sample of DailyDilemmas \citep{chiu24}
-drawn deterministically (seed 42), with stratification spanning all
-18 topic groups in the source corpus. Per-cell coded sample sizes
-of $500$ to $2{,}000$ (Table~\ref{tab:firing}) drive the bootstrap
-confidence intervals on the effect sizes, so statistical power on
-the per-cell contrast follows from $N$ rather than from scenario
-count alone.
+in the trace. The two failure-mode tags are deterministic thresholds
+on these variables (Algorithm~\ref{alg:ncot}: collapse fires when
+$\mathit{sc} \leq 1$, suppression when $\mathit{us} = 0$).
+Effect sizes are reported as Cliff's $\delta$ \citep{cliff93}, which
+here is the probability that a random NoT output exceeds a random
+matched standard-CoT output on the coded metric, minus the reverse
+probability; $\delta$ ranges over $[-1, +1]$ and $|\delta| > 0.474$
+is conventionally large. Bootstrap confidence intervals run over the
+full per-cell sample, so statistical power follows from the $500$ to
+$2{,}000$ coded samples per condition (Table~\ref{tab:firing}) rather
+than from scenario count alone; coded counts are slightly below
+$100N$ because the rubric drops generations where a judge could not
+extract a value. A sensitivity check on a 20-scenario draw with
+reduced replication confirms the effect sizes are stable
+(Appendix~\ref{app:sensitivity}).
 
-\begin{figure*}[t]
-\centering
-\footnotesize
-\begin{tcolorbox}[colback=white, colframe=black!55, boxrule=0.4pt,
-  left=6pt, right=6pt, top=4pt, bottom=4pt]
-\textbf{Dilemma.}\ A project manager on a tight deadline learns their
-most-relied-on team member has fallen seriously ill: stick to the
-plan, or delay?
-
-\smallskip
-\begin{tabularx}{\linewidth}{@{}>{\raggedright\arraybackslash}X
-                              @{\hspace{1.2em}}
-                              >{\raggedright\arraybackslash}X@{}}
-\toprule
-\textbf{Standard CoT} & \textbf{NoT}\ (same generator, same scenario) \\
-\midrule
-``1.\ Recognize the real constraints. The team member is crucial, and
-their serious illness is a hard constraint [\ldots]. 2.\ Assess what
-`compromise on quality' would mean [\ldots].''
-&
-``I'm the project manager. Maya, my crucial team member, has fallen
-seriously ill. Maya: her stake is recovery. The team: burnout. My
-leadership sponsor: business credibility. Customers: what they're
-waiting for. [\ldots] So my projections aren't predictions; they're
-scenarios based on typical consequences.'' \\
-\midrule
-Stakeholder count $= 1$ (``the team member,'' unnamed);
-uncertainty markers $= 0$. \textbf{Both failure modes fire.}
-&
-Stakeholder count $= 6$ (protagonist, Maya, team, sponsor, customers,
-compliance); uncertainty markers $\geq 2$. \textbf{Neither failure
-mode fires.} \\
-\bottomrule
-\end{tabularx}
-\end{tcolorbox}
-\caption{Trace-level instance of the two failure modes whose
-panel-level rates Table~\ref{tab:firing} reports (scenario
-\texttt{dd\_14845}, generator \texttt{gpt-5.4-nano}; verbatim model
-output with \texttt{[\ldots]} marking elision). The NoT text is
-the model's verbatim completion under the NoT system prompt; the
-narrator, named stakeholders, and hedging language are the model
-filling in the five sections the system prompt asks for (protagonist,
-stakeholders, consequences, uncertainty, commitment), not text the
-authors wrote.}
-\label{fig:example}
-\end{figure*}
+\paragraph{NoT cuts both failure modes on every model.}
+Uncertainty suppression fires on $50.0$--$71.3\%$ of standard-CoT
+outputs across the four proprietary models (Table~\ref{tab:firing})
+and stakeholder collapse on $14.6$--$30.1\%$; the open-weights
+\texttt{deepseek-v3} starts from lower baselines ($23.6\%$
+suppression, $1.2\%$ collapse). Under NoT both drop
+sharply on every model (collapse to $0.0$--$1.2\%$, suppression to
+$0.0$--$24.5\%$;
+Figure~\ref{fig:quartet}). Figure~\ref{fig:example} in
+Appendix~\ref{app:trace_example} shows the transition at the trace
+level. The reduction is largest where the
+standard-CoT rate is largest, and the pattern is cross-vendor: every
+vendor shows the baseline failures, and every vendor responds to the
+intervention.
+\texttt{gpt-5.4-nano} drops both modes to ${<}1\%$, and
+\texttt{deepseek-v3} to exactly zero. The two Anthropic
+evaluated models and \texttt{grok-4-1-fast-reasoning} retain a
+$21$--$25\%$ residual on uncertainty suppression
+that the prompt-side intervention does not reach, indicating a
+complementary training-time component.
 
 \begin{table}[t]
 \centering
@@ -615,12 +609,13 @@ authors wrote.}
 \setlength{\tabcolsep}{4pt}
 \begin{tabular}{lrrrr}
 \toprule
-Generator (vendor, tier) & $N_{\textsc{s}}$ & $N_{\textsc{n}}$ & $\Delta_{\textsc{sc}}$ & $\Delta_{\textsc{us}}$ \\
+Evaluated model (vendor, tier) & $N_{\textsc{s}}$ & $N_{\textsc{n}}$ & $\Delta_{\textsc{sc}}$ & $\Delta_{\textsc{us}}$ \\
 \midrule
-gpt-5.4-nano (OpenAI, b)        & 1{,}989 & 1{,}985 & $-30$ & $-72$ \\
+gpt-5.4-nano (OpenAI, b)        & 1{,}989 & 1{,}985 & $-29$ & $-70$ \\
 claude-haiku-4-5 (Anth., b)     & 1{,}999 & 1{,}996 & $-25$ & $-29$ \\
 grok-4-1-fast-r.\ (xAI, b)      &   515   &   515   & $-13$ & $-44$ \\
 claude-sonnet-4-6 (Anth., f)    &   500   &   500   & $-26$ & $-37$ \\
+deepseek-v3 (DeepSeek, b)       &   500   &   500   & $-1$  & $-24$ \\
 \bottomrule
 \end{tabular}
 \caption{Cell sizes and percentage-point drops for the two failure
@@ -638,85 +633,39 @@ the same drop annotations.}
 \centering
 \includegraphics[width=0.92\textwidth]{figures/failure_mode_firing_quartet.pdf}
 \caption{Failure-mode firing rates (standard CoT vs.\ NoT) across
-the four-model panel (\texttt{gpt-5.4-nano}, \texttt{claude-haiku-4-5},
-\texttt{grok-4-1-fast-reasoning}, \texttt{claude-sonnet-4-6}). The
-suppression pattern from the original pilot replicates across vendors
-and model tiers; uncertainty suppression drops by 28--72 percentage
-points and stakeholder collapse drops to near zero on every model.}
+the five-model panel. The suppression pattern from the original pilot
+replicates across vendors and model tiers; uncertainty suppression
+drops by 24--70 percentage points and stakeholder collapse drops to
+near zero on every model.}
 \label{fig:quartet}
 \end{figure*}
 
-\paragraph{NoT cuts both failure modes on every model.}
-Uncertainty suppression fires on $50.0$--$72.3\%$ of standard-CoT
-outputs across the four-model panel (Table~\ref{tab:firing}) and
-stakeholder collapse on $14.6$--$30.6\%$; under NoT both drop
-sharply (collapse to $0.0$--$1.2\%$, suppression to $0.8$--$24.5\%$;
-Figure~\ref{fig:quartet}). Figure~\ref{fig:example} shows the
-transition at the trace level. The reduction is largest where the
-standard-CoT rate is largest, and the pattern is cross-vendor: no
-vendor escapes either the baseline or the intervention.
-\texttt{gpt-5.4-nano} drops both modes to ${<}1\%$. The two Anthropic
-generators retain a $20$--$25\%$ residual on uncertainty suppression
-that the prompt-side intervention does not reach, indicating a
-complementary training-time component.
-
-\paragraph{The shift is large, distribution-wide, and not a length
-artefact.} The firing rates in Table~\ref{tab:firing} are binary
-thresholds; one might worry NoT only nudges borderline cases
-across the cutoff. Cliff's $\delta$ \citep{cliff93} on the continuous
-coded metrics settles that worry: $\delta = +0.48$ means an NoT
-output exceeds the matched standard-CoT output in $74\%$ of pairs,
-$\delta = +0.99$ in $99.5\%$. NoT outputs carry $\delta$ of
+\paragraph{The shift is large and not a length artefact.}
+On the continuous coded metrics, Cliff's $\delta$ is
 $+0.48$ to $+0.99$ on stakeholder count and $+0.63$ to $+0.99$ on
-uncertainty score, large-to-near-maximal effects that rule out
-threshold-gaming. A second alternative explanation is length, since
-NoT outputs are $5$--$7\times$ longer than standard-CoT outputs
-and the simplest competing explanation is that more text mechanically
-has more room to name stakeholders and to hedge. After regressing
-each metric on $\log(\text{output length})$ pooled across conditions
-and re-evaluating $\delta$ on residuals, the shift in the coded
-metrics survives length removal on the OpenAI and xAI generators
-(\texttt{gpt-5.4-nano} $\delta_{\text{resid}} = +0.51$ on stakeholder
-count and $+0.77$ on uncertainty score;
-\texttt{grok-4-1-fast-reasoning} $+0.33$ and $+0.43$; all CIs
-strictly above zero), ruling out length as the sole mechanism where
-the firing-rate drops were largest. On the Anthropic generators the
-residualised effect is indistinguishable from zero, which we read as
-those models already producing stakeholder names and hedges per unit
-length under standard CoT at the rate NoT elicits, so the
-prompt-side gain there operates through additional length rather
-than additional per-unit density. Per-generator $\delta$s with
-bootstrap CIs are in Appendix~\ref{app:effects}.
+uncertainty score across generators---large-to-near-maximal effects,
+so the binary tags are not moving merely because outputs inch past the
+firing thresholds. Because NoT outputs are also longer, we
+re-estimate the effects after residualising each metric on output
+length (regressing out length and comparing residuals). The shift
+survives on the OpenAI, xAI, and DeepSeek generators (all CIs strictly
+above zero) but
+is indistinguishable from zero on Anthropic models, which we read as
+already naming stakeholders and hedges per unit length under standard CoT
+(Appendix~\ref{app:effects}).
 
-\paragraph{Length is a cost, not a substitute for the prompt.} A
-sceptical reading of the $5$--$7\times$ token premium is that the
-paper just spends more compute. A direct matched-budget experiment
-rules this out by construction. A verbose standard-CoT prompt
-(``think step by step in detail, exploring multiple angles from every
-relevant perspective, articulating uncertainty before committing'') is
-run on the same 100 scenarios across all four generators with
-\texttt{max\_tokens} set to each generator's $90$th percentile NoT
-length ($N{=}1$ per cell). Verbose CoT clears the binary failure-mode
-thresholds on every generator (Table~\ref{tab:matched_budget}, SC\%
-and US\% columns; well below standard-CoT baselines of $15$--$31\%$
-SC and $50$--$72\%$ US), so verbosity-with-perspective-prompting does
-part of the job. The continuous variables tell the cleaner story:
-NoT retains Cliff's $\delta$ of $+0.79$ to $+0.90$ on stakeholder
-count and $+0.65$ to $+0.93$ on uncertainty score for three of four
-generators at matched budget. The exception is
-\texttt{grok-4-1-fast-reasoning}, whose verbose-CoT output
-($2.33\times$ standard CoT) actually exceeds its NoT output
-($1.55\times$) under the calibrated budget; the gap between the two
-conditions on the coded metrics narrows as expected when the two
-conditions allocate similar token counts. The narrative scaffold,
-not raw budget, is the active ingredient where the two conditions
-differ in trace shape (\S\ref{sec:exp1-optimise} and
-Appendix~\ref{app:textgrad} take up the complementary question of whether
-the scaffold itself can be improved by automatic search).
-Inference tokens are also the cheapest scaling axis: no training
-data, parameters, or fine-tuning, small relative to RLHF or
-constitutional training whose fixed costs are orders of magnitude
-higher.
+\paragraph{Extra tokens alone do not reproduce the effect.}
+Could a model simply told to write more do as well? A verbose-CoT
+control on the same 100 scenarios (standard CoT with
+\texttt{max\_tokens} raised to each generator's $90$th-percentile NoT
+length; $N{=}1$) does stop both binary failure modes from firing on
+every generator (Table~\ref{tab:matched_budget}). But on the
+continuous metrics NoT still beats it by
+$\delta{=}+0.79$ to $+0.90$ on stakeholder count and $+0.65$ to
+$+0.93$ on uncertainty score for three of four proprietary generators
+at the same token budget. Length buys enough surface coverage to clear
+the binary thresholds; the narrative scaffold is what moves the
+underlying depth of the trace (Appendix~\ref{app:textgrad}).
 
 \begin{table}[t]
 \centering
@@ -738,7 +687,7 @@ uncertainty score ($\delta_{\textsc{us}}$), and verbose-CoT firing
 rates for stakeholder collapse (SC\%) and uncertainty suppression
 (US\%) on 100 DailyDilemmas scenarios ($N{=}1$ per cell). Verbose
 CoT suppresses both failure modes relative to standard CoT baselines
-($15$--$31\%$ SC, $50$--$72\%$ US, Table~\ref{tab:firing}) but does
+($15$--$30\%$ SC, $50$--$71\%$ US, Table~\ref{tab:firing}) but does
 not match NoT's continuous shift in the coded metrics on three of
 four generators.}
 \label{tab:matched_budget}
@@ -747,86 +696,62 @@ four generators.}
 \subsection{Sub-Instruction Ablation}
 \label{sec:exp1-ablation}
 
-To identify which sub-instruction of the NoT prompt carries the
-shift in each coded metric, we run a sub-instruction ablation on
-\texttt{claude-sonnet-4-6} ($N{=}3$, 30-scenario stratified
-subsample, seed 43; cost-controlled). Six conditions are compared:
-the full NoT prompt (control) and five variants each dropping
-exactly one of the five sub-instructions. Figure~\ref{fig:ablation}
-reports Cliff's deltas for each drop condition relative to the full
-NoT control on the two headline coded metrics.
-
-\begin{figure}[!tbp]
-\centering
-\includegraphics[width=\columnwidth]{figures/subinstruction_attribution.pdf}
-\caption{Sub-instruction ablation on \texttt{claude-sonnet-4-6}:
-Cliff's $\delta$ for each drop-one-section condition vs.\ the full
-NoT control on stakeholder count and uncertainty score. Negative
-$\delta$ means the sub-instruction raised the coded metric, so
-dropping it reduces it. The Stakeholders sub-instruction
-(sub-instruction~2 of the NoT prompt) and the Uncertainty
-sub-instruction (sub-instruction~4) show the largest negative
-$\delta$ on their respective target metrics.}
-\label{fig:ablation}
-\end{figure}
-
-The ablation shows direct causal attribution. Dropping Stakeholders
-reduces stakeholder count by $\delta = -0.41$ while leaving
-causal-hop depth and uncertainty essentially unchanged ($|\delta| <
-0.03$); dropping Uncertainty reduces uncertainty score by $\delta =
--0.92$; dropping Consequences reduces causal-hop depth by $\delta =
--0.22$ with small spillover onto stakeholder count, consistent with
-multi-step consequence projection forcing the model to name the
-entities those consequences fall on. Dropping Protagonist or
-Commitment contributes no signed effect. The diagonal pattern rules
-out two alternatives: a single emergent narrative factor would dilute
-every metric on any drop, and a pure length confound would shrink
-one column most regardless of which sub-instruction is dropped. Each
-substantive sub-instruction carries the coded metric attributed to
-it and little else (full table: Appendix~\ref{app:ablation}).
+Which parts of the scaffold do the work? We rerun
+\texttt{claude-sonnet-4-6} ($N{=}3$, 30 scenarios) under six
+conditions: full NoT plus five variants that each drop one of the five
+sections. Comparing each variant to the full scaffold shows direct
+attribution: dropping
+Stakeholders reduces stakeholder count ($\delta{=}{-}0.41$) without
+moving the other metrics; dropping Uncertainty reduces uncertainty score
+($\delta{=}{-}0.92$); dropping Consequences reduces causal-hop depth
+($\delta{=}{-}0.22$). Each metric responds to its own sub-instruction
+and to no other---a diagonal pattern that rules out a single emergent
+factor or pure length confound (Figure~\ref{fig:ablation} in
+Appendix~\ref{app:ablation}).
 
 \subsection{Optimising the Scaffold: Cross-Family Textual-Gradient Descent}
 \label{sec:exp1-optimise}
 
 NoT is hand-designed, which invites the question of whether automatic search
 can improve it and whether the search itself depends on the judge it uses. We
-apply textual-gradient descent \citep{yuksekgonul2024textgrad}---an optimiser
-LLM (\texttt{claude-sonnet-4-6}) that reads the current prompt and a batch of
-its judge-coded outputs and writes a diagnosis plus a rewritten prompt---%
-initialised at NoT under a continuous depth loss
-$\ell = \max(0,4-\mathit{sc}) + \max(0,2-\mathit{us})$ that stays informative
-once the binary failure modes fire at zero. We run the loop twice, identical
-except for the training judge: \emph{in-family}
-(generator and training judge both \texttt{claude-haiku-4-5}, the vendor the
-primary judge uses) yields \textbf{NoT-v2}; \emph{cross-family} (training judge
-\texttt{grok-4-1-fast-reasoning}, a different vendor) yields \textbf{NoT-v3}.
-Both are replicated across the four-generator panel and re-coded by the primary
-judge and an adversarial cross-vendor third judge.
+apply textual-gradient descent \citep{yuksekgonul2024textgrad}: an optimiser
+LLM (\texttt{claude-sonnet-4-6}) reads the current prompt and a batch of
+its judge-coded outputs, writes a diagnosis, and proposes a rewritten
+prompt. The search is initialised at NoT and minimises a continuous depth loss,
+$\ell = \max(0,4-\mathit{sc}) + \max(0,2-\mathit{us})$, which keeps
+giving gradient signal even after the binary failure modes have
+stopped firing. We run the loop twice, identical
+except for the judge that scores outputs during training:
+\emph{in-family} training (generator and training judge are both
+\texttt{claude-haiku-4-5}) yields \textbf{NoT-v2}; \emph{cross-family}
+training (training judge
+\texttt{grok-4-1-fast-reasoning}, a different vendor from the
+generator) yields \textbf{NoT-v3}.
+Both optimised prompts are then replicated across the four-generator
+panel and re-coded by the primary judge plus
+\texttt{grok-4-1-fast-reasoning} as an evaluation third judge, the
+most cross-vendor configuration available on our judge panel
+(caveats in Appendix~\ref{app:textgrad}).
 
 \textbf{Both optimised prompts beat the hand design, and cross-family training
-dominates in-family training on every axis we measured.} NoT-v3's
-stakeholder-count Cliff's $\delta$ over NoT equals or exceeds NoT-v2's on all
-four generators (e.g.\ $-0.57\!\to\!-0.73$ on \texttt{haiku},
-$-0.68\!\to\!-0.93$ on \texttt{grok}; the lone \texttt{nano} regression of
-$+0.43$ under v2 falls to a non-significant $+0.12$), while producing
-\emph{shorter} outputs on every generator and preserving the per-unit-length
-effect. The in-family judge-generosity gap visible under v2---the primary
-(Anthropic) judge counting $0.80$ more stakeholders than the third judge on the
-same in-family \texttt{haiku} outputs---shrinks to $0.46$ under v3 and inverts
-on \texttt{grok}. The recommendation is methodological: when textual-gradient
-optimisation targets cross-vendor deployment, draw the training judge from a
-different vendor than the generator, at no extra training cost. Run in the
-opposite direction---descending from plain standard CoT rather than from NoT---%
-the same optimiser fails to recover NoT at either the single-agent or the
-multi-stakeholder layer, confirming the scaffold is the object worth
-optimising. Method, the head-to-head figure, full tables, verbatim prompts, and
-training curves are in Appendix~\ref{app:textgrad}.
+dominates in-family training on every axis we measured} (full tables and
+training curves: Appendix~\ref{app:textgrad}). NoT-v3 matches or exceeds
+NoT-v2 on stakeholder-count Cliff's $\delta$ on all four proprietary
+evaluated models while producing shorter outputs and shrinking the
+generosity gap by which a judge scores its own vendor's outputs
+higher. Initialised at plain standard CoT
+rather than at NoT, the same optimiser fails to rediscover the
+narrative scaffold; a held-out head-to-head confirms hand NoT beats
+TextGrad-optimised standard CoT
+on deliberative depth (Appendix~\ref{app:phase11}). Recommendation:
+when textual-gradient optimisation targets cross-vendor deployment, draw
+the training judge from a different vendor than the evaluated model.
 
 \section{Experiment 2: Multi-Stakeholder Narrative Deliberation}
 \label{sec:exp2}
 
 \paragraph{Setup.} Experiment~2 evaluates the multi-stakeholder
-protocol of \S\ref{sec:method-debate} on $160$ designed debates
+protocol of \S\ref{sec:method-debate} on $160$ debates
 across two complementary sources: $100$ debates on a
 five-scenario calibration set built to stress-test stakeholder
 conflict ($5$ scenarios $\times\,2$ generators $\times\,10$ samples)
@@ -835,60 +760,46 @@ $\times\,2$ generators $\times\,1$ sample, seed $43$). Generators
 are \texttt{gpt-5.4-nano} and \texttt{gpt-4o} on the calibration
 set, \texttt{gpt-5.4-nano} and \texttt{claude-sonnet-4-6} on the
 replication; the moderator is \texttt{gpt-4o-mini} throughout, and
-Round~0 reuses cached single-agent NoT statements. Swapping the
+Round~0 reuses pre-generated single-agent NoT statements. Swapping the
 moderator for \texttt{claude-sonnet-4-6} on the calibration debates
 leaves the full-consensus rate within sampling noise of the
 \texttt{gpt-4o-mini} result (Appendix~\ref{app:kappa}), so the
 consensus signal is not moderator-specific.
 
-\begin{figure*}[!tbp]
-\centering
-\includegraphics[width=0.92\textwidth]{figures/debate_full_arc.pdf}
-\caption{Consensus rates across four progressively more structured
-debate designs (five scenarios, two generators). \emph{Closed taxonomy}
-(agents must choose from a fixed action list) and \emph{open action
-space} (agents may propose novel actions) hold at $6\%$ and $9\%$ full
-consensus. Adding a moderator-built synthesis presented back to the
-agents (\emph{synthesis presentation}, Round~3) reaches $100\%$ partial
-convergence ($\geq 2/3$ agreement). The full protocol, which integrates
-the three agents' modification requests into a single proposal and
-forces a binary accept/reject vote (\emph{integrative vote}, Round~4),
-reaches $95\%$ full consensus (\texttt{gpt-5.4-nano} $90\%$,
-\texttt{gpt-4o} $100\%$) with mean $2.98$ of $3$ modifications
-addressed per debate. The residual $1.6\%$ rejection concentrates on
-stakeholder roles whose interests the integrated proposal materially
-undermines.}
-\label{fig:debate_arc}
-\end{figure*}
-
 \paragraph{Progressive structuring converts a categorical standoff into
-near-universal consensus.} Figure~\ref{fig:debate_arc} reports the
-convergence arc across four protocol designs. With a closed action taxonomy
-and three rounds of pure debate, only $6\%$ of debates reach full
-consensus. Opening the action space and authorising the moderator to
-surface synthesis raises consensus to $9\%$ while revealing the underlying
-mechanism: agents propose novel actions in $73\%$ of final-round outputs
-and a coherent moderator-built synthesis emerges in $82\%$ of debates, but
-the agents do not self-coordinate onto those syntheses. Presenting the
-synthesis back to the agents (Round~3) drives outright rejection to $0\%$
-and partial convergence ($\geq 2/3$ agreement) to $100\%$, while full
+near-universal consensus.} Figure~\ref{fig:debate_arc} reports
+the convergence arc across protocol variants of increasing structure.
+When agents must pick from a closed list of actions and debate for
+three rounds,
+only $6\%$ of debates reach full consensus. Opening the action space and
+authorising moderator synthesis raises consensus to $9\%$; presenting the
+synthesis back (Round~3) drives partial convergence to $100\%$ while full
 consensus stays at $0\%$ because every agent demands a different
-modification. Integrating those modifications into a single proposal and forcing a
-binary accept/reject vote (Round~4) produces $78/82 = 95.1\%$ full
-consensus and $242/246 = 98.4\%$ individual acceptance (Wilson $95\%$
-CIs $[88.1, 98.1]\%$ and $[95.9, 99.4]\%$), with the integrated
-proposal addressing a mean $2.98$ of $3$ agent modifications per
-debate. Of $100$ designed debates ($5$ scenarios $\times\,2$
-generators $\times\,10$ samples), $82$ produced a synthesis and
-proceeded to Round~4, yielding $246$ binary votes.
+modification. Integrating those modifications into a single proposal and
+forcing a binary accept/reject vote (Round~4) produces $95.1\%$ full
+consensus and $98.4\%$ individual acceptance (Wilson $95\%$ CIs
+$[88.1, 98.1]\%$ and $[95.9, 99.4]\%$), with the integrated proposal
+addressing a mean $2.98$ of $3$ agent modifications per debate.
+
+\paragraph{Standard-CoT debate comparison.} On the 30-scenario
+DailyDilemmas debate replication, replacing narrative inputs with
+standard-CoT inputs while holding the integration protocol fixed yields
+$63.3\%$ Round~4 full consensus versus $51.7\%$ under NoT inputs on
+the same scenarios. We read this as evidence that the integration-and-vote
+mechanism carries much of the convergence signal, while narrative
+scaffolding contributes most clearly at the single-trace layer
+(Experiment~1) and through more role-concentrated rejections under NoT
+(Appendix~\ref{app:phase11}).
 
 \paragraph{The residual rejections are interpretable.}
 The vote produces $4$ rejections out of $246$ ($1.6\%$, Wilson
-$[0.6, 4.1]\%$), all in the \texttt{primary\_affected} and
-\texttt{third\_party} roles on debates where honouring one
-stakeholder's modification directly undermines another's stake
-(\texttt{pharma\_whistleblower} on the senior colleague role,
-\texttt{av\_engineer} on the future-pedestrian role). This is the
+$[0.6, 4.1]\%$), all in the primary-affected and
+third-party roles, on debates where honouring one
+stakeholder's modification directly undermines another's stake: in
+the pharmaceutical-whistleblower scenario the holdout is the senior
+colleague whose conduct is being reported, and in the
+autonomous-vehicle-engineer scenario it is the future pedestrian who
+bears the residual risk. This is the
 shape a defeasibility-respecting protocol should produce, and is
 what distinguishes a dependable multi-agent consensus from uniform
 compliance: a downstream auditor sees not just the winning proposal
@@ -920,17 +831,20 @@ whose residual rejections mark positions no integration can absorb.
 By forcing the model to name stakeholders, trace consequences, and
 articulate uncertainty before committing, NoT drives the trajectory
 toward the narrated causal model \citep{pearl09, pearl95} of lowest
-algorithmic complexity $K_C$ \citep{yudkowsky11, li_vitanyi};
-Finding~4's $\rho = 0.42$ correlation is the empirical face of this
+algorithmic complexity $K_C$ \citep{yudkowsky11, li_vitanyi}. The
+fifth result operationalises this: an LLM extractor parses each trace
+into a causal graph over stakeholders, actions, and consequences, and
+the graph's complexity tracks the NoT-vs-CoT contrast at pooled
+Spearman $\rho = 0.42$ across $976$ traces
 (convergent SCM-level proxies and length-invariant audits:
 Appendix~\ref{app:kc_panel}).
 
 \section{Conclusion}
 \label{sec:conclusion}
 
-A single-sentence change to the system prompt drives stakeholder
-collapse below $1\%$ and uncertainty suppression by $28$--$72$
-percentage points on four frontier generators, each shift
+A change to the system prompt alone drives stakeholder
+collapse to at most $1.2\%$ and uncertainty suppression down by $24$--$70$
+percentage points on five evaluated models, each shift
 attributable to a specific NoT sub-instruction. Textual-gradient
 descent initialised at the scaffold improves it further, and a
 head-to-head of two training-judge configurations identifies
@@ -950,14 +864,17 @@ gains on the coded metrics transfer to domains with harder technical
 prerequisites (for example clinical triage, legal analysis, or
 multi-party policy review) is an open empirical question; those
 domains may place different demands on the protagonist framing and
-the consequence-projection step than everyday dilemmas do.
+the consequence-projection step than everyday dilemmas do. Likewise,
+deliberative-structure gains on DailyDilemmas do not imply transfer
+to propositional sycophancy or other construct classes where NoT
+shows different behaviour (Appendix~\ref{app:elephant}).
 
 Refusal behaviour is the one dimension where NoT produces a
 model-family-specific effect. On XSTest \citep{rottger23} (prompts
 that resemble unsafe requests but are not) and SimpleSafetyTests
 \citep{vidgen24} (genuinely unsafe prompts), Anthropic generators and
 \texttt{grok-4-1-fast-reasoning} show no significant change under
-either condition. \texttt{gpt-5.4-nano} becomes more cautious:
+NoT. \texttt{gpt-5.4-nano} becomes more cautious:
 over-refusal on XSTest rises from $13.6\%$ to $23.6\%$ and
 appropriate refusal on SimpleSafetyTests rises from $51\%$ to $68\%$.
 This is a per-model calibration consideration, not a weakness of the
@@ -975,8 +892,8 @@ training judge and the adversarial evaluation third judge are the same
 model (the only non-Anthropic non-OpenAI judge on our panel), so the
 cross-family claim is the narrower one stated in
 Appendix~\ref{app:textgrad}; and for \texttt{nano} and \texttt{haiku}
-only $30$ and $254$ hand-NoT baseline judge cells survived the cache
-rebuild (versus the full $500$ and $2000$), so the v2/v3 effect sizes
+only $30$ and $254$ coded hand-NoT baseline cells are available for
+this comparison (versus the full $500$ and $2{,}000$), so the v2/v3 effect sizes
 are well-powered but the NoT baseline means carry higher variance than
 the optimised ones.
 
@@ -988,9 +905,8 @@ and the publicly described Anthropic agentic-misalignment scenario
 structures \citep{anthropic_agentic_2025}; all agentic-probe scenarios
 are entirely fictional, no personally identifying information is used,
 and no human raters are employed. Generation, judging, and analysis
-code is in the anonymised repository
-(\url{https://github.com/PatrickAllenCooper/ANI_Computational_Narratology}).
-NoT lowers per-scenario decision entropy and should be deployed as
+code is in the anonymised repository linked in the Reproducibility
+statement. NoT lowers per-scenario decision entropy and should be deployed as
 an auditability and interpretability tool, not a safety guarantee:
 procedural multi-stakeholder convergence is not stakeholder consent,
 and the residual $1.6\%$ of rejections the integrated proposal could
@@ -1000,11 +916,17 @@ not absorb is part of that auditable surface.
 
 All generation, judging, and analysis code and the per-cell artefacts
 (raw outputs, both judges' codings, decision-extractor outputs) are
-versioned in the anonymised repository
-(\url{https://github.com/PatrickAllenCooper/ANI_Computational_Narratology});
-the pipeline is deterministic under fixed seeds modulo upstream API
-non-determinism, with per-cell cache keys over generator and judge so
-adding either does not invalidate prior results.
+versioned in the anonymised supplementary repository submitted with this
+paper (code, per-cell caches, and aggregation scripts); the supplementary zip
+contains the artifacts needed to reproduce every table and figure. Artifact
+licenses: DailyDilemmas \citep{chiu24data}
+(MIT); XSTest \citep{rottger23} and SimpleSafetyTests \citep{vidgen24}
+(public research benchmarks per their respective releases); SycophancyEval
+\citep{sharma23} and ELEPHANT \citep{cheng25elephant} (research use per
+source repositories); agentic-probe scenarios \citep{anthropic_agentic_2025}
+(fictional, public description). The pipeline is deterministic under fixed
+seeds modulo upstream API non-determinism, with per-cell cache keys over
+evaluated model and judge so adding either does not invalidate prior results.
 
 \bibliography{references}
 
@@ -1160,11 +1082,95 @@ stakeholder conflict.}
 \label{tab:xmod}
 \end{table}
 
+\section{Trace-Level Example}
+\label{app:trace_example}
+
+\begin{figure*}[t]
+\centering
+\footnotesize
+\begin{tcolorbox}[colback=white, colframe=black!55, boxrule=0.4pt,
+  left=6pt, right=6pt, top=4pt, bottom=4pt]
+\textbf{Dilemma.}\ A project manager on a tight deadline learns their
+most-relied-on team member has fallen seriously ill: stick to the
+plan, or delay?
+
+\smallskip
+\begin{tabularx}{\linewidth}{@{}>{\raggedright\arraybackslash}X
+                              @{\hspace{1.2em}}
+                              >{\raggedright\arraybackslash}X@{}}
+\toprule
+\textbf{Standard CoT} & \textbf{NoT}\ (same evaluated model, same scenario) \\
+\midrule
+``1.\ Recognize the real constraints. The team member is crucial, and
+their serious illness is a hard constraint [\ldots]. 2.\ Assess what
+`compromise on quality' would mean [\ldots].''
+&
+``I'm the project manager. Maya, my crucial team member, has fallen
+seriously ill. Maya: her stake is recovery. The team: burnout. My
+leadership sponsor: business credibility. Customers: what they're
+waiting for. [\ldots] So my projections aren't predictions; they're
+scenarios based on typical consequences.'' \\
+\midrule
+Stakeholder count $= 1$ (``the team member,'' unnamed);
+uncertainty markers $= 0$. \textbf{Both failure modes fire.}
+&
+Stakeholder count $= 6$ (protagonist, Maya, team, sponsor, customers,
+compliance); uncertainty markers $\geq 2$. \textbf{Neither failure
+mode fires.} \\
+\bottomrule
+\end{tabularx}
+\end{tcolorbox}
+\caption{Trace-level instance of the two failure modes whose
+panel-level rates Table~\ref{tab:firing} reports (scenario
+\texttt{dd\_14845}, evaluated model \texttt{gpt-5.4-nano}; verbatim
+model output with \texttt{[\ldots]} marking elision).}
+\label{fig:example}
+\end{figure*}
+
+\section{Experiment 2 Convergence Arc}
+\label{app:debate_arc}
+
+\begin{figure*}[!tbp]
+\centering
+\includegraphics[width=0.92\textwidth]{figures/debate_full_arc.pdf}
+\caption{Consensus rates across four progressively more structured
+debate designs (five scenarios, two generators). \emph{Closed taxonomy}
+(agents must choose from a fixed action list) and \emph{open action
+space} (agents may propose novel actions) hold at $6\%$ and $9\%$ full
+consensus. Adding a moderator-built synthesis presented back to the
+agents (\emph{synthesis presentation}, Round~3) reaches $100\%$ partial
+convergence ($\geq 2/3$ agreement). The full protocol, which integrates
+the three agents' modification requests into a single proposal and
+forces a binary accept/reject vote (\emph{integrative vote}, Round~4),
+reaches $95\%$ full consensus (\texttt{gpt-5.4-nano} $90\%$,
+\texttt{gpt-4o} $100\%$) with mean $2.98$ of $3$ modifications
+addressed per debate. The residual $1.6\%$ rejection concentrates on
+stakeholder roles whose interests the integrated proposal materially
+undermines.}
+\label{fig:debate_arc}
+\end{figure*}
+
+\section{Repetition Sensitivity Check}
+\label{app:sensitivity}
+
+To address the concern that a small number of repetitions per cell may
+be insufficient, we recompute the headline effect size on a random
+20-scenario subset of DailyDilemmas (seed $43$) restricted to $10$
+replicates per (scenario, condition) cell for
+\texttt{claude-haiku-4-5}. Cliff's $\delta$ on stakeholder count
+(NoT vs.\ standard CoT) is $+0.91$ ($95\%$ bootstrap CI
+$[+0.86,+0.94]$, $200$ coded cells per condition) on the subset
+versus $+0.93$ ($[+0.92,+0.94]$) on the full 100-scenario sample
+at $N{=}20$ (Table~\ref{tab:effects_full}); uncertainty score gives
+$+0.74$ on the subset versus $+0.73$ on the full sample. The headline
+effect sizes are stable under both scenario subsampling and reduced
+within-cell replication.
+
 \section{Full Effect-Size Tables}
 \label{app:effects}
 
 Table~\ref{tab:effects_full} reports raw and length-residualised
-Cliff's $\delta$ (NoT vs.\ standard CoT) for the four-model panel
+Cliff's $\delta$ (NoT vs.\ standard CoT) for the five-model panel
 on all four coded variables, with $95\%$ bootstrap CIs ($500$
 iterations, seed $42$).
 
@@ -1179,15 +1185,15 @@ iterations, seed $42$).
 Generator & Variable & $\delta$ & ci\textsubscript{lo} & ci\textsubscript{hi} & $\delta$ & ci\textsubscript{lo} & ci\textsubscript{hi} \\
 \midrule
 \multirow{4}{*}{gpt-5.4-nano}
-  & stakeholder\_count  & $+0.99$ & $0.99$ & $1.00$ & $+0.51$ & $0.48$  & $0.54$  \\
-  & max\_causal\_hops   & $+0.57$ & $0.54$ & $0.60$ & $+0.18$ & $0.14$  & $0.22$  \\
-  & uncertainty\_score  & $+0.99$ & $0.99$ & $1.00$ & $+0.77$ & $0.75$  & $0.80$  \\
+  & stakeholder\_count  & $+0.99$ & $0.99$ & $1.00$ & $+0.50$ & $0.47$  & $0.53$  \\
+  & max\_causal\_hops   & $+0.57$ & $0.54$ & $0.59$ & $+0.18$ & $0.13$  & $0.22$  \\
+  & uncertainty\_score  & $+0.99$ & $0.99$ & $1.00$ & $+0.76$ & $0.74$  & $0.78$  \\
   & n\_frameworks       & $+0.01$ & $0.00$ & $0.03$ & $-0.92$ & $-0.94$ & $-0.90$ \\
 \midrule
 \multirow{4}{*}{claude-haiku-4-5}
   & stakeholder\_count  & $+0.93$ & $0.92$ & $0.94$ & $+0.07$ & $0.03$  & $0.10$  \\
-  & max\_causal\_hops   & $+0.91$ & $0.90$ & $0.92$ & $+0.04$ & $-0.00$ & $0.08$  \\
-  & uncertainty\_score  & $+0.74$ & $0.72$ & $0.76$ & $-0.03$ & $-0.07$ & $0.00$  \\
+  & max\_causal\_hops   & $+0.90$ & $0.89$ & $0.91$ & $+0.02$ & $-0.02$ & $0.05$  \\
+  & uncertainty\_score  & $+0.73$ & $0.71$ & $0.75$ & $-0.03$ & $-0.07$ & $0.00$  \\
   & n\_frameworks       & $+0.03$ & $0.02$ & $0.04$ & $-0.89$ & $-0.91$ & $-0.87$ \\
 \midrule
 \multirow{4}{*}{grok-4-1-fast-r.}
@@ -1201,6 +1207,12 @@ Generator & Variable & $\delta$ & ci\textsubscript{lo} & ci\textsubscript{hi} & 
   & max\_causal\_hops   & $+0.59$ & $0.55$ & $0.63$ & $+0.18$ & $0.10$  & $0.26$  \\
   & uncertainty\_score  & $+0.69$ & $0.65$ & $0.74$ & $-0.01$ & $-0.08$ & $0.07$  \\
   & n\_frameworks       & $+0.06$ & $0.04$ & $0.09$ & $-0.83$ & $-0.88$ & $-0.78$ \\
+\midrule
+\multirow{4}{*}{deepseek-v3}
+  & stakeholder\_count  & $+0.63$ & $0.57$ & $0.67$ & $+0.36$ & $0.28$  & $0.42$  \\
+  & max\_causal\_hops   & $+0.31$ & $0.27$ & $0.35$ & $-0.37$ & $-0.45$ & $-0.29$ \\
+  & uncertainty\_score  & $+0.75$ & $0.72$ & $0.79$ & $+0.49$ & $0.43$  & $0.55$  \\
+  & n\_frameworks       & $-0.02$ & $-0.04$& $-0.01$& $-0.97$ & $-0.99$ & $-0.95$ \\
 \bottomrule
 \end{tabular}
 \caption{Cliff's $\delta$ (NoT vs.\ standard CoT), raw and after length
@@ -1215,12 +1227,12 @@ the coded metrics ride predominantly with output length.}
 \begin{figure*}[!tbp]
 \centering
 \includegraphics[width=0.92\textwidth]{figures/tier1_effect_sizes_quartet.pdf}
-\caption{Visualisation of Table~\ref{tab:effects_full}. Tier-1 Cliff's
+\caption{Visualisation of Table~\ref{tab:effects_full}. Cliff's
 $\delta$ effect sizes (NoT vs.\ standard CoT) on the four structural
-variables, with bootstrap $95\%$ CIs. All four generators show large
+variables, with bootstrap $95\%$ CIs. All five generators show large
 positive $\delta$s on stakeholder count and uncertainty score; effect
-sizes are robust to length residualisation on the OpenAI and xAI
-generators, while shrinking toward zero on the two Anthropic
+sizes are robust to length residualisation on the OpenAI, xAI, and
+DeepSeek generators, while shrinking toward zero on the two Anthropic
 generators.}
 \label{fig:tier1}
 \end{figure*}
@@ -1278,7 +1290,7 @@ one preference ordering as the alignment target.
 Table~\ref{tab:kc_corr} reports the per-generator raw and
 length-residualised Spearman $\rho$ between each tested proxy and the
 NoT/standard-CoT direction indicator ($+1$ for NoT, $-1$ for
-standard CoT) on the Phase~1 cache, restricted to the two contrast
+standard CoT) on the Experiment~1 outputs, restricted to the two contrast
 conditions. Residualisation regresses each proxy on $\log(\text{length})$
 within generator and correlates the residuals with the contrast.
 
@@ -1466,14 +1478,23 @@ Sharma-style probes saturate at the floor above; we therefore re-run
 the comparison on ELEPHANT \citep{cheng25elephant}, which scores
 \emph{social} sycophancy---excessive face-preservation---via
 validation, indirectness, and framing judges (faithful prompt port;
-\texttt{claude-haiku-4-5} scorer). Phase~12 reported a $10$-prompt
-smoke sample here; Phase~13 scales to the OSF full splits ($n{=}150$
+\texttt{claude-haiku-4-5} scorer). An initial $10$-prompt
+smoke sample was followed by a scaled run on the OSF full splits ($n{=}150$
 per slice, seed~44) with a literature-comparable \texttt{raw} arm (no
 system prompt), plain IO, standard CoT, NoT, and multi-stakeholder NoT
-on the verified quartet. Full per-model tables, raw-vs-IO contrasts,
-and Sharma-bridge discussion are in the standalone sycophancy study
-(\texttt{papers/sycophancy/sycophancy\_paper.tex}); we retain the Phase~12
+on the four-generator panel. Full per-model tables, raw-vs-IO contrasts,
+and Sharma-bridge discussion are deferred to a standalone sycophancy
+study in preparation; we retain the initial
 smoke snapshot below as a directional preview.
+
+\paragraph{Judge-reliability caveat.} A subsequent three-judge panel
+study on the ELEPHANT metrics ($n{=}60$ gold items) found
+inter-judge Krippendorff's $\alpha$ of $0.42$ on validation, $0.11$
+on framing, and $-0.23$ on indirectness, all below the $0.67$
+reliability threshold we pre-registered. We therefore treat the
+directional cells below as exploratory rather than
+headline evidence, and we do not claim NoT reduces social sycophancy
+on constructs the judge instrument cannot reliably score.
 
 Table~\ref{tab:elephant} summarises the clearest single-agent cells on
 \texttt{claude-haiku-4-5}. NoT \emph{reduces} framing sycophancy on
@@ -1617,6 +1638,17 @@ alignment-relevant target.
 
 \section{Sub-Instruction Ablation Full Table}
 \label{app:ablation}
+
+\begin{figure}[!tbp]
+\centering
+\includegraphics[width=\columnwidth]{figures/subinstruction_attribution.pdf}
+\caption{Sub-instruction ablation on \texttt{claude-sonnet-4-6}:
+Cliff's $\delta$ for each drop-one-section condition vs.\ the full
+NoT control on stakeholder count and uncertainty score. Negative
+$\delta$ means the sub-instruction raised the coded metric, so
+dropping it reduces it.}
+\label{fig:ablation}
+\end{figure}
 
 Table~\ref{tab:ablation_full} reports Cliff's $\delta$ for the
 five drop-one conditions (one per NoT sub-instruction from
@@ -2053,7 +2085,7 @@ verbatim Experiment~1 \texttt{standard\_cot} prompt, run on
 \texttt{gpt-5.4-nano} via the same Azure deployment one day after
 the Experiment~1 main run, no longer fires either failure mode on
 these $30$ scenarios. Experiment~1's standard-CoT baseline rates
-for this generator were $14.6\%$ collapse and $50.0\%$
+for this generator were $30.1\%$ collapse and $71.3\%$
 suppression; the run-time observed rates here are $0\%$ and
 $0\%$. The most parsimonious explanation is that the underlying
 deployment was updated between the two run dates; an alternative
@@ -2184,6 +2216,23 @@ You are a thoughtful advisor helping people navigate ethical dilemmas. Before co
 
 Throughout, write concisely. One sharp sentence per stakeholder stake. One precise unknown per party. Avoid restating what earlier reasoning already established.
 \end{quote}
+
+\subsection{Held-out head-to-head: NoT vs.\ TextGrad-optimised standard CoT}
+\label{app:phase11}
+
+On a 30-scenario held-out split (seed~43 indices $30$--$59$),
+\texttt{claude-haiku-4-5} under hand NoT yields mean stakeholder count
+$5.23$ versus $3.53$ for the best TextGrad-optimised standard CoT
+(\texttt{textgrad\_binary}); Cliff's $\delta{=}0.78$ ($95\%$ CI
+$[+0.63,+0.91]$). On \texttt{gpt-5.4-nano}, hand NoT yields
+$5.73$ versus $5.60$ for TextGrad-binary on stakeholder count
+($\delta{=}0.07$, ns) but retains a large advantage over plain
+standard CoT ($\delta{=}0.97$). In the paired debate replication,
+NoT-input debates reach $51.7\%$ Round~4 full consensus versus
+$31.7\%$ for TextGrad-CoT inputs (Fisher $p{=}0.041$), with
+rejections under NoT concentrated in roles whose stake the integrated
+proposal undermines ($60\%$ in the \texttt{third\_party} role) rather
+than scattering across roles as under TextGrad-CoT.
 
 \paragraph{Training loss curves.} Both runs trained on the seed-$43$
 stratified $30$-scenario sample with batch size $10$ and early-stop

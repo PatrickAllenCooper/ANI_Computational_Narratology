@@ -95,6 +95,7 @@ GENERATOR_ORDER = [
     "claude-haiku-4-5",
     "grok-4-1-fast-reasoning",
     "claude-sonnet-4-6",
+    "deepseek-v3",
 ]
 
 # Effect-size thresholds (Cliff's delta, from Cliff 1993)
@@ -111,6 +112,7 @@ def short_generator_label(name: str) -> str:
         "claude-haiku-4-5":          "claude-haiku\n4-5",
         "claude-sonnet-4-6":         "claude-sonnet\n4-6",
         "grok-4-1-fast-reasoning":   "grok-4-1\nfast-r.",
+        "deepseek-v3":               "deepseek\nv3",
     }
     return mapping.get(name, name)
 

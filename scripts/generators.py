@@ -424,9 +424,11 @@ def _deepseek_deployment(model: str) -> str:
     if explicit:
         return explicit
     m = model.lower()
+    if "v3" in m:
+        return "DeepSeek-V3"
     if "r1" in m:
         return "DeepSeek-R1"
-    return "DeepSeek-R1"
+    return explicit or "DeepSeek-V3"
 
 
 def _get_deepseek_session():

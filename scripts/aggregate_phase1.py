@@ -191,7 +191,7 @@ def _delegate_to_rebuild() -> None:
     """Delegate figure rendering to scripts/rebuild_paper_figures.py so that
     the paper-wide aesthetic stays consistent. Aggregation must have already
     written the corresponding CSVs to divergence_study_outputs/."""
-    from rebuild_paper_figures import fig_failure_mode_firing, fig_tier1_effects
+    from scripts.rebuild_paper_figures import fig_failure_mode_firing, fig_tier1_effects
     fig_failure_mode_firing()
     fig_tier1_effects()
 

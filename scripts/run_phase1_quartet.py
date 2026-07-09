@@ -635,6 +635,7 @@ N_PER_GENERATOR = {
     "claude-haiku-4-5": 20,
     "grok-4-1-fast-reasoning": 5,
     "claude-sonnet-4-6": 5,
+    "deepseek-v3": 5,
 }
 DEFAULT_N_FALLBACK = 5
 
@@ -742,18 +743,9 @@ def main(argv: list[str] | None = None) -> int:
 
         print(f"  Completed {done}/{len(tasks)} samples for {gen_model}")
 
-    # Save master CSV
-    out_csv = OUT_DIR / "phase1_quartet_raw.csv"
-    if all_rows:
-        fieldnames = list(all_rows[0].keys())
-        with out_csv.open("w", newline="", encoding="utf-8") as f:
-            writer = csv.DictWriter(f, fieldnames=fieldnames)
-            writer.writeheader()
-            writer.writerows(all_rows)
-        print(f"\nWrote {len(all_rows)} rows to {out_csv}")
-    else:
-        print("No rows collected.")
-
+    # Rebuild master CSV from all on-disk caches (avoids clobbering prior generators).
+    from scripts.merge_phase1_cache import main as merge_main
+    merge_main()
     return 0
 
 

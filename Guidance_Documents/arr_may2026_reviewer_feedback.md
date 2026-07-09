@@ -238,29 +238,89 @@ To upload: arXiv > 2606.26366 > Replace, upload the zip, and in the "Comments" f
 note: "v2: corrects four bibliography entries; no changes to methods, results, or
 claims." Everything else on the submission form carries over from v1.
 
+# --- Revision status (9 Jul 2026) ---
+# Author responses posted to OpenReview. arXiv v2 uploaded with corrected references.
+# Next-cycle revision applied to papers/acl/ACL_paper.tex (review mode, anonymized).
+
 ## Revision checklist for next-cycle resubmission
 
-1. References: verify every bibliography entry against its primary source; corrected
-   entries for shaffer19, bientzle21, bientzle24, rottger23 already landed in
-   `papers/shared/references.bib`.
-2. Clarity rewrite: shorten abstract; define SCM, Cliff's delta, trace, generator, cell
-   at first use; expand all acronyms; cite all evaluated models; reconsider the
-   "generator" term.
-3. DailyDilemmas exposition: add a self-contained dataset description with an example
-   scenario and the stratified sampling detail.
-4. Related work: add a Moral Uncertainty discussion (MacAskill/Bykvist/Ord 2020;
-   Newberry and Ord 2021 parliamentary approach) framed around both fanaticism failure
-   directions (extreme stakes dominating vs. absolutist stakes being outvoted as mild).
-   Position the protocol's two relevant design features: the binary vote on a single
-   moderator-integrated proposal bounds per-agent leverage (bargaining, not expected
-   choiceworthiness), and irreconcilable stakes surface as structural rejections in the
-   audit trail instead of being overridden. State the limits: holdout incentives,
-   status quo bias, and that procedural convergence is not moral correctness.
-5. Model pool: add at least one open-weights generator; state the n=3 repetition
-   rationale and add a sensitivity check with more repetitions on a subset.
-6. Artifact availability: make the supplementary data and software packaging
-   unmistakable (two reviewers scored Datasets 1 despite the submitted zip); include a
-   prominent availability statement and per-artifact license enumeration (checklist item
-   B2 was answered No and should be fixed).
-7. Scope statement: explicitly delimit claims to trace structure, not moral correctness
-   of outcomes, where DailyDilemmas is introduced.
+1. References: verified macaskill20 (OUP 2020, DOI 10.1093/oso/9780198722274.001.0001),
+   newberry21 (FHI tech report 2021-2, ORA deposit; byline Toby Newberry -- the PDF's
+   "Cite as" line has a typo "Newbery"), model-card misc
+   entries (openai_gpt54nano, anthropic_haiku45, anthropic_sonnet46, xai_grok41,
+   deepseek_v3, chiu24data); prior fixes for shaffer19, bientzle21, bientzle24, rottger23.
+2. Clarity rewrite: done (abstract, terminology, DailyDilemmas, scope, n=3 rationale).
+3. DailyDilemmas exposition: done in Exp 1 setup with worked example.
+4. Related work: Moral Uncertainty paragraph added (macaskill20, newberry21).
+5. Model pool: deepseek-v3 Exp 1 grid complete (1500 cells, N=5); Table 1
+   and firing figure updated.
+6. Repetition sensitivity: appendix app:sensitivity; 20-scenario draw (seed 43),
+   10 replicates per cell: delta +0.91 [0.86, 0.94] vs +0.93 full sample (stakeholder
+   count), +0.74 vs +0.73 (uncertainty score). Stable across random draws (0.84-0.98
+   over 20 seeds).
+7. Phase 11 head-to-head: integrated in section 4.2 and Appendix app:phase11.
+8. ELEPHANT caveat: Phase 15 judge-reliability numbers added.
+9. Artifact availability: Reproducibility section strengthened with per-artifact licenses.
+10. Template: main body trimmed to 7 pages before Limitations (page 8); `[review]{acl}`
+    and anonymous author block active. Std-CoT debate comparison from Phase 11 data.
+11. Final gate: bibliography entry verification complete for newly added citations.
+
+**Locator:** the repository README has an **ARR resubmission (main paper)** section that indexes this file, `papers/acl/ACL_paper.tex`, build commands, artifact paths, and the pre-submit checklist.
+
+## Post-integration QA pass (9 Jul 2026)
+
+A full consistency audit after the deepseek-v3 data landed:
+
+- Table 1 gpt-5.4-nano deltas corrected to the rebuilt CSV (-29/-70; the cache-merge
+  rebuild shifted rates slightly from the pre-merge values -30/-72).
+- Panel range claims updated: proprietary-model ranges (50.0-71.3% suppression,
+  14.6-30.1% collapse) stated separately from deepseek-v3's lower baselines (23.6%,
+  1.2%); NoT ranges now 0.0-24.5% / 0.0-1.2%; pp-drop range 24-70.
+- "Below 1 percent collapse" claims corrected to "at most 1.2%" (grok NoT = 1.17%).
+- Abstract corrected to five models / four vendors.
+- Appendix effect-size table refreshed against tier1_effect_sizes_quartet.csv
+  (nano and haiku rows updated to rebuilt values).
+- Length-residualisation text now includes DeepSeek (resid delta +0.36 sc / +0.49 us).
+- Incorrect seed claim removed: the pipeline uses the replicate index as the decoding
+  seed (scripts/generators.py), not "seeds 42/43/99"; paper text now matches the code.
+- Phase 11 appendix: 3.57 corrected to 3.53 (textgrad_binary mean sc per p11_summary).
+- TGD drift caveat: nano baseline rates corrected to 30.1%/71.3% (were grok/haiku values).
+- Sensitivity appendix rewritten with reproducible numbers (see item 6).
+- newberry21 author restored to "Newberry" (ORA byline; the PDF "Cite as" line has a typo).
+- De-anonymisation risk removed: internal repo path papers/sycophancy dropped from the
+  ELEPHANT appendix.
+- Rebuilt clean: 24 pages, Limitations opens page 8, no undefined references/citations.
+
+## Writing and clarity pass (9 Jul 2026)
+
+A full main-body rewrite pass targeting reviewer WvQ2's readability criticism:
+
+- Duplicated line removed in related work ("no revision absorbs." appeared twice).
+- Internal codenames purged from the PDF: Phase 1/11/12/13/15 references replaced with
+  descriptive language ("held-out head-to-head", "initial smoke sample", "subsequent
+  three-judge panel study", "Experiment 1 outputs"); "verified quartet" ->
+  "four-generator panel"; "Tier-1" dropped from figure caption; scenario IDs
+  (pharma_whistleblower, av_engineer) replaced with prose descriptions.
+- Terms now defined at first use: "trace" glossed in intro; CoT expanded at first body
+  use; Cliff's delta given a plain-language definition plus the |delta|>0.474 "large"
+  convention in Setup (before any use); "cell" defined explicitly; generator/evaluated
+  model synonymy stated once; residualisation glossed; SCM expanded in contributions.
+- Exp 1 setup restructured into Corpus / Conditions and models / Coding paragraphs
+  (was two dense paragraphs with coding details split across both).
+- Intro NoT paragraph rewritten: concrete instruction first, distributional hypothesis
+  second (was jargon-first); "amortise causal-trajectory inference by retrieval"
+  simplified.
+- Contributions: each result now names its mechanism in plain terms; fixed stale
+  cross-reference ("Finding 4" -> fifth result; sycophancy appendix range ->
+  app:deploy).
+- Matched-budget paragraph reframed as a question ("Could a model simply told to
+  write more do as well?"); ablation paragraph now states the six conditions
+  explicitly (full NoT + five drop-one variants).
+- TGD subsection: in-family/cross-family definitions untangled; third-judge
+  description corrected (same model as cross-family training judge, caveat
+  referenced, not "a vendor involved in neither run").
+- Factual fix: uncertainty-suppression residual under NoT is retained by grok
+  (24.5%) as well as the two Anthropic models (20.8-21.5%); text previously
+  attributed the residual to Anthropic alone.
+- Limitations: "survived the cache rebuild" internal jargon replaced.
+- Rebuilt clean: 25 pages, Limitations opens page 8, no undefined references/citations.
