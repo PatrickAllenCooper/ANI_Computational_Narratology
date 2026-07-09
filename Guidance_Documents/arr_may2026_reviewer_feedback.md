@@ -12,6 +12,12 @@ Decision: do not withdraw and do not commit this version to EMNLP. Post author r
 to all three reviewers during the discussion window, then revise and resubmit to the next
 ARR cycle.
 
+Status (8 Jul 2026): all three author responses posted to OpenReview. Corrected
+bibliography landed in `papers/shared/references.bib` and the paper rebuilds cleanly.
+arXiv v2 replacement package prepared at `papers/acl/arxiv_submission_v2.zip` with the
+corrected references (see arXiv v2 section below); upload pending. Remaining work is the
+next-cycle revision checklist at the end of this document.
+
 Rationale:
 
 - The average Overall Assessment (~2.8) will not realistically clear the EMNLP
@@ -207,6 +213,30 @@ On the ethical dimension: we agree ethics cannot be reduced to applying values t
 scenarios. Our claims are about the structure of the reasoning trace, who gets named
 and what uncertainty gets acknowledged, not about the moral correctness of outcomes.
 The revision states that scope limit explicitly. Your comment sharpened this for us.
+
+## arXiv v2 replacement (curing the public preprint)
+
+The public preprint (arXiv 2606.26366, v1) still contains the erroneous references and
+must be replaced. The v1 source corresponds to `papers/acl/ACL_paper.tex` plus
+`papers/shared/references.bib` (verified by diff against
+`papers/acl/arxiv_submission.zip`; the only tex difference is the corrected related-work
+sentence).
+
+Changes in v2 relative to v1, deliberately minimal:
+
+1. Corrected bibliography entries for shaffer19, bientzle21, bientzle24 (verified
+   replacements) and rottger23 (correct title, author list, NAACL 2024 venue).
+2. One related-work sentence updated to match what the replacement citations show:
+   "Narrative-perspective interventions in health-communication contexts measurably
+   increase perspective-taking and empathic concern."
+
+The v2 package is `papers/acl/arxiv_submission_v2.zip` (tex, compiled bbl, bib, acl.sty,
+acl_natbib.bst, six figure PDFs). It compiles standalone with xelatex and the corrected
+entries appear in the bibliography with no undefined citations.
+
+To upload: arXiv > 2606.26366 > Replace, upload the zip, and in the "Comments" field
+note: "v2: corrects four bibliography entries; no changes to methods, results, or
+claims." Everything else on the submission form carries over from v1.
 
 ## Revision checklist for next-cycle resubmission
 
