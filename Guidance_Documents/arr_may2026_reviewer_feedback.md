@@ -143,32 +143,35 @@ listed readers.
 
 ### To Reviewer MqVt
 
+Note on framing: the reviewer did not raise an ethics flag (their review states "There
+are no concerns with this submission" and "Needs Ethics Review: No"); they presented
+the references as a correction ("Fix the hallucinated references") scored under
+Soundness. The response must keep it in that lane: plain factual account of the cause,
+no minimizing labels such as "clerical error" that conflict with the reviewer's stated
+suspicion and could compound the record if scrutinized.
+
 You are right, and thank you for checking. We verified all four entries against primary
 sources. Three do not correspond to real papers, and the Rottger entry had the wrong
 title and one wrong author. The errors came from reference drafting that was not
-checked entry by entry. Every reference has now been verified.
+verified entry by entry against primary sources. That process has been corrected and
+every reference has now been verified. We apologize for the error.
 
 The corrected entries: Shaffer et al. 2019, PLoS ONE 14(10): e0224046. Bientzle et al.
 2021, PLoS ONE 16(7): e0254501. Bientzle et al. 2024, Frontiers in Public Health 12:
 1343225. Rottger et al. 2024, XSTest, NAACL 2024, pages 5377 to 5400. No result depends
 on these entries; they appear in one related-work sentence.
 
-On moral uncertainty: agreed, and the connection runs deeper than a missing citation.
-As we read your concern, voting among stakeholders can go fanatical in two directions:
-a position with extreme declared stakes can dominate the outcome, or intensity gets
-flattened and an absolutist stake is outvoted as if it were mild. The moral uncertainty
-literature treats exactly this problem, and parliamentary mechanisms were proposed
-partly to tame it. The revision will add a related-work discussion of MacAskill,
-Bykvist, and Ord (2020) and the parliamentary approach of Newberry and Ord (2021), and
-will position our protocol against both failure directions. Two design features matter.
-The binary vote on a single moderator-integrated proposal bounds each agent's leverage,
-closer to bargaining than to expected choiceworthiness. And the protocol does not force
-convergence: stakes the integration cannot absorb surface as structural rejections in
-the audit trail rather than being overridden or absorbed. We will also state the limits
-plainly: consensus-seeking has its own pathologies, including holdout incentives, and
-procedural convergence is not moral correctness.
+On the moral uncertainty critique we agree completely. As we read your concern, voting
+among stakeholders can go fanatical in two directions: a position with extreme declared
+stakes can dominate the outcome, or intensity gets flattened and an absolutist stake is
+outvoted as if it were mild. The moral uncertainty literature treats exactly this
+problem, and parliamentary mechanisms were proposed partly to tame it. The revision
+will discuss MacAskill, Bykvist, and Ord (2020), the parliamentary approach of Newberry
+and Ord (2021), and related literature as appropriate to better frame our argument and
+address your objection.
 
-Thank you again. This review made the paper better.
+Thank you again for your thoughtful reflection here. These comments will help us
+improve this work.
 
 ### To Reviewer Xrff
 
