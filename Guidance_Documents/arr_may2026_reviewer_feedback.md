@@ -136,74 +136,103 @@ compile unchanged). Root cause is consistent with AI-assisted bibliography gener
 the revision process must include per-entry verification of every reference against its
 primary source before resubmission.
 
-## Draft author responses
+## Author responses (final text for OpenReview)
+
+Post each as an official comment threaded under the matching review, visible to all
+listed readers.
 
 ### To Reviewer MqVt
 
-Thank you for checking the references carefully; you are right, and we are grateful the
-issue was caught. We verified all four flagged entries against primary sources. Three
-(Bientzle 2024, Bientzle 2021, Shaffer et al. 2019) are erroneous bibliography entries
-that do not correspond to real papers, and the Rottger et al. citation carried an
-incorrect title and author list. These entries have been corrected in our source of
-record, and every reference in the revision will be individually verified against its
-primary source.
+You are right, and thank you for checking. We verified all four entries against primary
+sources and here is what we found.
 
-The substantive claim these citations supported, that narrative-perspective
-interventions measurably increase perspective-taking and empathic concern, is well
-established by the following verified publications, which will replace the erroneous
-entries: Shaffer et al. (2019), PLoS ONE 14(10):e0224046; Bientzle et al. (2021), PLoS
-ONE 16(7):e0254501; Bientzle et al. (2024), Frontiers in Public Health 12:1343225. The
-XSTest citation will be updated to the published NAACL 2024 version (pages 5377-5400).
-No experimental result or analysis depends on the erroneous entries; they appear in a
-single related-work sentence.
+Three entries do not correspond to real papers. Shaffer et al. 2019 as cited does not
+exist. Neither does Bientzle 2021 in Health Communication 36(7), nor Bientzle 2024 in
+Patient Education and Counseling. The Rottger et al. 2023 entry pointed to a real paper
+but carried the wrong title and one wrong author. These errors came from reference
+drafting that was not checked entry by entry. That was our failure, and we have now
+verified every reference in the paper against its primary source.
 
-On Moral Uncertainty: we agree this literature is directly relevant and will add a
-related-work discussion in the revision, covering MacAskill, Bykvist, and Ord (2020,
-Moral Uncertainty, OUP), the parliamentary approach of Newberry and Ord (2021), and the
-fanaticism problem for expectation-based and voting-based aggregation. This connects
-naturally to our multi-stakeholder protocol: the binary accept/reject vote is a
-bargaining-style mechanism closer to the moral-parliament proposal than to maximizing
-expected choiceworthiness, and we will make explicit both this connection and the ways
-our residual structural-rejection rate relates to positions that no aggregation can
-absorb.
+The claim these citations supported is real and well established. The corrected entries
+are:
+
+Shaffer et al. 2019, Encouraging perspective taking: Using narrative writing to induce
+empathy for others engaging in negative health behaviors. PLoS ONE 14(10): e0224046.
+
+Bientzle et al. 2021, The impact of narrative writing on empathy, perspective-taking,
+and attitude. PLoS ONE 16(7): e0254501.
+
+Bientzle et al. 2024, Good reasons for bad behavior. Frontiers in Public Health 12:
+1343225.
+
+Rottger et al. 2024, XSTest: A Test Suite for Identifying Exaggerated Safety Behaviours
+in Large Language Models. NAACL 2024, pages 5377 to 5400.
+
+No experimental result depends on these entries. They appear in one related-work
+sentence. We know that does not excuse the error, but we want the scope to be clear.
+
+On moral uncertainty: agreed, and we should have covered it. The revision will add a
+discussion of MacAskill, Bykvist, and Ord (2020), the parliamentary approach of
+Newberry and Ord (2021), and the fanaticism problem for voting-based aggregation. Our
+multi-stakeholder vote is closer to a bargaining mechanism than to maximizing expected
+choiceworthiness, and the residual structural-rejection rate we report is exactly the
+kind of position that no aggregation can absorb. We will make that connection explicit.
+
+Thank you again. This review made the paper better.
 
 ### To Reviewer Xrff
 
-Thank you for the careful review and the concrete pointers. We will act on each:
+Thank you for the careful read and the concrete pointers. We will act on all of them.
 
-- Abstract: we will cut it substantially and simplify the flagged passages (lines 2-8,
-  22-25, 35-38), leading with the two failure modes and the headline reductions.
-- Terminology: SCM, Cliff's delta, trace, generator, and cell will be defined at first
-  use. We will either replace "generator" with "evaluated model" throughout or define it
-  explicitly at first use (we use it to distinguish the models under study from the judge
-  models that code the traces).
-- Model citations (lines 290-294): we will cite the technical reports or model cards for
-  each model used.
-- Repetitions (n=3): three repetitions per (condition, model, scenario) cell with fixed
-  seeds (42, 43, 99) was chosen to bound API cost while still allowing within-cell
-  variance estimation; the reported bootstrap confidence intervals on Cliff's delta
-  operate over the full per-cell sample. We will state this rationale explicitly and, in
-  the revision, report a sensitivity check on a scenario subset with additional
-  repetitions.
-- Proprietary-only models: agreed. The revision will add at least one open-weights
-  generator to the pool, which also strengthens reproducibility.
+On the abstract: agreed, it is too long. We will cut it hard and lead with the two
+failure modes and the headline numbers.
+
+On terminology: SCM, Cliff's delta, trace, generator, and cell will all be defined at
+first use. We use "generator" to separate the models under study from the judge models
+that code the traces, but we agree it is nonstandard. We will either define it
+prominently or drop it for "evaluated model."
+
+On model citations at lines 290 to 294: we will cite the technical report or model card
+for each model.
+
+On n=3: cost was part of it, but not all of it. Three repetitions per condition, model,
+and scenario cell with fixed seeds (42, 43, 99) bounds API spend while still giving
+within-cell variance. The bootstrap confidence intervals on Cliff's delta run over the
+full per-cell sample, so the effect-size estimates do not rest on n=3 alone. We will
+state this rationale in the paper and add a sensitivity check with more repetitions on
+a scenario subset.
+
+On proprietary-only models: fair. The revision will add at least one open-weights
+generator, which also helps reproducibility.
+
+Thank you. These are exactly the fixes the paper needs.
 
 ### To Reviewer WvQ2
 
-Thank you for the review and for recognizing the originality of the single-trace and
-multi-stakeholder protocols. The main criticism, readability, is one we take seriously,
-and the revision will include a structural rewrite:
+Thank you for the review, and for recognizing what the multi-stakeholder protocol is
+trying to do.
 
-- All acronyms (including CoT) expanded at first use, with a notation table.
-- A self-contained description of DailyDilemmas (scale, topic coverage, item structure,
-  and an example dilemma) so the paper reads without consulting the source publication.
-- A restructured results section that presents the two failure-mode metrics first, in
-  plain language, before the effect-size machinery.
-- On the ethical dimension: we agree that ethics cannot be reduced to value application.
-  Our claims are about the structure of the reasoning trace (who is named, what
-  uncertainty is acknowledged) rather than about the moral correctness of outcomes, and
-  the revision will state this scope limitation explicitly where the dataset is
-  introduced.
+The core criticism is readability, and we accept it. Two reviewers flagged it
+independently, so this is not a matter of polish. The revision will include a
+structural rewrite:
+
+Every acronym, including CoT, expanded at first use, plus a notation table.
+
+A self-contained description of DailyDilemmas: its scale, topic coverage, item
+structure, and a worked example dilemma. The reader should never need the source paper
+to follow ours.
+
+A restructured results section that states the two failure-mode metrics first, in plain
+language, before any effect-size machinery.
+
+On the ethical dimension: we agree that ethics cannot be reduced to applying values to
+scenarios. Our claims are about the structure of the reasoning trace, meaning who gets
+named, what consequences get projected, and what uncertainty gets acknowledged before
+commitment. They are not claims about the moral correctness of the outcomes. The
+revision will state that scope limit explicitly where the dataset is introduced. Your
+comment sharpened this for us.
+
+Thank you again.
 
 ## Revision checklist for next-cycle resubmission
 
