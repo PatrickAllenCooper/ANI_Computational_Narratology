@@ -153,10 +153,20 @@ The corrected entries: Shaffer et al. 2019, PLoS ONE 14(10): e0224046. Bientzle 
 1343225. Rottger et al. 2024, XSTest, NAACL 2024, pages 5377 to 5400. No result depends
 on these entries; they appear in one related-work sentence.
 
-On moral uncertainty: agreed. The revision will discuss MacAskill, Bykvist, and Ord
-(2020), Newberry and Ord's parliamentary approach (2021), and fanaticism in
-voting-based aggregation, connected explicitly to our multi-stakeholder vote and the
-residual structural-rejection rate.
+On moral uncertainty: agreed, and the connection runs deeper than a missing citation.
+As we read your concern, voting among stakeholders can go fanatical in two directions:
+a position with extreme declared stakes can dominate the outcome, or intensity gets
+flattened and an absolutist stake is outvoted as if it were mild. The moral uncertainty
+literature treats exactly this problem, and parliamentary mechanisms were proposed
+partly to tame it. The revision will add a related-work discussion of MacAskill,
+Bykvist, and Ord (2020) and the parliamentary approach of Newberry and Ord (2021), and
+will position our protocol against both failure directions. Two design features matter.
+The binary vote on a single moderator-integrated proposal bounds each agent's leverage,
+closer to bargaining than to expected choiceworthiness. And the protocol does not force
+convergence: stakes the integration cannot absorb surface as structural rejections in
+the audit trail rather than being overridden or absorbed. We will also state the limits
+plainly: consensus-seeking has its own pathologies, including holdout incentives, and
+procedural convergence is not moral correctness.
 
 Thank you again. This review made the paper better.
 
@@ -205,9 +215,14 @@ The revision states that scope limit explicitly. Your comment sharpened this for
    "generator" term.
 3. DailyDilemmas exposition: add a self-contained dataset description with an example
    scenario and the stratified sampling detail.
-4. Related work: add a Moral Uncertainty paragraph (MacAskill/Bykvist/Ord 2020; Newberry
-   and Ord 2021 parliamentary approach; fanaticism and voting-based aggregation) and
-   connect it to the multi-stakeholder vote and the structural-rejection analysis.
+4. Related work: add a Moral Uncertainty discussion (MacAskill/Bykvist/Ord 2020;
+   Newberry and Ord 2021 parliamentary approach) framed around both fanaticism failure
+   directions (extreme stakes dominating vs. absolutist stakes being outvoted as mild).
+   Position the protocol's two relevant design features: the binary vote on a single
+   moderator-integrated proposal bounds per-agent leverage (bargaining, not expected
+   choiceworthiness), and irreconcilable stakes surface as structural rejections in the
+   audit trail instead of being overridden. State the limits: holdout incentives,
+   status quo bias, and that procedural convergence is not moral correctness.
 5. Model pool: add at least one open-weights generator; state the n=3 repetition
    rationale and add a sensitivity check with more repetitions on a subset.
 6. Artifact availability: make the supplementary data and software packaging
