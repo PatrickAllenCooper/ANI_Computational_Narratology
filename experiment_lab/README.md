@@ -4,6 +4,18 @@ Single environment for querying, evaluating, and comparing every prompt/protocol
 
 Canonical study design: `Guidance_Documents/study_design.md`. This lab does not invent new methods; it surfaces existing ones for experimentation (especially sycophancy evaluation on ELEPHANT and related datasets).
 
+## Top 5 for a robust study
+
+The full inventory below is large. If you only have time to run one comparison well, run these five — they are the minimal set the project's own findings say a robustness claim depends on. All five are also flagged `recommended=True` in the notebook registry.
+
+| Variant | Role | Why this one |
+|---------|------|--------------|
+| `narrative_cot` | Base scaffold | Hand-designed NoT; every main-paper structural claim (stakeholder count, uncertainty score) anchors here. Any variant must be compared back to this. |
+| `standard_cot` | Required control | The mandatory negative control — without it, no effect size is interpretable. |
+| `narrative_cot_v3` | Best generalizing optimized variant | Cross-family textual-gradient result; `v2` overfits its training judge family (bigger generosity gap), `v3` closes/inverts that gap and is the variant integrated into the main paper. |
+| `phase18_robust` | Best robustness-audited optimized variant | Panel-robust optimizer; explicitly built to survive held-out-judge and human-gold evaluation, unlike `sg_narrative_grad` which Goodharts its single training judge. |
+| `textgrad_cot` | Honesty check on mechanism | The "best-optimized-CoT" comparator. Phase 11 shows N-CoT beats it decisively — any robustness study should re-verify this rather than assume it. |
+
 ## Variant inventory
 
 | Variant | Kind | Provenance |
