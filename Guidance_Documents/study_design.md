@@ -1284,3 +1284,15 @@ Reserve approach, pursued only if Phase 18 fails its falsification test. Require
 - `contrast_pair_specs.jsonl` gitignored (regeneratable); README project map updated.
 
 **Infrastructure.** GPU work targets CURC; weights and activation caches go to `/scratch/alpine`, never `/projects` (near quota). Evaluation reuses the existing instruments (`elephant_scorers`, `syco_loss`, `brokenmath_scorer`, `judge_panel`, `krippendorff`) so AGT results are directly comparable to the papers' tables.
+
+---
+
+## Execution log v1.18 — Masters-student method experimentation lab (2026-07-14)
+
+**Goal.** Give the incoming masters student a single environment to query, evaluate, and compare every method variant defined in the repo against ELEPHANT / BrokenMath, with existing results and recreation commands in one place. No new scientific arms.
+
+**Artifacts.**
+- `experiment_lab/README.md` — succinct variant inventory (static prompts, Phase 2 knockouts, optimized prompts from summary JSONs, multi-agent debate protocols), notebook section map, dataset/cost notes.
+- `experiment_lab/method_lab.ipynb` — executed clean offline: builds a 23-variant registry from `PROMPTS`, `_build_ncot_drop`, and committed optimizer summaries (`tg`, `sg_*`, `phase18_robust`, `ng2`); single-item query and batch OEQ eval gated behind `RUN_LIVE`; loads ELEPHANT rates, Phase 14/18 summaries, BrokenMath, Tier-1 effects, judge reliability; documents recreation CLIs per artifact.
+
+**Repo map.** Root `README.md` project map updated.

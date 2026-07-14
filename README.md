@@ -13,6 +13,7 @@ The canonical study design lives in `Guidance_Documents/study_design.md`. The no
 | `ncot_divergence_pilot.ipynb` | Main-study implementation (generation, judging, analysis) |
 | `scripts/` | All phase runners, aggregators, and shared library code |
 | `activation_guided_thinking/` | Follow-up project sketch (inference-time activation steering); see its README and `agt_bootstrap.ipynb` |
+| `experiment_lab/` | Masters-student method lab: every prompt/protocol variant, query/eval on ELEPHANT; see `method_lab.ipynb` |
 | `data/` | Probe sets and gold labels (large benchmark downloads are gitignored) |
 | `divergence_study_outputs/` | Run artifacts: analysis CSVs and figures are committed; per-sample cache JSON is gitignored and regeneratable |
 
@@ -58,7 +59,8 @@ Author responses for the May 2026 cycle are archived in the guidance doc (review
 
 1. Main paper (`papers/acl`): **ARR resubmission package ready** — see section above. Remaining gate is the next ARR cycle submission window.
 2. Sycophancy paper (`papers/sycophancy`): Phase 18 judge-robust optimization results are in and hardened (held-out judge, human gold, full quartet, BrokenMath replication). Submission is gated on the methods win holding up; Phase 19 (activation steering, open-weight) is the pre-registered backup direction.
-3. Deferred: Tier-3 human pairwise preference study (`Guidance_Documents/tier3_preregistration.md`) awaits IRB and funding.
+3. Masters-student experimentation: `experiment_lab/method_lab.ipynb` registers every method variant for query/eval on ELEPHANT (and related datasets); AGT follow-up sketch lives in `activation_guided_thinking/`.
+4. Deferred: Tier-3 human pairwise preference study (`Guidance_Documents/tier3_preregistration.md`) awaits IRB and funding.
 
 The phase-by-phase history, pre-registrations, and execution logs are in `Guidance_Documents/study_design.md` (main study, Phases 1-19) and `Guidance_Documents/followup_study_design.md` (optimisation follow-up).
 
@@ -76,6 +78,13 @@ Run the smoke tests before anything expensive:
 ```bash
 python -m scripts.test_phase14
 python -m scripts.smoke_generators   # requires live API keys
+```
+
+Explore every method variant without re-deriving them (masters-student entry point):
+
+```bash
+jupyter notebook experiment_lab/method_lab.ipynb
+# Sections 1–2 and 5 are offline; set RUN_LIVE=True for query/eval cells.
 ```
 
 Reproduce the main study (long-running; results are cached per `(generator, judge, scenario, condition, sample)` so re-runs only do new work):
