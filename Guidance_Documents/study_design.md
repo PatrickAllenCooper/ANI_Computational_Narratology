@@ -1298,3 +1298,10 @@ Reserve approach, pursued only if Phase 18 fails its falsification test. Require
 **Repo map.** Root `README.md` project map updated.
 
 **Follow-up (2026-07-14): top-5 highlight.** The full 23-variant registry was overwhelming as a starting point. Added a "Top 5 for a robust study" callout to `experiment_lab/README.md` and a `recommended`-flagged subset in `method_lab.ipynb` (rendered right after the full registry, which is left intact): `narrative_cot` (base scaffold), `standard_cot` (required control), `narrative_cot_v3` (best generalizing optimized variant — closes the v2 in-family judge-generosity gap), `phase18_robust` (best robustness-audited optimized variant — survives held-out-judge/human-gold, unlike the Goodharted `sg_narrative_grad`), `textgrad_cot` (mechanism-honesty comparator the Phase 11 head-to-head requires N-CoT to keep beating). Re-executed clean end-to-end.
+
+**Follow-up (2026-07-16): environment test matrix.** Verified the lab across the three environments a new teammate can be in.
+- Offline unit suite: `python -m scripts.test_phase14` — 6/6 pass.
+- Fresh clone, clean venv, README pip list, no `.env`: notebook executes clean (`keys=False`); registry builds; live cells skip; BrokenMath HF download works. Bug found and fixed: `.gitignore` patterns `sg_tg_*.json` / `sg_opro_*.json` / `sg_ape_*.json` were excluding the three Phase 14 optimizer summary JSONs the registry needs — added negation rules and committed the files (fresh clone was previously missing them, leaving 17/20 queryable variants).
+- Dataset bootstrap in fresh clone: ELEPHANT OSF download (`python -m scripts.load_elephant --dataset oeq --n 5`) and BrokenMath HF both succeed with no API keys.
+- Live minimal-spend: `smoke_generators` OK on all four models; notebook `query_one("narrative_cot")` and `eval_variants_oeq(n=2)` OK. Grok works via Azure Foundry even without a native `XAI_API_KEY` when the deployment is available.
+- Documented "Requirements" section in `experiment_lab/README.md` (what she needs locally vs what the advisor provides).

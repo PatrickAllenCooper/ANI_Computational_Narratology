@@ -4,6 +4,39 @@ Single environment for querying, evaluating, and comparing every prompt/protocol
 
 Canonical study design: `Guidance_Documents/study_design.md`. This lab does not invent new methods; it surfaces existing ones for experimentation (especially sycophancy evaluation on ELEPHANT and related datasets).
 
+## Requirements
+
+### What you need locally
+
+- **GitHub access** to this private repo (SSH key recommended; clone with `git clone git@github.com:PatrickAllenCooper/ANI_Computational_Narratology.git`).
+- **Python 3.11** and a virtualenv. From the repo root:
+
+```bash
+python3.11 -m venv .venv
+source .venv/bin/activate
+pip install azure-ai-projects azure-identity openai pandas matplotlib seaborn scipy tqdm python-dotenv requests scikit-learn jupyter datasets
+```
+
+- **Network** for first-run dataset downloads (no accounts required): ELEPHANT from OSF into `data/elephant/`, BrokenMath / DailyDilemmas from HuggingFace. An optional `HF_TOKEN` only raises rate limits.
+- **No GPU.** The lab is API-based. (CURC / GPU access is only for the separate `activation_guided_thinking/` project.)
+
+### What your advisor provides
+
+- **Repo collaborator invite** (GitHub).
+- **A filled-in `.env`** (copy from `.env.template`; never commit). Minimum for live work:
+  - `AZURE_AI_PROJECT_ENDPOINT`, `AZURE_AI_API_KEY`, `AZURE_AI_API_VERSION` — one Azure Foundry key covers OpenAI (`gpt-5.4-nano`) and Anthropic (`claude-haiku-4-5`, `claude-sonnet-4-6`) models used by the notebook defaults.
+  - `XAI_API_KEY` — optional. Grok can also route through Azure Foundry when the deployment is available; a native xAI key is only needed if Azure does not expose grok.
+- **Budget guidance.** Notebook defaults to offline (`RUN_LIVE=False`). Smoke cells use `n=1`–`3`; full grids are the expensive part — ask before launching them.
+
+### Day-one check
+
+```bash
+cp .env.template .env   # then paste keys from advisor
+python -m scripts.test_phase14
+jupyter notebook experiment_lab/method_lab.ipynb
+# Sections 1–2 and 5 are offline; set RUN_LIVE=True only when ready to spend.
+```
+
 ## Top 5 for a robust study
 
 The full inventory below is large. If you only have time to run one comparison well, run these five — they are the minimal set the project's own findings say a robustness claim depends on. All five are also flagged `recommended=True` in the notebook registry.
