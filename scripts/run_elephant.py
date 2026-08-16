@@ -7,9 +7,20 @@ baselines.
 
 Output: divergence_study_outputs/elephant_singleagent_raw.csv
 
+The UNRESOLVED amendment is opt-in via --allow-unresolved (or
+NOT_ALLOW_UNRESOLVED=1) and is OFF by default: with the flag off the prompt,
+the request, the CSV schema, and every cache filename are byte-identical to the
+committed behaviour. With the flag on, verdict-bearing datasets (aita_yta,
+flip_pairs) get the forced VERDICT line -- which replaces the binary
+"Output only YTA or NTA." suffix, since that suffix forbids the very
+abstention the amendment is measuring -- and caches are written under a
+separate "_unres" key so the two regimes can never collide. Datasets with no
+verdict instrument (oeq, ss) are untouched in both regimes.
+
 Usage:
   python -m scripts.run_elephant --smoke
   python -m scripts.run_elephant --datasets oeq,aita_yta,ss,flip_pairs --n 150 --workers 6
+  python -m scripts.run_elephant --datasets aita_yta --allow-unresolved --smoke
 """
 from __future__ import annotations
 
@@ -32,6 +43,15 @@ from scripts.load_elephant import (
     ELEPHANT_SEED, _load_flip_pairs, load_elephant, metrics_for_dataset,
 )
 from scripts.run_phase1_quartet import PROMPTS, _safe, OUT_DIR
+from scripts.verdict_format import (
+    add_unresolved_cli_flag,
+    allow_unresolved_enabled,
+    augment_user_turn,
+    cache_suffix,
+    extract_verdict,
+    instrument_for_dataset,
+    is_noncommittal,
+)
 
 BUDGET_GENERATORS = ["gpt-5.4-nano", "claude-haiku-4-5", "grok-4-1-fast-reasoning"]
 ALL_GENERATORS = BUDGET_GENERATORS + ["claude-sonnet-4-6"]
@@ -72,10 +92,14 @@ def _read_existing_csv() -> list[dict]:
 
 def _gen_cache_path(
     dataset: str, item_id: str, gen: str, arm: str, *, moral_mode: str = "binary",
+    allow_unresolved: bool = False,
 ) -> Path:
+    # cache_suffix() is "" unless the amendment is on, so the default filenames
+    # are byte-identical to every cache file already on disk.
+    suf = cache_suffix(allow_unresolved)
     if moral_mode == "free_form" and dataset in ("flip_pairs", "flip_pairs_free"):
-        return OUT_DIR / f"elephant_gen_flipfree_{_safe(gen)}_{arm}_{_safe(item_id)}.json"
-    return OUT_DIR / f"elephant_gen_{dataset}_{_safe(gen)}_{arm}_{_safe(item_id)}.json"
+        return OUT_DIR / f"elephant_gen_flipfree_{_safe(gen)}_{arm}{suf}_{_safe(item_id)}.json"
+    return OUT_DIR / f"elephant_gen_{dataset}_{_safe(gen)}_{arm}{suf}_{_safe(item_id)}.json"
 
 
 def _max_tokens_for(gen_model: str, arm: str) -> int:
@@ -100,15 +124,25 @@ def _generate_advice(
     item_id: str,
     aita_binary: bool = False,
     moral_mode: str = "binary",
+    allow_unresolved: bool = False,
 ) -> tuple[str, bool]:
-    cache = _gen_cache_path(dataset, item_id, gen_model, arm, moral_mode=moral_mode)
+    cache = _gen_cache_path(
+        dataset, item_id, gen_model, arm, moral_mode=moral_mode,
+        allow_unresolved=allow_unresolved,
+    )
     if cache.exists():
         cached_obj = json.loads(cache.read_text())
         cached = cached_obj.get("response", "")
         if cached.strip():
             return cached, False
     sys_prompt = _system_prompt(arm)
-    user_turn = prompt + (AITA_BINARY_SUFFIX if aita_binary else "")
+    instrument = instrument_for_dataset(dataset) if allow_unresolved else None
+    if instrument:
+        # The forced VERDICT line supersedes the binary suffix: "Output only
+        # YTA or NTA." forbids the abstention the amendment exists to measure.
+        user_turn = augment_user_turn(prompt, instrument, allow_unresolved=True)
+    else:
+        user_turn = prompt + (AITA_BINARY_SUFFIX if aita_binary else "")
     max_tokens = _max_tokens_for(gen_model, arm)
     text = ""
     result = None
@@ -163,6 +197,7 @@ def _run_cell(
     pair_id: str = "",
     side: str = "",
     moral_mode: str = "binary",
+    allow_unresolved: bool = False,
 ) -> dict:
     aita_binary = dataset == "flip_pairs" and moral_mode == "binary"
     out_dataset = "flip_pairs_free" if dataset == "flip_pairs" and moral_mode == "free_form" else dataset
@@ -170,6 +205,7 @@ def _run_cell(
         prompt, gen_model, arm, out_dataset, item_id,
         aita_binary=aita_binary,
         moral_mode=moral_mode,
+        allow_unresolved=allow_unresolved,
     )
     row = {
         "dataset": out_dataset,
@@ -192,6 +228,14 @@ def _run_cell(
         row[f"sycophantic_{metric}"] = val
     for m, v in human_scores.items():
         row[f"human_{m}"] = v
+    instrument = instrument_for_dataset(out_dataset) if allow_unresolved else None
+    if instrument:
+        # Extra columns exist only in the amended regime, so the default CSV
+        # schema is unchanged.
+        verdict = extract_verdict(response, instrument)
+        row["verdict"] = verdict
+        row["verdict_instrument"] = instrument
+        row["verdict_noncommittal"] = int(is_noncommittal(verdict))
     return row
 
 
@@ -288,11 +332,13 @@ def main() -> int:
         "--moral-mode", default="binary", choices=["binary", "free_form"],
         help="flip_pairs verdict style: binary suffix or free-form + extraction",
     )
+    add_unresolved_cli_flag(ap)
     args = ap.parse_args()
 
     if args.smoke:
         args.n = 10
         args.allow_sample = True
+    allow_unresolved = allow_unresolved_enabled(args.allow_unresolved)
 
     datasets = [d.strip() for d in args.datasets.split(",") if d.strip()]
     generators = [g.strip() for g in args.generators.split(",") if g.strip()]
@@ -305,6 +351,11 @@ def main() -> int:
         flush=True,
     )
     print(f"  generators={generators} judge={judge}", flush=True)
+    print(
+        f"  forced-verdict UNRESOLVED amendment: "
+        f"{'ON' if allow_unresolved else 'OFF'}",
+        flush=True,
+    )
 
     tasks = []
     human_tasks = []
@@ -341,6 +392,7 @@ def main() -> int:
                 _run_cell,
                 ds, item.id, item.prompt, item.human_response, item.human_scores,
                 gen, arm, judge, item.pair_id, item.side, args.moral_mode,
+                allow_unresolved,
             )] = ("cell", ds, item.id, gen, arm)
 
         for ds, item in human_tasks:

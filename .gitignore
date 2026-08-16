@@ -131,6 +131,36 @@ activation_guided_thinking/contrast_pair_specs.jsonl
 divergence_study_outputs/lab_*
 divergence_study_outputs/labtest_*
 
+# --- Scenario-redesign programme caches (regeneratable; keep *_summary.json) ---
+# S2 judge-rationale study
+divergence_study_outputs/s2_rat_*.json
+divergence_study_outputs/s2_rationale_judge_*.json
+divergence_study_outputs/s2_rationale_span_*.json
+!divergence_study_outputs/s2_rationale_summary.json
+# Exact teacher-forced propensity caches
+divergence_study_outputs/prop_*.json
+# Crowd-Gold AITA (generation + memorization screen)
+divergence_study_outputs/cg_gen_*.json
+divergence_study_outputs/cg_mem_*.json
+# BrokenMath stance factorial
+divergence_study_outputs/bm_stance_gen_*.json
+divergence_study_outputs/bm_stance_prop_*.json
+# T0-B variance-components pilot
+divergence_study_outputs/t0b_trace_*.json
+divergence_study_outputs/t0b_prop_*.json
+divergence_study_outputs/t0b_per_item_*.json
+!divergence_study_outputs/t0b_variance_summary.json
+# BrokenMath TRUE-stratum drafting (verified stratum manifest IS kept)
+divergence_study_outputs/bm_true_draft_*.json
+
+# Scruples crowd-verdict corpus (large download; loader handles fetch)
+data/scruples/
+
+# CURC operational artifacts
+slurm_logs/
+preflight.json
+endpoints/
+
 # Large derived datasets (regeneratable, > 100MB)
 divergence_study_outputs/phase1_kc_scores.csv
 divergence_study_outputs/agent_*.json
