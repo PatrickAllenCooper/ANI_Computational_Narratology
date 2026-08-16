@@ -74,8 +74,21 @@ ANI_USER="${ANI_USER:-${USER:-$(id -un)}}"
 _ani_here="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)"
 ANI_REPO="${ANI_REPO:-$(cd -- "${_ani_here}/.." && pwd -P)}"
 
-ANI_SCRATCH="${ANI_SCRATCH:-/scratch/alpine/${ANI_USER}}"
-ANI_PROJECTS="${ANI_PROJECTS:-/projects/${ANI_USER}}"
+# On CURC these are the real filesystems. Off-cluster (a laptop, CI, a dry-run
+# rehearsal of the runbook) /scratch and /projects do not exist and are not
+# creatable, so fall back to a local sandbox rather than dying on mkdir. This is
+# what makes `ANI_DRY_RUN=1 bash slurm/array_generate.sbatch` runnable anywhere,
+# which is how the coverage self-test is meant to be exercised before a sweep.
+if [ -d /scratch/alpine ]; then
+    ANI_SCRATCH="${ANI_SCRATCH:-/scratch/alpine/${ANI_USER}}"
+else
+    ANI_SCRATCH="${ANI_SCRATCH:-${TMPDIR:-/tmp}/ani_scratch_${ANI_USER}}"
+fi
+if [ -d /projects ]; then
+    ANI_PROJECTS="${ANI_PROJECTS:-/projects/${ANI_USER}}"
+else
+    ANI_PROJECTS="${ANI_PROJECTS:-${ANI_REPO}}"
+fi
 
 # The venv lives on /projects, NOT /scratch: /scratch/alpine is purged 90 days
 # after file CREATION, which would silently delete a working venv mid-study.
