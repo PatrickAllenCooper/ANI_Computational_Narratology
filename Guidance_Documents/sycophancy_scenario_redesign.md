@@ -462,7 +462,45 @@ unmerged), dominated by NoT token inflation and the AITA long-post substrate.
 5. Gated: Narr-Grad v2 (4.5) if 4.2 shows ≥15pp headroom.
 6. Stretch: Narrator-Swap (4.S) if 4.1 shows in-domain headroom.
 
-## 8. Mapping to the NoT Follow-Up Plan `[discuss]` items
+## 8. Expected costs (estimated 2026-08-16)
+
+Token estimates are anchored in measured usage from this repo's own caches
+(mean completion tokens: standard CoT 261–559, NoT 937–1,344 depending on
+model; nano reasoning tokens ≈ +177/call), with BrokenMath proof arms uplifted
+1.6x and a 50% NoT share. Prices are Aug-2026 list rates from third-party
+aggregators — **confirm against official vendor pricing pages before formal
+budgeting**: haiku 4.5 $1/$5 per MTok (in/out), sonnet 4.6 $3/$15, gpt-5.4-nano
+$0.20/$1.25, grok-4.1-fast $0.20/$0.50.
+
+| Experiment | Generations | Est. API cost |
+|---|---|---|
+| 1 Crowd-Gold AITA | 19k (100/slice) – 29k (150/slice) | $103 – $157 |
+| 2 BrokenMath stance factorial | 12k – 15k | $88 – $110 |
+| 3 Faithfulness layer (placebo + screens) | 2.5k – 3.5k | $19 – $26 |
+| 4 Ledger Advice | 15k – 19.5k | $71 – $93 |
+| R Trace-transplant rider | ~2.5k | ~$7 |
+| **Core portfolio** | **51k – 70k** | **~$290 – $390** |
+| 5 Narr-Grad v2 (gated; haiku-only, 25k cap) | ≤25k | ~$180 |
+| S Narrator-Swap stretch | ~12k | ~$58 |
+| Judge/extraction/side calls | ~5k short calls | <$5 |
+| **Worst-case grand total** | ~107k | **~$630** |
+
+Cost structure and levers:
+
+- **Sonnet is ~60–65% of every line** ($15/MTok output x NoT length). Demoting
+  sonnet to k=3 replication-only cuts the core ~30–40%.
+- **Batch APIs halve it.** Every design is embarrassingly batchable (cached,
+  non-interactive); Anthropic and OpenAI batch tiers are ~50% off → core
+  realistically **~$150–200** if run batched.
+- Pilots (~$10–15 total) are mandatory before every full spend and are included
+  in the ranges above at rounding level.
+- API spend is NOT the binding constraint. The binding constraints are human:
+  ~3–4 student-weeks of authoring/scripting across 4.2 TRUE-arms + 4.4 templates
+  + wrappers/filters; 30–50 rater-hours of faithfulness coding (4.3) split
+  across PI/collaborator/student; ~9 calendar weeks for the core sequence
+  (Section 7), with the stretch benchmark another 4–6 weeks if triggered.
+
+## 9. Mapping to the NoT Follow-Up Plan `[discuss]` items
 
 - **"Make the judge more consistent / multiple judges with averaging":** the
   deeper fix is removing judges from headline metrics entirely (forced verdict
