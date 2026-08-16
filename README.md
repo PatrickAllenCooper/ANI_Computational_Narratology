@@ -12,6 +12,7 @@ The canonical study design lives in `Guidance_Documents/study_design.md`. The no
 | `papers/` | LaTeX projects, one folder per paper (see status table below) |
 | `ncot_divergence_pilot.ipynb` | Main-study implementation (generation, judging, analysis) |
 | `scripts/` | All phase runners, aggregators, and shared library code |
+| `slurm/` | CURC/Alpine harness: preflight audit, env setup, weight staging, resumable array jobs, vLLM server, SU estimator (see `Guidance_Documents/curc_runbook.md`) |
 | `activation_guided_thinking/` | Follow-up project sketch (inference-time activation steering); see its README and `agt_bootstrap.ipynb` |
 | `experiment_lab/` | Masters-student method lab: every prompt/protocol variant, query/eval on ELEPHANT; see `method_lab.ipynb` |
 | `data/` | Probe sets and gold labels (large benchmark downloads are gitignored) |

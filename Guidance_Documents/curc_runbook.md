@@ -87,7 +87,30 @@ export SBATCH_ERROR="/scratch/alpine/$USER/slurm_logs/%x_%A_%a.err"
 
 ## 2. The work manifest
 
-`array_generate.sbatch` is driven by a JSONL file, one cell per line.
+**Build it with `scripts/build_manifest.py` — do not hand-write one.** It is the
+only writer of this schema, it validates before writing, and it reports how many
+cells are already cached so you can see the real remaining work before asking for
+GPU time.
+
+```bash
+# Build (t0b | stance | crowdgold), then validate and prove shard coverage
+python -m scripts.build_manifest --experiment t0b \
+    --models llama-3.1-8b,qwen3-8b --arms standard_cot,narrative_cot \
+    --n 100 --k 5 --out work_manifest.jsonl
+
+python -m scripts.build_manifest --validate work_manifest.jsonl --coverage 16
+```
+
+The `--coverage N` check reproduces the worker's round-robin stripe and asserts
+the union of the N shards is the whole manifest with no duplicates. **Run it
+before any large sweep.** A manifest in the wrong shape makes the worker skip
+every line with a warning and exit 0 — a "successful" run that generated nothing
+— which is why `build_manifest.py` refuses to write an invalid file rather than
+letting you discover it after queueing.
+
+`--dry-run` validates and reports without writing.
+
+`array_generate.sbatch` is driven by that JSONL file, one cell per line.
 
 ```json
 {"cache_kind":"bm_gen","model":"qwen3-8b","arm":"raw","item_id":"bm_0007",
@@ -167,7 +190,11 @@ sbatch --partition=aa100 --qos=gpu-testing --gres=gpu:a100-40gb:1 --time=01:00:0
 
 Each task takes a round-robin stripe: manifest cell *i* goes to task `i % nshards`. Round-robin rather than contiguous blocks because manifests are usually grouped by model and arm, and contiguous blocks would hand one task all the cheap cells and another all the expensive ones.
 
-Shard index and count are derived from `SLURM_ARRAY_TASK_ID`, `_MIN` and `_MAX`. **This has one sharp edge:** re-running a single task with `--array=3` makes `_MIN == _MAX == 3`, so that task computes "shard 0 of 1" and processes the *entire* manifest. It is idempotent, so nothing is corrupted, but it is not what you meant. To re-run one task of a sixteen-way array:
+Shard index comes from `SLURM_ARRAY_TASK_ID - SLURM_ARRAY_TASK_MIN`; shard count comes from `SLURM_ARRAY_TASK_COUNT` when Slurm provides it, otherwise the span.
+
+**The job refuses to start on a non-contiguous array.** Slurm reports `_MIN`/`_MAX` as the *endpoints* regardless of stride or enumeration, so deriving the shard count from the span is wrong for `--array=1-8:2` (which would silently process 57% of the manifest) or `--array=1,2,5` (60%). Those runs would complete "successfully" with a partial cache and the analysis would quietly run on partial data, so the job now exits 2 with a diagnostic instead. Use a dense range (`--array=0-15`), or set `ANI_SHARD`/`ANI_SHARDS` explicitly — those are validated against the reported task count too.
+
+**One sharp edge remains:** re-running a single task with `--array=3` makes `_MIN == _MAX == 3` and `_COUNT == 1`, so that task computes "shard 0 of 1" and processes the *entire* manifest. It is idempotent, so nothing is corrupted, but it is not what you meant. To re-run one task of a sixteen-way array:
 
 ```bash
 sbatch --array=3 --export=ALL,ANI_MANIFEST=...,ANI_SHARD=3,ANI_SHARDS=16 \
