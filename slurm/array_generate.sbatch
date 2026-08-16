@@ -124,9 +124,52 @@ TASK_ID="${SLURM_ARRAY_TASK_ID:-0}"
 TASK_MIN="${SLURM_ARRAY_TASK_MIN:-${TASK_ID}}"
 TASK_MAX="${SLURM_ARRAY_TASK_MAX:-${TASK_ID}}"
 
-SHARD="${ANI_SHARD:-$(( TASK_ID - TASK_MIN ))}"
-SHARDS="${ANI_SHARDS:-$(( TASK_MAX - TASK_MIN + 1 ))}"
+# --- shard derivation (MUST NOT silently under-cover) -----------------------
+# The striping rule is `line_index % SHARDS == SHARD`, which covers the manifest
+# exactly once ONLY when the task ids are the dense range [TASK_MIN, TASK_MAX].
+# Slurm reports TASK_MIN/TASK_MAX as the *endpoints* regardless of stride or
+# enumeration, so deriving SHARDS from the endpoints is wrong for specs like
+# `--array=1-8:2` (drops ~43% of a 100-line manifest) or `--array=1,2,5` (~40%).
+# Those runs complete "successfully" with a partial cache, which is the worst
+# possible failure mode. So: prefer SLURM_ARRAY_TASK_COUNT (the true number of
+# tasks), and refuse to start when the array is not a dense contiguous range.
+ARRAY_COUNT="${SLURM_ARRAY_TASK_COUNT:-}"
+SPAN=$(( TASK_MAX - TASK_MIN + 1 ))
+
+if [ -n "${ANI_SHARDS:-}" ]; then
+    # Explicit override: trust it, but validate against what Slurm reports.
+    SHARDS="${ANI_SHARDS}"
+    SHARD="${ANI_SHARD:-$(( TASK_ID - TASK_MIN ))}"
+    if [ -n "${ARRAY_COUNT}" ] && [ "${ARRAY_COUNT}" -ne "${SHARDS}" ]; then
+        printf 'array_generate: FATAL: ANI_SHARDS=%s but the array has %s tasks.\n' \
+            "${SHARDS}" "${ARRAY_COUNT}" >&2
+        printf 'array_generate: shards must equal the task count or cells are dropped.\n' >&2
+        exit 2
+    fi
+elif [ -n "${ARRAY_COUNT}" ]; then
+    if [ "${ARRAY_COUNT}" -ne "${SPAN}" ]; then
+        printf 'array_generate: FATAL: non-contiguous array (%s tasks spanning %s..%s).\n' \
+            "${ARRAY_COUNT}" "${TASK_MIN}" "${TASK_MAX}" >&2
+        printf 'array_generate: strided (1-8:2) and enumerated (1,2,5) arrays would\n' >&2
+        printf 'array_generate: silently process a SUBSET of the manifest.\n' >&2
+        printf 'array_generate: use a dense range (--array=0-%s) or set ANI_SHARD/ANI_SHARDS.\n' \
+            "$(( ARRAY_COUNT - 1 ))" >&2
+        exit 2
+    fi
+    SHARDS="${ARRAY_COUNT}"
+    SHARD="${ANI_SHARD:-$(( TASK_ID - TASK_MIN ))}"
+else
+    # No SLURM_ARRAY_TASK_COUNT (very old Slurm, or a non-array run).
+    SHARDS="${SPAN}"
+    SHARD="${ANI_SHARD:-$(( TASK_ID - TASK_MIN ))}"
+fi
+
 [ "${SHARDS}" -ge 1 ] || SHARDS=1
+if [ "${SHARD}" -lt 0 ] || [ "${SHARD}" -ge "${SHARDS}" ]; then
+    printf 'array_generate: FATAL: shard %s out of range for %s shards.\n' \
+        "${SHARD}" "${SHARDS}" >&2
+    exit 2
+fi
 
 # --- manifest ---------------------------------------------------------------
 MANIFEST="${ANI_MANIFEST:-}"

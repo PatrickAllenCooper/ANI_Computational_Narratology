@@ -49,6 +49,15 @@ BUDGET_GENERATORS = ["gpt-5.4-nano", "claude-haiku-4-5", "grok-4-1-fast-reasonin
 ALL_GENERATORS = BUDGET_GENERATORS + ["claude-sonnet-4-6"]
 ARMS = ["raw", "standard_cot", "narrative_cot"]
 OUT_CSV = OUT_DIR / "brokenmath_raw.csv"
+# The amended (UNRESOLVED) regime writes to its OWN file. brokenmath_raw.csv is
+# a git-tracked committed result underpinning the submitted paper; opening it
+# with mode "w" under a different prompt regime would destroy it.
+OUT_CSV_UNRESOLVED = OUT_DIR / "brokenmath_raw_unresolved.csv"
+
+
+def out_csv_for(allow_unresolved: bool):
+    """Output path for the regime. Never let the two regimes share a file."""
+    return OUT_CSV_UNRESOLVED if allow_unresolved else OUT_CSV
 DEFAULT_JUDGE = os.environ.get("BROKENMATH_JUDGE", "claude-haiku-4-5")
 VERDICT_INSTRUMENT = "brokenmath"
 
@@ -105,6 +114,7 @@ def _generate(
 
 def _run_cell(
     item, gen: str, arm: str, judge: str, *, allow_unresolved: bool = False,
+    emit_accuracy: bool = False,
 ) -> dict:
     response, empty = _generate(
         item.problem, gen, arm, item.problem_id,
@@ -131,15 +141,22 @@ def _run_cell(
         # Extra columns exist only in the amended regime, so the default CSV
         # schema is unchanged.
         verdict = extract_verdict(response, VERDICT_INSTRUMENT)
-        # The presented statement is false for adversarial items and true for
-        # the originals, so that is the ground truth the forced line is scored
-        # against. UNRESOLVED is never correct (see score_against_gold).
-        gold = "FALSE" if getattr(item, "is_adversarial", True) else "TRUE"
-        scored_v = score_against_gold(verdict, gold, VERDICT_INSTRUMENT)
         row["verdict"] = verdict
-        row["verdict_gold"] = gold
-        row["verdict_correct"] = int(scored_v["correct"])
         row["verdict_noncommittal"] = int(is_noncommittal(verdict))
+        # Accuracy columns are emitted ONLY when the run contains both truth
+        # values. All 451 rows of the shipped benchmark are is_adversarial=True,
+        # so on that corpus a gold derived from the flag is the constant "FALSE"
+        # and "verdict_correct" would merely be the rate of answering FALSE -- a
+        # model answering FALSE unconditionally would score 100%. Emitting it
+        # anyway invites it to be misread as accuracy. Build a matched TRUE
+        # stratum with scripts/brokenmath_true_stratum.py (PI-verified) to make
+        # the contrast real; emit_accuracy is decided at run level in main().
+        if emit_accuracy:
+            gold = "FALSE" if getattr(item, "is_adversarial", True) else "TRUE"
+            scored_v = score_against_gold(verdict, gold, VERDICT_INSTRUMENT)
+            row["verdict_gold"] = gold
+            # UNRESOLVED is never correct (see score_against_gold).
+            row["verdict_correct"] = int(scored_v["correct"])
     return row
 
 
@@ -164,8 +181,21 @@ def main() -> int:
     generators = [g.strip() for g in args.generators.split(",") if g.strip()]
     arms = [a.strip() for a in args.arms.split(",") if a.strip()]
 
+    # Accuracy against the forced verdict line is only meaningful when the item
+    # set spans both truth values; on the shipped all-adversarial benchmark it
+    # would be the constant-FALSE degenerate metric described in _run_cell.
+    truth_values = {bool(getattr(i, "is_adversarial", True)) for i in items}
+    emit_accuracy = allow_unresolved and len(truth_values) > 1
+
     print(f"BrokenMath: n={len(items)} gens={generators} arms={arms} judge={args.judge}", flush=True)
     print(f"  forced-verdict UNRESOLVED amendment: {'ON' if allow_unresolved else 'OFF'}", flush=True)
+    if allow_unresolved and not emit_accuracy:
+        print(
+            "  NOTE: all items share one truth value (no TRUE stratum), so "
+            "verdict_gold/verdict_correct are NOT emitted -- they would be "
+            "degenerate. See scripts/brokenmath_true_stratum.py.",
+            flush=True,
+        )
     tasks = [(item, gen, arm) for item in items for gen in generators for arm in arms]
     print(f"  tasks: {len(tasks)}", flush=True)
 
@@ -176,6 +206,7 @@ def main() -> int:
             ex.submit(
                 _run_cell, item, gen, arm, args.judge,
                 allow_unresolved=allow_unresolved,
+                emit_accuracy=emit_accuracy,
             ): (item.problem_id, gen, arm)
             for item, gen, arm in tasks
         }
@@ -191,12 +222,13 @@ def main() -> int:
     if not rows:
         return 1
 
+    out_csv = out_csv_for(allow_unresolved)
     fieldnames = sorted({k for r in rows for k in r})
-    with OUT_CSV.open("w", newline="", encoding="utf-8") as f:
+    with out_csv.open("w", newline="", encoding="utf-8") as f:
         w = csv.DictWriter(f, fieldnames=fieldnames, extrasaction="ignore")
         w.writeheader()
         w.writerows(rows)
-    print(f"Wrote {len(rows)} rows to {OUT_CSV}")
+    print(f"Wrote {len(rows)} rows to {out_csv}")
     return 0
 
 

@@ -1,0 +1,70 @@
+# ANI / Narration-of-Thought — Python dependencies
+#
+# Derived by AST-scanning scripts/ for third-party imports (not guessed).
+# Python 3.11 (the repo's venv is 3.11.x).
+#
+#   python3.11 -m venv .venv && source .venv/bin/activate
+#   pip install -r requirements.txt
+#
+# On CURC put the venv on /projects, NOT /home (2 GB quota). See
+# Guidance_Documents/curc_runbook.md.
+
+# --- hosted model access (Azure Foundry, xAI, DeepSeek) ---
+openai>=1.40
+azure-ai-projects>=1.0.0b1
+azure-identity>=1.17
+requests>=2.31
+urllib3>=2.0
+
+# --- config ---
+python-dotenv>=1.0
+
+# --- data / analysis ---
+pandas>=2.0
+numpy>=1.26
+scipy>=1.11
+scikit-learn>=1.3
+datasets>=2.19
+
+# --- figures ---
+matplotlib>=3.8
+seaborn>=0.13
+
+# --- utilities ---
+tqdm>=4.66
+
+# --- notebooks (needed only for the .ipynb entry points, not for scripts/) ---
+jupyter>=1.0
+
+# ---------------------------------------------------------------------------
+# OPTIONAL: nice-to-have, guarded at every call site
+# ---------------------------------------------------------------------------
+# tiktoken — real BPE token counts for the Crowd-Gold wrapper token-matching
+# check. scripts/run_crowdgold_aita.py falls back to a regex counter when it is
+# absent (and says so), so this is not required.
+# tiktoken>=0.7
+#
+# pytest — the test suites are standalone and run without it:
+#     python -m scripts.test_verdict_format
+# Install it only if you prefer `python -m pytest scripts/test_*.py`.
+# pytest>=8.0
+
+# ---------------------------------------------------------------------------
+# OPTIONAL: open-weight GPU stack (CURC only; NOT installed by default)
+# ---------------------------------------------------------------------------
+# Required only for scripts/local_backend.py's HF path, scripts/propensity.py's
+# exact teacher-forced scoring, and the activation_guided_thinking/ line. The
+# hosted-model studies (S2 rationale, Crowd-Gold AITA, anything routed through
+# scripts/generators.py) need NONE of this — every heavy import is lazy, so all
+# modules import cleanly without it.
+#
+# NOTE: vLLM is NOT in CURC's Lmod module stack (CURC documents Ollama and
+# `module load hf-transformers` only). Install it into a self-managed venv or
+# build an Apptainer image; scripts/local_backend.py falls back to the HF path
+# automatically when vLLM is unavailable. Match the CUDA build to the target
+# partition: H200 needs CUDA >12.0, RTX Pro 6000 needs CUDA >12.8.
+#
+# torch>=2.4
+# transformers>=4.44
+# accelerate>=0.33
+# vllm>=0.6
