@@ -1,0 +1,150 @@
+{
+ "models": [
+  "gpt-5.4-nano",
+  "grok-4-1-fast-reasoning"
+ ],
+ "n_items": 40,
+ "n_perturbations": 12,
+ "samples": 2,
+ "per_model": {
+  "gpt-5.4-nano": {
+   "clean_p_at_fault": 0.7375,
+   "shifts": [
+    {
+     "perturbation": 0,
+     "name": "trailing_newline",
+     "shift": 0.0
+    },
+    {
+     "perturbation": 1,
+     "name": "leading_blank_line",
+     "shift": -0.0375
+    },
+    {
+     "perturbation": 2,
+     "name": "double_space_after_period",
+     "shift": -0.05
+    },
+    {
+     "perturbation": 3,
+     "name": "collapse_paragraph_breaks",
+     "shift": -0.0875
+    },
+    {
+     "perturbation": 4,
+     "name": "crlf_line_endings",
+     "shift": 0.0
+    },
+    {
+     "perturbation": 5,
+     "name": "indent_paragraphs",
+     "shift": -0.0875
+    },
+    {
+     "perturbation": 6,
+     "name": "curly_apostrophes",
+     "shift": -0.025
+    },
+    {
+     "perturbation": 7,
+     "name": "curly_quotes",
+     "shift": -0.0375
+    },
+    {
+     "perturbation": 8,
+     "name": "ellipsis_character",
+     "shift": -0.0625
+    },
+    {
+     "perturbation": 9,
+     "name": "en_dash_for_hyphen",
+     "shift": 0.0
+    },
+    {
+     "perturbation": 10,
+     "name": "drop_contraction_apostrophes",
+     "shift": -0.05
+    },
+    {
+     "perturbation": 11,
+     "name": "spaces_around_slash",
+     "shift": -0.0375
+    }
+   ],
+   "abs_mean": 0.03958333333333333,
+   "abs_p95": 0.0875,
+   "abs_max": 0.0875
+  },
+  "grok-4-1-fast-reasoning": {
+   "clean_p_at_fault": 0.9875,
+   "shifts": [
+    {
+     "perturbation": 0,
+     "name": "trailing_newline",
+     "shift": 0.0125
+    },
+    {
+     "perturbation": 1,
+     "name": "leading_blank_line",
+     "shift": -0.0125
+    },
+    {
+     "perturbation": 2,
+     "name": "double_space_after_period",
+     "shift": 0.0
+    },
+    {
+     "perturbation": 3,
+     "name": "collapse_paragraph_breaks",
+     "shift": 0.0125
+    },
+    {
+     "perturbation": 4,
+     "name": "crlf_line_endings",
+     "shift": 0.0125
+    },
+    {
+     "perturbation": 5,
+     "name": "indent_paragraphs",
+     "shift": -0.0125
+    },
+    {
+     "perturbation": 6,
+     "name": "curly_apostrophes",
+     "shift": 0.0
+    },
+    {
+     "perturbation": 7,
+     "name": "curly_quotes",
+     "shift": 0.0
+    },
+    {
+     "perturbation": 8,
+     "name": "ellipsis_character",
+     "shift": -0.0125
+    },
+    {
+     "perturbation": 9,
+     "name": "en_dash_for_hyphen",
+     "shift": 0.0
+    },
+    {
+     "perturbation": 10,
+     "name": "drop_contraction_apostrophes",
+     "shift": 0.0
+    },
+    {
+     "perturbation": 11,
+     "name": "spaces_around_slash",
+     "shift": 0.0
+    }
+   ],
+   "abs_mean": 0.0062499999999999995,
+   "abs_p95": 0.0125,
+   "abs_max": 0.0125
+  }
+ },
+ "observed_effect": 0.039,
+ "observed_percentile_of_nuisance": 79.16666666666666,
+ "verdict": "INSIDE the nuisance range -- NOT distinguishable from inert rewording"
+}
