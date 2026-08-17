@@ -271,17 +271,17 @@ sbatch --array=0-15%8 --export=ALL,ANI_MANIFEST=$PWD/work_manifest.qwen3-8b.json
        slurm/array_generate.sbatch
 ```
 
-Defaults baked into the file: `--partition=ah200 --gres=gpu:h200_2g.35gb:1 --qos=gpu-normal --time=08:00:00`, `--requeue`, `--open-mode=append`, `--signal=B:USR1@300`, logs at `slurm_logs/%x_%A_%a.{out,err}`. Override anything on the command line; the header comment lists ready-made alternates for the aa100 debug queue, RTX Pro 6000 MIG, and whole-GPU tensor-parallel runs. **Never submit one array job against a manifest that mixes models you haven't sized `--gres` for** — a shard would load every model it encounters into the same GPU allocation (§2).
+Defaults baked into the file: `--partition=ah200 --gres=gpu:h200_2g.35gb:1 --qos=normal --time=08:00:00`, `--requeue`, `--open-mode=append`, `--signal=B:USR1@300`, logs at `slurm_logs/%x_%A_%a.{out,err}`. Override anything on the command line; the header comment lists ready-made alternates for the aa100 debug queue, RTX Pro 6000 MIG, and whole-GPU tensor-parallel runs. **Never submit one array job against a manifest that mixes models you haven't sized `--gres` for** — a shard would load every model it encounters into the same GPU allocation (§2).
 
 Always smoke first, on the cheap queue:
 
 ```bash
-sbatch --partition=aa100 --qos=gpu-testing --gres=gpu:a100-40gb:1 --time=01:00:00 \
+sbatch --partition=aa100 --qos=testing --gres=gpu:a100-40gb:1 --time=01:00:00 \
        --array=0-1 --export=ALL,ANI_MANIFEST=$PWD/work_manifest.jsonl,ANI_MAX_CELLS=5 \
        slurm/array_generate.sbatch
 ```
 
-`gpu-testing` is capped at 1 hour and 5 concurrent jobs, is billed at 10%, and is valid **only on `aa100` and `ami100`**.
+The testing QOS is capped at 1 hour and 5 concurrent jobs, is billed at 10% per CURC docs, and is valid **only on `aa100` and `ami100`** — but confirm the exact name (`testing` vs `gpu-testing`) via `preflight.sh`'s `AllowQos=` output (§1.2, U2) before relying on it; `bare 'testing'` is this repo's corrected best guess, not yet independently verified on this account.
 
 ### 4.2 Sharding
 
