@@ -55,10 +55,16 @@
 #            slurm/serve_vllm.sbatch
 #
 #   8B smoke on the debug queue (1 h cap, billed at 10% -- confirmed via
-#   TRESBillingWeights UsageFactor=0.100000; valid ONLY on aa100 and ami100):
-#     sbatch --partition=aa100 --qos=gpu-testing --gres=gpu:a100-40gb:1 \
+#   TRESBillingWeights UsageFactor=0.100000; valid ONLY on aa100 and ami100).
+#   CONFIRMED 2026-08-17 the hard way (a real submission failed with Slurm
+#   error 7): gpu-testing on aa100 permits ONLY the a100_3g.20gb MIG slice as
+#   a GRES type -- an 8B model in bf16 (~16GB) fits its 20GB with only ~4GB
+#   left for KV cache, tight but workable for a short smoke test with modest
+#   --max-model-len:
+#     sbatch --partition=aa100 --qos=gpu-testing --gres=gpu:a100_3g.20gb:1 \
 #            --time=01:00:00 --cpus-per-task=4 --mem=48G \
-#            --export=ALL,ANI_SERVE_MODEL=qwen3-8b slurm/serve_vllm.sbatch
+#            --export=ALL,ANI_SERVE_MODEL=qwen3-8b,ANI_SERVE_MAX_MODEL_LEN=4096 \
+#            slurm/serve_vllm.sbatch
 #
 # HOW CLIENTS FIND IT
 #   The server writes "host:port" as the first line of

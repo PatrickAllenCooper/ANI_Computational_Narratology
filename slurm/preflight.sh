@@ -43,7 +43,15 @@ PROBE_COMPUTE=0
 PROBE_WAIT=600
 JSON_OUT=""
 PROBE_PARTITION="${ANI_PROBE_PARTITION:-aa100}"
-PROBE_GRES="${ANI_PROBE_GRES:-a100-40gb}"
+# CONFIRMED 2026-08-17: gpu-testing QOS on aa100 permits ONLY a100_3g.20gb as
+# a GRES type (ami100's gpu-testing permits only mi100) -- NOT the full-size
+# a100-40gb/a100_80gb cards. A real --probe-compute submission with
+# --gres=gpu:a100-40gb:1 --qos=gpu-testing failed with Slurm error 7 ("Valid
+# GRES types for this partition and QoS selection are: a100_3g.20gb"). This
+# was not obvious from sacctmgr's MaxTRESPU listing alone (which reads like a
+# concurrency cap, not an exhaustive allow-list) until the submission itself
+# proved it.
+PROBE_GRES="${ANI_PROBE_GRES:-a100_3g.20gb}"
 
 # --- unknown tracking -------------------------------------------------------
 U1_STATUS="UNRESOLVED"; U1_NOTE="Slurm account name / allocation balance"
@@ -275,14 +283,21 @@ if have sinfo; then
         fi
     done
     note "QoS= above is the partition DEFAULT; AllowQos= is the full permitted"
-    note "list -- that is what --qos= must name. A sibling project on this same"
-    note "account (/Users/pat/code/blanc/hpc/*.sh, 30 real job scripts) uses"
-    note "bare 'normal'/'long'/'mem' on aa100/amilan/amem -- NOT 'gpu-normal' or"
-    note "'gpu-long'. The gpu-* names baked into array_generate.sbatch's and"
-    note "serve_vllm.sbatch's #SBATCH defaults are this script's best guess for"
-    note "the NEW ah200/artxpro6000/gh200 tier specifically (no sibling project"
-    note "has touched them); AllowQos= above is the arbiter -- trust it over"
-    note "either source."
+    note "list -- that is what --qos= must name. CONFIRMED 2026-08-17 on this"
+    note "account: it is 'gpu-normal'/'gpu-long' (add 'gpu-testing' on aa100/"
+    note "ami100) -- bare 'normal'/'long'/'testing' do NOT appear in any GPU"
+    note "partition's AllowQos= here, contrary to an earlier inference this repo"
+    note "made from a sibling project's aa100 usage. array_generate.sbatch and"
+    note "serve_vllm.sbatch default to the gpu-* names now, marked confirmed."
+    note "If YOUR AllowQos= above disagrees with that, trust what you just read"
+    note "over this note -- it is account-specific and can differ from ours."
+    note ""
+    note "ALSO CONFIRMED THE HARD WAY: gpu-testing's MaxTRESPU grant"
+    note "(gres/gpu:a100_3g.20gb=1,gres/gpu:mi100=1) is not just a concurrency"
+    note "cap on those two GRES types -- a real submission with"
+    note "--gres=gpu:a100-40gb:1 --qos=gpu-testing failed (Slurm error 7: "
+    note "'Valid GRES types ... are: a100_3g.20gb'). Under gpu-testing on aa100,"
+    note "a100_3g.20gb is the ONLY legal GRES type (mi100 on ami100)."
 else
     bad "sinfo not found -- are you on a login node with the Slurm client?"
 fi

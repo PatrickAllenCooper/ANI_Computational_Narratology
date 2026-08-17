@@ -462,6 +462,21 @@ def render_warnings(est: Estimate) -> str:
             f"QOS {est.qos!r} is valid ONLY on partitions aa100 and ami100, is capped at\n"
             "    1 hour and 5 concurrent jobs, and is documented as billed at 10%."
         )
+        # CONFIRMED THE HARD WAY 2026-08-17: gpu-testing's MaxTRESPU grant is
+        # not just a concurrency cap on a100_3g.20gb/mi100 -- it is the
+        # EXHAUSTIVE list of GRES types that QOS permits at all. A real
+        # submission with --gres=gpu:a100-40gb:1 --qos=gpu-testing failed
+        # with Slurm error 7 ("Valid GRES types ... are: a100_3g.20gb").
+        allowed_under_testing = {
+            g for (q, g) in QOS_MAX_GRES_PER_USER if q == "gpu-testing"
+        }
+        if allowed_under_testing and est.gres not in allowed_under_testing:
+            warn.append(
+                f"'{est.gres}' will be REJECTED under QOS {est.qos!r} (Slurm error 7,"
+                f" confirmed 2026-08-17): the only legal GRES type(s) under gpu-testing"
+                f" are {sorted(allowed_under_testing)}. Use a100_3g.20gb on aa100 or"
+                f" mi100 on ami100 for a debug/smoke submission."
+            )
     valid = QOS_BY_PARTITION.get(est.partition)
     if valid and est.qos not in valid:
         warn.append(
@@ -711,6 +726,17 @@ def _smoke() -> int:
     warning_text = render_warnings(over_cap)
     assert "EXCEEDS the per-user cap" in warning_text, warning_text
     print("[smoke] MaxTRESPU over-cap warning fires correctly")
+
+    # Reproduces the exact real-world failure from 2026-08-17: a real
+    # --probe-compute submission with --gres=gpu:a100-40gb:1 --qos=gpu-testing
+    # failed with Slurm error 7 before this check existed.
+    bad_testing_gres = estimate(gres="a100-40gb", gpus=1, cores=4, hours=1.0, qos="gpu-testing")
+    bad_warning = render_warnings(bad_testing_gres)
+    assert "will be REJECTED" in bad_warning, bad_warning
+    ok_testing_gres = estimate(gres="a100_3g.20gb", gpus=1, cores=4, hours=1.0, qos="gpu-testing")
+    ok_warning = render_warnings(ok_testing_gres)
+    assert "will be REJECTED" not in ok_warning, ok_warning
+    print("[smoke] gpu-testing GRES-type restriction warning fires correctly")
 
     mig = estimate(gres="h200_2g.35gb", gpus=1, cores=4, hours=8.0)
     print(f"[smoke] 8h on h200_2g.35gb -> confirmed exact rate "

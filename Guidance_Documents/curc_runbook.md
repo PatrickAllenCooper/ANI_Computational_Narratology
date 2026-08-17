@@ -289,12 +289,12 @@ Defaults baked into the file: `--partition=ah200 --gres=gpu:h200_2g.35gb:1 --qos
 Always smoke first, on the cheap queue:
 
 ```bash
-sbatch --partition=aa100 --qos=gpu-testing --gres=gpu:a100-40gb:1 --time=01:00:00 \
+sbatch --partition=aa100 --qos=gpu-testing --gres=gpu:a100_3g.20gb:1 --time=01:00:00 \
        --array=0-1 --export=ALL,ANI_MANIFEST=$PWD/work_manifest.jsonl,ANI_MAX_CELLS=5 \
        slurm/array_generate.sbatch
 ```
 
-`gpu-testing` is capped at 1 hour and 5 concurrent jobs, is billed at 10% (confirmed via `UsageFactor=0.100000`, §1.2 U3), and is valid **only on `aa100` and `ami100`**.
+`gpu-testing` is capped at 1 hour and 5 concurrent jobs, is billed at 10% (confirmed via `UsageFactor=0.100000`, §1.2 U3), and is valid **only on `aa100` and `ami100`**. **The GRES type must be `a100_3g.20gb`** (or `mi100` on `ami100`) — confirmed the hard way on 2026-08-17: a real submission with `--gres=gpu:a100-40gb:1 --qos=gpu-testing` failed with Slurm error 7, `Valid GRES types for this partition and QoS selection are: a100_3g.20gb`. `gpu-testing`'s `MaxTRESPU` grant (`gres/gpu:a100_3g.20gb=1,gres/gpu:mi100=1`) is not just a concurrency cap on those two types — it turns out to be the *exhaustive* list of GRES types that QOS permits at all.
 
 ### 4.2 Sharding
 

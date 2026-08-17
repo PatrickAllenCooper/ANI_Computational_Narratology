@@ -68,8 +68,11 @@
 # ALTERNATE ALLOCATIONS -- override on the sbatch command line, or edit above.
 #
 #   Debug / smoke (1 h cap, 5 concurrent jobs, billed at 10% -- confirmed via
-#   TRESBillingWeights UsageFactor=0.100000; valid ONLY on aa100 and ami100):
-#     sbatch --partition=aa100 --qos=gpu-testing --gres=gpu:a100-40gb:1 \
+#   TRESBillingWeights UsageFactor=0.100000; valid ONLY on aa100 and ami100).
+#   CONFIRMED 2026-08-17 the hard way (a real submission failed with Slurm
+#   error 7): gpu-testing on aa100 permits ONLY the a100_3g.20gb MIG slice as
+#   a GRES type, NOT a full a100-40gb/a100_80gb card. On ami100, only mi100.
+#     sbatch --partition=aa100 --qos=gpu-testing --gres=gpu:a100_3g.20gb:1 \
 #            --time=01:00:00 --array=0-1 ...
 #
 #   RTX Pro 6000 MIG (needs CUDA >12.8):
