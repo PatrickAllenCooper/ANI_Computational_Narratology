@@ -160,12 +160,15 @@ fi
 # ---------------------------------------------------------------------------
 sec "U1  SLURM ACCOUNT AND ALLOCATION"
 
+ACCOUNT_COUNT=0
 if have sacctmgr; then
     sub "sacctmgr associations for ${ANI_USER}"
     soft sacctmgr -nP show associations user="${ANI_USER}" \
         format=Account,Cluster,Partition,QOS,GrpTRESMins
-    DISCOVERED_ACCOUNT="$(sacctmgr -nP show associations user="${ANI_USER}" format=Account 2>/dev/null \
-                          | grep -v '^$' | sort -u | head -1 || true)"
+    ALL_ACCOUNTS="$(sacctmgr -nP show associations user="${ANI_USER}" format=Account 2>/dev/null \
+                    | grep -v '^$' | sort -u || true)"
+    ACCOUNT_COUNT="$(printf '%s\n' "${ALL_ACCOUNTS}" | grep -c . || true)"
+    DISCOVERED_ACCOUNT="$(printf '%s\n' "${ALL_ACCOUNTS}" | head -1)"
 else
     bad "sacctmgr not found"
 fi
@@ -198,11 +201,19 @@ else
     bad "ask RC support, then: export SBATCH_ACCOUNT=<your-account>"
     U1_NOTE="no account discovered; set SBATCH_ACCOUNT manually"
 fi
-note "an explicit --account= may not even be required: a sibling project on"
-note "this account (/Users/pat/code/blanc/hpc/*.sh) submits 30 real job"
-note "scripts, none of which sets --account= -- a single default association"
-note "is common. If sacctmgr above shows exactly one account, try submitting"
-note "without SBATCH_ACCOUNT before assuming you need to set it."
+if [ "${ACCOUNT_COUNT}" -gt 1 ] 2>/dev/null; then
+    note "sacctmgr found ${ACCOUNT_COUNT} associations for ${ANI_USER}, not one"
+    note "default -- SET SBATCH_ACCOUNT explicitly (the export printed above)."
+    note "Confirmed in practice on 2026-08-17: an account with multiple"
+    note "associations (ucb-general/ucb736_asc1/ucb738_asc1) needed one picked"
+    note "explicitly; check 'sshare' above for fairshare/usage across them"
+    note "before choosing which to bill against."
+elif [ "${ACCOUNT_COUNT}" -eq 1 ] 2>/dev/null; then
+    note "sacctmgr found exactly one association -- an explicit --account= may"
+    note "not even be required (a single default association is common); try"
+    note "submitting without SBATCH_ACCOUNT before assuming you need to set it,"
+    note "and fall back to the export above if sbatch rejects the submission."
+fi
 
 # ---------------------------------------------------------------------------
 # U2: real GRES inventory

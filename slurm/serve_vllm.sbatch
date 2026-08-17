@@ -2,7 +2,7 @@
 #SBATCH --job-name=ani-vllm
 #SBATCH --partition=ah200
 #SBATCH --gres=gpu:h200:2
-#SBATCH --qos=long
+#SBATCH --qos=gpu-long
 #SBATCH --time=24:00:00
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
@@ -32,18 +32,31 @@
 #
 # SUBMIT
 #   mkdir -p slurm_logs
-#   # Try WITHOUT SBATCH_ACCOUNT first -- see array_generate.sbatch's SUBMIT
-#   # comment; a sibling project on this account never sets --account=.
+#   # See array_generate.sbatch's SUBMIT comment: set SBATCH_ACCOUNT to what
+#   # your own preflight.sh (U1) recommends -- this account has three
+#   # associations, not one default.
+#   export SBATCH_ACCOUNT=ucb736_asc1
 #   sbatch --export=ALL,ANI_SERVE_MODEL=qwen3-32b slurm/serve_vllm.sbatch
 #
-#   70B on four whole H200s:
-#     sbatch --gres=gpu:h200:4 --cpus-per-task=32 --mem=400G --time=48:00:00 \
+#   70B: the QOS caps force a choice, confirmed 2026-08-17 via `sacctmgr show
+#   qos` on this account -- gpu-normal allows 4 concurrent whole h200 units
+#   but MaxWall=24h; gpu-long allows up to 7 days but caps h200 at 2 units.
+#   You cannot have both 4 GPUs AND >24h on a single job. Two honest options:
+#
+#     # (a) 4 whole H200s, <=24h (a long single-day run):
+#     sbatch --qos=gpu-normal --gres=gpu:h200:4 --cpus-per-task=32 --mem=400G \
+#            --time=24:00:00 \
 #            --export=ALL,ANI_SERVE_MODEL=llama-3.3-70b slurm/serve_vllm.sbatch
 #
-#   8B smoke on the debug queue (1 h cap, billed at 10% per CURC docs; QOS
-#   name unconfirmed on this new partition tier -- see the QOS NAMING note
-#   in array_generate.sbatch and preflight.sh's AllowQos= output):
-#     sbatch --partition=aa100 --qos=testing --gres=gpu:a100-40gb:1 \
+#     # (b) 2 whole H200s (TP=2; 2x141GB is already enough for 70B bf16 +
+#     # KV cache), up to 7 days:
+#     sbatch --qos=gpu-long --gres=gpu:h200:2 --cpus-per-task=16 --mem=200G \
+#            --time=48:00:00 --export=ALL,ANI_TP_SIZE=2,ANI_SERVE_MODEL=llama-3.3-70b \
+#            slurm/serve_vllm.sbatch
+#
+#   8B smoke on the debug queue (1 h cap, billed at 10% -- confirmed via
+#   TRESBillingWeights UsageFactor=0.100000; valid ONLY on aa100 and ami100):
+#     sbatch --partition=aa100 --qos=gpu-testing --gres=gpu:a100-40gb:1 \
 #            --time=01:00:00 --cpus-per-task=4 --mem=48G \
 #            --export=ALL,ANI_SERVE_MODEL=qwen3-8b slurm/serve_vllm.sbatch
 #

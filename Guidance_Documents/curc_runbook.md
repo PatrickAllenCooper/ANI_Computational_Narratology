@@ -31,74 +31,87 @@ The published CURC documentation is incomplete or self-contradictory on six poin
 
 | ID | Topic | Why it matters | How preflight resolves it | If it stays UNRESOLVED |
 |---|---|---|---|---|
-| **U1** | Slurm account | Most sites require one; **on this account it may not be needed at all** — a sibling project (§1.2b) submits 30 real, working jobs with no `--account=` anywhere, consistent with a single default association | `sacctmgr show associations`, `sshare` | If `sacctmgr` shows exactly one account, try submitting without `SBATCH_ACCOUNT` before assuming you need it; if a submission is rejected for lacking one, ask RC support, then `export SBATCH_ACCOUNT=<acct>` |
-| **U2** | Real GRES inventory + QOS names | The docs are internally inconsistent — the quick-start says 41 GPUs, the hardware table implies ~130. Array width and queue expectations depend on which is true. Preflight also now surfaces each partition's real `AllowQos=` list (see §1.2b — bare `normal`/`long`/`mem` is proven correct on `aa100`/`amilan`/`amem`; the `gpu-normal`/`gpu-long`/`gpu-testing` names baked into the `slurm/*.sbatch` defaults are unconfirmed guesses for the newer `ah200`/`artxpro6000`/`gh200` tier specifically) | `sinfo -p <part> -o "%N %G"` per partition, plus a per-GRES-type aggregate; `scontrol show partition <p>` for `AllowQos=` | Re-run on a login node where `sinfo`/`scontrol` can see the GPU partitions |
-| **U3** | SU billing weights | Only **108.6 SU per A100-GPU-hour** is published. H200 / RTX Pro 6000 / GH200 factors are not. A 3x surprise is the difference between a comfortable study and a spent allocation | `scontrol show partition <p>` → `TRESBillingWeights` | Budget against `su_estimate.py`'s **high (3x)** column and ask RC support |
+| **U1** | Slurm account | **RESOLVED 2026-08-17.** `sacctmgr` discovered three associations for this account (`ucb-general`, `ucb736_asc1`, `ucb738_asc1`); preflight picked `ucb736_asc1` and printed `export SBATCH_ACCOUNT='ucb736_asc1'`. An explicit account turned out to be discoverable, not optional as first guessed | `sacctmgr show associations`, `sshare` | N/A — resolved. If `sbatch` ever rejects a submission for a missing account anyway, export the printed value |
+| **U2** | Real GRES inventory + QOS names | **RESOLVED 2026-08-17, definitively, and the earlier doc-inference in this file was wrong.** A real preflight run's `scontrol show partition <p>` printed `AllowQos=` directly: `gpu-normal,gpu-long,gpu-testing` on `aa100`/`ami100`, `gpu-normal,gpu-long` on `ah200`/`artxpro6000`/`al40`. Bare `normal`/`long`/`testing` are valid QOS names on this account in general but are **absent from every GPU partition's `AllowQos=`** — a prior revision of this runbook had inferred bare names from a sibling project's `aa100` usage (§1.2b), which does not hold on this account's actual GPU-partition grants. `slurm/*.sbatch` and `slurm/su_estimate.py` now default to the confirmed `gpu-*` names | `sinfo -p <part> -o "%N %G"` per partition; `scontrol show partition <p>` for `AllowQos=` | N/A — resolved. Re-run preflight if the cluster's QOS grants ever change |
+| **U3** | SU billing weights | **RESOLVED 2026-08-17.** `scontrol show partition <p>` prints `TRESBillingWeights` directly, and preflight now reads it for every GPU partition. Real confirmed rates (SU/GPU-hour): `a100-40gb`=108.6 (matches the one published figure), `a100_80gb`=130.396, `a100_3g.20gb`=54.3, `h200`=370.406, `h200_3g.71gb`=185.203, `h200_2g.35gb`=123.468, `rtx_pro_6000`=260.402, `rtx_pro_6000_2g.48gb`=130.201, `rtx_pro_6000_1g.24gb`=65.1, `l40`=138.417, `mi100`=85.507, `gh200`=368.988. CPU billed at 0.5 SU/core-hour (not the generically-documented 1.0) on every one of these partitions. All transcribed into `slurm/su_estimate.py`'s `GRES_TABLE` — no more 1x/2x/3x guessing band for any GRES type this project uses. **Bonus finding**: each QOS also caps per-user concurrent GRES units (`MaxTRESPU` — e.g. `gpu-normal` allows at most 4 concurrent whole `h200`, `gpu-long` only 2); `su_estimate.py` now warns when a requested shape exceeds this | `scontrol show partition <p>` → `TRESBillingWeights`; `sacctmgr show qos format=Name,MaxTRESPU` | N/A — resolved |
 | **U4** | Compute-node internet | Documented as unverified. If compute nodes cannot reach the hub, every job must run `HF_HUB_OFFLINE=1` against pre-staged weights or it will hang for its whole walltime | `--probe-compute` submits a 5-minute `gpu-testing` job that curls the hub | **Assume offline.** Stage from a login/DTN node. This is the default the harness already takes |
 | **U5** | Runtime path | vLLM is **not** in the Lmod module stack. Whether you get vLLM or the HF fallback decides how large the sweeps can be | checks `apptainer`/`singularity`, `nvcc`, `import vllm`, `import transformers` | Install vLLM into the venv, or accept the HF path and shrink the design (§6) |
 | **U6** | Storage | `/home` is 2 GB; `/projects` is 250 GB and backed up; `/scratch/alpine` is 10 TB, not backed up, and purged | `curc-quota`, `df`, write probes | Confirm the paths exist and are writable before staging 140 GB |
 
 `--probe-compute` costs roughly 0.2 SU (a 5-minute `gpu-testing` job billed at 10%). Run it once; the answer is worth far more than that.
 
-### 1.2b Proven reference: a sibling project on this account
+### 1.2b Two sources, and what really happened when they disagreed
 
-Before trusting any doc-sourced guess in this runbook (including the earlier
-version of this file), check `/Users/pat/code/blanc/hpc/` — a separate
-research project with 30 real Slurm job scripts submitted on **this same CURC
-account** (`paco0228`). It is higher-confidence ground truth than any web
-documentation, and several things it proves directly contradict what an
-earlier CURC-docs fetch reported for this repo:
+An earlier revision of this runbook checked `/Users/pat/code/blanc/hpc/` — a
+separate research project with 30 real Slurm job scripts, apparently
+submitted on this same CURC account (`paco0228`) — and used its QOS usage
+(bare `--qos=normal`/`--qos=long` on `aa100`) to override this repo's
+original, doc-sourced `gpu-normal`/`gpu-long` defaults. **A real
+`slurm/preflight.sh` run on 2026-08-17 directly contradicted that inference**:
+`scontrol show partition aa100` printed `AllowQos=admin,gpu-normal,gpu-long,
+gpu-testing` — bare `normal`/`long` are not in it at all, on this account,
+today. The `gpu-*` defaults are correct after all, and are now marked
+CONFIRMED (not guessed) in `slurm/*.sbatch` and `slurm/su_estimate.py`.
 
-- **QOS names are bare, not `gpu`-prefixed.** All 30 scripts use
-  `--qos=normal` / `--qos=long` / `--qos=mem` on `aa100`/`amilan`/`amem` — never
-  `gpu-normal`, `gpu-long`, or `gpu-testing`. Slurm QOS objects are normally
-  cluster-wide (not partition-prefixed), so bare names working on the newer
-  `ah200`/`artxpro6000`/`gh200` tier too would be the unsurprising case — but no
-  sibling project has touched that tier, so this repo's `slurm/*.sbatch`
-  defaults now use the bare names for the tiers blanc proves, and flag the
-  `gpu-*` alternates for the new tier as unconfirmed pending your own
-  `AllowQos=` check (§1.2, U2).
-- **No `--account=` anywhere**, in any of the 30 scripts. Try submitting
-  without `SBATCH_ACCOUNT` first.
-- **Real, working paths for this account**: `ssh paco0228@login.rc.colorado.edu`,
-  project directories at `/projects/paco0228/<repo>`, HF cache at
-  `/scratch/alpine/paco0228/hf_cache`, monitoring via `squeue -u paco0228`.
-  (This repo's own scripts stay username-agnostic via `$USER`; these are
-  concrete examples, not something to hardcode.)
-- **A working vLLM install already exists on this account**: a conda
-  environment at `/projects/paco0228/software/anaconda/envs/vllm-env`, built by
-  a separate `curc-LLM-hoster` project (not present in this local checkout —
-  cluster-side only). `slurm/serve_vllm.sbatch` now checks for and prefers this
-  environment before attempting a from-scratch install on hardware nothing has
-  verified vLLM against yet. Override its path with `ANI_VLLM_CONDA_ENV` if it
-  lives somewhere else.
-- **Proven-safe vLLM serving flags**: `--enforce-eager` (skip CUDA-graph /
-  Inductor capture — blanc's comments credit this with avoiding a real,
-  observed startup OOM) and `--swap-space 8` (CPU-RAM KV-cache offload under
-  VRAM pressure). Both are now the defaults in `slurm/serve_vllm.sbatch`
-  (`ANI_SERVE_ENFORCE_EAGER=0` / `ANI_SERVE_SWAP_SPACE_GB=<n>` to change them).
-  A 70B AWQ model took blanc's real deployment **~335s to load weights + ~600s
-  for CUDA graph capture (~15 min total)** with capture *on*; with
-  `--enforce-eager` on by default here, this repo's startup timeout
-  (`ANI_SERVE_STARTUP_TIMEOUT`, default 1800s) should be conservative rather
-  than tight.
-- **Conda, not a bare venv, is blanc's environment manager**: `module load
-  anaconda` → `conda create -n <name> python=3.11` → `conda activate <name>`.
-  This repo's `slurm/env_setup.sh` already tries `module load anaconda` first
-  (§1.3) but layers a self-managed venv on top rather than a named conda
-  environment — both are valid CURC paths; conda is what has actually been
-  exercised on this account outside of `vllm-env` itself.
+The lesson kept, even though the specific correction was wrong: **prefer
+direct cluster evidence (`AllowQos=`, `TRESBillingWeights`, `MaxTRESPU` — all
+in preflight's U1–U3 output) over inference from any other source, including
+this runbook and including a sibling project's real, working scripts.** QOS
+grants are account-specific, and blanc's account/allocation may simply differ
+from this one, or its QOS names may have drifted since it last ran — either
+way, run your own preflight before trusting either.
 
-None of this is a substitute for running `slurm/preflight.sh` yourself — it is
-a second, independent, higher-confidence source to check preflight's output
-against, and the reason preflight's U1/U2 sections now print exactly the
-commands that would reconcile any disagreement.
+What preflight established directly, and is now baked into the harness:
+
+- **QOS names, confirmed**: `gpu-normal` / `gpu-long` on `ah200`/`artxpro6000`/
+  `al40`; add `gpu-testing` on `aa100`/`ami100` (1h cap, 5 concurrent jobs, 10%
+  billing — confirmed via `UsageFactor=0.100000`). `gh200` partition uses its
+  own `gh200` QOS.
+- **Account, resolved**: this account has three associations
+  (`ucb-general`, `ucb736_asc1`, `ucb738_asc1`), not a single default —
+  preflight recommends `export SBATCH_ACCOUNT='ucb736_asc1'`. Confirm this is
+  the account you want to bill against (check `sshare` for fairshare/usage
+  across the three) before your first real spend.
+- **Real billing weights and per-user concurrency caps**: see U3 above and
+  `slurm/su_estimate.py`'s `GRES_TABLE`/`QOS_MAX_GRES_PER_USER`.
+- **Real, working paths for this account** (illustrative — this repo's own
+  scripts stay username-agnostic via `$USER`): `ssh
+  paco0228@login.rc.colorado.edu`, project directories at
+  `/projects/paco0228/<repo>`, HF cache at `/scratch/alpine/paco0228/hf_cache`,
+  monitoring via `squeue -u paco0228`.
+- **A working vLLM install may already exist on this account**: blanc
+  references a conda environment at
+  `/projects/paco0228/software/anaconda/envs/vllm-env`, built by a separate
+  `curc-LLM-hoster` project. **Not yet independently confirmed to exist** — the
+  2026-08-17 preflight run checked only the login shell's default Python
+  (`miniconda3`, 3.13.9, no vllm/transformers/torch importable) and did not
+  probe that specific path. Check for it directly:
+  `ls -la /projects/$USER/software/anaconda/envs/vllm-env/bin/python` before
+  building a fresh environment from scratch. `slurm/serve_vllm.sbatch` checks
+  for and prefers it automatically if present (override path:
+  `ANI_VLLM_CONDA_ENV`).
+- **Proven-safe vLLM serving flags** (unaffected by the QOS correction above):
+  `--enforce-eager` (skip CUDA-graph / Inductor capture — blanc's comments
+  credit this with avoiding a real, observed startup OOM) and `--swap-space 8`
+  (CPU-RAM KV-cache offload under VRAM pressure). Both are now the defaults in
+  `slurm/serve_vllm.sbatch` (`ANI_SERVE_ENFORCE_EAGER=0` /
+  `ANI_SERVE_SWAP_SPACE_GB=<n>` to change them).
+- **Conda is available by default in this account's login shell** — no
+  `module load anaconda` needed; the prompt already shows `(base)`. A DEDICATED
+  env is still worth creating (`conda create -n ani-vllm python=3.11`) rather
+  than installing into `base`, since `base` runs Python 3.13.9 and some
+  torch/vllm wheel combinations lag the newest CPython minor version.
+
+None of this is a substitute for running `slurm/preflight.sh` yourself on your
+own account. Re-run it whenever the cluster's grants might have changed, and
+trust its direct output over every paragraph in this section.
 
 ### 1.3 Environment
 
 ```bash
-# Set this only if U1 (§1.2b) found you need one; try submitting without it first.
-# export SBATCH_ACCOUNT=<from U1>      # sbatch honours this; no --account needed
+# From U1 (§1.2, §1.2b): this account has three associations, not one default,
+# so set the one preflight recommended (confirm against your own run's output).
+export SBATCH_ACCOUNT=ucb736_asc1      # sbatch honours this
 python3 -m venv "/projects/$USER/ani-venv"
 "/projects/$USER/ani-venv/bin/pip" install -U pip
 "/projects/$USER/ani-venv/bin/pip" install -r requirements.txt   # if present
@@ -271,17 +284,17 @@ sbatch --array=0-15%8 --export=ALL,ANI_MANIFEST=$PWD/work_manifest.qwen3-8b.json
        slurm/array_generate.sbatch
 ```
 
-Defaults baked into the file: `--partition=ah200 --gres=gpu:h200_2g.35gb:1 --qos=normal --time=08:00:00`, `--requeue`, `--open-mode=append`, `--signal=B:USR1@300`, logs at `slurm_logs/%x_%A_%a.{out,err}`. Override anything on the command line; the header comment lists ready-made alternates for the aa100 debug queue, RTX Pro 6000 MIG, and whole-GPU tensor-parallel runs. **Never submit one array job against a manifest that mixes models you haven't sized `--gres` for** — a shard would load every model it encounters into the same GPU allocation (§2).
+Defaults baked into the file: `--partition=ah200 --gres=gpu:h200_2g.35gb:1 --qos=gpu-normal --time=08:00:00`, `--requeue`, `--open-mode=append`, `--signal=B:USR1@300`, logs at `slurm_logs/%x_%A_%a.{out,err}`. Override anything on the command line; the header comment lists ready-made alternates for the aa100 debug queue, RTX Pro 6000 MIG, and whole-GPU tensor-parallel runs. **Never submit one array job against a manifest that mixes models you haven't sized `--gres` for** — a shard would load every model it encounters into the same GPU allocation (§2). **Under `gpu-normal`, this account is capped at 6 concurrent `h200_2g.35gb` MIG slices at once (`MaxTRESPU`, confirmed via §1.2 U3)** — size `--array=0-N%C` so `C` does not exceed that, or the excess tasks queue instead of running.
 
 Always smoke first, on the cheap queue:
 
 ```bash
-sbatch --partition=aa100 --qos=testing --gres=gpu:a100-40gb:1 --time=01:00:00 \
+sbatch --partition=aa100 --qos=gpu-testing --gres=gpu:a100-40gb:1 --time=01:00:00 \
        --array=0-1 --export=ALL,ANI_MANIFEST=$PWD/work_manifest.jsonl,ANI_MAX_CELLS=5 \
        slurm/array_generate.sbatch
 ```
 
-The testing QOS is capped at 1 hour and 5 concurrent jobs, is billed at 10% per CURC docs, and is valid **only on `aa100` and `ami100`** — but confirm the exact name (`testing` vs `gpu-testing`) via `preflight.sh`'s `AllowQos=` output (§1.2, U2) before relying on it; `bare 'testing'` is this repo's corrected best guess, not yet independently verified on this account.
+`gpu-testing` is capped at 1 hour and 5 concurrent jobs, is billed at 10% (confirmed via `UsageFactor=0.100000`, §1.2 U3), and is valid **only on `aa100` and `ami100`**.
 
 ### 4.2 Sharding
 

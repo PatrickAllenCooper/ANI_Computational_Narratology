@@ -57,25 +57,36 @@ from typing import Optional
 # ---------------------------------------------------------------------------
 
 #: The single published CURC figure: SU charged per A100-GPU-hour.
+#: (Also independently confirmed via TRESBillingWeights -- see below.)
 A100_SU_PER_GPU_HOUR: float = 108.6
 
-#: SU charged per core-hour (published as 1.0 SU per core-hour).
-SU_PER_CORE_HOUR: float = 1.0
+#: SU charged per core-hour. The module docstring's generic claim was 1.0;
+#: CONFIRMED as 0.5 via `scontrol show partition <p> | grep TRESBillingWeights`
+#: on 2026-08-17 for every GPU partition this project targets (aa100, ah200,
+#: artxpro6000, al40, ami100, gh200 all report CPU=0.5). If this tool is ever
+#: pointed at a CPU-only partition (amilan, blanca-*) that has not been
+#: checked, re-verify before trusting this constant there.
+SU_PER_CORE_HOUR: float = 0.5
 
 #: Multipliers applied to the A100 factor for GRES types whose real
 #: acceleration factor CURC has not published.
 UNPUBLISHED_BAND: tuple[float, float, float] = (1.0, 2.0, 3.0)
 
-#: QOS usage factors.  The discounted testing tier is documented as billed at
-#: 10%. Both naming conventions are listed because which one is real is
-#: PARTITION-DEPENDENT, not settled: a sibling project on this same account
-#: (/Users/pat/code/blanc/hpc/*.sh, 30 real, submitted job scripts) proves
-#: bare 'normal'/'long'/'mem' on aa100/amilan/amem -- not 'gpu-normal' or
-#: 'gpu-long'. The 'gpu-*' spellings remain this script's original,
-#: doc-sourced guess, unconfirmed specifically for the newer ah200/
-#: artxpro6000/gh200 tier that sibling project has never touched. Run
-#: `slurm/preflight.sh` (its U2 section prints each partition's real
-#: AllowQos=) and trust that over either naming convention here.
+#: QOS usage factors. CONFIRMED 2026-08-17 via a real preflight.sh run on
+#: account ucb736_asc1: `scontrol show partition <p>` prints AllowQos=
+#: directly, and it is 'gpu-normal'/'gpu-long'/'gpu-testing' (usage factor
+#: 0.10 for gpu-testing, matching `sacctmgr show qos` UsageFactor=0.100000)
+#: on every GPU partition this project targets (aa100, ah200, artxpro6000,
+#: al40, ami100) -- NOT bare 'normal'/'long'/'testing', which are valid QOS
+#: names on this account in general (they appear in `sacctmgr show
+#: associations`) but are absent from every GPU partition's AllowQos= list.
+#: An earlier revision of this file inferred the bare names from a sibling
+#: project's aa100 usage (/Users/pat/code/blanc/hpc/*.sh, 30 real job
+#: scripts) that turned out not to carry over to this account -- kept here
+#: as recognized alternates (harmless if unused) rather than deleted, in
+#: case that project's account has a different AllowQos grant. Trust your
+#: own preflight.sh's AllowQos= output over this comment if they ever
+#: disagree; that is first-party evidence, this is a record of it.
 QOS_USAGE_FACTOR: dict[str, float] = {
     "normal": 1.0,
     "long": 1.0,
@@ -95,53 +106,86 @@ class GresSpec:
     gres: str
     partition: str
     #: Fraction of a whole physical GPU this GRES represents (MIG slices < 1).
+    #: Informational only since su_per_gpu_hour below (when set) is CURC's own
+    #: already-MIG-aware rate -- see the note on device_fraction below.
     device_fraction: float
-    #: True when the acceleration factor for this device IS published.
+    #: True when the acceleration factor for this device IS published/confirmed.
     factor_published: bool
     #: Approximate usable device memory in GB (planning aid only).
     memory_gb: int
+    #: CONFIRMED exact SU/GPU-hour from TRESBillingWeights, when known. This is
+    #: CURC's real billed rate -- for MIG slices it is NOT simply
+    #: device_fraction x the parent GPU's rate (verified: a100_3g.20gb bills at
+    #: 54.3, which is ~1/2 of a100-40gb's 108.6, not the 3/7 device_fraction
+    #: would suggest -- CURC has its own per-slice weight, not a formula).
+    #: None means unconfirmed; estimate() falls back to UNPUBLISHED_BAND.
+    su_per_gpu_hour: Optional[float] = None
     note: str = ""
 
 
-# Partition / GRES table -- verified CURC facts.
+# Partition / GRES table -- verified CURC facts. Rates confirmed 2026-08-17 via
+# `scontrol show partition <p> | grep TRESBillingWeights` on account ucb736_asc1
+# (see slurm/preflight.sh's U3 section, or Guidance_Documents/curc_runbook.md).
 GRES_TABLE: tuple[GresSpec, ...] = (
-    # aa100: 12 nodes x 3 A100
-    GresSpec("a100-40gb", "aa100", 1.0, True, 40, "published 108.6 SU/GPU-hr"),
-    GresSpec("a100_80gb", "aa100", 1.0, True, 80, "published 108.6 SU/GPU-hr"),
-    GresSpec("a100_3g.20gb", "aa100", 3.0 / 7.0, True, 20, "MIG 3g slice of an A100"),
-    # ah200: 8 nodes x 4 H200 141GB
-    GresSpec("h200", "ah200", 1.0, False, 141, "factor UNPUBLISHED"),
-    GresSpec("h200_3g.71gb", "ah200", 3.0 / 7.0, False, 71, "MIG 3g slice, factor UNPUBLISHED"),
-    GresSpec("h200_2g.35gb", "ah200", 2.0 / 7.0, False, 35, "MIG 2g slice, factor UNPUBLISHED"),
-    # artxpro6000: 8 nodes x 4 RTX Pro 6000 96GB
-    GresSpec("rtx_pro_6000", "artxpro6000", 1.0, False, 96, "factor UNPUBLISHED"),
-    GresSpec("rtx_pro_6000_2g.48gb", "artxpro6000", 0.5, False, 48, "MIG 2g slice, factor UNPUBLISHED"),
-    GresSpec("rtx_pro_6000_1g.24gb", "artxpro6000", 0.25, False, 24, "MIG 1g slice, factor UNPUBLISHED"),
-    # al40: 3 nodes x 3 L40
-    GresSpec("l40", "al40", 1.0, False, 48, "factor UNPUBLISHED"),
-    # ami100: 8 nodes x 3 MI100
-    GresSpec("mi100", "ami100", 1.0, False, 32, "factor UNPUBLISHED"),
-    # gh200: 2 nodes x 1 GH200
-    GresSpec("gh200", "gh200", 1.0, False, 96, "factor UNPUBLISHED"),
+    # aa100: 12 nodes x 3 A100 -- ALL THREE rates confirmed, not identical to
+    # the single "108.6 published" figure (a100_80gb and the MIG slice differ).
+    GresSpec("a100-40gb", "aa100", 1.0, True, 40, 108.6, "confirmed 2026-08-17 (matches the published figure)"),
+    GresSpec("a100_80gb", "aa100", 1.0, True, 80, 130.396, "confirmed 2026-08-17 -- NOT 108.6, the 80GB card bills higher"),
+    GresSpec("a100_3g.20gb", "aa100", 3.0 / 7.0, True, 20, 54.3, "confirmed 2026-08-17 -- CURC's own MIG rate, not a device_fraction proration"),
+    # ah200: 8 nodes x 4 H200 141GB -- confirmed 2026-08-17
+    GresSpec("h200", "ah200", 1.0, True, 141, 370.406, "confirmed 2026-08-17"),
+    GresSpec("h200_3g.71gb", "ah200", 3.0 / 7.0, True, 71, 185.203, "confirmed 2026-08-17, MIG 3g slice"),
+    GresSpec("h200_2g.35gb", "ah200", 2.0 / 7.0, True, 35, 123.468, "confirmed 2026-08-17, MIG 2g slice"),
+    # artxpro6000: 8 nodes x 4 RTX Pro 6000 96GB -- confirmed 2026-08-17
+    GresSpec("rtx_pro_6000", "artxpro6000", 1.0, True, 96, 260.402, "confirmed 2026-08-17"),
+    GresSpec("rtx_pro_6000_2g.48gb", "artxpro6000", 0.5, True, 48, 130.201, "confirmed 2026-08-17, MIG 2g slice"),
+    GresSpec("rtx_pro_6000_1g.24gb", "artxpro6000", 0.25, True, 24, 65.1, "confirmed 2026-08-17, MIG 1g slice"),
+    # al40: 3 nodes x 3 L40 -- confirmed 2026-08-17
+    GresSpec("l40", "al40", 1.0, True, 48, 138.417, "confirmed 2026-08-17"),
+    # ami100: 8 nodes x 3 MI100 -- confirmed 2026-08-17
+    GresSpec("mi100", "ami100", 1.0, True, 32, 85.507, "confirmed 2026-08-17"),
+    # gh200: 2 nodes x 1 GH200 -- confirmed 2026-08-17
+    GresSpec("gh200", "gh200", 1.0, True, 96, 368.988, "confirmed 2026-08-17"),
 )
 
 GRES_BY_NAME: dict[str, GresSpec] = {g.gres: g for g in GRES_TABLE}
 
-#: Valid QOS per partition. aa100/ami100 lead with the names PROVEN by 30 real
-#: job scripts on this account (see the QOS_USAGE_FACTOR comment above); the
-#: 'gpu-*' spellings are listed as unconfirmed alternates for every partition,
-#: since which naming a NEW partition (ah200/artxpro6000/gh200) actually uses
-#: has not been independently checked -- QOS objects are typically cluster-
-#: wide in Slurm, so bare names carrying over would be unsurprising, but this
-#: is a guess, not a verified fact. Confirm with `scontrol show partition <p>`
-#: (AllowQos=) before trusting either list for al40/ah200/artxpro6000.
+#: Valid QOS per partition. CONFIRMED 2026-08-17 via `scontrol show partition
+#: <p>`'s AllowQos= on account ucb736_asc1 -- the 'gpu-*' names lead because
+#: they are what AllowQos= actually lists; bare 'normal'/'long'/'testing' are
+#: kept as recognized-but-not-currently-valid-here alternates (see the
+#: QOS_USAGE_FACTOR comment for why they were briefly the default).
 QOS_BY_PARTITION: dict[str, tuple[str, ...]] = {
-    "aa100": ("normal", "long", "testing", "gpu-normal", "gpu-long", "gpu-testing"),
-    "ami100": ("normal", "long", "testing", "gpu-normal", "gpu-long", "gpu-testing"),
-    "al40": ("normal", "long", "gpu-normal", "gpu-long"),
-    "ah200": ("normal", "long", "gpu-normal", "gpu-long"),
-    "artxpro6000": ("normal", "long", "gpu-normal", "gpu-long"),
+    "aa100": ("gpu-normal", "gpu-long", "gpu-testing", "normal", "long", "testing"),
+    "ami100": ("gpu-normal", "gpu-long", "gpu-testing", "normal", "long", "testing"),
+    "al40": ("gpu-normal", "gpu-long", "normal", "long"),
+    "ah200": ("gpu-normal", "gpu-long", "normal", "long"),
+    "artxpro6000": ("gpu-normal", "gpu-long", "normal", "long"),
     "gh200": ("gh200",),
+}
+
+#: Per-user concurrency ceiling (MaxTRESPU), by (qos, gres). CONFIRMED
+#: 2026-08-17 via `sacctmgr show qos format=Name,MaxTRESPU` on this account.
+#: This bounds how many units of a GRES type this user can hold running
+#: SIMULTANEOUSLY under a given QOS, across ALL their own jobs combined --
+#: e.g. under gpu-normal, at most 4 whole 'h200' units at once, or 6
+#: 'h200_2g.35gb' MIG slices at once (independent per-GRES-type ceilings, not
+#: a shared pool). Exceeding it does not fail a submission; Slurm queues the
+#: excess with reason QOSMaxGRESPerUser until earlier jobs free up headroom.
+#: Size `--array=0-N%C` so C does not exceed the relevant cap when every task
+#: requests one GRES unit.
+QOS_MAX_GRES_PER_USER: dict[tuple[str, str], int] = {
+    ("gpu-normal", "a100-40gb"): 6, ("gpu-long", "a100-40gb"): 3,
+    ("gpu-normal", "a100_80gb"): 3, ("gpu-long", "a100_80gb"): 1,
+    ("gpu-normal", "h200"): 4, ("gpu-long", "h200"): 2,
+    ("gpu-normal", "h200_2g.35gb"): 6, ("gpu-long", "h200_2g.35gb"): 2,
+    ("gpu-normal", "h200_3g.71gb"): 4, ("gpu-long", "h200_3g.71gb"): 2,
+    ("gpu-normal", "l40"): 3, ("gpu-long", "l40"): 3,
+    ("gpu-normal", "mi100"): 5, ("gpu-long", "mi100"): 3,
+    ("gpu-normal", "rtx_pro_6000"): 4, ("gpu-long", "rtx_pro_6000"): 2,
+    ("gpu-normal", "rtx_pro_6000_1g.24gb"): 7, ("gpu-long", "rtx_pro_6000_1g.24gb"): 2,
+    ("gpu-normal", "rtx_pro_6000_2g.48gb"): 4, ("gpu-long", "rtx_pro_6000_2g.48gb"): 2,
+    ("gpu-testing", "a100_3g.20gb"): 1, ("gpu-testing", "mi100"): 1,
 }
 
 #: Assumed single-stream decode throughput (output tokens/second) used by
@@ -216,7 +260,7 @@ def estimate(
     cores: int,
     hours: float,
     partition: Optional[str] = None,
-    qos: str = "normal",
+    qos: str = "gpu-normal",
 ) -> Estimate:
     """Estimate SU burn for one allocation shape.
 
@@ -238,14 +282,22 @@ def estimate(
 
     core_su = cores * hours * SU_PER_CORE_HOUR * usage
 
-    if spec.factor_published:
-        band = (1.0, 1.0, 1.0)
+    if spec.su_per_gpu_hour is not None:
+        # Exact, confirmed rate: no band, no proration guess. CURC bills MIG
+        # slices at their OWN directly-published rate (verified: a100_3g.20gb
+        # is 54.3, not 108.6 x 3/7), so "full-GPU-rate" vs "MIG-prorated" is no
+        # longer two competing hypotheses for a confirmed GRES type -- there is
+        # exactly one real number, and both columns report it identically.
+        exact = gpus * hours * spec.su_per_gpu_hour * usage
+        gpu_full = (exact, exact, exact)
+        gpu_prorated = (exact, exact, exact)
     else:
-        band = UNPUBLISHED_BAND
-
-    base = gpus * hours * A100_SU_PER_GPU_HOUR * usage
-    gpu_full = tuple(base * m for m in band)
-    gpu_prorated = tuple(base * m * spec.device_fraction for m in band)
+        # No confirmed rate for this GRES type: fall back to the old
+        # A100-relative guess. Kept for any future partition/GRES this table
+        # has not yet had a real TRESBillingWeights reading for.
+        base = gpus * hours * A100_SU_PER_GPU_HOUR * usage
+        gpu_full = tuple(base * m for m in UNPUBLISHED_BAND)
+        gpu_prorated = tuple(base * m * spec.device_fraction for m in UNPUBLISHED_BAND)
 
     return Estimate(
         gres=spec.gres,
@@ -397,7 +449,7 @@ def render_warnings(est: Estimate) -> str:
             f"    factor.  The low number above assumes parity with an A100 and is a\n"
             f"    FLOOR, not a forecast.  Budget against the 'high' column."
         )
-    if est.device_fraction < 1.0:
+    if est.device_fraction < 1.0 and not est.factor_published:
         warn.append(
             f"MIG BILLING UNVERIFIED: '{est.gres}' is a MIG slice"
             f" ({est.device_fraction:.3f} of a device).\n"
@@ -416,6 +468,23 @@ def render_warnings(est: Estimate) -> str:
             f"QOS '{est.qos}' is NOT valid on partition '{est.partition}'."
             f"  Valid: {', '.join(valid)}."
         )
+    cap = QOS_MAX_GRES_PER_USER.get((est.qos, est.gres))
+    if cap is not None and est.gpus > cap:
+        warn.append(
+            f"THIS JOB ALONE ({est.gpus:g}x {est.gres!r}) EXCEEDS the per-user cap "
+            f"of {cap} under QOS {est.qos!r} (MaxTRESPU) -- it cannot run as shaped, "
+            f"regardless of allocation balance. Lower --gpus, request a different QOS "
+            f"(e.g. gpu-normal usually allows more concurrent units than gpu-long -- "
+            f"see QOS_MAX_GRES_PER_USER), or split it into multiple smaller jobs."
+        )
+    elif cap is not None:
+        note = (
+            f"per-user cap under QOS {est.qos!r} for {est.gres!r}: {cap} concurrent "
+            f"unit(s) (MaxTRESPU) across ALL your running jobs. If this is one task of "
+            f"an sbatch --array=..%N sweep, keep N x {est.gpus:g} <= {cap} or the "
+            f"excess tasks will queue instead of running."
+        )
+        warn.append(note)
     if not warn:
         return ""
     body = "\n".join(f"  [!] {w}" for w in warn)
@@ -549,7 +618,11 @@ def _run_single(args: argparse.Namespace) -> int:
     warn = render_warnings(est)
     if warn:
         print(warn)
-    print(render_verify_hint())
+    if not est.factor_published:
+        # Nothing left to verify for a confirmed GRES type -- printing this
+        # unconditionally used to tell the user to go re-derive a rate this
+        # file already has hardcoded.
+        print(render_verify_hint())
     return 0
 
 
@@ -572,9 +645,9 @@ def build_parser() -> argparse.ArgumentParser:
                     help="total CPU cores held by the job (default: %(default)s)")
     ap.add_argument("--hours", type=float, default=8.0,
                     help="wall-clock hours per task (default: %(default)s)")
-    ap.add_argument("--qos", default="normal",
-                    help="QOS name (default: %(default)s; proven correct on "
-                         "aa100/amilan/amem, unconfirmed on ah200/artxpro6000 "
+    ap.add_argument("--qos", default="gpu-normal",
+                    help="QOS name (default: %(default)s; CONFIRMED 2026-08-17 "
+                         "via AllowQos= on aa100/ah200/artxpro6000/al40/ami100 "
                          "-- see QOS_USAGE_FACTOR)")
     ap.add_argument("--array-tasks", type=int, default=1,
                     help="number of array tasks in the sweep (default: %(default)s)")
@@ -609,33 +682,42 @@ def _smoke() -> int:
     import tempfile
 
     print("[smoke] GRES table entries:", len(GRES_TABLE))
-    # Bare 'normal' -- proven correct on aa100 (a sibling project on this
-    # account, 30 real job scripts, never uses 'gpu-normal'). This is now the
-    # default; the assert also doubles as a regression test that the discount
-    # table's bare-name entries are wired up.
-    est = estimate(gres="a100-40gb", gpus=1, cores=4, hours=1.0, qos="normal")
-    expected = 4 * 1.0 + 1 * 1.0 * A100_SU_PER_GPU_HOUR
+    # 'gpu-normal' -- CONFIRMED 2026-08-17 via a real preflight.sh AllowQos=
+    # reading on this account. This is now the default; the assert also
+    # doubles as a regression test that the discount table is wired up.
+    est = estimate(gres="a100-40gb", gpus=1, cores=4, hours=1.0, qos="gpu-normal")
+    expected = 4 * SU_PER_CORE_HOUR + 1 * A100_SU_PER_GPU_HOUR
     assert abs(est.total_full_rate[0] - expected) < 1e-6, est.total_full_rate
     print(f"[smoke] 1 A100-hour + 4 cores = {est.total_full_rate[0]:.1f} SU (expected {expected:.1f})")
 
-    test_est = estimate(gres="a100-40gb", gpus=1, cores=1, hours=1.0, qos="testing")
-    assert abs(test_est.total_full_rate[0] - (1 + A100_SU_PER_GPU_HOUR) * 0.10) < 1e-6
-    print(f"[smoke] same under testing (10%) = {test_est.total_full_rate[0]:.2f} SU")
+    test_est = estimate(gres="a100-40gb", gpus=1, cores=1, hours=1.0, qos="gpu-testing")
+    assert abs(test_est.total_full_rate[0] - (SU_PER_CORE_HOUR + A100_SU_PER_GPU_HOUR) * 0.10) < 1e-6
+    print(f"[smoke] same under gpu-testing (10%) = {test_est.total_full_rate[0]:.2f} SU")
 
-    # Legacy 'gpu-*' spellings must still resolve identically (kept for
-    # anyone who already has scripts using them, and in case they turn out to
-    # be correct on ah200/artxpro6000 after all).
-    legacy_est = estimate(gres="a100-40gb", gpus=1, cores=4, hours=1.0, qos="gpu-normal")
-    assert legacy_est.total_full_rate == est.total_full_rate
-    legacy_test_est = estimate(gres="a100-40gb", gpus=1, cores=1, hours=1.0, qos="gpu-testing")
-    assert legacy_test_est.total_full_rate == test_est.total_full_rate
-    print("[smoke] legacy 'gpu-normal'/'gpu-testing' spellings still resolve identically")
+    # Bare 'normal'/'testing' spellings must still resolve identically -- they
+    # are valid QOS names on this account in general (sacctmgr show
+    # associations), just not on any GPU partition's AllowQos= (an earlier
+    # revision of this file briefly had these as the default; see the
+    # QOS_USAGE_FACTOR comment for why).
+    bare_est = estimate(gres="a100-40gb", gpus=1, cores=4, hours=1.0, qos="normal")
+    assert bare_est.total_full_rate == est.total_full_rate
+    bare_test_est = estimate(gres="a100-40gb", gpus=1, cores=1, hours=1.0, qos="testing")
+    assert bare_test_est.total_full_rate == test_est.total_full_rate
+    print("[smoke] bare 'normal'/'testing' spellings still resolve identically")
+
+    # MaxTRESPU warning fires when a single job's request alone exceeds the
+    # confirmed per-user concurrency cap.
+    over_cap = estimate(gres="h200", gpus=6, cores=32, hours=1.0, qos="gpu-normal")
+    warning_text = render_warnings(over_cap)
+    assert "EXCEEDS the per-user cap" in warning_text, warning_text
+    print("[smoke] MaxTRESPU over-cap warning fires correctly")
 
     mig = estimate(gres="h200_2g.35gb", gpus=1, cores=4, hours=8.0)
-    print(f"[smoke] 8h on h200_2g.35gb -> conservative band "
-          f"{mig.total_full_rate[0]:,.0f} / {mig.total_full_rate[1]:,.0f} / "
-          f"{mig.total_full_rate[2]:,.0f} SU")
-    assert not mig.factor_published
+    print(f"[smoke] 8h on h200_2g.35gb -> confirmed exact rate "
+          f"{mig.total_full_rate[0]:,.0f} SU")
+    # Confirmed 2026-08-17 (was previously the unpublished-band example).
+    assert mig.factor_published
+    assert mig.total_full_rate[0] == mig.total_full_rate[1] == mig.total_full_rate[2]
 
     with tempfile.TemporaryDirectory() as td:
         man = Path(td) / "smoke_manifest.jsonl"

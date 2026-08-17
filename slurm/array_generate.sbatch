@@ -2,7 +2,7 @@
 #SBATCH --job-name=ani-gen
 #SBATCH --partition=ah200
 #SBATCH --gres=gpu:h200_2g.35gb:1
-#SBATCH --qos=normal
+#SBATCH --qos=gpu-normal
 #SBATCH --time=08:00:00
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
@@ -30,10 +30,10 @@
 #
 # SUBMIT
 #   mkdir -p slurm_logs                     # Slurm will not create this for you
-#   # Try WITHOUT SBATCH_ACCOUNT first -- a sibling project on this account
-#   # (/Users/pat/code/blanc/hpc/*.sh, 30 real job scripts) never sets
-#   # --account=, consistent with a single default association. Set it only
-#   # if preflight.sh (U1) or a submission error says otherwise.
+#   # Run preflight.sh (U1) first and set what it recommends -- this account
+#   # has THREE associations (ucb-general, ucb736_asc1, ucb738_asc1), not one
+#   # default, confirmed 2026-08-17.
+#   export SBATCH_ACCOUNT=ucb736_asc1       # or whatever your own preflight prints
 #   sbatch --export=ALL,ANI_MANIFEST=/path/work.jsonl slurm/array_generate.sbatch
 #
 #   Size the array to the manifest, e.g. 2706 cells / ~170 per task:
@@ -52,25 +52,24 @@
 #     OUT_DIR/{cache_kind}_{safe(model)}_{arm}_{safe(item_id)}.json
 #   or the literal "cache_path" if the cell supplies one.
 #
-# QOS NAMING -- confirm before trusting either source
-#   Bare 'normal'/'long'/'mem' below is what a sibling project on this same
-#   account actually submits with, 30/30 real job scripts, on aa100/amilan/
-#   amem (/Users/pat/code/blanc/hpc/*.sh) -- higher-confidence than the
-#   'gpu-normal'/'gpu-long'/'gpu-testing' names an earlier doc fetch reported
-#   for the newer ah200/artxpro6000/gh200 tier, which no sibling project has
-#   touched and which this repo has not independently confirmed. QOS objects
-#   are normally cluster-wide (not partition-prefixed) in Slurm, so bare names
-#   working across partitions would be the unsurprising case. preflight.sh's
-#   U2 section now prints each partition's real AllowQos= list -- read that
-#   before your first submission on ah200/artxpro6000 and correct the names
-#   below (and in slurm/serve_vllm.sbatch) if it disagrees.
+# QOS NAMING -- CONFIRMED 2026-08-17 via a real preflight.sh run on this
+#   account (ucb736_asc1). `scontrol show partition <p>` printed AllowQos=
+#   directly: aa100=admin,gpu-normal,gpu-long,gpu-testing; ah200/artxpro6000/
+#   al40=admin,gpu-normal,gpu-long; ami100=admin,gpu-normal,gpu-long,gpu-testing;
+#   gh200=admin,gh200. Bare 'normal'/'long'/'testing' are NOT in any GPU
+#   partition's AllowQos on this account -- an earlier revision of this file
+#   inferred them from a sibling project's aa100 usage
+#   (/Users/pat/code/blanc/hpc/*.sh), which turned out not to carry over
+#   (different account/allocation, or the sibling project's QOS names have
+#   drifted since it last ran -- unconfirmed which). Trust AllowQos= from your
+#   own preflight run over both this comment and that sibling project if they
+#   ever disagree again; this is now first-party evidence, not inference.
 #
 # ALTERNATE ALLOCATIONS -- override on the sbatch command line, or edit above.
 #
-#   Debug / smoke (1 h cap, 5 concurrent jobs, billed at 10% per CURC docs;
-#   valid ONLY on aa100 and ami100 -- confirm the exact QOS name via
-#   preflight's AllowQos= before relying on it):
-#     sbatch --partition=aa100 --qos=testing --gres=gpu:a100-40gb:1 \
+#   Debug / smoke (1 h cap, 5 concurrent jobs, billed at 10% -- confirmed via
+#   TRESBillingWeights UsageFactor=0.100000; valid ONLY on aa100 and ami100):
+#     sbatch --partition=aa100 --qos=gpu-testing --gres=gpu:a100-40gb:1 \
 #            --time=01:00:00 --array=0-1 ...
 #
 #   RTX Pro 6000 MIG (needs CUDA >12.8):
@@ -79,13 +78,18 @@
 #   Larger MIG slice for a 8B model with long contexts:
 #     sbatch --partition=ah200 --gres=gpu:h200_3g.71gb:1 ...
 #
-#   32B, whole GPUs, tensor-parallel 2:
+#   32B, whole GPUs, tensor-parallel 2. NOTE the gpu-normal QOS caps this
+#   account at 4 concurrent whole h200 units (MaxTRESPU, from `sacctmgr show
+#   qos`); gpu-long caps it at 2. Size --array=...%N accordingly, or the
+#   excess tasks just queue behind QOSMaxGRESPerUser rather than run:
 #     sbatch --partition=ah200 --gres=gpu:h200:2 --cpus-per-task=16 --mem=200G \
-#            --qos=long --time=24:00:00 --export=ALL,ANI_TP_SIZE=2,ANI_MANIFEST=...
+#            --qos=gpu-long --time=24:00:00 --export=ALL,ANI_TP_SIZE=2,ANI_MANIFEST=...
 #
-#   70B, whole GPUs, tensor-parallel 4:
+#   70B, whole GPUs, tensor-parallel 4 (exceeds the gpu-long cap of 2 whole
+#   h200 units for a SINGLE job's request -- gpu-normal's cap of 4 is the one
+#   that actually allows this shape; adjust --qos and --time together):
 #     sbatch --partition=ah200 --gres=gpu:h200:4 --cpus-per-task=32 --mem=400G \
-#            --qos=long --time=48:00:00 --export=ALL,ANI_TP_SIZE=4,ANI_MANIFEST=...
+#            --qos=gpu-normal --time=24:00:00 --export=ALL,ANI_TP_SIZE=4,ANI_MANIFEST=...
 #
 # WHY MIG SLICES AND NOT ONE LONG MULTI-GPU JOB
 #   An 8B model in bf16 needs ~16 GB, which fits an h200_2g.35gb slice with room
