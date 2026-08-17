@@ -412,6 +412,11 @@ def call_backend(cell: dict, system: str, user: str, attempt: int):
         optional["temperature"] = float(cell["temperature"])
     if cell.get("seed") is not None:
         optional["seed"] = int(cell["seed"])
+    if cell.get("chat_template_kwargs") is not None:
+        # Local (HF/vLLM) only -- e.g. {"enable_thinking": False} to switch a
+        # Qwen3-family model out of its default reasoning mode. Ignored for
+        # hosted models via the same TypeError degrade path as temperature/seed.
+        optional["chat_template_kwargs"] = dict(cell["chat_template_kwargs"])
 
     try:
         return _generate(model, system, user, **kwargs, **optional)

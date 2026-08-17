@@ -38,8 +38,33 @@ OPTIONAL_KEYS = (
     "system", "arm", "item_id", "problem_id", "id", "cache_kind", "cache_path",
     "max_tokens", "sample_idx", "temperature", "seed", "instrument",
     "append_verdict_instruction", "allow_unresolved", "record_extra",
+    "chat_template_kwargs",
 )
 KNOWN_KEYS = frozenset(REQUIRED_KEYS + OPTIONAL_KEYS)
+
+# Local open-weight families that default to emitting a <think>...</think>
+# block before the answer (Qwen3). Verified empirically (2026-08-17,
+# Qwen3-0.6B): a trivial verdict took 165 completion tokens WITH thinking on
+# vs 20 with it off, and real BrokenMath proof attempts on the 8B/32B/70B
+# production models will run far longer. The hosted pipeline already bumps
+# reasoning models to max_tokens=8192 (scripts/run_brokenmath.py); local
+# reasoning-capable models get the same bump here, or truncation silently
+# inflates NOVERDICT and is misread as a capability failure.
+LOCAL_REASONING_FAMILIES = ("qwen3",)
+REASONING_MAX_TOKENS = 8192
+
+
+def is_local_reasoning_model(model: str) -> bool:
+    m = model.lower()
+    return any(fam in m for fam in LOCAL_REASONING_FAMILIES)
+
+
+def budget_max_tokens(model: str, base: int) -> int:
+    """Reasoning-aware max_tokens: never truncate a local reasoning model
+    before it can reach its own thinking block's end."""
+    if is_local_reasoning_model(model):
+        return max(base, REASONING_MAX_TOKENS)
+    return base
 
 
 class ManifestError(ValueError):
@@ -91,18 +116,7 @@ def validate_cells(cells: Sequence[dict[str, Any]]) -> list[str]:
     return problems
 
 
-def write_manifest(
-    cells: Sequence[dict[str, Any]], out: Path, *, dry_run: bool = False,
-) -> dict[str, Any]:
-    """Validate then write. Refuses to write an invalid manifest."""
-    problems = validate_cells(cells)
-    if problems:
-        head = "\n  ".join(problems[:20])
-        more = f"\n  ... and {len(problems) - 20} more" if len(problems) > 20 else ""
-        raise ManifestError(
-            f"manifest failed validation ({len(problems)} problem(s)):\n  {head}{more}"
-        )
-
+def _write_one(cells: Sequence[dict[str, Any]], out: Path, *, dry_run: bool) -> dict[str, Any]:
     cached = sum(1 for c in cells if cell_cache_path(c).exists())
     report = {
         "cells": len(cells),
@@ -119,6 +133,58 @@ def write_manifest(
             for cell in cells:
                 fh.write(json.dumps(cell, ensure_ascii=False) + "\n")
     return report
+
+
+def write_manifest(
+    cells: Sequence[dict[str, Any]], out: Path, *, dry_run: bool = False,
+    split_by_model: bool = False,
+) -> dict[str, Any]:
+    """Validate then write. Refuses to write an invalid manifest.
+
+    ``split_by_model``: emit one file per model instead of one combined file.
+
+    Why this matters for local (open-weight) runs, and does not matter for
+    hosted ones: `array_generate.sbatch` uses round-robin striping (line %
+    shards == shard) so that no single shard gets stuck with all the
+    expensive cells. That is exactly right for hosted per-token billing, but
+    it means a single array TASK's assigned cells interleave every model in
+    the manifest -- and `local_backend.load_hf_model` caches every distinct
+    model it is asked for in `_HF_BUNDLES` for the lifetime of the process.
+    A combined manifest therefore makes every local worker load and hold
+    EVERY model in the sweep simultaneously (two 8B models in bf16 is already
+    ~32GB; mixing in a 70B is worse), rather than the one model its GPU
+    allocation was sized for. Splitting by model, and submitting one array
+    job per model with a GPU request sized to that model, is what the CURC
+    runbook's `--gres` guidance already assumes.
+    """
+    problems = validate_cells(cells)
+    if problems:
+        head = "\n  ".join(problems[:20])
+        more = f"\n  ... and {len(problems) - 20} more" if len(problems) > 20 else ""
+        raise ManifestError(
+            f"manifest failed validation ({len(problems)} problem(s)):\n  {head}{more}"
+        )
+
+    if not split_by_model:
+        return _write_one(cells, out, dry_run=dry_run)
+
+    by_model: dict[str, list[dict[str, Any]]] = {}
+    for c in cells:
+        by_model.setdefault(str(c.get("model")), []).append(c)
+
+    per_file: dict[str, Any] = {}
+    for model, model_cells in sorted(by_model.items()):
+        model_out = out.with_name(f"{out.stem}.{_safe(model)}{out.suffix}")
+        per_file[model] = _write_one(model_cells, model_out, dry_run=dry_run)
+
+    return {
+        "split_by_model": True,
+        "n_models": len(by_model),
+        "cells": len(cells),
+        "already_cached": sum(r["already_cached"] for r in per_file.values()),
+        "remaining": sum(r["remaining"] for r in per_file.values()),
+        "per_model": per_file,
+    }
 
 
 def read_manifest(path: Path) -> list[dict[str, Any]]:
@@ -206,7 +272,7 @@ def build_stance(
                             "append_verdict_instruction": True,
                             "allow_unresolved": allow_unresolved,
                             "sample_idx": s,
-                            "max_tokens": 2048,
+                            "max_tokens": budget_max_tokens(model, 2048),
                             "record_extra": {
                                 "stance_channel": channel,
                                 "stance_direction": direction,
@@ -247,7 +313,7 @@ def build_crowdgold(
                             "append_verdict_instruction": True,
                             "allow_unresolved": allow_unresolved,
                             "sample_idx": s,
-                            "max_tokens": 1536,
+                            "max_tokens": budget_max_tokens(model, 1536),
                             "record_extra": {
                                 "wrapper": wrapper,
                                 "gold_verdict": item.gold_verdict,
@@ -284,7 +350,7 @@ def build_t0b(
                         "allow_unresolved": allow_unresolved,
                         "sample_idx": trace_idx,
                         "temperature": 0.7,
-                        "max_tokens": 2048,
+                        "max_tokens": budget_max_tokens(model, 2048),
                         "record_extra": {
                             "trace_idx": trace_idx,
                             "problem_id": item.problem_id,
@@ -319,6 +385,16 @@ def main(argv: Sequence[str] | None = None) -> int:
     ap.add_argument("--validate", type=Path, help="Validate an existing manifest and exit")
     ap.add_argument("--coverage", type=int, metavar="SHARDS",
                     help="Prove shard coverage for this many shards and exit")
+    ap.add_argument("--split-by-model", dest="split_by_model", action="store_true",
+                    default=None,
+                    help="One manifest file per model (default: on iff any "
+                         "requested model is local -- see write_manifest docstring)")
+    ap.add_argument("--no-split-by-model", dest="split_by_model", action="store_false")
+    ap.add_argument("--disable-thinking", action="store_true",
+                    help="Qwen3-family models only: chat_template_kwargs="
+                         "{'enable_thinking': False}. Off by default -- the "
+                         "reasoning trace is usually the object of study; use "
+                         "this only for cheap verdict-only pilots.")
     args = ap.parse_args(argv)
 
     if args.validate:
@@ -345,8 +421,26 @@ def main(argv: Sequence[str] | None = None) -> int:
         models=models, arms=arms, n=args.n,
         allow_unresolved=args.allow_unresolved, k=args.k,
     )
+
+    if args.disable_thinking:
+        for c in cells:
+            if is_local_reasoning_model(str(c.get("model", ""))):
+                c["chat_template_kwargs"] = {"enable_thinking": False}
+                # Thinking off means no thinking-budget tax to pay.
+                c["max_tokens"] = min(int(c.get("max_tokens", 2048)), 2048)
+
+    split_by_model = args.split_by_model
+    if split_by_model is None:
+        try:
+            from scripts.local_backend import is_local_model
+            split_by_model = any(is_local_model(m) for m in models)
+        except Exception:
+            split_by_model = False
+
     try:
-        report = write_manifest(cells, args.out, dry_run=args.dry_run)
+        report = write_manifest(
+            cells, args.out, dry_run=args.dry_run, split_by_model=split_by_model,
+        )
     except ManifestError as e:
         print(f"REFUSED TO WRITE: {e}", file=sys.stderr)
         return 1

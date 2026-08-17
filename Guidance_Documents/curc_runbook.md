@@ -98,15 +98,47 @@ python -m scripts.build_manifest --experiment t0b \
     --models llama-3.1-8b,qwen3-8b --arms standard_cot,narrative_cot \
     --n 100 --k 5 --out work_manifest.jsonl
 
-python -m scripts.build_manifest --validate work_manifest.jsonl --coverage 16
+python -m scripts.build_manifest --validate work_manifest.llama-3.1-8b.jsonl --coverage 16
+python -m scripts.build_manifest --validate work_manifest.qwen3-8b.jsonl --coverage 16
 ```
+
+**Multi-model requests split into one file per model automatically.** `array_generate.sbatch`
+round-robin-stripes a manifest across shards (line index mod shard count) so no
+single shard is stuck with all the expensive cells — correct for hosted per-token
+billing, but `local_backend.load_hf_model` caches every distinct model it is
+asked for in-process for the life of the worker. A combined manifest across
+several local models would make every shard load and hold *every* model
+simultaneously (two 8B models in bf16 is already ~32 GB before any 32B/70B
+enters the mix), rather than the one model its GPU allocation was sized for.
+`build_manifest.py` defaults `--split-by-model` to on whenever any requested
+model is local (checked via `scripts.local_backend.is_local_model`), off for
+hosted-only sweeps (unchanged single-file behaviour). Override with
+`--split-by-model` / `--no-split-by-model`. **Submit one array job per split
+file**, with `--gres` sized to that file's model (§4).
+
+**Qwen3 defaults to a `<think>...</think>` block, and truncating mid-thought
+silently inflates NOVERDICT.** Verified empirically (Qwen3-0.6B, 2026-08-17): a
+trivial verdict took 165 completion tokens with thinking on vs 20 with it off,
+and real BrokenMath proof attempts on the production 8B/32B/70B models will run
+far longer. `build_manifest.py` therefore floors `max_tokens` at 8192 for any
+model whose name contains `qwen3` (`is_local_reasoning_model` /
+`budget_max_tokens`), mirroring the same bump the hosted pipeline already
+applies to reasoning models in `scripts/run_brokenmath.py`. Llama is unaffected
+(no thinking mode). If you want a fast, cheap, verdict-only pilot and don't need
+the reasoning trace itself, pass `--disable-thinking`: it sets
+`chat_template_kwargs={"enable_thinking": False}` on every Qwen3 cell (forwarded
+by the worker to `local_generate`; harmlessly ignored on hosted models via the
+same degrade path as `temperature`/`seed`) and caps the token budget back down.
+Leave it off for anything measuring the reasoning trace itself (T0-B, the
+faithfulness layer) — thinking-mode content is the object of study there, not
+overhead to shed.
 
 The `--coverage N` check reproduces the worker's round-robin stripe and asserts
 the union of the N shards is the whole manifest with no duplicates. **Run it
-before any large sweep.** A manifest in the wrong shape makes the worker skip
-every line with a warning and exit 0 — a "successful" run that generated nothing
-— which is why `build_manifest.py` refuses to write an invalid file rather than
-letting you discover it after queueing.
+before any large sweep, on every split file.** A manifest in the wrong shape
+makes the worker skip every line with a warning and exit 0 — a "successful" run
+that generated nothing — which is why `build_manifest.py` refuses to write an
+invalid file rather than letting you discover it after queueing.
 
 `--dry-run` validates and reports without writing.
 
@@ -131,6 +163,7 @@ letting you discover it after queueing.
 | `temperature`, `seed` | no | forwarded to the local backend only |
 | `instrument` + `append_verdict_instruction` | no | opt in to `scripts.verdict_format` (see below) |
 | `record_extra` | no | dict merged into the cached record for downstream aggregation |
+| `chat_template_kwargs` | no | local models only, e.g. `{"enable_thinking": false}` for Qwen3; ignored for hosted models |
 
 The cache path follows the repo's existing convention exactly:
 
@@ -170,11 +203,20 @@ Once `scontrol show partition ah200` gives you real `TRESBillingWeights`, transc
 ```bash
 source slurm/env_setup.sh
 mkdir -p slurm_logs
+
+# Single-model / hosted-only manifest (build_manifest.py did not split):
 sbatch --array=0-15%8 --export=ALL,ANI_MANIFEST=$PWD/work_manifest.jsonl \
+       slurm/array_generate.sbatch
+
+# Multi-model local sweep: build_manifest.py split it into one file per
+# model (§2). Submit ONE array job PER FILE, sizing --gres to that model.
+sbatch --array=0-15%8 --export=ALL,ANI_MANIFEST=$PWD/work_manifest.llama-3.1-8b.jsonl \
+       slurm/array_generate.sbatch
+sbatch --array=0-15%8 --export=ALL,ANI_MANIFEST=$PWD/work_manifest.qwen3-8b.jsonl \
        slurm/array_generate.sbatch
 ```
 
-Defaults baked into the file: `--partition=ah200 --gres=gpu:h200_2g.35gb:1 --qos=gpu-normal --time=08:00:00`, `--requeue`, `--open-mode=append`, `--signal=B:USR1@300`, logs at `slurm_logs/%x_%A_%a.{out,err}`. Override anything on the command line; the header comment lists ready-made alternates for the aa100 debug queue, RTX Pro 6000 MIG, and whole-GPU tensor-parallel runs.
+Defaults baked into the file: `--partition=ah200 --gres=gpu:h200_2g.35gb:1 --qos=gpu-normal --time=08:00:00`, `--requeue`, `--open-mode=append`, `--signal=B:USR1@300`, logs at `slurm_logs/%x_%A_%a.{out,err}`. Override anything on the command line; the header comment lists ready-made alternates for the aa100 debug queue, RTX Pro 6000 MIG, and whole-GPU tensor-parallel runs. **Never submit one array job against a manifest that mixes models you haven't sized `--gres` for** — a shard would load every model it encounters into the same GPU allocation (§2).
 
 Always smoke first, on the cheap queue:
 
@@ -249,6 +291,48 @@ Three ways a task stops early, all of which checkpoint cleanly:
 An incomplete shard exits **0**, not non-zero — stopping at a walltime cap is a normal outcome, not a failure, and marking it failed would poison every `sacct` summary you look at afterwards.
 
 `ANI_AUTO_REQUEUE=1` makes a task requeue itself, but **only** when it stopped for a clock reason (`resumable: true` in the checkpoint). A shard that traversed its whole stripe and still has uncached cells has cells that genuinely fail; requeueing that would spin forever and burn SU on a bug.
+
+---
+
+## 4.5 Off-cluster rehearsal (do this before your first real submission)
+
+`propensity.py` and `local_backend`'s HF path had only ever been exercised against
+synthetic logprobs and mocked HTTP before 2026-08-17 — the exact teacher-forced
+scoring math had never touched a real model. That is the highest-risk untested
+code path in the harness, and it is much cheaper to debug on a laptop than to
+discover a bug on Alpine after burning SU. If your machine has any GPU/CPU
+capacity for `torch`+`transformers` (install the optional block in
+`requirements.txt`), rehearse against a small ungated model before trusting a
+real sweep:
+
+```bash
+pip install torch transformers accelerate   # laptop CPU/MPS is fine, just slow
+
+export NOT_LOCAL_ALLOW_ANY_REPO=1   # pass a raw HF repo id without registering an alias
+export NOT_LOCAL_BACKEND=hf         # force the HF path; vLLM needs CUDA
+
+python - <<'PY'
+from scripts.local_backend import local_generate
+res = local_generate("Qwen/Qwen3-0.6B", "You are careful.", "2+2=5? One word: TRUE or FALSE.",
+                      sample_idx=0, max_tokens=1024, temperature=0.0)
+print(res.text)
+PY
+```
+
+`NOT_LOCAL_ALLOW_ANY_REPO=1` is the general escape hatch for this: it lets
+`is_local_model`/`resolve_repo_id` accept any `org/repo`-shaped string without
+touching the production `LOCAL_MODELS` table in `local_backend.py`, so
+validation runs never risk drifting the alias registry the real sweeps depend on.
+
+Two things this rehearsal actually caught, worth re-checking whenever a new
+model family enters the harness: (1) **a background-process footgun** — `nohup
+python ... &` launched from inside an already-backgrounded shell orphans the
+child from whatever is waiting on the wrapper; poll for the real process
+(`pgrep`), not the wrapper's exit. (2) **the Qwen3 thinking-budget issue**
+documented in §2 — caught directly by generating with `max_tokens=32` and
+watching it truncate mid-`<think>` block, never reaching a verdict. Both are
+exactly the class of bug you want to find for the price of a 0.6B model's
+weights, not for the price of an array job's SU.
 
 ---
 
