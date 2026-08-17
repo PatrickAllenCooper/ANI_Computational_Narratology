@@ -72,8 +72,13 @@
 #   CONFIRMED 2026-08-17 the hard way (a real submission failed with Slurm
 #   error 7): gpu-testing on aa100 permits ONLY the a100_3g.20gb MIG slice as
 #   a GRES type, NOT a full a100-40gb/a100_80gb card. On ami100, only mi100.
+#   ALSO CONFIRMED 2026-08-17 (a real submission failed with Slurm error 12,
+#   "requesting 49152 MiB ... exceeds the maximum allowed of 38400 MiB"): this
+#   file's header default of --mem=48G is sized for the ah200 default above and
+#   is too big for a100_3g.20gb -- override --mem below 38400M or the sbatch
+#   call itself fails before the job ever queues.
 #     sbatch --partition=aa100 --qos=gpu-testing --gres=gpu:a100_3g.20gb:1 \
-#            --time=01:00:00 --array=0-1 ...
+#            --time=01:00:00 --mem=32G --array=0-1 ...
 #
 #   RTX Pro 6000 MIG (needs CUDA >12.8):
 #     sbatch --partition=artxpro6000 --gres=gpu:rtx_pro_6000_2g.48gb:1 ...

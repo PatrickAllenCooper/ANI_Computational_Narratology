@@ -60,9 +60,13 @@
 #   error 7): gpu-testing on aa100 permits ONLY the a100_3g.20gb MIG slice as
 #   a GRES type -- an 8B model in bf16 (~16GB) fits its 20GB with only ~4GB
 #   left for KV cache, tight but workable for a short smoke test with modest
-#   --max-model-len:
+#   --max-model-len. ALSO CONFIRMED 2026-08-17 (a real submission failed with
+#   Slurm error 12, "requesting 49152 MiB ... exceeds the maximum allowed of
+#   38400 MiB"): this file's header default of --mem=200G (and the naive
+#   48G guess below it used to have) is way past what a100_3g.20gb allows --
+#   override --mem below 38400M:
 #     sbatch --partition=aa100 --qos=gpu-testing --gres=gpu:a100_3g.20gb:1 \
-#            --time=01:00:00 --cpus-per-task=4 --mem=48G \
+#            --time=01:00:00 --cpus-per-task=4 --mem=32G \
 #            --export=ALL,ANI_SERVE_MODEL=qwen3-8b,ANI_SERVE_MAX_MODEL_LEN=4096 \
 #            slurm/serve_vllm.sbatch
 #
