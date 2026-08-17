@@ -66,8 +66,21 @@ SU_PER_CORE_HOUR: float = 1.0
 #: acceleration factor CURC has not published.
 UNPUBLISHED_BAND: tuple[float, float, float] = (1.0, 2.0, 3.0)
 
-#: QOS usage factors.  gpu-testing is documented as billed at 10%.
+#: QOS usage factors.  The discounted testing tier is documented as billed at
+#: 10%. Both naming conventions are listed because which one is real is
+#: PARTITION-DEPENDENT, not settled: a sibling project on this same account
+#: (/Users/pat/code/blanc/hpc/*.sh, 30 real, submitted job scripts) proves
+#: bare 'normal'/'long'/'mem' on aa100/amilan/amem -- not 'gpu-normal' or
+#: 'gpu-long'. The 'gpu-*' spellings remain this script's original,
+#: doc-sourced guess, unconfirmed specifically for the newer ah200/
+#: artxpro6000/gh200 tier that sibling project has never touched. Run
+#: `slurm/preflight.sh` (its U2 section prints each partition's real
+#: AllowQos=) and trust that over either naming convention here.
 QOS_USAGE_FACTOR: dict[str, float] = {
+    "normal": 1.0,
+    "long": 1.0,
+    "mem": 1.0,
+    "testing": 0.10,
     "gpu-normal": 1.0,
     "gpu-long": 1.0,
     "gpu-testing": 0.10,
@@ -114,13 +127,20 @@ GRES_TABLE: tuple[GresSpec, ...] = (
 
 GRES_BY_NAME: dict[str, GresSpec] = {g.gres: g for g in GRES_TABLE}
 
-#: Valid QOS per partition (verified).
+#: Valid QOS per partition. aa100/ami100 lead with the names PROVEN by 30 real
+#: job scripts on this account (see the QOS_USAGE_FACTOR comment above); the
+#: 'gpu-*' spellings are listed as unconfirmed alternates for every partition,
+#: since which naming a NEW partition (ah200/artxpro6000/gh200) actually uses
+#: has not been independently checked -- QOS objects are typically cluster-
+#: wide in Slurm, so bare names carrying over would be unsurprising, but this
+#: is a guess, not a verified fact. Confirm with `scontrol show partition <p>`
+#: (AllowQos=) before trusting either list for al40/ah200/artxpro6000.
 QOS_BY_PARTITION: dict[str, tuple[str, ...]] = {
-    "aa100": ("gpu-normal", "gpu-long", "gpu-testing"),
-    "ami100": ("gpu-normal", "gpu-long", "gpu-testing"),
-    "al40": ("gpu-normal", "gpu-long"),
-    "ah200": ("gpu-normal", "gpu-long"),
-    "artxpro6000": ("gpu-normal", "gpu-long"),
+    "aa100": ("normal", "long", "testing", "gpu-normal", "gpu-long", "gpu-testing"),
+    "ami100": ("normal", "long", "testing", "gpu-normal", "gpu-long", "gpu-testing"),
+    "al40": ("normal", "long", "gpu-normal", "gpu-long"),
+    "ah200": ("normal", "long", "gpu-normal", "gpu-long"),
+    "artxpro6000": ("normal", "long", "gpu-normal", "gpu-long"),
     "gh200": ("gh200",),
 }
 
@@ -196,7 +216,7 @@ def estimate(
     cores: int,
     hours: float,
     partition: Optional[str] = None,
-    qos: str = "gpu-normal",
+    qos: str = "normal",
 ) -> Estimate:
     """Estimate SU burn for one allocation shape.
 
@@ -385,9 +405,9 @@ def render_warnings(est: Estimate) -> str:
             "    this cluster's TRESBillingWeights, which we have not read.  The headline\n"
             "    TOTAL assumes the FULL-GPU rate (worst case)."
         )
-    if est.qos == "gpu-testing":
+    if est.qos in ("gpu-testing", "testing"):
         warn.append(
-            "QOS gpu-testing is valid ONLY on partitions aa100 and ami100, is capped at\n"
+            f"QOS {est.qos!r} is valid ONLY on partitions aa100 and ami100, is capped at\n"
             "    1 hour and 5 concurrent jobs, and is documented as billed at 10%."
         )
     valid = QOS_BY_PARTITION.get(est.partition)
@@ -552,8 +572,10 @@ def build_parser() -> argparse.ArgumentParser:
                     help="total CPU cores held by the job (default: %(default)s)")
     ap.add_argument("--hours", type=float, default=8.0,
                     help="wall-clock hours per task (default: %(default)s)")
-    ap.add_argument("--qos", default="gpu-normal",
-                    help="QOS name (default: %(default)s)")
+    ap.add_argument("--qos", default="normal",
+                    help="QOS name (default: %(default)s; proven correct on "
+                         "aa100/amilan/amem, unconfirmed on ah200/artxpro6000 "
+                         "-- see QOS_USAGE_FACTOR)")
     ap.add_argument("--array-tasks", type=int, default=1,
                     help="number of array tasks in the sweep (default: %(default)s)")
 
@@ -587,14 +609,27 @@ def _smoke() -> int:
     import tempfile
 
     print("[smoke] GRES table entries:", len(GRES_TABLE))
-    est = estimate(gres="a100-40gb", gpus=1, cores=4, hours=1.0, qos="gpu-normal")
+    # Bare 'normal' -- proven correct on aa100 (a sibling project on this
+    # account, 30 real job scripts, never uses 'gpu-normal'). This is now the
+    # default; the assert also doubles as a regression test that the discount
+    # table's bare-name entries are wired up.
+    est = estimate(gres="a100-40gb", gpus=1, cores=4, hours=1.0, qos="normal")
     expected = 4 * 1.0 + 1 * 1.0 * A100_SU_PER_GPU_HOUR
     assert abs(est.total_full_rate[0] - expected) < 1e-6, est.total_full_rate
     print(f"[smoke] 1 A100-hour + 4 cores = {est.total_full_rate[0]:.1f} SU (expected {expected:.1f})")
 
-    test_est = estimate(gres="a100-40gb", gpus=1, cores=1, hours=1.0, qos="gpu-testing")
+    test_est = estimate(gres="a100-40gb", gpus=1, cores=1, hours=1.0, qos="testing")
     assert abs(test_est.total_full_rate[0] - (1 + A100_SU_PER_GPU_HOUR) * 0.10) < 1e-6
-    print(f"[smoke] same under gpu-testing (10%) = {test_est.total_full_rate[0]:.2f} SU")
+    print(f"[smoke] same under testing (10%) = {test_est.total_full_rate[0]:.2f} SU")
+
+    # Legacy 'gpu-*' spellings must still resolve identically (kept for
+    # anyone who already has scripts using them, and in case they turn out to
+    # be correct on ah200/artxpro6000 after all).
+    legacy_est = estimate(gres="a100-40gb", gpus=1, cores=4, hours=1.0, qos="gpu-normal")
+    assert legacy_est.total_full_rate == est.total_full_rate
+    legacy_test_est = estimate(gres="a100-40gb", gpus=1, cores=1, hours=1.0, qos="gpu-testing")
+    assert legacy_test_est.total_full_rate == test_est.total_full_rate
+    print("[smoke] legacy 'gpu-normal'/'gpu-testing' spellings still resolve identically")
 
     mig = estimate(gres="h200_2g.35gb", gpus=1, cores=4, hours=8.0)
     print(f"[smoke] 8h on h200_2g.35gb -> conservative band "

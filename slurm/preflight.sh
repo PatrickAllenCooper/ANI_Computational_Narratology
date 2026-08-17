@@ -198,6 +198,11 @@ else
     bad "ask RC support, then: export SBATCH_ACCOUNT=<your-account>"
     U1_NOTE="no account discovered; set SBATCH_ACCOUNT manually"
 fi
+note "an explicit --account= may not even be required: a sibling project on"
+note "this account (/Users/pat/code/blanc/hpc/*.sh) submits 30 real job"
+note "scripts, none of which sets --account= -- a single default association"
+note "is common. If sacctmgr above shows exactly one account, try submitting"
+note "without SBATCH_ACCOUNT before assuming you need to set it."
 
 # ---------------------------------------------------------------------------
 # U2: real GRES inventory
@@ -250,7 +255,7 @@ if have sinfo; then
     for part in "${GPU_PARTITIONS[@]}"; do
         line="$(scontrol show partition "${part}" 2>/dev/null \
                 | tr ' ' '\n' \
-                | grep -E '^(MaxTime|DefaultTime|TotalNodes|TotalCPUs|State|QoS|AllowAccounts)=' \
+                | grep -E '^(MaxTime|DefaultTime|TotalNodes|TotalCPUs|State|QoS|AllowQos|AllowAccounts)=' \
                 | tr '\n' ' ' || true)"
         if [ -n "${line}" ]; then
             note "${part}: ${line}"
@@ -258,6 +263,15 @@ if have sinfo; then
             note "${part}: (not visible)"
         fi
     done
+    note "QoS= above is the partition DEFAULT; AllowQos= is the full permitted"
+    note "list -- that is what --qos= must name. A sibling project on this same"
+    note "account (/Users/pat/code/blanc/hpc/*.sh, 30 real job scripts) uses"
+    note "bare 'normal'/'long'/'mem' on aa100/amilan/amem -- NOT 'gpu-normal' or"
+    note "'gpu-long'. The gpu-* names baked into array_generate.sbatch's and"
+    note "serve_vllm.sbatch's #SBATCH defaults are this script's best guess for"
+    note "the NEW ah200/artxpro6000/gh200 tier specifically (no sibling project"
+    note "has touched them); AllowQos= above is the arbiter -- trust it over"
+    note "either source."
 else
     bad "sinfo not found -- are you on a login node with the Slurm client?"
 fi

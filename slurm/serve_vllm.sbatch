@@ -2,7 +2,7 @@
 #SBATCH --job-name=ani-vllm
 #SBATCH --partition=ah200
 #SBATCH --gres=gpu:h200:2
-#SBATCH --qos=gpu-long
+#SBATCH --qos=long
 #SBATCH --time=24:00:00
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
@@ -32,15 +32,18 @@
 #
 # SUBMIT
 #   mkdir -p slurm_logs
-#   export SBATCH_ACCOUNT=<your-account>
+#   # Try WITHOUT SBATCH_ACCOUNT first -- see array_generate.sbatch's SUBMIT
+#   # comment; a sibling project on this account never sets --account=.
 #   sbatch --export=ALL,ANI_SERVE_MODEL=qwen3-32b slurm/serve_vllm.sbatch
 #
 #   70B on four whole H200s:
 #     sbatch --gres=gpu:h200:4 --cpus-per-task=32 --mem=400G --time=48:00:00 \
 #            --export=ALL,ANI_SERVE_MODEL=llama-3.3-70b slurm/serve_vllm.sbatch
 #
-#   8B smoke on the debug queue (1 h cap, billed at 10%):
-#     sbatch --partition=aa100 --qos=gpu-testing --gres=gpu:a100-40gb:1 \
+#   8B smoke on the debug queue (1 h cap, billed at 10% per CURC docs; QOS
+#   name unconfirmed on this new partition tier -- see the QOS NAMING note
+#   in array_generate.sbatch and preflight.sh's AllowQos= output):
+#     sbatch --partition=aa100 --qos=testing --gres=gpu:a100-40gb:1 \
 #            --time=01:00:00 --cpus-per-task=4 --mem=48G \
 #            --export=ALL,ANI_SERVE_MODEL=qwen3-8b slurm/serve_vllm.sbatch
 #
@@ -72,6 +75,15 @@
 #   ANI_SERVE_HEALTH_INTERVAL  seconds between health probes (default 60)
 #   ANI_SERVE_MAX_MODEL_LEN    --max-model-len passed to vLLM
 #   ANI_SERVE_GPU_UTIL         --gpu-memory-utilization (default 0.90)
+#   ANI_SERVE_ENFORCE_EAGER    --enforce-eager on by default (default 1); set
+#                              0 to allow CUDA graph capture (more throughput,
+#                              slower/riskier startup -- see the code comment)
+#   ANI_SERVE_SWAP_SPACE_GB    --swap-space, CPU RAM for KV-cache offload
+#                              under VRAM pressure (default 8)
+#   ANI_VLLM_CONDA_ENV         override path to a pre-built vllm conda env,
+#                              tried before failing (default:
+#                              $ANI_PROJECTS/software/anaconda/envs/vllm-env,
+#                              matching a sibling project's proven install)
 #   ANI_SERVE_EXTRA            extra flags appended to the vllm command line
 #
 # Nothing here hardcodes a username, an account, or a home path.
@@ -99,6 +111,17 @@ GRACE_S="${ANI_SERVE_GRACE_S:-120}"
 STARTUP_TIMEOUT="${ANI_SERVE_STARTUP_TIMEOUT:-1800}"
 HEALTH_INTERVAL="${ANI_SERVE_HEALTH_INTERVAL:-60}"
 GPU_UTIL="${ANI_SERVE_GPU_UTIL:-0.90}"
+# --enforce-eager and --swap-space are on by default: a sibling project's real
+# vLLM deployment on this account's CURC allocation
+# (/Users/pat/code/blanc/hpc/slurm_evaluate_curc_vllm.sh) credits both with
+# specific, observed failure modes -- CUDA graph / Inductor capture causing a
+# startup OOM on a large model, and tight VRAM without CPU KV-cache offload.
+# --enforce-eager costs some steady-state throughput in exchange for a much
+# more predictable, faster startup (skips capture entirely); disable it with
+# ANI_SERVE_ENFORCE_EAGER=0 if profiling shows the throughput cost matters
+# more than startup risk for a given model/GPU combination.
+ENFORCE_EAGER="${ANI_SERVE_ENFORCE_EAGER:-1}"
+SWAP_SPACE_GB="${ANI_SERVE_SWAP_SPACE_GB:-8}"
 
 log() { printf '[serve %s] %s\n' "$(date -u '+%H:%M:%SZ')" "$*"; }
 die() { printf '[serve] FATAL: %s\n' "$*" >&2; exit 1; }
@@ -110,16 +133,45 @@ PYBIN="$(command -v python3 2>/dev/null || command -v python 2>/dev/null || true
 [ -n "${PYBIN}" ] || die "no python interpreter found"
 
 if ! "${PYBIN}" -c 'import vllm' >/dev/null 2>&1; then
-    cat >&2 <<'NOVLLM'
+    # A sibling project on this account already built a working vLLM install
+    # via a separate CURC-LLM-hoster project: a conda env at
+    # /projects/$USER/software/anaconda/envs/vllm-env (see
+    # /Users/pat/code/blanc/hpc/slurm_evaluate_curc_vllm.sh). Try it before
+    # falling back to a from-scratch build on hardware nothing has verified
+    # vLLM against yet.
+    VLLM_ENV_DIR="${ANI_VLLM_CONDA_ENV:-${ANI_PROJECTS}/software/anaconda/envs/vllm-env}"
+    if [ -d "${VLLM_ENV_DIR}" ] && [ -x "${VLLM_ENV_DIR}/bin/python" ]; then
+        log "system python has no vllm; trying existing conda env: ${VLLM_ENV_DIR}"
+        if "${VLLM_ENV_DIR}/bin/python" -c 'import vllm' >/dev/null 2>&1; then
+            PYBIN="${VLLM_ENV_DIR}/bin/python"
+            export PATH="${VLLM_ENV_DIR}/bin:${PATH}"
+            log "vLLM found in ${VLLM_ENV_DIR} -- using it"
+        else
+            log "vllm-env exists but does not import vllm either; giving up on it"
+        fi
+    fi
+fi
+
+if ! "${PYBIN}" -c 'import vllm' >/dev/null 2>&1; then
+    cat >&2 <<NOVLLM
 [serve] FATAL: vLLM is not importable in this environment.
+
+  Checked: the active python (${PYBIN}), and ${VLLM_ENV_DIR:-<unset>} (a
+  sibling project's known-working vllm-env, if present).
 
   vLLM is NOT in the CURC Lmod module stack -- it has to be self-installed into
   the venv, or run from an Apptainer image:
 
-      python3 -m venv "$ANI_VENV"
-      "$ANI_VENV/bin/pip" install -U pip
-      "$ANI_VENV/bin/pip" install vllm        # needs CUDA >12.0 (H200),
+      python3 -m venv "\$ANI_VENV"
+      "\$ANI_VENV/bin/pip" install -U pip
+      "\$ANI_VENV/bin/pip" install vllm        # needs CUDA >12.0 (H200),
                                               #       CUDA >12.8 (RTX Pro 6000)
+
+  Or reuse the proven conda recipe directly (see setup_curc_env.sh in
+  /Users/pat/code/blanc/hpc/ for the working install-command sequence):
+      module load anaconda
+      conda create -n vllm-env python=3.11 -y && conda activate vllm-env
+      pip install vllm openai tenacity
 
   Until then, use the HuggingFace fallback instead of this job:
       NOT_LOCAL_BACKEND=hf sbatch slurm/array_generate.sbatch
@@ -283,7 +335,11 @@ VLLM_ARGS=(
     --tensor-parallel-size "${TP_SIZE}"
     --gpu-memory-utilization "${GPU_UTIL}"
     --disable-log-requests
+    --swap-space "${SWAP_SPACE_GB}"
 )
+if [ "${ENFORCE_EAGER}" = "1" ]; then
+    VLLM_ARGS+=(--enforce-eager)
+fi
 if [ -n "${ANI_SERVE_MAX_MODEL_LEN:-}" ]; then
     VLLM_ARGS+=(--max-model-len "${ANI_SERVE_MAX_MODEL_LEN}")
 fi

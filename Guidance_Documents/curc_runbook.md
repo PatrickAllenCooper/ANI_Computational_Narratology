@@ -31,8 +31,8 @@ The published CURC documentation is incomplete or self-contradictory on six poin
 
 | ID | Topic | Why it matters | How preflight resolves it | If it stays UNRESOLVED |
 |---|---|---|---|---|
-| **U1** | Slurm account | Every `sbatch` needs one; there is no sensible default | `sacctmgr show associations`, `sshare` | Ask RC support, then `export SBATCH_ACCOUNT=<acct>` |
-| **U2** | Real GRES inventory | The docs are internally inconsistent — the quick-start says 41 GPUs, the hardware table implies ~130. Array width and queue expectations depend on which is true | `sinfo -p <part> -o "%N %G"` per partition, plus a per-GRES-type aggregate | Re-run on a login node where `sinfo` can see the GPU partitions |
+| **U1** | Slurm account | Most sites require one; **on this account it may not be needed at all** — a sibling project (§1.2b) submits 30 real, working jobs with no `--account=` anywhere, consistent with a single default association | `sacctmgr show associations`, `sshare` | If `sacctmgr` shows exactly one account, try submitting without `SBATCH_ACCOUNT` before assuming you need it; if a submission is rejected for lacking one, ask RC support, then `export SBATCH_ACCOUNT=<acct>` |
+| **U2** | Real GRES inventory + QOS names | The docs are internally inconsistent — the quick-start says 41 GPUs, the hardware table implies ~130. Array width and queue expectations depend on which is true. Preflight also now surfaces each partition's real `AllowQos=` list (see §1.2b — bare `normal`/`long`/`mem` is proven correct on `aa100`/`amilan`/`amem`; the `gpu-normal`/`gpu-long`/`gpu-testing` names baked into the `slurm/*.sbatch` defaults are unconfirmed guesses for the newer `ah200`/`artxpro6000`/`gh200` tier specifically) | `sinfo -p <part> -o "%N %G"` per partition, plus a per-GRES-type aggregate; `scontrol show partition <p>` for `AllowQos=` | Re-run on a login node where `sinfo`/`scontrol` can see the GPU partitions |
 | **U3** | SU billing weights | Only **108.6 SU per A100-GPU-hour** is published. H200 / RTX Pro 6000 / GH200 factors are not. A 3x surprise is the difference between a comfortable study and a spent allocation | `scontrol show partition <p>` → `TRESBillingWeights` | Budget against `su_estimate.py`'s **high (3x)** column and ask RC support |
 | **U4** | Compute-node internet | Documented as unverified. If compute nodes cannot reach the hub, every job must run `HF_HUB_OFFLINE=1` against pre-staged weights or it will hang for its whole walltime | `--probe-compute` submits a 5-minute `gpu-testing` job that curls the hub | **Assume offline.** Stage from a login/DTN node. This is the default the harness already takes |
 | **U5** | Runtime path | vLLM is **not** in the Lmod module stack. Whether you get vLLM or the HF fallback decides how large the sweeps can be | checks `apptainer`/`singularity`, `nvcc`, `import vllm`, `import transformers` | Install vLLM into the venv, or accept the HF path and shrink the design (§6) |
@@ -40,10 +40,65 @@ The published CURC documentation is incomplete or self-contradictory on six poin
 
 `--probe-compute` costs roughly 0.2 SU (a 5-minute `gpu-testing` job billed at 10%). Run it once; the answer is worth far more than that.
 
+### 1.2b Proven reference: a sibling project on this account
+
+Before trusting any doc-sourced guess in this runbook (including the earlier
+version of this file), check `/Users/pat/code/blanc/hpc/` — a separate
+research project with 30 real Slurm job scripts submitted on **this same CURC
+account** (`paco0228`). It is higher-confidence ground truth than any web
+documentation, and several things it proves directly contradict what an
+earlier CURC-docs fetch reported for this repo:
+
+- **QOS names are bare, not `gpu`-prefixed.** All 30 scripts use
+  `--qos=normal` / `--qos=long` / `--qos=mem` on `aa100`/`amilan`/`amem` — never
+  `gpu-normal`, `gpu-long`, or `gpu-testing`. Slurm QOS objects are normally
+  cluster-wide (not partition-prefixed), so bare names working on the newer
+  `ah200`/`artxpro6000`/`gh200` tier too would be the unsurprising case — but no
+  sibling project has touched that tier, so this repo's `slurm/*.sbatch`
+  defaults now use the bare names for the tiers blanc proves, and flag the
+  `gpu-*` alternates for the new tier as unconfirmed pending your own
+  `AllowQos=` check (§1.2, U2).
+- **No `--account=` anywhere**, in any of the 30 scripts. Try submitting
+  without `SBATCH_ACCOUNT` first.
+- **Real, working paths for this account**: `ssh paco0228@login.rc.colorado.edu`,
+  project directories at `/projects/paco0228/<repo>`, HF cache at
+  `/scratch/alpine/paco0228/hf_cache`, monitoring via `squeue -u paco0228`.
+  (This repo's own scripts stay username-agnostic via `$USER`; these are
+  concrete examples, not something to hardcode.)
+- **A working vLLM install already exists on this account**: a conda
+  environment at `/projects/paco0228/software/anaconda/envs/vllm-env`, built by
+  a separate `curc-LLM-hoster` project (not present in this local checkout —
+  cluster-side only). `slurm/serve_vllm.sbatch` now checks for and prefers this
+  environment before attempting a from-scratch install on hardware nothing has
+  verified vLLM against yet. Override its path with `ANI_VLLM_CONDA_ENV` if it
+  lives somewhere else.
+- **Proven-safe vLLM serving flags**: `--enforce-eager` (skip CUDA-graph /
+  Inductor capture — blanc's comments credit this with avoiding a real,
+  observed startup OOM) and `--swap-space 8` (CPU-RAM KV-cache offload under
+  VRAM pressure). Both are now the defaults in `slurm/serve_vllm.sbatch`
+  (`ANI_SERVE_ENFORCE_EAGER=0` / `ANI_SERVE_SWAP_SPACE_GB=<n>` to change them).
+  A 70B AWQ model took blanc's real deployment **~335s to load weights + ~600s
+  for CUDA graph capture (~15 min total)** with capture *on*; with
+  `--enforce-eager` on by default here, this repo's startup timeout
+  (`ANI_SERVE_STARTUP_TIMEOUT`, default 1800s) should be conservative rather
+  than tight.
+- **Conda, not a bare venv, is blanc's environment manager**: `module load
+  anaconda` → `conda create -n <name> python=3.11` → `conda activate <name>`.
+  This repo's `slurm/env_setup.sh` already tries `module load anaconda` first
+  (§1.3) but layers a self-managed venv on top rather than a named conda
+  environment — both are valid CURC paths; conda is what has actually been
+  exercised on this account outside of `vllm-env` itself.
+
+None of this is a substitute for running `slurm/preflight.sh` yourself — it is
+a second, independent, higher-confidence source to check preflight's output
+against, and the reason preflight's U1/U2 sections now print exactly the
+commands that would reconcile any disagreement.
+
 ### 1.3 Environment
 
 ```bash
-export SBATCH_ACCOUNT=<from U1>        # sbatch honours this; no --account needed
+# Set this only if U1 (§1.2b) found you need one; try submitting without it first.
+# export SBATCH_ACCOUNT=<from U1>      # sbatch honours this; no --account needed
 python3 -m venv "/projects/$USER/ani-venv"
 "/projects/$USER/ani-venv/bin/pip" install -U pip
 "/projects/$USER/ani-venv/bin/pip" install -r requirements.txt   # if present
