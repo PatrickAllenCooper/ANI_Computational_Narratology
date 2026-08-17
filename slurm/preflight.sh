@@ -463,7 +463,14 @@ if [ "${apptainer_ok}" -eq 0 ]; then
     if [ "${module_available}" -eq 1 ] && printf '%s' "${MODULE_AVAIL_TXT}" | grep -qi -e apptainer -e singularity; then
         note "not on PATH, but a module exists -- try: module load apptainer"
     else
-        bad "no apptainer/singularity on PATH and no module found"
+        bad "not on PATH on THIS (login) node, and no module found here."
+        note "CONFIRMED 2026-08-17: this check only runs on the login node, and"
+        note "apptainer was found at /usr/bin/apptainer on a COMPUTE node during"
+        note "a real --probe-compute job (netprobe log). Login-node absence does"
+        note "NOT mean compute-node absence -- if U5's pip/conda install path"
+        note "fails, an Apptainer image is a real, available fallback; verify"
+        note "with 'which apptainer' inside an interactive compute allocation"
+        note "before assuming it is unavailable."
     fi
 fi
 
