@@ -1,0 +1,776 @@
+{
+  "n_decisions": 8721,
+  "n_responses": 430,
+  "judges": [
+    "claude-haiku-4-5",
+    "gpt-5.4-nano",
+    "grok-4-1-fast-reasoning"
+  ],
+  "metrics": [
+    "framing",
+    "indirectness",
+    "validation"
+  ],
+  "iou_threshold": 0.5,
+  "n_bootstrap": 2000,
+  "n_perm": 2000,
+  "hallucination": {
+    "claude-haiku-4-5": {
+      "n_attempted": 2876,
+      "n_hallucinated": 52,
+      "n_declined": 31,
+      "n_rows": 2907,
+      "hallucination_rate": 0.01808066759388039,
+      "excluded": false
+    },
+    "gpt-5.4-nano": {
+      "n_attempted": 2907,
+      "n_hallucinated": 30,
+      "n_declined": 0,
+      "n_rows": 2907,
+      "hallucination_rate": 0.010319917440660475,
+      "excluded": false
+    },
+    "grok-4-1-fast-reasoning": {
+      "n_attempted": 2882,
+      "n_hallucinated": 21,
+      "n_declined": 25,
+      "n_rows": 2907,
+      "hallucination_rate": 0.007286606523247745,
+      "excluded": false
+    }
+  },
+  "excluded_judges_for_span_analyses": [],
+  "exclusion_rule": "pre-registered: judge excluded from rationale/span analyses when >25% of quoted spans cannot be located in the source text",
+  "self_consistency": {
+    "claude-haiku-4-5": {
+      "n_retest_pairs": 324,
+      "percent_agreement": 0.9537037037037037,
+      "kappa": 0.9066605208573404,
+      "mean_span_iou": 0.674578551120065
+    },
+    "gpt-5.4-nano": {
+      "n_retest_pairs": 324,
+      "percent_agreement": 0.8580246913580247,
+      "kappa": 0.7161467260884471,
+      "mean_span_iou": 0.5537871873622301
+    },
+    "grok-4-1-fast-reasoning": {
+      "n_retest_pairs": 321,
+      "percent_agreement": 0.8691588785046729,
+      "kappa": 0.73617470940472,
+      "mean_span_iou": 0.6435908308779038
+    }
+  },
+  "primary_G_pin": {
+    "framing": {
+      "n_units": 216,
+      "n_real": 108,
+      "n_placebo": 108,
+      "alpha_free_all": 0.16903409090909094,
+      "alpha_pinned_all": 0.23584905660377364,
+      "G_pin_all": 0.0668149656946827,
+      "G_pin_real": {
+        "point": 0.15287094134023638,
+        "ci95": [
+          -0.00487827584601741,
+          0.31642951898065064
+        ],
+        "n_bootstrap": 2000,
+        "n_responses": 108
+      },
+      "G_pin_placebo": {
+        "point": -0.017518948279005242,
+        "ci95": [
+          -0.1730768171848278,
+          0.13735052114192248
+        ],
+        "n_bootstrap": 2000,
+        "n_responses": 108
+      },
+      "G_pin_overall": {
+        "point": 0.0668149656946827,
+        "ci95": [
+          -0.045303965416786496,
+          0.17415622472694015
+        ],
+        "n_bootstrap": 2000,
+        "n_responses": 216
+      },
+      "did_real_minus_placebo": {
+        "observed": 0.17038988961924162,
+        "p_value": 0.14292853573213393,
+        "n_perm": 2000,
+        "null_mean": 0.00048711652924863206,
+        "null_sd": 0.11574664956599062,
+        "null_ci95": [
+          -0.2274737594777162,
+          0.21849568128411945
+        ]
+      }
+    },
+    "indirectness": {
+      "n_units": 216,
+      "n_real": 108,
+      "n_placebo": 108,
+      "alpha_free_all": 0.21781016910550577,
+      "alpha_pinned_all": 0.2905345153948874,
+      "G_pin_all": 0.07272434628938163,
+      "G_pin_real": {
+        "point": 0.09244495123041119,
+        "ci95": [
+          -0.08976517089049063,
+          0.28860965735163424
+        ],
+        "n_bootstrap": 2000,
+        "n_responses": 108
+      },
+      "G_pin_placebo": {
+        "point": 0.05369468622019935,
+        "ci95": [
+          -0.12223398252327788,
+          0.22825841002382807
+        ],
+        "n_bootstrap": 2000,
+        "n_responses": 108
+      },
+      "G_pin_overall": {
+        "point": 0.07272434628938163,
+        "ci95": [
+          -0.061115852037593954,
+          0.20310695808126367
+        ],
+        "n_bootstrap": 2000,
+        "n_responses": 216
+      },
+      "did_real_minus_placebo": {
+        "observed": 0.03875026501021184,
+        "p_value": 0.7781109445277361,
+        "n_perm": 2000,
+        "null_mean": 0.0010301447097048576,
+        "null_sd": 0.12935918415590997,
+        "null_ci95": [
+          -0.24637876515649082,
+          0.2487990174378023
+        ]
+      }
+    },
+    "validation": {
+      "n_units": 216,
+      "n_real": 108,
+      "n_placebo": 108,
+      "alpha_free_all": 0.36969360105606885,
+      "alpha_pinned_all": 0.4594699305945972,
+      "G_pin_all": 0.08977632953852832,
+      "G_pin_real": {
+        "point": 0.08466845654345678,
+        "ci95": [
+          -0.09266090792460391,
+          0.2551634226822108
+        ],
+        "n_bootstrap": 2000,
+        "n_responses": 108
+      },
+      "G_pin_placebo": {
+        "point": 0.06872619558770987,
+        "ci95": [
+          -0.16127893845285102,
+          0.2948619942440316
+        ],
+        "n_bootstrap": 2000,
+        "n_responses": 108
+      },
+      "G_pin_overall": {
+        "point": 0.08977632953852832,
+        "ci95": [
+          -0.05126017383788073,
+          0.22959639678697197
+        ],
+        "n_bootstrap": 2000,
+        "n_responses": 216
+      },
+      "did_real_minus_placebo": {
+        "observed": 0.015942260955746912,
+        "p_value": 0.9105447276361819,
+        "n_perm": 2000,
+        "null_mean": -0.004559206005971176,
+        "null_sd": 0.1424060795558836,
+        "null_ci95": [
+          -0.2881780672229919,
+          0.2672200551895796
+        ]
+      }
+    }
+  },
+  "coprimary_D": {
+    "framing": {
+      "scope": "condition=free (judge-chosen evidence)",
+      "by_iou_threshold": {
+        "iou_0": {
+          "agree_same": 817,
+          "agree_diff": 595,
+          "disagree_same": 164,
+          "disagree_diff": 575,
+          "n_pairs": 2151,
+          "n_agree": 1412,
+          "n_disagree": 739,
+          "p_diff_given_agree": 0.4213881019830028,
+          "p_diff_given_disagree": 0.7780784844384303,
+          "D": 0.3566903824554275,
+          "mean_iou": 0.3482999960275305,
+          "mean_iou_agree": 0.43957227968962764,
+          "mean_iou_disagree": 0.1739069452414937
+        },
+        "iou_0.25": {
+          "agree_same": 778,
+          "agree_diff": 634,
+          "disagree_same": 162,
+          "disagree_diff": 577,
+          "n_pairs": 2151,
+          "n_agree": 1412,
+          "n_disagree": 739,
+          "p_diff_given_agree": 0.4490084985835694,
+          "p_diff_given_disagree": 0.7807848443843031,
+          "D": 0.3317763458007337,
+          "mean_iou": 0.3482999960275305,
+          "mean_iou_agree": 0.43957227968962764,
+          "mean_iou_disagree": 0.1739069452414937
+        },
+        "iou_0.5": {
+          "agree_same": 636,
+          "agree_diff": 776,
+          "disagree_same": 129,
+          "disagree_diff": 610,
+          "n_pairs": 2151,
+          "n_agree": 1412,
+          "n_disagree": 739,
+          "p_diff_given_agree": 0.5495750708215298,
+          "p_diff_given_disagree": 0.8254397834912043,
+          "D": 0.2758647126696745,
+          "mean_iou": 0.3482999960275305,
+          "mean_iou_agree": 0.43957227968962764,
+          "mean_iou_disagree": 0.1739069452414937,
+          "bootstrap": {
+            "point": 0.2758647126696745,
+            "ci95": [
+              0.22450859590447692,
+              0.32988473823080133
+            ],
+            "n_bootstrap": 2000
+          }
+        }
+      },
+      "by_condition": {
+        "free": {
+          "agree_same": 636,
+          "agree_diff": 776,
+          "disagree_same": 129,
+          "disagree_diff": 610,
+          "n_pairs": 2151,
+          "n_agree": 1412,
+          "n_disagree": 739,
+          "p_diff_given_agree": 0.5495750708215298,
+          "p_diff_given_disagree": 0.8254397834912043,
+          "D": 0.2758647126696745,
+          "mean_iou": 0.3482999960275305,
+          "mean_iou_agree": 0.43957227968962764,
+          "mean_iou_disagree": 0.1739069452414937
+        },
+        "pin_placebo": {
+          "agree_same": 181,
+          "agree_diff": 4,
+          "disagree_same": 119,
+          "disagree_diff": 0,
+          "n_pairs": 304,
+          "n_agree": 185,
+          "n_disagree": 119,
+          "p_diff_given_agree": 0.021621621621621623,
+          "p_diff_given_disagree": 0.0,
+          "D": -0.021621621621621623,
+          "mean_iou": 0.9432341148948121,
+          "mean_iou_agree": 0.9500638802249912,
+          "mean_iou_disagree": 0.9326164124907523
+        },
+        "pin_real": {
+          "agree_same": 219,
+          "agree_diff": 5,
+          "disagree_same": 91,
+          "disagree_diff": 7,
+          "n_pairs": 322,
+          "n_agree": 224,
+          "n_disagree": 98,
+          "p_diff_given_agree": 0.022321428571428572,
+          "p_diff_given_disagree": 0.07142857142857142,
+          "D": 0.04910714285714285,
+          "mean_iou": 0.9239215429310252,
+          "mean_iou_agree": 0.9288309717897162,
+          "mean_iou_disagree": 0.9126999912540157
+        }
+      }
+    },
+    "indirectness": {
+      "scope": "condition=free (judge-chosen evidence)",
+      "by_iou_threshold": {
+        "iou_0": {
+          "agree_same": 860,
+          "agree_diff": 610,
+          "disagree_same": 269,
+          "disagree_diff": 463,
+          "n_pairs": 2202,
+          "n_agree": 1470,
+          "n_disagree": 732,
+          "p_diff_given_agree": 0.41496598639455784,
+          "p_diff_given_disagree": 0.6325136612021858,
+          "D": 0.21754767480762793,
+          "mean_iou": 0.38391313591325765,
+          "mean_iou_agree": 0.445197657839911,
+          "mean_iou_disagree": 0.2608417599130112
+        },
+        "iou_0.25": {
+          "agree_same": 792,
+          "agree_diff": 678,
+          "disagree_same": 239,
+          "disagree_diff": 493,
+          "n_pairs": 2202,
+          "n_agree": 1470,
+          "n_disagree": 732,
+          "p_diff_given_agree": 0.46122448979591835,
+          "p_diff_given_disagree": 0.6734972677595629,
+          "D": 0.21227277796364452,
+          "mean_iou": 0.38391313591325765,
+          "mean_iou_agree": 0.445197657839911,
+          "mean_iou_disagree": 0.2608417599130112
+        },
+        "iou_0.5": {
+          "agree_same": 660,
+          "agree_diff": 810,
+          "disagree_same": 188,
+          "disagree_diff": 544,
+          "n_pairs": 2202,
+          "n_agree": 1470,
+          "n_disagree": 732,
+          "p_diff_given_agree": 0.5510204081632653,
+          "p_diff_given_disagree": 0.7431693989071039,
+          "D": 0.19214899074383862,
+          "mean_iou": 0.38391313591325765,
+          "mean_iou_agree": 0.445197657839911,
+          "mean_iou_disagree": 0.2608417599130112,
+          "bootstrap": {
+            "point": 0.19214899074383862,
+            "ci95": [
+              0.1384086313311308,
+              0.24232817556917285
+            ],
+            "n_bootstrap": 2000
+          }
+        }
+      },
+      "by_condition": {
+        "free": {
+          "agree_same": 660,
+          "agree_diff": 810,
+          "disagree_same": 188,
+          "disagree_diff": 544,
+          "n_pairs": 2202,
+          "n_agree": 1470,
+          "n_disagree": 732,
+          "p_diff_given_agree": 0.5510204081632653,
+          "p_diff_given_disagree": 0.7431693989071039,
+          "D": 0.19214899074383862,
+          "mean_iou": 0.38391313591325765,
+          "mean_iou_agree": 0.445197657839911,
+          "mean_iou_disagree": 0.2608417599130112
+        },
+        "pin_placebo": {
+          "agree_same": 208,
+          "agree_diff": 6,
+          "disagree_same": 82,
+          "disagree_diff": 2,
+          "n_pairs": 298,
+          "n_agree": 214,
+          "n_disagree": 84,
+          "p_diff_given_agree": 0.028037383177570093,
+          "p_diff_given_disagree": 0.023809523809523808,
+          "D": -0.004227859368046285,
+          "mean_iou": 0.9329151369085671,
+          "mean_iou_agree": 0.9340834546621275,
+          "mean_iou_disagree": 0.929938708345925
+        },
+        "pin_real": {
+          "agree_same": 227,
+          "agree_diff": 15,
+          "disagree_same": 74,
+          "disagree_diff": 4,
+          "n_pairs": 320,
+          "n_agree": 242,
+          "n_disagree": 78,
+          "p_diff_given_agree": 0.06198347107438017,
+          "p_diff_given_disagree": 0.05128205128205128,
+          "D": -0.010701419792328887,
+          "mean_iou": 0.9099759338843075,
+          "mean_iou_agree": 0.9117492110158988,
+          "mean_iou_disagree": 0.9044742279119339
+        }
+      }
+    },
+    "validation": {
+      "scope": "condition=free (judge-chosen evidence)",
+      "by_iou_threshold": {
+        "iou_0": {
+          "agree_same": 1038,
+          "agree_diff": 558,
+          "disagree_same": 201,
+          "disagree_diff": 387,
+          "n_pairs": 2184,
+          "n_agree": 1596,
+          "n_disagree": 588,
+          "p_diff_given_agree": 0.34962406015037595,
+          "p_diff_given_disagree": 0.6581632653061225,
+          "D": 0.3085392051557465,
+          "mean_iou": 0.42458627222662615,
+          "mean_iou_agree": 0.4942313223917228,
+          "mean_iou_disagree": 0.23554970749279378
+        },
+        "iou_0.25": {
+          "agree_same": 985,
+          "agree_diff": 611,
+          "disagree_same": 185,
+          "disagree_diff": 403,
+          "n_pairs": 2184,
+          "n_agree": 1596,
+          "n_disagree": 588,
+          "p_diff_given_agree": 0.38283208020050125,
+          "p_diff_given_disagree": 0.685374149659864,
+          "D": 0.30254206945936274,
+          "mean_iou": 0.42458627222662615,
+          "mean_iou_agree": 0.4942313223917228,
+          "mean_iou_disagree": 0.23554970749279378
+        },
+        "iou_0.5": {
+          "agree_same": 807,
+          "agree_diff": 789,
+          "disagree_same": 148,
+          "disagree_diff": 440,
+          "n_pairs": 2184,
+          "n_agree": 1596,
+          "n_disagree": 588,
+          "p_diff_given_agree": 0.4943609022556391,
+          "p_diff_given_disagree": 0.7482993197278912,
+          "D": 0.2539384174722521,
+          "mean_iou": 0.42458627222662615,
+          "mean_iou_agree": 0.4942313223917228,
+          "mean_iou_disagree": 0.23554970749279378,
+          "bootstrap": {
+            "point": 0.2539384174722521,
+            "ci95": [
+              0.19718373806558742,
+              0.30897472764705397
+            ],
+            "n_bootstrap": 2000
+          }
+        }
+      },
+      "by_condition": {
+        "free": {
+          "agree_same": 807,
+          "agree_diff": 789,
+          "disagree_same": 148,
+          "disagree_diff": 440,
+          "n_pairs": 2184,
+          "n_agree": 1596,
+          "n_disagree": 588,
+          "p_diff_given_agree": 0.4943609022556391,
+          "p_diff_given_disagree": 0.7482993197278912,
+          "D": 0.2539384174722521,
+          "mean_iou": 0.42458627222662615,
+          "mean_iou_agree": 0.4942313223917228,
+          "mean_iou_disagree": 0.23554970749279378
+        },
+        "pin_placebo": {
+          "agree_same": 265,
+          "agree_diff": 5,
+          "disagree_same": 37,
+          "disagree_diff": 1,
+          "n_pairs": 308,
+          "n_agree": 270,
+          "n_disagree": 38,
+          "p_diff_given_agree": 0.018518518518518517,
+          "p_diff_given_disagree": 0.02631578947368421,
+          "D": 0.007797270955165692,
+          "mean_iou": 0.9643949874888675,
+          "mean_iou_agree": 0.9688652062569933,
+          "mean_iou_disagree": 0.9326329067679782
+        },
+        "pin_real": {
+          "agree_same": 264,
+          "agree_diff": 3,
+          "disagree_same": 51,
+          "disagree_diff": 2,
+          "n_pairs": 320,
+          "n_agree": 267,
+          "n_disagree": 53,
+          "p_diff_given_agree": 0.011235955056179775,
+          "p_diff_given_disagree": 0.03773584905660377,
+          "D": 0.026499894000423997,
+          "mean_iou": 0.9398024902685457,
+          "mean_iou_agree": 0.942711491750346,
+          "mean_iou_disagree": 0.9251477092187215
+        }
+      }
+    }
+  },
+  "secondary": {
+    "alignment": {
+      "framing": {
+        "gain": 0.3920778358921144,
+        "p_value": 0.0004997501249375312,
+        "n_perm": 2000,
+        "null_mean": -0.0012343201701045029,
+        "null_sd": 0.07818243616724205,
+        "n_aligned": 79,
+        "n_unaligned": 350,
+        "alpha_aligned": 0.5025487256371814,
+        "alpha_unaligned": 0.11047088974506702,
+        "alpha_all": 0.18210083434497515,
+        "note": "Alignment is not randomised and correlates mechanically with agreement; only the permutation p-value is interpretable."
+      },
+      "indirectness": {
+        "gain": 0.15570014332039317,
+        "p_value": 0.04897551224387806,
+        "n_perm": 2000,
+        "null_mean": -0.001852154087476089,
+        "null_sd": 0.07835015515612491,
+        "n_aligned": 110,
+        "n_unaligned": 320,
+        "alpha_aligned": 0.33734327554118915,
+        "alpha_unaligned": 0.18164313222079598,
+        "alpha_all": 0.2204760501741534,
+        "note": "Alignment is not randomised and correlates mechanically with agreement; only the permutation p-value is interpretable."
+      },
+      "validation": {
+        "gain": 0.06443387491811592,
+        "p_value": 0.4217891054472764,
+        "n_perm": 2000,
+        "null_mean": -0.00387373228504528,
+        "null_sd": 0.08153451102697806,
+        "n_aligned": 112,
+        "n_unaligned": 317,
+        "alpha_aligned": 0.37610893336084195,
+        "alpha_unaligned": 0.311675058442726,
+        "alpha_all": 0.35026984639512904,
+        "note": "Alignment is not randomised and correlates mechanically with agreement; only the permutation p-value is interpretable."
+      }
+    },
+    "threshold_vs_conflation": {
+      "framing": {
+        "alpha_raw": 0.18118875647439203,
+        "alpha_quantile_equated": 0.21096677108285733,
+        "base_rates": {
+          "claude-haiku-4-5": 0.3372093023255814,
+          "gpt-5.4-nano": 0.872093023255814,
+          "grok-4-1-fast-reasoning": 0.585081585081585
+        },
+        "judge_pairs": [
+          {
+            "judge_a": "claude-haiku-4-5",
+            "judge_b": "gpt-5.4-nano",
+            "n": 430,
+            "n00": 53,
+            "n01": 232,
+            "n10": 2,
+            "n11": 143,
+            "kappa": 0.12390074009577716,
+            "tetrachoric_r": 0.6339160208702089
+          },
+          {
+            "judge_a": "claude-haiku-4-5",
+            "judge_b": "grok-4-1-fast-reasoning",
+            "n": 429,
+            "n00": 168,
+            "n01": 116,
+            "n10": 10,
+            "n11": 135,
+            "kappa": 0.44328176818340975,
+            "tetrachoric_r": 0.789205674648285
+          },
+          {
+            "judge_a": "gpt-5.4-nano",
+            "judge_b": "grok-4-1-fast-reasoning",
+            "n": 429,
+            "n00": 43,
+            "n01": 12,
+            "n10": 135,
+            "n11": 239,
+            "kappa": 0.21540988093608845,
+            "tetrachoric_r": 0.5462561945915223
+          }
+        ],
+        "interpretation": "high tetrachoric r with low raw alpha => threshold difference; low tetrachoric r => conflation of different constructs"
+      },
+      "indirectness": {
+        "alpha_raw": 0.2204760501741534,
+        "alpha_quantile_equated": 0.2162223741171111,
+        "base_rates": {
+          "claude-haiku-4-5": 0.30697674418604654,
+          "gpt-5.4-nano": 0.23255813953488372,
+          "grok-4-1-fast-reasoning": 0.3543123543123543
+        },
+        "judge_pairs": [
+          {
+            "judge_a": "claude-haiku-4-5",
+            "judge_b": "gpt-5.4-nano",
+            "n": 430,
+            "n00": 245,
+            "n01": 53,
+            "n10": 85,
+            "n11": 47,
+            "kappa": 0.19111232279171203,
+            "tetrachoric_r": 0.32980568647384645
+          },
+          {
+            "judge_a": "claude-haiku-4-5",
+            "judge_b": "grok-4-1-fast-reasoning",
+            "n": 429,
+            "n00": 222,
+            "n01": 75,
+            "n10": 55,
+            "n11": 77,
+            "kappa": 0.31744749596122795,
+            "tetrachoric_r": 0.4968423857688904
+          },
+          {
+            "judge_a": "gpt-5.4-nano",
+            "judge_b": "grok-4-1-fast-reasoning",
+            "n": 429,
+            "n00": 227,
+            "n01": 102,
+            "n10": 50,
+            "n11": 50,
+            "kappa": 0.16085859885726062,
+            "tetrachoric_r": 0.2851850152015686
+          }
+        ],
+        "interpretation": "high tetrachoric r with low raw alpha => threshold difference; low tetrachoric r => conflation of different constructs"
+      },
+      "validation": {
+        "alpha_raw": 0.34893158199276586,
+        "alpha_quantile_equated": 0.366312980888558,
+        "base_rates": {
+          "claude-haiku-4-5": 0.7232558139534884,
+          "gpt-5.4-nano": 0.3697674418604651,
+          "grok-4-1-fast-reasoning": 0.7651162790697674
+        },
+        "judge_pairs": [
+          {
+            "judge_a": "claude-haiku-4-5",
+            "judge_b": "gpt-5.4-nano",
+            "n": 430,
+            "n00": 115,
+            "n01": 4,
+            "n10": 156,
+            "n11": 155,
+            "kappa": 0.3333462529795934,
+            "tetrachoric_r": 0.788844593524933
+          },
+          {
+            "judge_a": "claude-haiku-4-5",
+            "judge_b": "grok-4-1-fast-reasoning",
+            "n": 430,
+            "n00": 80,
+            "n01": 39,
+            "n10": 21,
+            "n11": 290,
+            "kappa": 0.6343641053258127,
+            "tetrachoric_r": 0.8621974139213563
+          },
+          {
+            "judge_a": "gpt-5.4-nano",
+            "judge_b": "grok-4-1-fast-reasoning",
+            "n": 430,
+            "n00": 98,
+            "n01": 173,
+            "n10": 3,
+            "n11": 156,
+            "kappa": 0.28073143378509374,
+            "tetrachoric_r": 0.7721872258186341
+          }
+        ],
+        "interpretation": "high tetrachoric r with low raw alpha => threshold difference; low tetrachoric r => conflation of different constructs"
+      }
+    },
+    "population": {
+      "framing": {
+        "human": {
+          "n_responses": 30,
+          "alpha": 0.591174561972745
+        },
+        "model": {
+          "n_responses": 400,
+          "alpha": 0.1511702084492672
+        }
+      },
+      "indirectness": {
+        "human": {
+          "n_responses": 30,
+          "alpha": 0.37499999999999967
+        },
+        "model": {
+          "n_responses": 400,
+          "alpha": 0.20886332310093658
+        }
+      },
+      "validation": {
+        "human": {
+          "n_responses": 30,
+          "alpha": 0.5900809716599191
+        },
+        "model": {
+          "n_responses": 400,
+          "alpha": 0.3211186575630315
+        }
+      }
+    }
+  },
+  "protocol_effect": {
+    "framing": {
+      "n_matched_decisions": 645,
+      "flip_rate": 0.16744186046511628,
+      "flip_rate_by_judge": {
+        "claude-haiku-4-5": 0.3023255813953488,
+        "gpt-5.4-nano": 0.10697674418604651,
+        "grok-4-1-fast-reasoning": 0.09302325581395349
+      },
+      "alpha_label_first": 0.18118875647439203,
+      "alpha_rationale_first": 0.41680465379755105,
+      "n_label_first_items": 430
+    },
+    "indirectness": {
+      "n_matched_decisions": 644,
+      "flip_rate": 0.2127329192546584,
+      "flip_rate_by_judge": {
+        "claude-haiku-4-5": 0.13953488372093023,
+        "gpt-5.4-nano": 0.3674418604651163,
+        "grok-4-1-fast-reasoning": 0.1308411214953271
+      },
+      "alpha_label_first": 0.2204760501741534,
+      "alpha_rationale_first": 0.24996739697443915,
+      "n_label_first_items": 430
+    },
+    "validation": {
+      "n_matched_decisions": 645,
+      "flip_rate": 0.13953488372093023,
+      "flip_rate_by_judge": {
+        "claude-haiku-4-5": 0.08837209302325581,
+        "gpt-5.4-nano": 0.24651162790697675,
+        "grok-4-1-fast-reasoning": 0.08372093023255814
+      },
+      "alpha_label_first": 0.34893158199276586,
+      "alpha_rationale_first": 0.5968933230307714,
+      "n_label_first_items": 430
+    }
+  },
+  "exploratory_clustering": {
+    "status": "disabled",
+    "reason": "Rationale-prose clustering is exploratory only (label vocabulary leaks into cluster assignment). Enable with --exploratory-clustering."
+  }
+}
