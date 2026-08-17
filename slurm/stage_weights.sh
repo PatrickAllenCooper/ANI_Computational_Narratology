@@ -129,6 +129,23 @@ dir_files() {
     find "$1" -type f ! -name '.ani_*' ! -name 'SHA256SUMS*' 2>/dev/null | wc -l | tr -d ' '
 }
 
+# CONFIRMED NECESSARY 2026-08-17: a real staging run against a gated repo
+# (meta-llama/Llama-3.1-8B-Instruct, no HF_TOKEN with granted access) had its
+# download fail with a GatedRepoError (401), yet the download tool's failure
+# never tripped `set -e` (root cause not fully understood -- huggingface_hub's
+# CLI may exit 0 in some partial-download paths despite printing a traceback),
+# and the old "files > 0" completeness check was satisfied by the LICENSE and
+# README alone, so the run was reported `[ok] staged 5 files, 50.7 KiB` with
+# zero actual model weights. This checks for real weight files, not just any
+# files, and do_download's exit status is now captured explicitly rather than
+# relying on implicit `set -e` propagation, which just proved unreliable here.
+has_weight_files() {
+    find "$1" -type f \( \
+            -name '*.safetensors' -o -name '*.bin' -o -name '*.gguf' \
+            -o -name '*.pt' -o -name '*.pth' \
+        \) ! -name '.ani_*' 2>/dev/null | head -1 | grep -q .
+}
+
 human_bytes() {
     awk -v b="$1" 'BEGIN{
         split("B KiB MiB GiB TiB", u, " ")
@@ -371,7 +388,7 @@ META
 }
 
 stage_one() {
-    local spec="$1" repo dir tool epoch bytes files
+    local spec="$1" repo dir tool epoch bytes files dl_status=0
     repo="$(resolve_repo "${spec}")" \
         || die "cannot resolve '${spec}' to an HF repo id (pass org/name explicitly)"
     dir="$(local_dir_for_repo "${repo}")"
@@ -381,14 +398,18 @@ stage_one() {
     note "target: ${dir}"
 
     if [ -d "${dir}" ] && [ "$(dir_files "${dir}")" -gt 0 ] && [ "${MODE}" != "restage" ]; then
-        good "already staged ($(human_bytes "$(dir_bytes "${dir}")"), $(dir_files "${dir}") files)"
-        note "use --restage to reset the 90-day purge clock"
-        report_due_for_dir "${dir}"
-        return 0
+        if has_weight_files "${dir}"; then
+            good "already staged ($(human_bytes "$(dir_bytes "${dir}")"), $(dir_files "${dir}") files)"
+            note "use --restage to reset the 90-day purge clock"
+            report_due_for_dir "${dir}"
+            return 0
+        fi
+        bad "${dir} exists ($(dir_files "${dir}") files) but has NO model weight files"
+        note "-- an earlier attempt likely failed partway (gated repo? auth?); retrying the download"
     fi
 
     tool="$(download_tool)" || die "no hf / huggingface-cli / huggingface_hub available"
-    do_download "${repo}" "${dir}" "${tool}"
+    do_download "${repo}" "${dir}" "${tool}" || dl_status=$?
 
     epoch="$(epoch_now)"
     if [ "${DRY_RUN}" -eq 1 ]; then
@@ -398,6 +419,17 @@ stage_one() {
     bytes="$(dir_bytes "${dir}")"
     files="$(dir_files "${dir}")"
     [ "${files}" -gt 0 ] || die "staging produced 0 files in ${dir}"
+
+    if [ "${dl_status}" -ne 0 ] || ! has_weight_files "${dir}"; then
+        bad "STAGING FAILED for ${repo}: ${files} file(s) landed"
+        bad "($(human_bytes "${bytes}")) but NO model weight file was among them."
+        bad "download tool exit status: ${dl_status}. Common cause: a GATED repo"
+        bad "(meta-llama/* requires accepting the license on huggingface.co and an"
+        bad "HF_TOKEN with granted access -- 'huggingface-cli login' or export"
+        bad "HF_TOKEN=hf_... before re-running). NOT recorded as staged; the"
+        bad "manifest/purge clock is untouched so this will retry on next run."
+        return 1
+    fi
 
     [ "${DO_CHECKSUMS}" -eq 1 ] && write_checksums "${dir}"
     write_dir_meta "${dir}" "${repo}" "${epoch}" "${bytes}" "${files}"
@@ -629,6 +661,25 @@ cmd_smoke() {
     sandbox="$(mktemp -d 2>/dev/null || printf '%s' "${TMPDIR:-/tmp}/ani_smoke_$$")"
     mkdir -p "${sandbox}/fake_model"
     printf 'weights\n' > "${sandbox}/fake_model/model.safetensors"
+
+    # Regression test for the 2026-08-17 gated-repo incident: a directory
+    # holding only metadata (LICENSE/README, as a failed gated download would
+    # leave behind) must be detected as having NO weight files, and a
+    # directory with a real weight file must be detected as complete.
+    mkdir -p "${sandbox}/gated_partial"
+    printf 'MIT\n' > "${sandbox}/gated_partial/LICENSE"
+    printf '# readme\n' > "${sandbox}/gated_partial/README.md"
+    if has_weight_files "${sandbox}/gated_partial"; then
+        bad "has_weight_files FALSE POSITIVE on metadata-only dir"
+    else
+        good "has_weight_files correctly rejects a metadata-only dir (LICENSE+README)"
+    fi
+    if has_weight_files "${sandbox}/fake_model"; then
+        good "has_weight_files correctly accepts a dir containing model.safetensors"
+    else
+        bad "has_weight_files FALSE NEGATIVE on a dir with a real weight file"
+    fi
+
     saved_manifest="${MANIFEST}"; saved_dest="${DEST}"
     MANIFEST="${sandbox}/.ani_stage_manifest.jsonl"; DEST="${sandbox}"
     manifest_append "fake/Model" "fake" "${sandbox}/fake_model" "${now}" \
@@ -683,9 +734,23 @@ EOF
             say ""
             die "no MODEL given"
         fi
-        for m in "${MODELS[@]}"; do stage_one "${m}"; done
+        # One model failing (e.g. a gated repo with no HF_TOKEN access) must
+        # not silently skip the rest of the requested list -- attempt every
+        # model, collect failures, and exit non-zero with a clear summary
+        # rather than letting `set -e` abort mid-list on the first failure.
+        FAILED_MODELS=()
+        for m in "${MODELS[@]}"; do
+            stage_one "${m}" || FAILED_MODELS+=("${m}")
+        done
         say ""
         cmd_list || true
+        if [ "${#FAILED_MODELS[@]}" -gt 0 ]; then
+            say ""
+            bad "FAILED to stage: ${FAILED_MODELS[*]}"
+            bad "see the STAGING FAILED message(s) above for the cause; not"
+            bad "recorded in the manifest, so re-running will retry them."
+            exit 1
+        fi
         ;;
     *)
         die "internal: unknown mode ${MODE}"
