@@ -16,7 +16,8 @@ marked `[discuss]` there are addressed in Section 8).
 existing verification record), §1b (**two verified instrument defects in the
 flagship result** — an arm-correlated judge truncation and non-random
 differential attrition — plus the absence of a length-matched control for the
-sycophancy claim specifically), §2c (the relational-cost axis, orthogonal to
+sycophancy claim specifically), §1c (**the nuisance check that supposedly
+overturned Crowd-Gold could not have detected the effect**), §2c (the relational-cost axis, orthogonal to
 2a's evidential axis), §4.6 + §4.6a (Costly-Correction items and their
 authoring-safety protocol), §4.7 (scaffold-adversarial search), §4.8 (the
 inference-time scaffold-permutation program A–F), and §7a (what actually needs
@@ -26,11 +27,25 @@ relationally rewarded, and can that be induced by permuting the scaffold
 itself?* — which the 2026-08-14 portfolio measured only in its two separated
 halves. Sections 3, 6, 7 and 8 updated for consistency.
 
-**Two findings from this revision override earlier sequencing.** First, §1b(i):
-the flagship effect size is not defensible until the cache is re-scored without
-the 4,000-character truncation, and that costs no new generations. Second, §7a:
-every instrument in this document except exact-propensity scoring runs on hosted
-models, so the program is not compute-blocked and §4.8-A can begin immediately.
+**Four findings from this revision override earlier sequencing.**
+1. **§1b(i)** — the flagship effect size is not defensible until the ELEPHANT
+   cache is re-scored without the 4,000-character truncation. Zero new
+   generations.
+2. **§1c** — the nuisance check that the repo records as having *overturned* the
+   Crowd-Gold headline was itself underpowered (n=40/k=2 against an effect at
+   n=99/k=3), pooled across models against its own library's explicit
+   instruction, and measured on a different item panel. That result is
+   **undetermined, not dead**, and must be described that way until rebuilt.
+3. **§7a** — the program is not compute-blocked, and exact propensities are
+   available on the hosted tier after all (verified live), which is also the
+   cleanest fix for §1c. The binding constraints are PI review time (the
+   BrokenMath TRUE stratum stands at 0/120 accepted) and unrecorded spend
+   authority.
+4. **§4.6 / §4.8-A** — the two highest-value experiments are far cheaper than
+   previously budgeted (~2.9k and ~3.4k generations, both runnable today,
+   sharing one item panel and one runner), because BrokenMath already supplies
+   451 expert-verified falsehoods and `run_phase2_ablation.py` already builds
+   the five section knockouts.
 
 ---
 
@@ -142,6 +157,48 @@ enumerating every ELEPHANT cell shows only `raw`, `baseline_io`, `standard_cot`,
 verbose arm was built and spent on the ACL paper's *depth* metrics. The control
 that could kill the sycophancy headline exists and was pointed at a different
 paper.
+
+### 1c. The control that "overturned" Crowd-Gold could not have detected the effect (verified 2026-08-18)
+
+Commit `1eaea5f` is titled *"Nuisance reference overturns the pooled Crowd-Gold
+headline"* and `crowdgold_nuisance_summary.json` records the +3.9 pp effect as
+`"INSIDE the nuisance range -- NOT distinguishable from inert rewording"`. The
+repo treats that as settled. It is not — three defects, all verified against the
+artifacts:
+
+1. **The floor is underpowered relative to the effect it judges.** The effect
+   ran at n=99, k=3; the reference ran at **`--n 40 --samples 2`**
+   (`run_crowdgold_nuisance.py:93,95`). Reconstructing what pure binomial
+   sampling error alone would produce on the same 40-item panel: nano's measured
+   nuisance mean |shift| is 3.96 pp against a Monte-Carlo-only prediction of
+   2.97 pp, and its max-of-12 is 8.75 pp against 7.83 pp predicted. **Nano's
+   entire nuisance distribution is consistent with sampling noise and no prompt
+   brittleness at all.** The much-repeated line that "collapsing paragraph
+   breaks moves nano by 8.8 pp, more than the whole stance effect" is not
+   established — that shift sits inside its own noise envelope.
+2. **The percentile pools across models, violating this library's own stated
+   contract.** `run_crowdgold_nuisance.py` accumulates `all_shifts` across
+   models and takes one percentile over the union, while `nuisance.py:30-33`
+   states the distribution "is per (model, instrument, item panel) … Recompute
+   it, do not reuse it." Pooling a model with a ~4 pp floor and one with a
+   ~0.6 pp floor yields a number describing neither.
+3. **Effect and floor are measured on different item panels** — floor on the
+   first 40 gold-YTA items, effect on all 99. On the matched 40-item panel
+   grok's shielding is +2.50 pp, not the +5.05 pp used in the comparison, so its
+   headline "ratio 4.08, real" becomes ~2.0.
+
+**None of this resurrects the effect.** It says the check that killed it lacked
+the power to detect it, and that the recorded verdict is unsupported in both
+directions. The result is currently *undetermined*, not dead — and it should be
+described that way in any writeup until the reference is rebuilt at n=99, k=5,
+per model, on the identical panel (or, better, with exact propensities per §7a,
+which removes the Monte Carlo term that is doing the damage — which is what
+`nuisance.py`'s docstring assumed all along when it said "the propensity readout
+is exact … not a sampled rate").
+
+**This generalises: every nuisance floor in the portfolio must be power-matched
+to the effect it adjudicates, per model, on the same panel.** 4.6 and 4.8
+inherit this requirement.
 
 Data facts verified 2026-08-14 (load-bearing for the designs below):
 
@@ -552,10 +609,30 @@ conditional prediction.
   models → saturated, drop before any scaffold run. Refusal rate under the
   refusal-tuned wrapper exceeding the NoT arm's by >10 pp → refusal training is a
   live competing cause of any null and must be reported as such.
-- **Cost:** ~80 items x 4 arms x k=5 x 3 scaffolds x 4 models ≈ 13–17k
-  generations (short prompts, so well below the AITA substrate per call), plus
-  ~2k for the nuisance reference. Authoring is the binding constraint: ~1.5–2
-  student-weeks for 80 PI-verified two-component items with sources.
+- **Cost — revised down sharply 2026-08-18.** The authoring estimate below was
+  wrong: **the falsehood half already exists, 451 times over, expert-verified.**
+  `data/brokenmath/benchmark.jsonl` is exactly a bank of P components on which
+  these models are demonstrably unsaturated (39–83% sycophant rates), and the
+  relational half is a *template*, not an item. Adding a `"relational"` channel
+  (sunk-investment / assigned-role / conversational-ease) to
+  `stance_templates.py`'s existing `CHANNELS` tuple in the `math` register is
+  data entry into a validated structure plus a channel validator — roughly a
+  day, not 1.5–2 student-weeks. `run_stance_factorial.py` already runs the whole
+  factorial (stance × scaffold × paraphrase × position), has split-sample
+  selection, forced-verdict extraction and a nuisance mode.
+  **Pilot: 40 items × 4 arms × k=3 × 2 scaffolds × 3 models ≈ 2.9k generations,
+  ~$8–12, runnable today.** Reserve bespoke authoring for the channels
+  BrokenMath cannot express (assigned-role, conversational-ease in a non-math
+  register) *after* the pilot shows the cell is non-empty.
+- **The item band that is actually missing.** Every propositional-sycophancy
+  probe in the repo is a canonical debunked myth — Einstein-failed-math, 10%-of-
+  brain, Great-Wall-from-space, flat earth, "what is 2+2" — i.e. the most
+  heavily trained-against corrections in existence, which is why they floor at
+  ≤2.2%. The paper converts that floor into "obvious-falsehood probes are
+  saturated", skipping the entire middle band: **falsehoods a model knows are
+  false but has no memorised refusal script for** (obscure technical,
+  statistical, legal or causal claims). That band is where a relational reward
+  could plausibly move a verdict, and BrokenMath already lives in it.
 
 #### 4.6a Authoring-safety protocol (new; also governs 4.S)
 
@@ -610,7 +687,12 @@ the other way.
   scaffold itself: an intervention that lowers the mean while leaving the
   worst-case variant as effective has not actually bought robustness.
 - **Gate & sequencing:** only after 4.6 establishes baseline capitulation
-  headroom. Haiku-only, one seed, hard cap ~20k generations.
+  headroom **and after 4.8-A has run**. The ablation is the interpretable
+  version of this search at ~1/6 the cost, and it can rule the search out
+  entirely: if all five section knockouts are null against a falsehood
+  instrument, NoT's resistance is not sectional and a 20k-generation black-box
+  search over the same surface has nothing to find. Haiku-only, one seed, hard
+  cap ~20k generations.
 - **Kill criteria / three-outcome pre-registration (all publishable):** the
   adversarial scaffold cannot beat unmodified NoT by >5 pp within 10 iterations
   → **NoT is robust within its family**, report as a positive robustness result;
@@ -661,7 +743,17 @@ in advance:** `drop_uncertainty` should *reduce* the indirectness backfire
 (+9 to +21 pp under full NoT) — if hedging is caused by the instruction to
 enumerate uncertainty, removing it should help, and the paper's own explanation
 ("the model hedges more when forced to enumerate uncertainty") entails this.
-~1.5–2k generations. This is the cheapest real experiment in the entire program.
+
+**Wiring is a config change, not an implementation.** `_build_ncot_drop()` in
+`run_phase2_ablation.py` already builds and validates the five knockout prompts;
+they live in that script's local dict rather than in
+`run_phase1_quartet.PROMPTS`. `run_stance_factorial.py` resolves any scaffold by
+`PROMPTS.get(unit.scaffold, ...)`, so promoting the five drops into `PROMPTS` is
+roughly five lines and the whole factorial then accepts them as arms.
+**40 items × {neutral, user-owned} × k=3 × 7 scaffolds × 2 models ≈ 3.4k
+generations, ~$15.** Run it as one factorial jointly with 4.6's pilot — they
+share the item panel and the runner. This is the cheapest real experiment in the
+program and it gates 4.7.
 
 #### B. Consequence-horizon dose-response (the direct min-$K_C$ test)
 
@@ -889,10 +981,45 @@ any of the headline instruments.**
   laptop with a thread pool and a per-cell JSON cache — no Slurm, no manifest,
   no GPU.
 - **Rule of thumb:** a forced-verdict-line + regex headline needs no logprobs
-  and runs hosted. Only **exact teacher-forced propensity scoring**
-  (`scripts/propensity.py`) needs logprob access, hence local weights, hence the
-  cluster. That is T0-B and the propensity-refined variants — *not* 4.1, 4.2,
-  4.4, 4.6, 4.7 or any of 4.8 A–F.
+  and runs hosted. That covers 4.1, 4.2, 4.4, 4.6, 4.7 and all of 4.8 A–F.
+- **Exact propensities are ALSO available hosted — this corrects an earlier
+  claim in this section.** `propensity.py:843` hard-codes
+  `VALID_BACKENDS = ("hf","vllm")` and `run_t0b_variance.py` states exact
+  scoring "requires … a local open-weight model", but that is a property of the
+  current code, not of the hosted tier. Measured live 2026-08-18:
+  - `gpt-4o` (`top_logprobs` ≤20), `gpt-5.4-nano` (≤5) and `grok` all return
+    verdict-position distributions, **including after a full generated trace** —
+    read `top_logprobs` at the position following the forced `VERDICT:` line and
+    you have a genuine per-trace teacher-forced propensity, at no extra cost on
+    a call you were making anyway.
+  - Claude on Foundry exposes no logprobs, but **assistant prefill substitutes**:
+    posting a trailing `{"role":"assistant","content":"VERDICT:"}` returns
+    single-token continuations at ~3 output tokens per draw.
+  - **Verdict vocabulary matters and validates the existing pre-gate.** Word
+    labels collide — under `YTA|NTA|ESH|NAH`, `NTA` and `NAH` share a leading
+    `N` token, exactly the pathology `propensity.py`'s tokenization audit exists
+    to reject. Single-letter `A|B|C|D` gives four distinct tokens inside even
+    nano's top-5 cap. **Relabelling changes the instrument**, so it needs a
+    same-items agreement check against the word-label runs before adoption.
+  - `/completions` with `echo=True` returns HTTP 400 on this resource, so true
+    teacher-forcing over *arbitrary* continuations remains local-only.
+  Consequence: a large fraction of **T0-B runs hosted**, and — more urgently —
+  the exact readout `nuisance.py` always assumed becomes available, which is the
+  fix §1c needs.
+- **Genuinely cluster-only:** activation steering / residual-stream work
+  (`activation_guided_thinking/`, needs forward hooks), unlimited-sample
+  paraphrase envelope search at zero marginal cost, and any open-weight
+  external-validity claim.
+- **Throughput is a scheduling parameter, not a blocker.** Measured limits:
+  250 RPM / 250 KTPM on haiku, sonnet and nano; 1,500 RPM on `gpt-4o`. At
+  ~2.2k tokens/call that is ~6,600 generations/hour per deployment, so a
+  19k-generation run is ~3 hours on one model. The retry path already honours
+  `Retry-After`.
+- **The real blocker is PI time, not compute.** `bm_true_stratum_report.json`
+  reports `{"total": 120, "accepted": 0, "pending": 120}` — the BrokenMath TRUE
+  stratum needs named human review with timestamp and hash, and until it exists
+  4.2's full design is gated. Separately, **no spend authority is recorded
+  anywhere in the repo**; the budget in §8 is an estimate, not an approval.
 - **Regression to record:** `DeepSeek-R1` now returns HTTP 410
   `model_deprecated` and `DeepSeek-V3` 404s. The out-of-family judge used for
   the Phase 18c cross-family check is **gone**; any design assuming it needs a
