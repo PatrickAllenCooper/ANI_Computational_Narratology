@@ -141,6 +141,72 @@ def _stratified(rows, gen, col, *, bin_width=1000, min_per_bin=5):
     }
 
 
+# --------------------------------------------------------------------------
+# Scaffold-compliance stratification
+# --------------------------------------------------------------------------
+# The NoT prompt mandates five labelled sections. Models do not always produce
+# them -- grok omits them outright on ~36% of OEQ items. A response that ignored
+# the scaffold is NOT the treatment, so pooling it with compliant responses
+# dilutes the estimate toward null. Stratifying by compliance and pairing each
+# NoT response against its OWN CoT response on the SAME item turns the flagship
+# comparison into an as-treated analysis with item identity held fixed.
+SECTION_LABELS = ("protagonist", "stakeholder", "consequence", "uncertain", "decision")
+
+
+def sections_present(text: Optional[str]) -> int:
+    """Count how many of the five mandated section labels appear. Crude but
+    conservative: it under-counts models that paraphrase the headers, which
+    biases the compliant stratum toward genuine compliance."""
+    t = (text or "").lower()
+    return sum(1 for lab in SECTION_LABELS if lab in t)
+
+
+def compliance_paired(rows, col, *, full=5, broken=2, min_pairs=5):
+    """Item-paired NoT-vs-own-CoT delta, split by whether NoT obeyed the scaffold."""
+    cot = {(r["generator"], r["item_id"]): r
+           for r in rows if r["arm"] == "standard_cot"}
+    out: dict[str, Any] = {"per_generator": {}, "pooled": {}}
+    pool: dict[str, tuple[list, list]] = {"compliant": ([], []),
+                                          "non_compliant": ([], [])}
+
+    for gen in sorted({r["generator"] for r in rows if r["arm"] == "narrative_cot"}):
+        cell = {}
+        for name, keep in (("compliant", lambda k: k >= full),
+                           ("non_compliant", lambda k: k <= broken)):
+            cs, ns = [], []
+            for r in rows:
+                if r["generator"] != gen or r["arm"] != "narrative_cot":
+                    continue
+                if not _scored(r, col) or not keep(sections_present(r.get("response"))):
+                    continue
+                c = cot.get((gen, r["item_id"]))
+                if c is None or not _scored(c, col):
+                    continue
+                cs.append(int(c[col]))
+                ns.append(int(r[col]))
+            pool[name][0].extend(cs)
+            pool[name][1].extend(ns)
+            cell[name] = (
+                {"pairs": len(ns), "cot_rate": _mean(cs), "not_rate": _mean(ns),
+                 "delta_pp": 100.0 * (_mean(ns) - _mean(cs))}
+                if len(ns) >= min_pairs else {"pairs": len(ns), "delta_pp": None}
+            )
+        cell["compliance_rate"] = _mean([
+            1.0 if sections_present(r.get("response")) >= full else 0.0
+            for r in rows
+            if r["generator"] == gen and r["arm"] == "narrative_cot"
+            and (r.get("response") or "").strip()
+        ])
+        out["per_generator"][gen] = cell
+
+    for name, (cs, ns) in pool.items():
+        out["pooled"][name] = (
+            {"pairs": len(ns), "cot_rate": _mean(cs), "not_rate": _mean(ns),
+             "delta_pp": 100.0 * (_mean(ns) - _mean(cs))} if ns else {"pairs": 0}
+        )
+    return out
+
+
 def _nonresponse(rows, gen, arm, col):
     sub = [r for r in rows if r["generator"] == gen and r["arm"] == arm]
     missing = sum(1 for r in sub if not _scored(r, col))
@@ -236,6 +302,26 @@ def main(argv: Sequence[str] | None = None) -> int:
         print(f"   => matched delta {s['matched_delta_pp']:+.1f} pp "
               f"(uses {cov['cot_used']}+{cov['not_used']} of "
               f"{cov['cot_total']}+{cov['not_total']})")
+
+    comp = compliance_paired(rows, col)
+    result["compliance"] = comp
+    print()
+    print("scaffold-compliance stratification (item-paired: NoT vs its OWN CoT)")
+    print("=" * 88)
+    print(f"{'generator':<26}{'complied':>10}{'compliant Δ':>15}{'non-compliant Δ':>18}")
+    for g, cell in comp["per_generator"].items():
+        cr = cell.get("compliance_rate")
+        def _fmt(stratum: str) -> str:
+            s = cell[stratum]
+            d = s.get("delta_pp")
+            return "too few" if d is None else f"{d:+.1f} (n={s['pairs']})"
+        pct = 100 * cr if cr is not None else 0.0
+        print(f"{g:<26}{pct:>9.0f}%{_fmt('compliant'):>15}{_fmt('non_compliant'):>18}")
+    pc, pn = comp["pooled"]["compliant"], comp["pooled"]["non_compliant"]
+    print(f"\n   POOLED compliant     n={pc['pairs']:<5} "
+          f"CoT={pc['cot_rate']:.3f} NoT={pc['not_rate']:.3f}  Δ={pc['delta_pp']:+.1f} pp")
+    print(f"   POOLED non-compliant n={pn['pairs']:<5} "
+          f"CoT={pn['cot_rate']:.3f} NoT={pn['not_rate']:.3f}  Δ={pn['delta_pp']:+.1f} pp")
 
     if a.bounds:
         print()

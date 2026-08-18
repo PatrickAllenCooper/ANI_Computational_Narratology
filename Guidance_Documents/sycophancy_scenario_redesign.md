@@ -195,7 +195,54 @@ artifact, which is the outcome the program should want. But:
    shows NoT *worse* by +12.5 pp before inverting to −41.8 / −58.7 / −48.4 in
    higher bins. Short NoT responses are plausibly scaffold-non-compliant (the
    five sections unfinished), which would make "NoT" in that bin a different
-   treatment. Worth a compliance check before the effect is described as uniform.
+   treatment. **Chased — see 1b-RESULT-2, which is the most important number
+   found in this audit.**
+
+#### 1b-RESULT-2. Scaffold compliance is the active ingredient (2026-08-18)
+
+Chasing that anomaly produced the strongest causal evidence in the project, and
+it was already on disk. **Models do not always obey the scaffold** — grok emits
+none of the five section labels on 36% of OEQ items. A response that ignored the
+scaffold is *not the treatment*, so pooling it with compliant responses dilutes
+the estimate. Stratifying by compliance and pairing each NoT response against
+its **own CoT response on the same item** (`--compliance`, in the same script):
+
+| generator | complied | compliant Δ | non-compliant Δ |
+|---|---:|---:|---:|
+| claude-haiku-4-5 | 93% | −36.4 *(n=140)* | −30.0 *(n=10)* |
+| claude-sonnet-4-6 | 99% | −25.2 *(n=147)* | too few |
+| gpt-5.4-nano | 91% | −52.4 *(n=105)* | **+18.2** *(n=11)* |
+| grok-4-1-fast-reasoning | 63% | **−81.5** *(n=92)* | **−1.9** *(n=52)* |
+| **POOLED** | | **−45.0 pp** *(n=484)* | **−2.7 pp** *(n=74)* |
+
+**This is a near-total dissociation.** When the model actually produces the five
+sections, validation falls 45 pp. When it does not, validation is unchanged
+(−2.7 pp). Three consequences:
+
+- **It is a far better length control than length-matching.** Non-compliant NoT
+  responses are still *longer* than CoT (nano 4,412 vs 4,201 chars; grok 3,777
+  vs 3,713) and still carry the NoT system prompt — yet produce no effect.
+  Length and prompt-presence are held roughly fixed while section-production
+  varies, and the effect tracks section-production. **The control the paper
+  lacks was already in its own cache.**
+- **grok's headline is a dilution artifact.** Its −52.5 pp pools a −81.5 pp
+  effect among the 63% treated with −1.9 pp among the 37% untreated. Reported
+  per-protocol, grok is the *strongest* responder, not the middling one.
+- **It raises the prior on 4.8-A finding signal.** If producing the sections is
+  what matters, then removing individual sections should matter too — which is
+  exactly the ablation, and it is now a much better bet.
+
+**Honest limits.** Compliance is model-chosen, not assigned, so this is an
+as-treated (per-protocol) analysis, not a randomised one. Item identity *is*
+controlled by the pairing, but whatever makes a model comply on an item might
+independently make it less validating there; the CoT baselines differ slightly
+between strata (0.731 compliant vs 0.662 non-compliant), which is direct
+evidence of mild item selection — small next to the 42 pp difference in effect,
+but real. The detector is a five-keyword match and will under-count models that
+paraphrase the headers, which biases the *compliant* stratum toward genuine
+compliance (conservative) while making the non-compliant stratum noisier.
+**The clean version of this experiment is 4.8-A**, where section presence is
+manipulated rather than observed.
 
 ### 1c. The control that "overturned" Crowd-Gold could not have detected the effect (verified 2026-08-18)
 
