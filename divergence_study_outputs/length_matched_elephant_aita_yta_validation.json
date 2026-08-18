@@ -1,0 +1,309 @@
+{
+  "dataset": "aita_yta",
+  "metric": "validation",
+  "truncation_limit": 4000,
+  "generators": {
+    "claude-haiku-4-5": {
+      "full": {
+        "cot_n": 150,
+        "cot_rate": 0.36666666666666664,
+        "not_n": 150,
+        "not_rate": 0.16666666666666666,
+        "delta_pp": -20.0,
+        "thin": false
+      },
+      "untruncated": {
+        "cot_n": 150,
+        "cot_rate": 0.36666666666666664,
+        "not_n": 11,
+        "not_rate": 0.36363636363636365,
+        "delta_pp": -0.30303030303029943,
+        "thin": false
+      },
+      "stratified": {
+        "bins": [],
+        "matched_delta_pp": null,
+        "reason": "no common support"
+      },
+      "nonresponse_not": {
+        "n": 150,
+        "missing": 0,
+        "rate": 0.0
+      },
+      "nonresponse_cot": {
+        "n": 150,
+        "missing": 0,
+        "rate": 0.0
+      },
+      "bounds": {
+        "standard_cot": {
+          "complete_case": 0.36666666666666664,
+          "worst": 0.36666666666666664,
+          "best": 0.36666666666666664,
+          "missing": 0,
+          "n": 150
+        },
+        "narrative_cot": {
+          "complete_case": 0.16666666666666666,
+          "worst": 0.16666666666666666,
+          "best": 0.16666666666666666,
+          "missing": 0,
+          "n": 150
+        },
+        "delta_pp_bracket": [
+          -20.0,
+          -20.0
+        ]
+      }
+    },
+    "claude-sonnet-4-6": {
+      "full": {
+        "cot_n": 150,
+        "cot_rate": 0.38666666666666666,
+        "not_n": 150,
+        "not_rate": 0.32,
+        "delta_pp": -6.666666666666665,
+        "thin": false
+      },
+      "untruncated": {
+        "cot_n": 150,
+        "not_n": 9,
+        "delta_pp": null,
+        "thin": true
+      },
+      "stratified": {
+        "bins": [],
+        "matched_delta_pp": null,
+        "reason": "no common support"
+      },
+      "nonresponse_not": {
+        "n": 150,
+        "missing": 0,
+        "rate": 0.0
+      },
+      "nonresponse_cot": {
+        "n": 150,
+        "missing": 0,
+        "rate": 0.0
+      },
+      "bounds": {
+        "standard_cot": {
+          "complete_case": 0.38666666666666666,
+          "worst": 0.38666666666666666,
+          "best": 0.38666666666666666,
+          "missing": 0,
+          "n": 150
+        },
+        "narrative_cot": {
+          "complete_case": 0.32,
+          "worst": 0.32,
+          "best": 0.32,
+          "missing": 0,
+          "n": 150
+        },
+        "delta_pp_bracket": [
+          -6.666666666666665,
+          -6.666666666666665
+        ]
+      }
+    },
+    "gpt-5.4-nano": {
+      "full": {
+        "cot_n": 146,
+        "cot_rate": 0.4246575342465753,
+        "not_n": 145,
+        "not_rate": 0.08275862068965517,
+        "delta_pp": -34.18989135569201,
+        "thin": false
+      },
+      "untruncated": {
+        "cot_n": 146,
+        "not_n": 1,
+        "delta_pp": null,
+        "thin": true
+      },
+      "stratified": {
+        "bins": [],
+        "matched_delta_pp": null,
+        "reason": "no common support"
+      },
+      "nonresponse_not": {
+        "n": 150,
+        "missing": 5,
+        "rate": 0.03333333333333333
+      },
+      "nonresponse_cot": {
+        "n": 150,
+        "missing": 4,
+        "rate": 0.02666666666666667
+      },
+      "bounds": {
+        "standard_cot": {
+          "complete_case": 0.4246575342465753,
+          "worst": 0.44,
+          "best": 0.41333333333333333,
+          "missing": 4,
+          "n": 150
+        },
+        "narrative_cot": {
+          "complete_case": 0.08275862068965517,
+          "worst": 0.11333333333333333,
+          "best": 0.08,
+          "missing": 5,
+          "n": 150
+        },
+        "delta_pp_bracket": [
+          -36.0,
+          -30.0
+        ]
+      }
+    },
+    "grok-4-1-fast-reasoning": {
+      "full": {
+        "cot_n": 143,
+        "cot_rate": 0.44755244755244755,
+        "not_n": 143,
+        "not_rate": 0.04895104895104895,
+        "delta_pp": -39.86013986013986,
+        "thin": false
+      },
+      "untruncated": {
+        "cot_n": 130,
+        "not_n": 5,
+        "delta_pp": null,
+        "thin": true
+      },
+      "stratified": {
+        "support": [
+          2881.0,
+          4679.0
+        ],
+        "bins": [
+          {
+            "lo": 2881.0,
+            "hi": 3881.0,
+            "cot_n": 37,
+            "cot_rate": 0.4864864864864865,
+            "not_n": 5,
+            "not_rate": 0.2,
+            "delta_pp": -28.64864864864865
+          },
+          {
+            "lo": 3881.0,
+            "hi": 4881.0,
+            "cot_n": 15,
+            "cot_rate": 0.7333333333333333,
+            "not_n": 34,
+            "not_rate": 0.08823529411764706,
+            "delta_pp": -64.50980392156862
+          }
+        ],
+        "matched_delta_pp": -47.958501487913246,
+        "coverage": {
+          "cot_used": 52,
+          "cot_total": 143,
+          "not_used": 39,
+          "not_total": 143
+        },
+        "reason": null
+      },
+      "nonresponse_not": {
+        "n": 150,
+        "missing": 7,
+        "rate": 0.04666666666666667
+      },
+      "nonresponse_cot": {
+        "n": 150,
+        "missing": 7,
+        "rate": 0.04666666666666667
+      },
+      "bounds": {
+        "standard_cot": {
+          "complete_case": 0.44755244755244755,
+          "worst": 0.47333333333333333,
+          "best": 0.4266666666666667,
+          "missing": 7,
+          "n": 150
+        },
+        "narrative_cot": {
+          "complete_case": 0.04895104895104895,
+          "worst": 0.09333333333333334,
+          "best": 0.04666666666666667,
+          "missing": 7,
+          "n": 150
+        },
+        "delta_pp_bracket": [
+          -42.666666666666664,
+          -33.333333333333336
+        ]
+      }
+    }
+  },
+  "compliance": {
+    "per_generator": {
+      "claude-haiku-4-5": {
+        "compliant": {
+          "pairs": 150,
+          "cot_rate": 0.36666666666666664,
+          "not_rate": 0.16666666666666666,
+          "delta_pp": -20.0
+        },
+        "non_compliant": {
+          "pairs": 0,
+          "delta_pp": null
+        },
+        "compliance_rate": 1.0
+      },
+      "claude-sonnet-4-6": {
+        "compliant": {
+          "pairs": 150,
+          "cot_rate": 0.38666666666666666,
+          "not_rate": 0.32,
+          "delta_pp": -6.666666666666665
+        },
+        "non_compliant": {
+          "pairs": 0,
+          "delta_pp": null
+        },
+        "compliance_rate": 1.0
+      },
+      "gpt-5.4-nano": {
+        "compliant": {
+          "pairs": 145,
+          "cot_rate": 0.42758620689655175,
+          "not_rate": 0.08275862068965517,
+          "delta_pp": -34.48275862068966
+        },
+        "non_compliant": {
+          "pairs": 0,
+          "delta_pp": null
+        },
+        "compliance_rate": 1.0
+      },
+      "grok-4-1-fast-reasoning": {
+        "compliant": {
+          "pairs": 142,
+          "cot_rate": 0.44366197183098594,
+          "not_rate": 0.04225352112676056,
+          "delta_pp": -40.140845070422536
+        },
+        "non_compliant": {
+          "pairs": 0,
+          "delta_pp": null
+        },
+        "compliance_rate": 1.0
+      }
+    },
+    "pooled": {
+      "compliant": {
+        "pairs": 587,
+        "cot_rate": 0.40545144804088584,
+        "not_rate": 0.15502555366269166,
+        "delta_pp": -25.04258943781942
+      },
+      "non_compliant": {
+        "pairs": 0
+      }
+    }
+  }
+}

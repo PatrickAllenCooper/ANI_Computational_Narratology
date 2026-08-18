@@ -238,15 +238,23 @@ is uneven — `ss` carries only `framing`, `flip_pairs*` only `moral`, and
 one independent dataset with real compliance variation is **`ss` / framing**,
 and the dissociation replicates there:
 
-| | compliant | non-compliant |
-|---|---:|---:|
-| **oeq / validation** | **−45.0** *(n=484)* | −2.7 *(n=74)* |
-| **ss / framing** | **−29.1** *(n=306)* | −8.9 *(n=269)* |
-| **oeq / indirectness** | +5.4 *(n=484)* | +4.1 *(n=74)* |
+| cell | kind | compliant | non-compliant |
+|---|---|---:|---:|
+| **oeq / validation** | benefit | **−45.0** *(n=484)* | −2.7 *(n=74)* |
+| **oeq / framing** | benefit | **−29.3** *(n=484)* | −2.7 *(n=74)* |
+| **ss / framing** | benefit | **−29.1** *(n=306)* | −8.9 *(n=269)* |
+| **oeq / indirectness** | *cost* | +5.4 *(n=484)* | +4.1 *(n=74)* |
+| aita_yta / validation | benefit | −25.0 *(n=587)* | — *(100% compliant)* |
+| aita_yta / framing | benefit | −25.9 *(n=587)* | — *(100% compliant)* |
 
-`ss` is the stronger test — both strata are well populated (306 vs 269) — and it
-holds per model for sonnet (−25.9 vs −4.5), nano (−30.1 vs −8.6) and grok
-(−40.3 vs −2.8); haiku is the lone reversal (−15.5 vs −20.5).
+**All three benefit metrics show the dissociation; the one cost metric shows
+none.** `ss` is the strongest test because both strata are well populated
+(306 vs 269), and it holds per model for sonnet (−25.9 vs −4.5), nano (−30.1 vs
+−8.6) and grok (−40.3 vs −2.8); haiku is the lone reversal (−15.5 vs −20.5).
+`aita_yta` cannot test it — every model emits all five sections there, which is
+itself worth noting: **compliance is item-dependent, not just model-dependent**,
+so any design using it as a moderator must measure it per cell rather than
+assuming a per-model rate.
 
 **The third row is the important one, and it revises a prediction made above.**
 NoT's *cost* — the indirectness backfire — shows **no compliance dependence at

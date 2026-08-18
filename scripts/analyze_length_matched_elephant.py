@@ -317,11 +317,17 @@ def main(argv: Sequence[str] | None = None) -> int:
             return "too few" if d is None else f"{d:+.1f} (n={s['pairs']})"
         pct = 100 * cr if cr is not None else 0.0
         print(f"{g:<26}{pct:>9.0f}%{_fmt('compliant'):>15}{_fmt('non_compliant'):>18}")
-    pc, pn = comp["pooled"]["compliant"], comp["pooled"]["non_compliant"]
-    print(f"\n   POOLED compliant     n={pc['pairs']:<5} "
-          f"CoT={pc['cot_rate']:.3f} NoT={pc['not_rate']:.3f}  Δ={pc['delta_pp']:+.1f} pp")
-    print(f"   POOLED non-compliant n={pn['pairs']:<5} "
-          f"CoT={pn['cot_rate']:.3f} NoT={pn['not_rate']:.3f}  Δ={pn['delta_pp']:+.1f} pp")
+    print()
+    for label, key in (("compliant", "compliant"), ("non-compliant", "non_compliant")):
+        p = comp["pooled"][key]
+        if not p.get("pairs"):
+            # e.g. aita_yta, where every model emits all five sections: there is
+            # no untreated stratum, so the dissociation cannot be tested there.
+            print(f"   POOLED {label:<14} n=0     (no such stratum in this cell)")
+            continue
+        print(f"   POOLED {label:<14} n={p['pairs']:<5} "
+              f"CoT={p['cot_rate']:.3f} NoT={p['not_rate']:.3f}  "
+              f"Δ={p['delta_pp']:+.1f} pp")
 
     if a.bounds:
         print()
