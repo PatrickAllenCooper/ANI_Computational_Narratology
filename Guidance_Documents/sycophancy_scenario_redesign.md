@@ -232,6 +232,42 @@ sections, validation falls 45 pp. When it does not, validation is unchanged
   what matters, then removing individual sections should matter too — which is
   exactly the ablation, and it is now a much better bet.
 
+**Replication and scope (checked immediately, also free).** The metric coverage
+is uneven — `ss` carries only `framing`, `flip_pairs*` only `moral`, and
+`aita_yta` is 100% compliant on all four models so it offers no contrast. The
+one independent dataset with real compliance variation is **`ss` / framing**,
+and the dissociation replicates there:
+
+| | compliant | non-compliant |
+|---|---:|---:|
+| **oeq / validation** | **−45.0** *(n=484)* | −2.7 *(n=74)* |
+| **ss / framing** | **−29.1** *(n=306)* | −8.9 *(n=269)* |
+| **oeq / indirectness** | +5.4 *(n=484)* | +4.1 *(n=74)* |
+
+`ss` is the stronger test — both strata are well populated (306 vs 269) — and it
+holds per model for sonnet (−25.9 vs −4.5), nano (−30.1 vs −8.6) and grok
+(−40.3 vs −2.8); haiku is the lone reversal (−15.5 vs −20.5).
+
+**The third row is the important one, and it revises a prediction made above.**
+NoT's *cost* — the indirectness backfire — shows **no compliance dependence at
+all** (+5.4 compliant vs +4.1 non-compliant). Non-compliant responses received
+the NoT system prompt but did not produce the sections, so:
+
+- the **benefit** (validation and framing reduction) tracks *producing the
+  sections* — it is structural;
+- the **cost** (extra hedging) tracks *receiving the prompt* — it is not
+  structural, and is presumably carried by the "thoughtful advisor" framing or
+  by length.
+
+**Consequence for 4.8-A:** the secondary prediction stated there — that
+`drop_uncertainty` should reduce the indirectness backfire — is now *less*
+likely, and should be pre-registered as the weaker of the two hypotheses. If
+hedging does not depend on whether the sections are produced at all, removing
+one of them probably will not help. **Consequence for 4.8-D:** correspondingly
+better news for NoT-C. Benefit and cost are separably caused, so a scaffold that
+retains the sections while rewriting the *header* is the promising direction for
+getting the reduction without the hedging — not one that deletes a section.
+
 **Honest limits.** Compliance is model-chosen, not assigned, so this is an
 as-treated (per-protocol) analysis, not a randomised one. Item identity *is*
 controlled by the pairing, but whatever makes a model comply on an item might
@@ -824,11 +860,15 @@ more honest than the current "NoT works" framing.
 Reuse `run_phase2_ablation.py`'s six conditions (full + five knockouts)
 unchanged; swap the DV from depth metrics to (a) 4.6 capitulation and (b)
 ELEPHANT validation re-scored *without* the §1b(i) truncation. Pre-register the
-double dissociation above as the primary. **Secondary prediction worth stating
-in advance:** `drop_uncertainty` should *reduce* the indirectness backfire
-(+9 to +21 pp under full NoT) — if hedging is caused by the instruction to
-enumerate uncertainty, removing it should help, and the paper's own explanation
-("the model hedges more when forced to enumerate uncertainty") entails this.
+double dissociation above as the primary. **Secondary prediction, downgraded
+2026-08-18 before running:** `drop_uncertainty` was expected to reduce the
+indirectness backfire, on the paper's own explanation ("the model hedges more
+when forced to enumerate uncertainty"). 1b-RESULT-2 makes that unlikely — the
+backfire shows no compliance dependence (+5.4 pp compliant vs +4.1 pp
+non-compliant), so hedging appears to be caused by *receiving* the prompt rather
+than by *producing* the sections. Pre-register it as the weaker hypothesis, and
+treat a null there as confirmatory rather than surprising. The header, not the
+section list, is where the hedging fix should be sought (4.8-D).
 
 **BUILT 2026-08-18: `scripts/scaffold_permutations.py`** supplies all of A–E as
 named arms (19 permutations, 30-check selftest passing). Two integrity
