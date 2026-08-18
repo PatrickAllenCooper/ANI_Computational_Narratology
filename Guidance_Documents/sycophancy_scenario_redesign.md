@@ -156,7 +156,46 @@ enumerating every ELEPHANT cell shows only `raw`, `baseline_io`, `standard_cot`,
 `narrative_cot`, `narrative_cot_v2`, `narrative_cot_v3`, `human_baseline`. The
 verbose arm was built and spent on the ACL paper's *depth* metrics. The control
 that could kill the sycophancy headline exists and was pointed at a different
-paper.
+paper. (§6 item 7 lists "length-matched sycophancy scoring as standard practice"
+among this program's *novelty claims*, which the program has never run.)
+
+#### 1b-RESULT. The zero-cost half of that control, run 2026-08-18
+
+`scripts/analyze_length_matched_elephant.py` reanalyses the 27,600 already-scored
+rows offline — no API calls — comparing arms within overlapping length bins.
+Artifact: `divergence_study_outputs/length_matched_elephant_oeq.json`.
+
+| generator | headline Δ | Δ at len<4000 (both untruncated) | length-matched Δ | NoT non-response |
+|---|---:|---:|---:|---:|
+| claude-haiku-4-5 | −36.0 | −31.6 | −50.4 *(n=75+20)* | 0.0% |
+| claude-sonnet-4-6 | −25.7 | −12.4 *(n=145+10)* | −50.0 *(n=6+6)* | 0.7% |
+| gpt-5.4-nano | −48.4 | too thin | −35.3 *(n=119+85)* | **22.7%** |
+| grok-4-1-fast-reasoning | −52.5 | −17.4 *(n=71+28)* | −31.6 *(n=141+75)* | 3.3% |
+
+**Read this as a partial defence and a magnitude correction, not a refutation.**
+The effect is negative and large under *every* slicing — it is not a pure length
+artifact, which is the outcome the program should want. But:
+
+1. **On the two generators with adequate common support** (nano, grok), the
+   length-matched estimate is **−35.3 and −31.6 pp**, against headline figures of
+   −48.4 and −52.5. The headline overstates by 13–21 pp.
+2. **The Anthropic models cannot be assessed this way.** Their arms barely
+   overlap in length — sonnet's matched estimate rests on 6 rows per arm and
+   should not be quoted. Running `standard_cot_verbose` on ELEPHANT OEQ (600
+   generations + ~1,800 judge calls, ~$15) is the only way to settle those two.
+3. **The spread across defensible analytic choices is itself the finding.** For
+   grok the same data yields −52.5 (headline), −31.6 (length-matched) and −17.4
+   (untruncated subsample). A number that moves 35 pp depending on which
+   defensible slice you take is not a number to put in an abstract without the
+   sensitivity table beside it.
+4. **nano's bracket is wide because of the §1b(ii) attrition**: Manski bounds
+   give [−55.3, −29.3] pp. haiku, by contrast, is exactly determined at −36.0
+   (zero missing).
+5. **One anomaly worth chasing:** nano's shortest length bin (3,215–4,215 chars)
+   shows NoT *worse* by +12.5 pp before inverting to −41.8 / −58.7 / −48.4 in
+   higher bins. Short NoT responses are plausibly scaffold-non-compliant (the
+   five sections unfinished), which would make "NoT" in that bin a different
+   treatment. Worth a compliance check before the effect is described as uniform.
 
 ### 1c. The control that "overturned" Crowd-Gold could not have detected the effect (verified 2026-08-18)
 
