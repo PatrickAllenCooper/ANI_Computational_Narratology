@@ -379,8 +379,14 @@ def cache_is_complete(path: Path) -> bool:
     """True when an existing cache file counts as done.
 
     Default matches scripts/run_brokenmath.py: a cached-but-empty response is
-    treated as NOT done and is regenerated.  ANI_STRICT_EXISTS=1 makes mere
-    existence sufficient.
+    treated as NOT done and is regenerated.  A response that hit the token
+    budget (finish_reason=="length") is ALSO treated as NOT done -- CONFIRMED
+    2026-08-18 the hard way: every T0-B qwen3-8b pilot cell "succeeded" with a
+    non-empty, truncated, mid-<think>-block response that produced NOVERDICT,
+    and would have been silently trusted as complete forever (never
+    regenerated even after raising REASONING_MAX_TOKENS) under the old
+    non-empty-string-only check. ANI_STRICT_EXISTS=1 makes mere existence
+    sufficient, overriding both checks.
     """
     if not path.exists():
         return False
@@ -390,7 +396,11 @@ def cache_is_complete(path: Path) -> bool:
         obj = json.loads(path.read_text(encoding="utf-8"))
     except Exception:  # noqa: BLE001
         return False
-    return bool(str(obj.get("response", "")).strip())
+    if not str(obj.get("response", "")).strip():
+        return False
+    if obj.get("finish_reason") == "length":
+        return False
+    return True
 
 
 def write_cache_atomic(path: Path, record: dict) -> None:

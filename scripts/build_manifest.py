@@ -43,15 +43,26 @@ OPTIONAL_KEYS = (
 KNOWN_KEYS = frozenset(REQUIRED_KEYS + OPTIONAL_KEYS)
 
 # Local open-weight families that default to emitting a <think>...</think>
-# block before the answer (Qwen3). Verified empirically (2026-08-17,
-# Qwen3-0.6B): a trivial verdict took 165 completion tokens WITH thinking on
-# vs 20 with it off, and real BrokenMath proof attempts on the 8B/32B/70B
-# production models will run far longer. The hosted pipeline already bumps
-# reasoning models to max_tokens=8192 (scripts/run_brokenmath.py); local
-# reasoning-capable models get the same bump here, or truncation silently
-# inflates NOVERDICT and is misread as a capability failure.
+# block before the answer (Qwen3). An earlier 8192 floor here was extrapolated
+# from a trivial verdict on Qwen3-0.6B (165 completion tokens with thinking on)
+# and was WRONG for real BrokenMath-difficulty items: CONFIRMED 2026-08-18 on
+# CURC (job 31425222, Qwen3-8B, standard_cot arm, a real olympiad item) -- at
+# an 8192 budget every single T0-B pilot cell (10/10) hit finish_reason="length"
+# mid-<think>-block and produced NOVERDICT; raising the budget to 28000 for
+# that same item let it finish naturally at finish_reason="stop" using only
+# 12449 completion tokens (44%), with a real verdict extracted. 28000 also
+# stays safely under Qwen3-8B's ~32k native context alongside these prompts
+# (all under 350 tokens). Only one item has been directly measured this way --
+# per-problem variance is real (see array_generate.sbatch's cache_is_complete,
+# which now regenerates any cell that hit finish_reason=="length" rather than
+# trusting a merely-non-empty cached response) -- so watch the next full T0-B
+# smoke rerun across all pilot items/arms before assuming 28000 has zero
+# truncations left. The hosted pipeline's own 8192 floor (scripts/generators.py,
+# scripts/run_brokenmath.py) was NOT the confirmed-good precedent this comment
+# used to claim -- it has the same untested floor and doesn't even record
+# finish_reason in its cache, so it cannot be checked for this failure mode.
 LOCAL_REASONING_FAMILIES = ("qwen3",)
-REASONING_MAX_TOKENS = 8192
+REASONING_MAX_TOKENS = 28000
 
 
 def is_local_reasoning_model(model: str) -> bool:

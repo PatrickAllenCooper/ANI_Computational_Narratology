@@ -185,21 +185,36 @@ hosted-only sweeps (unchanged single-file behaviour). Override with
 file**, with `--gres` sized to that file's model (§4).
 
 **Qwen3 defaults to a `<think>...</think>` block, and truncating mid-thought
-silently inflates NOVERDICT.** Verified empirically (Qwen3-0.6B, 2026-08-17): a
-trivial verdict took 165 completion tokens with thinking on vs 20 with it off,
-and real BrokenMath proof attempts on the production 8B/32B/70B models will run
-far longer. `build_manifest.py` therefore floors `max_tokens` at 8192 for any
-model whose name contains `qwen3` (`is_local_reasoning_model` /
-`budget_max_tokens`), mirroring the same bump the hosted pipeline already
-applies to reasoning models in `scripts/run_brokenmath.py`. Llama is unaffected
-(no thinking mode). If you want a fast, cheap, verdict-only pilot and don't need
-the reasoning trace itself, pass `--disable-thinking`: it sets
-`chat_template_kwargs={"enable_thinking": False}` on every Qwen3 cell (forwarded
-by the worker to `local_generate`; harmlessly ignored on hosted models via the
-same degrade path as `temperature`/`seed`) and caps the token budget back down.
-Leave it off for anything measuring the reasoning trace itself (T0-B, the
-faithfulness layer) — thinking-mode content is the object of study there, not
-overhead to shed.
+silently inflates NOVERDICT.** An earlier 8192 floor here (extrapolated from a
+Qwen3-0.6B trivial-verdict test: 165 completion tokens with thinking on vs 20
+with it off) was WRONG for real BrokenMath-difficulty items — CONFIRMED the
+hard way on 2026-08-18: every T0-B qwen3-8b pilot cell (10/10, real olympiad
+problems) hit `finish_reason="length"` at exactly 8192 completion tokens,
+still mid-`<think>`-block, and produced `NOVERDICT`. A single-cell diagnostic
+at `max_tokens=28000` for the same item completed naturally at
+`finish_reason="stop"` using only 12449 completion tokens (44% of budget), with
+a real verdict extracted. `build_manifest.py` now floors `max_tokens` at 28000
+for any model whose name contains `qwen3` (`is_local_reasoning_model` /
+`budget_max_tokens`); Llama is unaffected (no thinking mode). Only one item has
+been directly measured — per-problem variance is real, so watch the next full
+smoke rerun across all pilot items/arms before trusting 28000 has zero
+truncations left. `array_generate.sbatch`'s `cache_is_complete` was also fixed
+to treat `finish_reason=="length"` as NOT done (previously only an empty
+response triggered regeneration), so raising this constant now correctly
+regenerates the 10 already-truncated pilot cache files instead of silently
+trusting them as complete forever. **The hosted pipeline's `scripts/
+run_brokenmath.py` / `scripts/generators.py` share this same 8192 floor and
+were NOT independently confirmed good** — they don't even record
+`finish_reason` in their cache, so this failure mode can't be checked there
+after the fact; treat any existing reasoning-model BrokenMath results with
+that in mind until that path is audited separately. If you want a fast, cheap,
+verdict-only pilot and don't need the reasoning trace itself, pass
+`--disable-thinking`: it sets `chat_template_kwargs={"enable_thinking": False}`
+on every Qwen3 cell (forwarded by the worker to `local_generate`; harmlessly
+ignored on hosted models via the same degrade path as `temperature`/`seed`) and
+caps the token budget back down. Leave it off for anything measuring the
+reasoning trace itself (T0-B, the faithfulness layer) — thinking-mode content
+is the object of study there, not overhead to shed.
 
 The `--coverage N` check reproduces the worker's round-robin stripe and asserts
 the union of the N shards is the whole manifest with no duplicates. **Run it
