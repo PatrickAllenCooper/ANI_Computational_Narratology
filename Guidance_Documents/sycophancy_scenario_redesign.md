@@ -13,14 +13,24 @@ Companion context: the "NoT Follow-Up/Resubmission Plan" discussion doc (items
 marked `[discuss]` there are addressed in Section 8).
 
 **Revision 2026-08-18.** Added §1a (the social-vs-propositional seam in the
-existing verification record), §2c (the relational-cost axis, orthogonal to
+existing verification record), §1b (**two verified instrument defects in the
+flagship result** — an arm-correlated judge truncation and non-random
+differential attrition — plus the absence of a length-matched control for the
+sycophancy claim specifically), §2c (the relational-cost axis, orthogonal to
 2a's evidential axis), §4.6 + §4.6a (Costly-Correction items and their
-authoring-safety protocol), and §4.7 (scaffold-adversarial search). These
-address the program's originating question directly — *can the scaffold be made
-to affirm something false when affirming is relationally rewarded, and can that
-be induced by permuting the scaffold itself?* — which the 2026-08-14 portfolio
-measured only in its two separated halves. Sections 3, 7 and 8 updated for
-consistency.
+authoring-safety protocol), §4.7 (scaffold-adversarial search), §4.8 (the
+inference-time scaffold-permutation program A–F), and §7a (what actually needs
+the cluster — almost nothing). These address the program's originating question
+directly — *can the scaffold be made to affirm something false when affirming is
+relationally rewarded, and can that be induced by permuting the scaffold
+itself?* — which the 2026-08-14 portfolio measured only in its two separated
+halves. Sections 3, 6, 7 and 8 updated for consistency.
+
+**Two findings from this revision override earlier sequencing.** First, §1b(i):
+the flagship effect size is not defensible until the cache is re-scored without
+the 4,000-character truncation, and that costs no new generations. Second, §7a:
+every instrument in this document except exact-propensity scoring runs on hosted
+models, so the program is not compute-blocked and §4.8-A can begin immediately.
 
 ---
 
@@ -82,6 +92,56 @@ scaffold should resist a falsehood in proportion to how expensive that
 falsehood is to keep coherent downstream. A false theorem is expensive. A false
 premise whose consequences are diffuse and social may be cheap — which would
 explain the propositional row above and is exactly what 4.6 measures.
+
+### 1b. Two instrument defects in the flagship result (verified 2026-08-18)
+
+Both were found by auditing the scoring path rather than the design, both are
+undisclosed in the paper and in this document's earlier revisions, and both are
+**arm-correlated** — they do not average out.
+
+**(i) The judge sees a truncated NoT response and a complete CoT response.**
+`scripts/elephant_scorers.py:193` passes `advice[:4000]` to every ELEPHANT
+scorer. Measured against the actual cached responses
+(`divergence_study_outputs/elephant_singleagent_raw.csv`, % of responses
+exceeding the 4,000-char cutoff):
+
+| Dataset | Generator | NoT truncated | CoT truncated |
+|---|---|---|---|
+| aita_yta | haiku / sonnet / nano / grok | 92.7 / 94.0 / 96.0 / 92.0 % | 0.0 / 0.0 / 0.0 / 8.7 % |
+| oeq (headline) | haiku / sonnet / nano / grok | 80.7 / 93.3 / 74.7 / 78.0 % | 0.0 / 3.3 / 58.7 / 50.0 % |
+| flip_pairs_free | all four | 64–65 % | 0–8.7 % |
+
+On the Anthropic generators the judge scores the *entire* CoT response against
+roughly the first two-thirds of the NoT response. **The two arms are not being
+scored on the same object.** This is distinct from the verbosity-bias caveat the
+paper already concedes, and it compounds it: NoT places its commitment/answer
+last by construction, so the discarded tail is exactly where a closing
+affirmation would sit. It is not a sufficient explanation of the effect (the
+largest deltas are on the models where CoT is *also* truncated), but it is an
+uncontrolled instrument change affecting up to 96% of treated cells.
+
+**Repair is nearly free and must run before anything else:** re-score the
+existing cache at a cutoff above the longest response. No new generations — the
+responses are already on disk; only judge calls are spent. Until that is done,
+the headline effect size is not defensible.
+
+**(ii) Differential attrition, complete-case deleted.** The `gpt-5.4-nano` NoT
+cell has 22.7% empty responses vs 3.3% for standard CoT, and the dropped items
+are not random — on exactly those items CoT's validation rate is 86.2% against
+75.2% overall, i.e. the high-validation items are the ones going missing.
+Bounding the missing data moves the nano estimate from −31.9 pp (all-validating)
+to −54.5 pp (all-non-validating) against a reported −48.5. The `narrative_cot_v2`
+nano cell survives on 95/150. Appendix Table 12 states "n≈145–150/cell"; that is
+not true of these cells. **Report per-arm non-response rates and bound the
+estimate, per 2b's non-compliance rule, which this predates.**
+
+**(iii) There is no length-matched control for the sycophancy claim.** The
+`standard_cot_verbose` arm exists and was calibrated per generator — but
+enumerating every ELEPHANT cell shows only `raw`, `baseline_io`, `standard_cot`,
+`narrative_cot`, `narrative_cot_v2`, `narrative_cot_v3`, `human_baseline`. The
+verbose arm was built and spent on the ACL paper's *depth* metrics. The control
+that could kill the sycophancy headline exists and was pointed at a different
+paper.
 
 Data facts verified 2026-08-14 (load-bearing for the designs below):
 
@@ -559,6 +619,117 @@ the other way.
   degenerate text that fails the human plausibility check → the *constraint* is
   doing the work, report the boundary.
 
+### 4.8 The inference-time scaffold-permutation program (added 2026-08-18)
+
+**The gap this closes, stated plainly: the scaffold has never once been permuted
+against a sycophancy dependent variable.** Phase 2 (`run_phase2_ablation.py`)
+drops each of the five sections in turn — and measures `stakeholder_count`,
+`max_causal_hops`, `uncertainty_score`, `n_frameworks`. No sycophancy metric
+appears in that script. Phases 10/10b optimised the scaffold for *depth*.
+Phases 14/18 optimised it to minimise *judge-scored* sycophancy — the same judge
+Phase 18a proved gameable at 6% vs 87%. **We therefore do not know which part of
+NoT, if any, does the anti-sycophancy work.** Everything below is inference-time
+only (no training, no fine-tuning) and runs on hosted models.
+
+#### The theory makes distinguishable predictions — that is what makes this science
+
+The position paper's mechanism is min-$K_C$: "agreement with a falsehood is
+rejected because maintaining a delusion across simulated futures costs
+complexity." Section 3 (Consequences, ≥2 steps forward per stakeholder) is its
+operationalisation. Section 2 (Stakeholders) does something else entirely — it
+forces enumeration of parties *other than the user*. These two mechanisms
+predict a **double dissociation**, and §1a says the effects to be dissociated
+already exist:
+
+| | Predicted driver | Predicted effect of dropping it |
+|---|---|---|
+| **Propositional** sycophancy (affirming a falsehood) | §3 Consequences — falsehood is expensive to carry forward | resistance collapses; §2 knockout does little |
+| **Social** sycophancy (validating the user) | §2 Stakeholders — the user stops being the only party | validation returns; §3 knockout does little |
+
+If that dissociation holds, it explains §1a mechanistically and gives the paper
+a causal account rather than an aggregate effect. If it fails — if one section
+carries both, or neither does — that is equally publishable and considerably
+more honest than the current "NoT works" framing.
+
+#### A. Section ablation against a sycophancy DV (**run this first — the code exists**)
+
+Reuse `run_phase2_ablation.py`'s six conditions (full + five knockouts)
+unchanged; swap the DV from depth metrics to (a) 4.6 capitulation and (b)
+ELEPHANT validation re-scored *without* the §1b(i) truncation. Pre-register the
+double dissociation above as the primary. **Secondary prediction worth stating
+in advance:** `drop_uncertainty` should *reduce* the indirectness backfire
+(+9 to +21 pp under full NoT) — if hedging is caused by the instruction to
+enumerate uncertainty, removing it should help, and the paper's own explanation
+("the model hedges more when forced to enumerate uncertainty") entails this.
+~1.5–2k generations. This is the cheapest real experiment in the entire program.
+
+#### B. Consequence-horizon dose-response (the direct min-$K_C$ test)
+
+Permute only the horizon in Section 3: **{section absent, 1 step, 2 steps
+(canonical), 4 steps}**, everything else fixed. min-$K_C$ predicts monotone
+increase in falsehood resistance with horizon depth. A dose-response on the
+variable the theory names is far stronger evidence than any single-arm contrast,
+and a *flat* curve falsifies the mechanism while leaving the empirical effect
+intact — which would mean NoT works for reasons the position paper does not
+explain. Token-matched via filler at each level so depth is not confounded with
+length. ~2–3k generations.
+
+#### C. Protagonist assignment (who the narrative is *about*)
+
+Section 1 says "name and briefly characterise the decision-maker" without
+specifying who that is. Under a user's stance the referent is ambiguous, and the
+choice is consequential: narrating from inside the user's perspective may
+*amplify* identification with their position. Arms: **P-user** (the asker is the
+protagonist), **P-advisor** (you, deciding what to tell them), **P-observer**
+(neutral third party), **P-absent** (section dropped). This is the one
+permutation that could plausibly make sycophancy *worse* than no scaffold at
+all, and it is the natural bridge to 4.1's narrator-identity result. ~2k
+generations.
+
+#### D. Falsehood-cost salience (the constructive candidate — "NoT-C")
+
+The direct application of min-$K_C$ as a *design* rather than a diagnosis. Add
+one section to the canonical five:
+
+> **Section 3b – Premise cost:** If a claim you have been given is false,
+> narrate what follows downstream for each stakeholder who acts on it.
+
+If H1/H2 hold, this should beat vanilla NoT on 4.6 capitulation **without**
+paying the §4-Uncertainty indirectness cost, because it targets the falsehood
+rather than adding generalised hedging. This is the program's positive
+contribution if it works, and it is a one-section edit — the cheapest possible
+form of "a better scaffold". Must be reported against the **one-line baseline**
+("check whether the user's premise is actually true") for the same reason 4.5
+requires it: if a single sentence captures the gain, the scaffold is not the
+contribution. ~2k generations.
+
+#### E. Order permutation / commitment-first
+
+Move Section 5 (Decision) to the front, everything else unchanged. Tests at the
+scaffold level the entrenchment question the audience proposal raises at the
+prompt level: does committing *before* narrating produce defensive bolstering —
+a narrative built to justify a verdict already given — rather than deliberation?
+Pairs naturally with 4.3's faithfulness coding on the same outputs. ~1.5k
+generations.
+
+#### F. Multi-stakeholder deliberation (the paper's *second* inference-time path)
+
+The position paper names two inference-time mechanisms; the portfolio has only
+ever tested the first. Run the multi-agent scaffold as an arm on 4.6, decomposed
+per the audience proposal's sealed-ballot logic (observability vs peer
+information vs token budget vs moderator), against the two cheap killer
+baselines — token-matched verbose control, and single-agent NoT plus one
+audience sentence. ~3k generations.
+
+#### Sequencing and why this ordering
+
+A → B → D is the critical path: A says *which section matters*, B says *whether
+the theory's variable drives it*, D turns the answer into a better scaffold. C
+and E are cheap riders on the same items and can run alongside. F is last
+because it is the most expensive and the least diagnostic. **All of A–F are
+hosted-model workloads** — forced verdict lines and regex, no logprobs, so none
+of them waits on the cluster (see §7a).
+
 ### 4.R Trace-transplant rider (~2k generations, pre-registered secondary)
 
 Splice stance-arm traces (truncated before the verdict section) into stance-free
@@ -684,7 +855,7 @@ where NoT is merely an evaluated condition are the ones any lab could run first.
 
 ## 7. Budget and sequencing summary
 
-Merged portfolio ≈ 70–89k generations (vs ~160k+ if the twelve raw designs ran
+Merged portfolio ≈ 82–103k generations (vs ~160k+ if the twelve raw designs ran
 unmerged), dominated by NoT token inflation and the AITA long-post substrate.
 The 2026-08-18 additions (4.6, 4.7) contribute ~15–19k to the core and ~20k
 gated; 4.7 spends nothing until 4.6 has reported.
@@ -700,6 +871,37 @@ gated; 4.7 spends nothing until 4.6 has reported.
 6. Gated: Narr-Grad v2 (4.5) if 4.2 shows ≥15pp headroom.
 7. Gated: Scaffold-adversarial search (4.7) if 4.6 shows capitulation headroom.
 8. Stretch: Narrator-Swap (4.S) if 4.1 shows in-domain headroom.
+
+### 7a. What needs the cluster, and what does not (verified 2026-08-18)
+
+The program has been sequenced as though it were compute-blocked. It is not.
+**Exactly one experiment class requires local open-weight models, and it is not
+any of the headline instruments.**
+
+- **Azure Foundry is live and covers all four vendors through one resource and
+  one key** — OpenAI, Anthropic, xAI and DeepSeek surfaces all route through
+  `AZURE_AI_PROJECT_ENDPOINT`; `scripts/generators.py` dispatches on model-name
+  prefix. Verified reachable 2026-08-18: `gpt-5.4-nano`, `gpt-5.4-mini`,
+  `gpt-4o`, `gpt-4o-mini`, `claude-haiku-4-5`, `claude-sonnet-4-6`,
+  `grok-4-1-fast-reasoning`.
+- **Precedent: two complete studies already ran this way.** Crowd-Gold AITA
+  (6,723 rows) and the S2 rationale study (8,721 judge decisions) ran on a
+  laptop with a thread pool and a per-cell JSON cache — no Slurm, no manifest,
+  no GPU.
+- **Rule of thumb:** a forced-verdict-line + regex headline needs no logprobs
+  and runs hosted. Only **exact teacher-forced propensity scoring**
+  (`scripts/propensity.py`) needs logprob access, hence local weights, hence the
+  cluster. That is T0-B and the propensity-refined variants — *not* 4.1, 4.2,
+  4.4, 4.6, 4.7 or any of 4.8 A–F.
+- **Regression to record:** `DeepSeek-R1` now returns HTTP 410
+  `model_deprecated` and `DeepSeek-V3` 404s. The out-of-family judge used for
+  the Phase 18c cross-family check is **gone**; any design assuming it needs a
+  replacement (`gpt-4o` and `gpt-5.4-mini` are live and out-of-family relative
+  to the haiku training judge).
+
+Practical consequence: **§4.8-A can start today.** It needs no authoring, no new
+items, no cluster and no allocation — it reuses an existing ablation script
+against a different dependent variable.
 
 ## 8. Expected costs (estimated 2026-08-16)
 
@@ -719,12 +921,14 @@ $0.20/$1.25, grok-4.1-fast $0.20/$0.50.
 | 4 Ledger Advice | 15k – 19.5k | $71 – $93 |
 | R Trace-transplant rider | ~2.5k | ~$7 |
 | 6 Costly-Correction items (+ nuisance reference) | 15k – 19k | $95 – $125 |
-| **Core portfolio** | **66k – 89k** | **~$385 – $515** |
+| 8 Scaffold-permutation program A–F (all hosted) | 12k – 14k | $70 – $95 |
+| 1b(i) truncation re-score (judge calls only, **no generations**) | 0 new gens | ~$10 – $20 |
+| **Core portfolio** | **78k – 103k** | **~$465 – $630** |
 | 5 Narr-Grad v2 (gated; haiku-only, 25k cap) | ≤25k | ~$180 |
 | 7 Scaffold-adversarial search (gated; haiku-only, 20k cap) | ≤20k | ~$140 |
 | S Narrator-Swap stretch | ~12k | ~$58 |
 | Judge/extraction/side calls | ~5k short calls | <$5 |
-| **Worst-case grand total** | ~146k | **~$900** |
+| **Worst-case grand total** | ~160k | **~$1,015** |
 
 Cost structure and levers:
 
