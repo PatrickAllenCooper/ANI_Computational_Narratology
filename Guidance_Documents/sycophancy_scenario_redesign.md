@@ -830,12 +830,29 @@ in advance:** `drop_uncertainty` should *reduce* the indirectness backfire
 enumerate uncertainty, removing it should help, and the paper's own explanation
 ("the model hedges more when forced to enumerate uncertainty") entails this.
 
-**Wiring is a config change, not an implementation.** `_build_ncot_drop()` in
-`run_phase2_ablation.py` already builds and validates the five knockout prompts;
-they live in that script's local dict rather than in
-`run_phase1_quartet.PROMPTS`. `run_stance_factorial.py` resolves any scaffold by
-`PROMPTS.get(unit.scaffold, ...)`, so promoting the five drops into `PROMPTS` is
-roughly five lines and the whole factorial then accepts them as arms.
+**BUILT 2026-08-18: `scripts/scaffold_permutations.py`** supplies all of A–E as
+named arms (19 permutations, 30-check selftest passing). Two integrity
+properties worth stating, because this repo has already been bitten by prompt
+drift:
+
+- Every permutation is a **verified diff off the live canonical prompt**, not a
+  copy. `CANONICAL_SECTIONS` is asserted at import time to rebuild
+  `PROMPTS["narrative_cot"]` byte-for-byte (confirmed: 820 chars, SHA-1
+  `3476b31e6c`), so editing the canonical scaffold fails the import loudly
+  instead of silently comparing against a stale string. The pinned
+  `narrative_cot_v2`/`v3` entries have *already* drifted from the artifact
+  hashes their comments cite (curly vs ASCII quotes) — this guard is the fix for
+  that class of bug.
+- The five `drop_*` arms are **byte-identical to `run_phase2_ablation.py`'s
+  `ABLATION_CONDITIONS`** (verified all six, including the full control). That
+  is deliberate and has an unplanned benefit: **Phase 2 already measured depth
+  metrics for these exact six prompts on sonnet.** Measuring sycophancy on the
+  same six lets you join the two runs and ask whether the section that drives
+  `stakeholder_count` is the section that drives validation reduction — a
+  section-level mechanistic link, at no extra generation cost.
+
+`run_stance_factorial.py` resolves any scaffold via `PROMPTS.get(unit.scaffold,
+...)`, so `merged_prompts()` drops straight in.
 **40 items × {neutral, user-owned} × k=3 × 7 scaffolds × 2 models ≈ 3.4k
 generations, ~$15.** Run it as one factorial jointly with 4.6's pilot — they
 share the item panel and the runner. This is the cheapest real experiment in the
