@@ -186,6 +186,56 @@ two analyses cut the same direction for the same underlying reason (NoT's length
 is doing work the analysis has not accounted for), so the defensible summary is
 that grok's true effect is somewhere in the −30s, not the low −50s.
 
+#### 1b-RESULT-5. The verbose arm, RUN 2026-08-18 — length is decisively NOT the mechanism, and the "length control" is not one
+
+750 new generations put `standard_cot_verbose` into the OEQ cell for the first
+time, then re-scored its truncated responses so all three arms are compared on
+complete text. Corrected validation rates:
+
+| generator | CoT | verbose | NoT | verb−CoT | NoT−CoT | NoT−verb |
+|---|---:|---:|---:|---:|---:|---:|
+| claude-haiku-4-5 | 0.627 | 0.760 | 0.360 | **+13.3** | −26.7 | −40.0 |
+| claude-sonnet-4-6 | 0.727 | 0.827 | 0.503 | **+10.0** | −22.3 | −32.3 |
+| gpt-5.4-nano | 0.759 | 0.780 | 0.345 | **+2.2** | −41.4 | −43.5 |
+| grok-4-1-fast-reasoning | 0.815 | 0.288 | 0.455 | **−52.7** | −36.0 | **+16.7** |
+
+**On 3 of 4 models, making CoT longer makes validation WORSE** (+2.2 to +13.3 pp)
+while NoT makes it much better. Against this comparator NoT's advantage is
+*larger* (−32.3 to −43.5) than against plain CoT. The length-bias objection — the
+single most obvious attack on the flagship claim, conceded in the paper and
+raised by ARR — **does not survive contact with the data.** This is the
+strongest defence of the scaffold produced in this audit.
+
+**But the control is confounded, and the code comment is wrong.** The comment at
+`run_phase1_quartet.py:93-94` says the arm has "no deliberative-primitives
+structure. Tests whether length alone explains the N-CoT structural gains." The
+prompt itself says: *"…considering the situation carefully and thoroughly **from
+every relevant perspective**, **articulating your uncertainty about outcomes**
+**before committing to an answer**."* That is Stakeholders, Uncertainty and
+Decision — **three of NoT's five primitives, in prose instead of labelled
+sections.** It is not a length control; it is a *prose-primitives* control.
+
+That reframing makes it more interesting, not less. What the arm actually tests
+is **primitives-as-prose vs primitives-as-enforced-structure**, and structure
+wins on 3 of 4 models by 32–44 pp.
+
+**grok is the exception and it is explicable.** Verbose beats NoT there by
+16.7 pp. grok is also, by a wide margin, the model that least often executes the
+scaffold — 63% compliance vs 91–99% for the others (1b-RESULT-2). A model that
+does not reliably produce the labelled sections but does respond to the same
+primitives in prose is exactly what this pattern would look like. That is a
+prediction, not a proven mechanism, and 4.8-A tests it directly.
+
+Checked rather than assumed: grok's verbose arm is 93% truncated, so its −52.7
+looked like it might be a truncation artifact. Re-scoring those 138 responses
+moves them only 0.268 → 0.290. The effect is real.
+
+**Three independent lines now converge on the same conclusion** — mentioning the
+primitives does little or harm (verbose, 3/4 models); receiving the NoT prompt
+without producing sections does nothing (−4.1 pp, 1b-RESULT-2); producing the
+sections produces the benefit (−34.3 pp). **Execution of the structure, not the
+instruction, carries the effect.**
+
 #### 1b-RESULT-4. All three metrics, both datasets — the defect is not a uniform bias
 
 Extending the re-score to `framing` and `indirectness`, and to `aita_yta`

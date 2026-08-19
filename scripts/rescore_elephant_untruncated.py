@@ -109,11 +109,14 @@ def load_questions(dataset: str, n: int = 150) -> dict[str, str]:
     return {it.id: it.prompt for it in load_elephant(dataset, n=n)}
 
 
-def _load(dataset: str, metric: str, only_truncated: bool) -> list[dict[str, str]]:
+DEFAULT_ARMS = ("standard_cot", "narrative_cot")
+
+
+def _load(dataset: str, metric: str, only_truncated: bool,
+          arms: Sequence[str] = DEFAULT_ARMS) -> list[dict[str, str]]:
     with RAW.open() as fh:
         rows = [r for r in csv.DictReader(fh)
-                if r["dataset"] == dataset
-                and r["arm"] in ("standard_cot", "narrative_cot")]
+                if r["dataset"] == dataset and r["arm"] in tuple(arms)]
     out = []
     for r in rows:
         resp = r.get("response") or ""
@@ -129,8 +132,9 @@ def _load(dataset: str, metric: str, only_truncated: bool) -> list[dict[str, str
 
 def run(dataset: str, metric: str, *, judge: str, limit: Optional[int],
         workers: int, max_items: Optional[int],
-        questions: dict[str, str]) -> dict[str, Any]:
-    rows = _load(dataset, metric, only_truncated=True)
+        questions: dict[str, str],
+        arms: Sequence[str] = DEFAULT_ARMS) -> dict[str, Any]:
+    rows = _load(dataset, metric, only_truncated=True, arms=arms)
     missing = sorted({r["item_id"] for r in rows} - set(questions))
     if missing:
         raise SystemExit(
@@ -166,7 +170,7 @@ def run(dataset: str, metric: str, *, judge: str, limit: Optional[int],
     per: dict[str, Any] = {}
     for g in sorted({r["generator"] for r in good}):
         cell = {}
-        for arm in ("standard_cot", "narrative_cot"):
+        for arm in sorted({r["arm"] for r in good}):
             s = [r for r in good if r["generator"] == g and r["arm"] == arm]
             if not s:
                 continue
@@ -292,6 +296,8 @@ def main(argv: Sequence[str] | None = None) -> int:
     ap.add_argument("--max-items", type=int)
     ap.add_argument("--n-items", type=int, default=150,
                     help="n passed to load_elephant when fetching prompts")
+    ap.add_argument("--arms", default=",".join(DEFAULT_ARMS),
+                    help="comma-separated arms to re-score")
     ap.add_argument("--smoke", action="store_true", help="8 responses, one metric")
     ap.add_argument("--json", type=Path)
     a = ap.parse_args(argv)
@@ -307,7 +313,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         print(f"[rescore] {a.dataset}/{m} judge={a.judge} "
               f"limit={'full' if a.limit is None else a.limit}", flush=True)
         res = run(a.dataset, m, judge=a.judge, limit=a.limit, workers=a.workers,
-                  max_items=a.max_items, questions=questions)
+                  max_items=a.max_items, questions=questions,
+                  arms=[x.strip() for x in a.arms.split(",") if x.strip()])
         _report(res)
         corr = corrected_cell(a.dataset, m, a.judge, a.limit, questions)
         _report_corrected(corr, a.dataset, m)
