@@ -53,6 +53,10 @@ from pathlib import Path
 from typing import Any, Optional, Sequence
 
 DEFAULT_IN = Path("divergence_study_outputs/ablation_4_8a.json")
+#: Below this many surviving items per cell, no sectional verdict is issued.
+#: Section 2b's MDEs are ~110-235 items for binary McNemar, ~50-95 with exact
+#: propensities; 40 is a permissive floor for "worth interpreting at all".
+MIN_ITEMS = 40
 INTACT = "narrative_cot_full"
 PLAIN = "standard_cot"
 SECTION_OF = {
@@ -146,18 +150,35 @@ def report(res: dict[str, Any]) -> None:
         ks = cell["ranked_knockouts"]
         if not ks:
             continue
-        worst = ks[0]["section"]
+        n_min = min((r["n_items"] or 0) for r in ks)
+        # One item moves a binary rate by 1/n, so the smallest difference this
+        # design can even represent is 100/n_min pp. A "flat" profile is only
+        # evidence of absence when that resolution is finer than the effect we
+        # would care about; below MIN_ITEMS it is evidence of nothing. Without
+        # this gate the tool reports "FLAT -- the sectional account is
+        # falsified" off n=1, which is worse than reporting nothing.
+        resolution = 100.0 / n_min if n_min else float("inf")
         spread = cell["spread_pp"]
-        if spread is not None and abs(spread) < 5:
-            v = "FLAT -- no sectional account; 4.7's black-box search has nothing to find"
-        elif worst == "3 Consequences":
+        if n_min < MIN_ITEMS or (spread is not None and abs(spread) < 2 * resolution):
+            v = (f"UNDERPOWERED -- min n={n_min}/cell, 1 item = {resolution:.1f} pp; "
+                 f"spread {spread:.1f} pp is within noise. No verdict."
+                 if spread is not None else
+                 f"UNDERPOWERED -- min n={n_min}/cell. No verdict.")
+        elif ks[0]["section"] == "3 Consequences":
             v = "SUPPORTS min-K_C -- Consequences is load-bearing"
+        elif abs(spread) < 5:
+            v = "FLAT -- no sectional account; 4.7's black-box search has nothing to find"
         else:
-            v = f"AGAINST the stated prediction -- {worst} dominates, not Consequences"
+            v = (f"AGAINST the stated prediction -- {ks[0]['section']} dominates, "
+                 f"not Consequences")
         verdicts.append((m, v))
         print(f"  {m:<26}{v}")
     if not verdicts:
         print("  no usable cells")
+    if any("UNDERPOWERED" in v for _, v in verdicts):
+        print(f"\n  Required scale (redesign doc Section 2b): ~110-235 items for McNemar on "
+              f"binary\n  flips, or ~50-95 items with exact per-item propensities. Binary "
+              f"k=2 at\n  n<{MIN_ITEMS} cannot resolve a section-level difference.")
 
 
 def main(argv: Sequence[str] | None = None) -> int:

@@ -1168,6 +1168,53 @@ information vs token budget vs moderator), against the two cheap killer
 baselines — token-matched verbose control, and single-agent NoT plus one
 audience sentence. ~3k generations.
 
+#### 4.8-A RESULT (2026-08-19): the run completed cleanly and is UNDERPOWERED — no verdict
+
+5,040 units, 30 BrokenMath items × 7 scaffolds × 2 models, k_select=2 /
+k_estimate=2. The machinery worked: the permutation arms executed, NOVERDICT
+rates were ~0 (the forced verdict line is fine), and
+`divergence_study_outputs/ablation_4_8a.json` was written. **But the design
+cannot answer the question, and this is a design error I made, not a discovery.**
+
+| model | items surviving selection (of 30) | 1 item = | knockout spread |
+|---|---|---|---|
+| gpt-5.4-nano | **1–3** per cell | 33–100 pp | 0.0 pp |
+| grok-4-1-fast-reasoning | 20–26 per cell | ~4.5 pp | 6.9 pp *(≈1.5 items)* |
+
+Two separate failures:
+
+1. **nano is unusable on this instrument at this scale.** Selection requires the
+   model to call a false theorem FALSE on *all* `k_select` neutral samples
+   (`--select-threshold 1.0`), and nano clears that on 1–3 of 30 items —
+   consistent with its published BrokenMath sycophant rate of 54.67%. Its whole
+   column is noise.
+2. **grok has usable n but no resolution.** With ~22 items and binary k=2
+   scoring, one item moves a rate by 4.5 pp, so the 6.9 pp spread separating
+   "most damaging" from "least damaging" section is one and a half items.
+
+**§2b of this document already specified the required scale** — ~110–235 items
+for McNemar on binary flips, ~50–95 with exact per-item propensities — and I ran
+30 items with binary k=2 to keep the pilot cheap. The doc was right and the run
+was under-scoped by roughly an order of magnitude.
+
+**What this is NOT.** It is not the "flat profile" outcome that would falsify the
+sectional account. Absence of resolution is not evidence of absence, and 4.7
+remains gated rather than ruled out. The analysis script initially printed
+"FLAT — no sectional account; 4.7's black-box search has nothing to find" off
+n=1 data; that verdict path is now gated behind `MIN_ITEMS = 40` plus a
+resolution check (spread must exceed 2 × 100/n), because a tool that emits a
+confident falsification from one item is worse than one that reports nothing.
+
+**The corrected design, which §7a makes affordable.** Switch the estimator
+rather than buying more generations: exact teacher-forced verdict propensities
+are available on the hosted tier (verified live — `gpt-4o` `top_logprobs` ≤20,
+nano ≤5, grok, and Claude via assistant prefill), read at the token position
+after the forced `VERDICT:` line at no extra cost on calls already being made.
+That is the 4–8× efficiency §2b describes, bringing the requirement to ~50–95
+items. Concretely: **80 items, exact propensities, and either drop nano or lower
+its `--select-threshold` to 0.5** so enough items survive. Same seven arms, same
+runner, roughly the same spend.
+
 #### Sequencing and why this ordering
 
 A → B → D is the critical path: A says *which section matters*, B says *whether
