@@ -367,6 +367,27 @@ better news for NoT-C. Benefit and cost are separably caused, so a scaffold that
 retains the sections while rewriting the *header* is the promising direction for
 getting the reduction without the hedging — not one that deletes a section.
 
+**Confound found and removed (2026-08-18).** Compliant NoT responses are much
+longer than non-compliant ones (haiku: 5,824 vs 2,156 chars), so **the compliant
+stratum is very nearly the truncated stratum** — compliance and the 1b(i)
+truncation defect are confounded by construction, and the numbers above inherit
+whatever bias truncation introduced. Re-running the same analysis with the
+untruncated re-scores substituted in (`--corrected`; warm cache, no API calls;
+all 658 truncated responses in the two analysed arms replaced):
+
+| cell | compliant | non-compliant | (uncorrected was) |
+|---|---:|---:|---|
+| oeq / validation | **−34.3** | −4.1 | *(−45.0 vs −2.7)* |
+| oeq / framing | **−32.4** | −4.1 | *(−29.3 vs −2.7)* |
+| oeq / indirectness | −2.3 | −4.1 | *(+5.4 vs +4.1)* |
+
+**The dissociation survives, at roughly 8:1 rather than 17:1.** Validation
+shrinks from −45.0 to −34.3, exactly as the confound predicted, and framing
+*grows* slightly — both consistent with 1b-RESULT-4's per-metric directions. The
+substantive claim is unchanged: producing the sections is what produces the
+benefit. The indirectness row now shows no backfire in either stratum, which
+is the same conclusion 1b-RESULT-4 reached by a different route.
+
 **Honest limits.** Compliance is model-chosen, not assigned, so this is an
 as-treated (per-protocol) analysis, not a randomised one. Item identity *is*
 controlled by the pairing, but whatever makes a model comply on an item might

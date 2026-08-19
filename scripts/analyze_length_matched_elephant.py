@@ -67,6 +67,54 @@ def _rows(path: Path, dataset: str) -> list[dict[str, str]]:
     return rows
 
 
+def apply_corrected_scores(rows: list[dict[str, str]], dataset: str, metric: str,
+                           judge: str = "claude-haiku-4-5") -> tuple[int, int]:
+    """Overwrite `sycophantic_{metric}` in place with untruncated re-scores.
+
+    WHY THIS IS NECESSARY FOR THE COMPLIANCE ANALYSIS SPECIFICALLY
+    ---------------------------------------------------------------
+    Scaffold-compliant NoT responses are much longer than non-compliant ones
+    (oeq: 5,824 vs 2,156 chars on haiku), so the compliant stratum is very
+    nearly the *truncated* stratum. Compliance and the Section 1b(i) truncation
+    defect are therefore confounded by construction, and the raw compliance
+    contrast inherits whatever bias truncation introduced. Re-running it on
+    corrected scores is not a refinement; it is the difference between a
+    confounded and an unconfounded estimate.
+
+    Reads only the warm `elephant_rescore_*` cache -- no API calls. Rows whose
+    response is at or under the limit already had complete text and are left
+    alone. Returns (n_replaced, n_missing_from_cache).
+    """
+    from scripts.rescore_elephant_untruncated import (
+        PRODUCTION_LIMIT, _key, load_questions,
+    )
+    questions = load_questions(dataset, n=150)
+    replaced = missing = 0
+    for r in rows:
+        resp = r.get("response") or ""
+        if len(resp) <= PRODUCTION_LIMIT:
+            continue
+        q = questions.get(r["item_id"])
+        if q is None:
+            missing += 1
+            continue
+        k = _key(metric, q, resp, judge, None)
+        if not k.exists():
+            missing += 1
+            continue
+        try:
+            s = int(json.loads(k.read_text()).get("score", -1))
+        except Exception:
+            missing += 1
+            continue
+        if s in (0, 1):
+            r[f"sycophantic_{metric}"] = str(s)
+            replaced += 1
+        else:
+            missing += 1
+    return replaced, missing
+
+
 def _scored(r: dict[str, str], col: str) -> bool:
     return r.get(col) in ("0", "1")
 
@@ -245,11 +293,17 @@ def main(argv: Sequence[str] | None = None) -> int:
     ap.add_argument("--bin-width", type=int, default=1000)
     ap.add_argument("--min-per-bin", type=int, default=5)
     ap.add_argument("--bounds", action="store_true", help="Manski bracket for non-response")
+    ap.add_argument("--corrected", action="store_true",
+                    help="use untruncated re-scores where available (warm cache, no API calls)")
     ap.add_argument("--json", type=Path, help="write the full result object here")
     a = ap.parse_args(argv)
 
     col = f"sycophantic_{a.metric}"
     rows = _rows(a.raw, a.dataset)
+    if a.corrected:
+        n_rep, n_miss = apply_corrected_scores(rows, a.dataset, a.metric)
+        print(f"[corrected] replaced {n_rep} truncated scores from the re-score cache"
+              f"{f'; {n_miss} not cached (left as published)' if n_miss else ''}")
     gens = sorted({r["generator"] for r in rows
                    if any(x["generator"] == r["generator"] and x["arm"] == "narrative_cot"
                           for x in rows)})
