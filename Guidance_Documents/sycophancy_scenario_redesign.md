@@ -150,11 +150,17 @@ fresh call at the production limit disagrees with the *published* score by up to
 stored ones would have conflated drift with truncation.
 
 On the 656 truncated OEQ responses, 20–24% of NoT scores changed when the judge
-saw the whole response, against 0–13% of CoT — and **every change ran in the
-predicted direction**: the hidden tail contains validation, so full-text scoring
-makes NoT look *worse*. CoT was essentially unaffected (0.0 pp shift on all
-three generators with truncated CoT rows), which is itself informative — long
-CoT responses do not carry validation in their tails; long NoT responses do.
+saw the whole response, against 0–13% of CoT. CoT was essentially unaffected
+(0.0 pp shift on all three generators with truncated CoT rows), which is itself
+informative — long CoT responses do not carry decisive content in their tails;
+long NoT responses do, because the scaffold puts the commitment last.
+
+**Correction to an earlier statement in this section.** On validation alone the
+changes all ran one way (the tail carries validation, so full-text scoring makes
+NoT look worse), and I first wrote that up as "every change ran in the predicted
+direction". Running the other two metrics falsifies that generalisation: the
+defect is **not a uniform bias, and it distorts each metric in a different
+direction.** See 1b-RESULT-4.
 
 Applying the paired shift to each cell's truncated fraction gives the corrected
 full-cell estimate (`divergence_study_outputs/rescore_oeq_validation.json`):
@@ -179,6 +185,51 @@ correction in 1b-RESULT** — that one also moved grok from −52.5 to −31.6. 
 two analyses cut the same direction for the same underlying reason (NoT's length
 is doing work the analysis has not accounted for), so the defensible summary is
 that grok's true effect is somewhere in the −30s, not the low −50s.
+
+#### 1b-RESULT-4. All three metrics, both datasets — the defect is not a uniform bias
+
+Extending the re-score to `framing` and `indirectness`, and to `aita_yta`
+(93–99% of NoT responses truncated there — the worst-affected cell in the
+programme). Published Δ → **corrected Δ**:
+
+| metric | dataset | haiku | sonnet | nano | grok |
+|---|---|---|---|---|---|
+| **validation** | oeq | −36.0 → **−26.6** | −25.7 → **−23.7** | −48.4 → **−44.1** | −52.5 → **−41.5** |
+| | aita_yta | −20.0 → **−4.7** | −6.7 → **+10.7** | −34.2 → **−27.2** | −39.9 → **−18.9** |
+| **framing** | oeq | −41.2 → **−43.2** | −30.0 → **−36.7** | −10.3 → **−12.6** | −12.6 → **−14.7** |
+| | aita_yta | −30.0 → **−35.3** | −24.7 → **−30.0** | −32.0 → **−29.2** | −15.4 → **−37.1** |
+| **indirectness** | oeq | +6.7 → **−8.0** | +7.3 → **−4.1** | +4.8 → **−1.4** | +0.6 → **−2.8** |
+| | aita_yta | +21.3 → **+12.0** | +19.3 → **+15.3** | +14.4 → **+8.9** | +9.2 → **+5.7** |
+
+**Three metrics, three different directions. No metric was measured correctly.**
+
+1. **Validation — effect shrinks, and on `aita_yta` it does not survive.**
+   haiku collapses to −4.7 pp (from −20.0) and **sonnet reverses sign to +10.7**
+   — NoT is *more* validating than CoT there once the judge sees the whole
+   answer. The `aita_yta` validation claim should be treated as withdrawn
+   pending a clean re-run.
+2. **Framing — effect gets STRONGER almost everywhere.** grok on `aita_yta`
+   moves −15.4 → −37.1. Truncation was *understating* NoT's framing benefit.
+3. **Indirectness — the OEQ backfire is an artifact and reverses on all four
+   models.** The documented "NoT hedges more" weakness (+0.6 to +7.3 pp) becomes
+   a small *improvement* (−1.4 to −8.0 pp) once the full response is scored. On
+   `aita_yta` the backfire is real but roughly halved.
+
+**One mechanism explains all three directions, and it is structural.** NoT
+places Section 5 (Decision) last by construction. Truncating at 4,000 chars
+means the judge reads the model enumerating stakeholders, consequences and
+uncertainty — and never reaches the commitment. So the truncated text looks more
+hedging (inflating indirectness), less committed in its framing (understating
+the framing benefit), and is missing whatever closing affirmation the tail
+carries (overstating the validation benefit). This is not noise; it is a
+predictable consequence of scoring a structured response by its first two-thirds.
+
+**Implication for the sycophancy paper beyond the numbers:** the indirectness
+result was reported as a genuine cost of the scaffold, with a mechanistic story
+attached ("the model hedges more when forced to enumerate uncertainty"). On OEQ
+that cost does not exist. Any claim of a benefit/cost trade-off needs rebuilding
+on corrected scores — and 1b-RESULT-2's compliance analysis, which used the
+uncorrected indirectness numbers, should be re-run against these.
 
 **(ii) Differential attrition, complete-case deleted.** The `gpt-5.4-nano` NoT
 cell has 22.7% empty responses vs 3.3% for standard CoT, and the dropped items
