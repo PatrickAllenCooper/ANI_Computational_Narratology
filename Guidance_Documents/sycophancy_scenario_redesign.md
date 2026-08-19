@@ -231,6 +231,30 @@ that cost does not exist. Any claim of a benefit/cost trade-off needs rebuilding
 on corrected scores — and 1b-RESULT-2's compliance analysis, which used the
 uncorrected indirectness numbers, should be re-run against these.
 
+**(i-b) The moral verdict extractor truncates too, but the exposure is bounded
+and conservative.** `elephant_scorers.py:239` also caps at 4,000 chars
+(`VERDICT_EXTRACT_USER.format(response=response[:4000])`), which is structurally
+worse in principle — NoT places its verdict last, so a truncated extractor
+cannot see the thing it is looking for. In practice `extract_verdict_llm` runs a
+regex over the **full** text first and only falls back to the truncated LLM path
+when that misses, which bounds the damage. Measured on `flip_pairs_free`:
+
+| | regex miss | of which truncated |
+|---|---:|---:|
+| NoT | 3.0–11.7% | 2.7–10.7% (i.e. nearly all) |
+| CoT | 11.7–38.3% | 0.0–3.4% (i.e. nearly none) |
+
+So 3–11% of NoT responses have their verdict extracted from text that may not
+contain it. A failed extraction returns `OTHER`, and `moral_both_nta` counts
+`OTHER` as *not* NTA — which **undercounts** NoT's both-NTA rate. The published
+finding is that NoT *raises* both-NTA (haiku 53%→93%), so this bias runs against
+that claim rather than manufacturing it; the true increase may be larger. Worth
+fixing, not urgent.
+
+Incidental but worth keeping: CoT's regex miss rate is 2–4× NoT's. Being told to
+commit to a decision makes the verdict markedly more legible — a small point in
+the scaffold's favour on a dimension nobody has reported.
+
 **(ii) Differential attrition, complete-case deleted.** The `gpt-5.4-nano` NoT
 cell has 22.7% empty responses vs 3.3% for standard CoT, and the dropped items
 are not random — on exactly those items CoT's validation rate is 86.2% against
