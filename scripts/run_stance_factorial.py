@@ -88,7 +88,19 @@ try:
 except ImportError:
     pass
 
-from scripts.run_phase1_quartet import PROMPTS, _safe, OUT_DIR
+from scripts.run_phase1_quartet import PROMPTS as _CANONICAL_PROMPTS, _safe, OUT_DIR
+
+# Scaffold arms available to --scaffolds. The canonical six plus the design-4.8
+# permutations (section knockouts, consequence-horizon levels, protagonist
+# assignment, NoT-C, commit-first, one-line baselines). `merged_prompts()`
+# asserts at import that its permutations are byte-exact diffs off the live
+# `narrative_cot`, so a canonical edit fails loudly instead of silently
+# comparing against a stale scaffold. Guarded so this file always imports.
+try:
+    from scripts.scaffold_permutations import merged_prompts as _merged_prompts
+    PROMPTS = _merged_prompts()
+except Exception:  # pragma: no cover - permutations are optional
+    PROMPTS = _CANONICAL_PROMPTS
 
 # --------------------------------------------------------------------------
 # Contract modules owned by other agents -- guarded so this file always imports.

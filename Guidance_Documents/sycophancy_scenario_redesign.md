@@ -137,8 +137,48 @@ uncontrolled instrument change affecting up to 96% of treated cells.
 
 **Repair is nearly free and must run before anything else:** re-score the
 existing cache at a cutoff above the longest response. No new generations — the
-responses are already on disk; only judge calls are spent. Until that is done,
-the headline effect size is not defensible.
+responses are already on disk; only judge calls are spent.
+
+#### 1b-RESULT-3. The re-score, RUN 2026-08-18 — the effect survives, the magnitude does not
+
+`scripts/rescore_elephant_untruncated.py`, ~1,300 judge calls, no new
+generations. Every truncated response was scored **twice in the same run** —
+once at the production 4,000-char limit and once in full — so the estimand is a
+within-response paired difference and judge drift cancels. That mattered: a
+fresh call at the production limit disagrees with the *published* score by up to
+**+6.8 pp** (grok NoT), so simply comparing new full-text scores against the
+stored ones would have conflated drift with truncation.
+
+On the 656 truncated OEQ responses, 20–24% of NoT scores changed when the judge
+saw the whole response, against 0–13% of CoT — and **every change ran in the
+predicted direction**: the hidden tail contains validation, so full-text scoring
+makes NoT look *worse*. CoT was essentially unaffected (0.0 pp shift on all
+three generators with truncated CoT rows), which is itself informative — long
+CoT responses do not carry validation in their tails; long NoT responses do.
+
+Applying the paired shift to each cell's truncated fraction gives the corrected
+full-cell estimate (`divergence_study_outputs/rescore_oeq_validation.json`):
+
+| generator | published Δ | **corrected Δ** | correction | NoT truncated |
+|---|---:|---:|---:|---:|
+| claude-haiku-4-5 | −36.0 | **−26.6** | +9.4 | 81% |
+| claude-sonnet-4-6 | −25.7 | **−23.7** | +2.0 | 93% |
+| gpt-5.4-nano | −48.4 | **−44.1** | +4.3 | 97% |
+| grok-4-1-fast-reasoning | −52.5 | **−41.5** | +11.0 | 81% |
+
+**Verdict: the flagship claim holds and the abstract's numbers do not.** The
+effect is large, negative and significant-looking on all four generators after
+the defect is removed — this is a defence, not a refutation. But the published
+range of "−26 to −53 pp" should read **−24 to −44 pp**, and the two most
+dramatic figures are the two most inflated (haiku +9.4, grok +11.0). Anything
+quoting −53 pp is quoting an artifact of the judge not seeing the end of the
+response.
+
+Note this correction is **independent of, and additive to, the length-matched
+correction in 1b-RESULT** — that one also moved grok from −52.5 to −31.6. The
+two analyses cut the same direction for the same underlying reason (NoT's length
+is doing work the analysis has not accounted for), so the defensible summary is
+that grok's true effect is somewhere in the −30s, not the low −50s.
 
 **(ii) Differential attrition, complete-case deleted.** The `gpt-5.4-nano` NoT
 cell has 22.7% empty responses vs 3.3% for standard CoT, and the dropped items
