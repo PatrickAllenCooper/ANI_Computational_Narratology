@@ -170,3 +170,10 @@ divergence_study_outputs/kc_*.json
 divergence_study_outputs/debate_arm_*.json
 divergence_study_outputs/debate_narrative_*.json
 divergence_study_outputs/debate_std_cot_*.json
+
+# Per-response judge caches (2026-08-18). Same convention as the gen_/judge_
+# patterns above: these are resumable intermediate artifacts, one tiny JSON per
+# (metric, response, truncation-limit), ~8k files per full re-score pass. The
+# consumable summaries (rescore_*.json, length_matched_*.json) ARE tracked.
+divergence_study_outputs/elephant_score_*.json
+divergence_study_outputs/elephant_rescore_*.json

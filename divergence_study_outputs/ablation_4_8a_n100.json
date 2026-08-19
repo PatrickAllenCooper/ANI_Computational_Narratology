@@ -1,0 +1,660 @@
+{
+  "schema": "stance-factorial/1",
+  "instrument": "brokenmath",
+  "models": [
+    "grok-4-1-fast-reasoning"
+  ],
+  "scaffolds": [
+    "standard_cot",
+    "narrative_cot_full",
+    "drop_protagonist",
+    "drop_stakeholders",
+    "drop_consequences",
+    "drop_uncertainty",
+    "drop_commitment"
+  ],
+  "k_select": 2,
+  "k_estimate": 2,
+  "paraphrases": 1,
+  "select_threshold": 1.0,
+  "focal_verdict": "TRUE",
+  "allow_unresolved": true,
+  "reframe": true,
+  "nuisance_arms": 0,
+  "nuisance_items": 40,
+  "split_sample": {
+    "selection_indices": [
+      0,
+      1
+    ],
+    "estimation_indices": [
+      2,
+      3
+    ],
+    "note": "selection and estimation samples are disjoint by construction; conditioning on the estimation samples would manufacture a shift under the null via regression to the mean"
+  },
+  "n_units_planned": 8400,
+  "n_records_loaded": 7937,
+  "by_model_scaffold": {
+    "grok-4-1-fast-reasoning|drop_commitment": {
+      "n_items": 46,
+      "mode": "binary",
+      "p_neutral": {
+        "mean": 0.021739130434782608,
+        "n": 46,
+        "ci95": [
+          0.0,
+          0.05434782608695652
+        ]
+      },
+      "delta_pref_doubt": {
+        "mean": -0.022222222222222223,
+        "n": 45,
+        "ci95": [
+          -0.05555555555555555,
+          0.0
+        ]
+      },
+      "delta_pref_endorse": {
+        "mean": 0.010869565217391304,
+        "n": 46,
+        "ci95": [
+          0.0,
+          0.03260869565217391
+        ]
+      },
+      "delta_test_doubt": {
+        "mean": 0.011111111111111112,
+        "n": 45,
+        "ci95": [
+          0.0,
+          0.03333333333333333
+        ]
+      },
+      "delta_test_endorse": {
+        "mean": 0.022222222222222223,
+        "n": 45,
+        "ci95": [
+          -0.022222222222222223,
+          0.06666666666666667
+        ]
+      },
+      "tau_preference": {
+        "mean": 0.03333333333333333,
+        "n": 45,
+        "ci95": [
+          0.0,
+          0.06666666666666667
+        ]
+      },
+      "tau_testimony": {
+        "mean": 0.011111111111111112,
+        "n": 45,
+        "ci95": [
+          -0.03333333333333333,
+          0.05555555555555555
+        ]
+      },
+      "noverdict_pref_endorse": {
+        "mean": 0.010869565217391304,
+        "n": 46,
+        "ci95": null
+      },
+      "noverdict_pref_doubt": {
+        "mean": 0.0,
+        "n": 45,
+        "ci95": null
+      },
+      "noverdict_test_endorse": {
+        "mean": 0.0,
+        "n": 45,
+        "ci95": null
+      },
+      "noverdict_test_doubt": {
+        "mean": 0.0,
+        "n": 45,
+        "ci95": null
+      }
+    },
+    "grok-4-1-fast-reasoning|drop_consequences": {
+      "n_items": 74,
+      "mode": "binary",
+      "p_neutral": {
+        "mean": 0.05405405405405406,
+        "n": 74,
+        "ci95": [
+          0.02027027027027027,
+          0.0945945945945946
+        ]
+      },
+      "delta_pref_doubt": {
+        "mean": -0.04054054054054054,
+        "n": 74,
+        "ci95": [
+          -0.08783783783783784,
+          0.006756756756756757
+        ]
+      },
+      "delta_pref_endorse": {
+        "mean": -0.033783783783783786,
+        "n": 74,
+        "ci95": [
+          -0.07432432432432433,
+          0.0
+        ]
+      },
+      "delta_test_doubt": {
+        "mean": -0.04054054054054054,
+        "n": 74,
+        "ci95": [
+          -0.08108108108108109,
+          0.0
+        ]
+      },
+      "delta_test_endorse": {
+        "mean": -0.033783783783783786,
+        "n": 74,
+        "ci95": [
+          -0.08108108108108109,
+          0.013513513513513514
+        ]
+      },
+      "tau_preference": {
+        "mean": 0.006756756756756757,
+        "n": 74,
+        "ci95": [
+          -0.02702702702702703,
+          0.04054054054054054
+        ]
+      },
+      "tau_testimony": {
+        "mean": 0.006756756756756757,
+        "n": 74,
+        "ci95": [
+          -0.02702702702702703,
+          0.0472972972972973
+        ]
+      },
+      "noverdict_pref_endorse": {
+        "mean": 0.0,
+        "n": 74,
+        "ci95": null
+      },
+      "noverdict_pref_doubt": {
+        "mean": 0.0,
+        "n": 74,
+        "ci95": null
+      },
+      "noverdict_test_endorse": {
+        "mean": 0.0,
+        "n": 74,
+        "ci95": null
+      },
+      "noverdict_test_doubt": {
+        "mean": 0.0,
+        "n": 74,
+        "ci95": null
+      }
+    },
+    "grok-4-1-fast-reasoning|drop_protagonist": {
+      "n_items": 74,
+      "mode": "binary",
+      "p_neutral": {
+        "mean": 0.02027027027027027,
+        "n": 74,
+        "ci95": [
+          0.0,
+          0.0472972972972973
+        ]
+      },
+      "delta_pref_doubt": {
+        "mean": -0.013513513513513514,
+        "n": 74,
+        "ci95": [
+          -0.04054054054054054,
+          0.013513513513513514
+        ]
+      },
+      "delta_pref_endorse": {
+        "mean": 0.0,
+        "n": 74,
+        "ci95": [
+          -0.033783783783783786,
+          0.04054054054054054
+        ]
+      },
+      "delta_test_doubt": {
+        "mean": 0.04054054054054054,
+        "n": 74,
+        "ci95": [
+          0.0,
+          0.08783783783783784
+        ]
+      },
+      "delta_test_endorse": {
+        "mean": 0.013513513513513514,
+        "n": 74,
+        "ci95": [
+          -0.013513513513513514,
+          0.0472972972972973
+        ]
+      },
+      "tau_preference": {
+        "mean": 0.013513513513513514,
+        "n": 74,
+        "ci95": [
+          0.0,
+          0.04054054054054054
+        ]
+      },
+      "tau_testimony": {
+        "mean": -0.02702702702702703,
+        "n": 74,
+        "ci95": [
+          -0.06756756756756757,
+          0.013513513513513514
+        ]
+      },
+      "noverdict_pref_endorse": {
+        "mean": 0.0,
+        "n": 74,
+        "ci95": null
+      },
+      "noverdict_pref_doubt": {
+        "mean": 0.0,
+        "n": 74,
+        "ci95": null
+      },
+      "noverdict_test_endorse": {
+        "mean": 0.0,
+        "n": 74,
+        "ci95": null
+      },
+      "noverdict_test_doubt": {
+        "mean": 0.0,
+        "n": 74,
+        "ci95": null
+      }
+    },
+    "grok-4-1-fast-reasoning|drop_stakeholders": {
+      "n_items": 70,
+      "mode": "binary",
+      "p_neutral": {
+        "mean": 0.007142857142857143,
+        "n": 70,
+        "ci95": [
+          0.0,
+          0.02142857142857143
+        ]
+      },
+      "delta_pref_doubt": {
+        "mean": 0.007142857142857143,
+        "n": 70,
+        "ci95": [
+          -0.014285714285714285,
+          0.02857142857142857
+        ]
+      },
+      "delta_pref_endorse": {
+        "mean": 0.0,
+        "n": 70,
+        "ci95": [
+          -0.02142857142857143,
+          0.02142857142857143
+        ]
+      },
+      "delta_test_doubt": {
+        "mean": 0.014285714285714285,
+        "n": 70,
+        "ci95": [
+          -0.014285714285714285,
+          0.04285714285714286
+        ]
+      },
+      "delta_test_endorse": {
+        "mean": 0.02142857142857143,
+        "n": 70,
+        "ci95": [
+          -0.014285714285714285,
+          0.06428571428571428
+        ]
+      },
+      "tau_preference": {
+        "mean": -0.007142857142857143,
+        "n": 70,
+        "ci95": [
+          -0.03571428571428571,
+          0.014285714285714285
+        ]
+      },
+      "tau_testimony": {
+        "mean": 0.007142857142857143,
+        "n": 70,
+        "ci95": [
+          -0.02857142857142857,
+          0.05
+        ]
+      },
+      "noverdict_pref_endorse": {
+        "mean": 0.0,
+        "n": 70,
+        "ci95": null
+      },
+      "noverdict_pref_doubt": {
+        "mean": 0.0,
+        "n": 70,
+        "ci95": null
+      },
+      "noverdict_test_endorse": {
+        "mean": 0.0,
+        "n": 70,
+        "ci95": null
+      },
+      "noverdict_test_doubt": {
+        "mean": 0.0,
+        "n": 70,
+        "ci95": null
+      }
+    },
+    "grok-4-1-fast-reasoning|drop_uncertainty": {
+      "n_items": 77,
+      "mode": "binary",
+      "p_neutral": {
+        "mean": 0.025974025974025976,
+        "n": 77,
+        "ci95": [
+          0.0,
+          0.05844155844155844
+        ]
+      },
+      "delta_pref_doubt": {
+        "mean": -0.012987012987012988,
+        "n": 77,
+        "ci95": [
+          -0.05194805194805195,
+          0.01948051948051948
+        ]
+      },
+      "delta_pref_endorse": {
+        "mean": -0.006493506493506494,
+        "n": 77,
+        "ci95": [
+          -0.032467532467532464,
+          0.01948051948051948
+        ]
+      },
+      "delta_test_doubt": {
+        "mean": 0.0,
+        "n": 77,
+        "ci95": [
+          -0.045454545454545456,
+          0.045454545454545456
+        ]
+      },
+      "delta_test_endorse": {
+        "mean": 0.0,
+        "n": 77,
+        "ci95": [
+          -0.032467532467532464,
+          0.032467532467532464
+        ]
+      },
+      "tau_preference": {
+        "mean": 0.006493506493506494,
+        "n": 77,
+        "ci95": [
+          -0.012987012987012988,
+          0.032467532467532464
+        ]
+      },
+      "tau_testimony": {
+        "mean": 0.0,
+        "n": 77,
+        "ci95": [
+          -0.032467532467532464,
+          0.032467532467532464
+        ]
+      },
+      "noverdict_pref_endorse": {
+        "mean": 0.0,
+        "n": 77,
+        "ci95": null
+      },
+      "noverdict_pref_doubt": {
+        "mean": 0.0,
+        "n": 77,
+        "ci95": null
+      },
+      "noverdict_test_endorse": {
+        "mean": 0.0,
+        "n": 77,
+        "ci95": null
+      },
+      "noverdict_test_doubt": {
+        "mean": 0.0,
+        "n": 77,
+        "ci95": null
+      }
+    },
+    "grok-4-1-fast-reasoning|narrative_cot_full": {
+      "n_items": 77,
+      "mode": "binary",
+      "p_neutral": {
+        "mean": 0.05194805194805195,
+        "n": 77,
+        "ci95": [
+          0.012987012987012988,
+          0.09740259740259741
+        ]
+      },
+      "delta_pref_doubt": {
+        "mean": -0.03896103896103896,
+        "n": 77,
+        "ci95": [
+          -0.07142857142857142,
+          -0.012987012987012988
+        ]
+      },
+      "delta_pref_endorse": {
+        "mean": -0.025974025974025976,
+        "n": 77,
+        "ci95": [
+          -0.05194805194805195,
+          -0.006493506493506494
+        ]
+      },
+      "delta_test_doubt": {
+        "mean": 0.01948051948051948,
+        "n": 77,
+        "ci95": [
+          -0.025974025974025976,
+          0.07142857142857142
+        ]
+      },
+      "delta_test_endorse": {
+        "mean": -0.032467532467532464,
+        "n": 77,
+        "ci95": [
+          -0.07792207792207792,
+          0.006493506493506494
+        ]
+      },
+      "tau_preference": {
+        "mean": 0.012987012987012988,
+        "n": 77,
+        "ci95": [
+          0.0,
+          0.032467532467532464
+        ]
+      },
+      "tau_testimony": {
+        "mean": -0.05194805194805195,
+        "n": 77,
+        "ci95": [
+          -0.09740259740259741,
+          -0.012987012987012988
+        ]
+      },
+      "noverdict_pref_endorse": {
+        "mean": 0.0,
+        "n": 77,
+        "ci95": null
+      },
+      "noverdict_pref_doubt": {
+        "mean": 0.0,
+        "n": 77,
+        "ci95": null
+      },
+      "noverdict_test_endorse": {
+        "mean": 0.0,
+        "n": 77,
+        "ci95": null
+      },
+      "noverdict_test_doubt": {
+        "mean": 0.0,
+        "n": 77,
+        "ci95": null
+      }
+    },
+    "grok-4-1-fast-reasoning|standard_cot": {
+      "n_items": 78,
+      "mode": "binary",
+      "p_neutral": {
+        "mean": 0.03205128205128205,
+        "n": 78,
+        "ci95": [
+          0.0,
+          0.07692307692307693
+        ]
+      },
+      "delta_pref_doubt": {
+        "mean": -0.00641025641025641,
+        "n": 78,
+        "ci95": [
+          -0.03205128205128205,
+          0.01282051282051282
+        ]
+      },
+      "delta_pref_endorse": {
+        "mean": 0.00641025641025641,
+        "n": 78,
+        "ci95": [
+          -0.03205128205128205,
+          0.05128205128205128
+        ]
+      },
+      "delta_test_doubt": {
+        "mean": 0.019230769230769232,
+        "n": 78,
+        "ci95": [
+          -0.02564102564102564,
+          0.07051282051282051
+        ]
+      },
+      "delta_test_endorse": {
+        "mean": 0.02564102564102564,
+        "n": 78,
+        "ci95": [
+          -0.02564102564102564,
+          0.08333333333333333
+        ]
+      },
+      "tau_preference": {
+        "mean": 0.01282051282051282,
+        "n": 78,
+        "ci95": [
+          -0.00641025641025641,
+          0.038461538461538464
+        ]
+      },
+      "tau_testimony": {
+        "mean": 0.00641025641025641,
+        "n": 78,
+        "ci95": [
+          -0.03205128205128205,
+          0.04487179487179487
+        ]
+      },
+      "noverdict_pref_endorse": {
+        "mean": 0.00641025641025641,
+        "n": 78,
+        "ci95": null
+      },
+      "noverdict_pref_doubt": {
+        "mean": 0.0,
+        "n": 78,
+        "ci95": null
+      },
+      "noverdict_test_endorse": {
+        "mean": 0.0,
+        "n": 78,
+        "ci95": null
+      },
+      "noverdict_test_doubt": {
+        "mean": 0.0,
+        "n": 78,
+        "ci95": null
+      }
+    }
+  },
+  "interaction": {
+    "_contrast": {
+      "reference": "standard_cot",
+      "treatment": "drop_commitment",
+      "sign": "positive means drop_commitment shifts more than standard_cot"
+    },
+    "grok-4-1-fast-reasoning": {
+      "n_paired_items": 45,
+      "interaction_delta_pref_doubt": {
+        "mean": -0.03409090909090909,
+        "n": 44,
+        "ci95": [
+          -0.09090909090909091,
+          0.0
+        ]
+      },
+      "interaction_delta_pref_endorse": {
+        "mean": -0.022222222222222223,
+        "n": 45,
+        "ci95": [
+          -0.07777777777777778,
+          0.022222222222222223
+        ]
+      },
+      "interaction_delta_test_doubt": {
+        "mean": -0.011363636363636364,
+        "n": 44,
+        "ci95": [
+          -0.06818181818181818,
+          0.022727272727272728
+        ]
+      },
+      "interaction_delta_test_endorse": {
+        "mean": -0.03409090909090909,
+        "n": 44,
+        "ci95": [
+          -0.125,
+          0.03409090909090909
+        ]
+      },
+      "interaction_tau_preference": {
+        "mean": 0.011363636363636364,
+        "n": 44,
+        "ci95": [
+          -0.022727272727272728,
+          0.056818181818181816
+        ]
+      },
+      "interaction_tau_testimony": {
+        "mean": -0.022727272727272728,
+        "n": 44,
+        "ci95": [
+          -0.09090909090909091,
+          0.03409090909090909
+        ]
+      }
+    }
+  },
+  "n_items_scored": 662,
+  "n_items_selected": 496
+}

@@ -61,6 +61,21 @@ _XAI_PREFIXES = ("grok",)
 _DEEPSEEK_PREFIXES = ("deepseek",)
 
 
+# --------------------------------------------------------------------------
+# SDK client timeouts.
+#
+# CONFIRMED 2026-08-19 the hard way: two long grok runs wedged at ~95% with
+# workers pinned at 0% CPU and no log output for 20+ minutes. None of the three
+# OpenAI-SDK clients below set a timeout, so each request inherits the SDK
+# default (600s) AND the SDK's own internal retries -- which then sit underneath
+# this module's 5-attempt retry loop. One unresponsive request could therefore
+# block a worker for hours, and enough of them stall the whole run.
+#
+# Fix: bound every request, and set max_retries=0 because retry/backoff is
+# already this module's job (_retry_sleep). Override with NOT_HTTP_TIMEOUT.
+# --------------------------------------------------------------------------
+SDK_TIMEOUT = float(os.environ.get("NOT_HTTP_TIMEOUT", "180"))
+
 def _is_reasoning(model: str) -> bool:
     m = model.lower()
     return any(h in m for h in _REASONING_HINTS) or "deepseek-r" in m
@@ -144,6 +159,8 @@ def _get_openai_client():
             api_key=api_key,
             api_version=os.environ.get("AZURE_AI_API_VERSION", "2025-04-01-preview"),
             azure_endpoint=base,
+            timeout=SDK_TIMEOUT,
+            max_retries=0,
         )
     else:
         from azure.ai.projects import AIProjectClient
@@ -331,6 +348,8 @@ def _get_xai_via_azure_client():
     _XAI_AZURE_CLIENT = OpenAI(
         api_key=api_key,
         base_url=f"{base}/models",
+        timeout=SDK_TIMEOUT,
+        max_retries=0,
     )
     return _XAI_AZURE_CLIENT
 
@@ -351,7 +370,8 @@ def _call_xai(
         xai_key = os.environ.get("XAI_API_KEY")
         if not xai_key:
             raise RuntimeError("XAI_API_KEY not set")
-        client = OpenAI(api_key=xai_key, base_url="https://api.x.ai/v1")
+        client = OpenAI(api_key=xai_key, base_url="https://api.x.ai/v1",
+                        timeout=SDK_TIMEOUT, max_retries=0)
     else:
         client = _get_xai_via_azure_client()
 
