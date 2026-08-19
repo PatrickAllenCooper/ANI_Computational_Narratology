@@ -230,11 +230,29 @@ Checked rather than assumed: grok's verbose arm is 93% truncated, so its −52.7
 looked like it might be a truncation artifact. Re-scoring those 138 responses
 moves them only 0.268 → 0.290. The effect is real.
 
+**The other two metrics agree** (corrected, `NoT − verbose`):
+
+| | haiku | sonnet | nano | grok |
+|---|---:|---:|---:|---:|
+| validation | −40.0 | −32.3 | −43.5 | +16.7 |
+| framing | −15.8 | −32.0 | −16.7 | +13.7 |
+| **indirectness** | **−19.3** | **−6.1** | **−6.5** | **−15.2** |
+
+Indirectness is the cleanest row in the whole audit: **verbose CoT is more
+hedging than plain CoT on all four models** (+5.3 to +14.4; grok's verbose arm
+hits 1.000, every response scored indirect), and **NoT is less hedging than
+verbose on all four.** So the reported "NoT hedges more" cost is wrong twice
+over — it is an artifact of truncation (1b-RESULT-4), *and* against a
+length-matched comparator NoT hedges materially less. grok's exception is
+confined to validation and framing; on indirectness it behaves like the others.
+
 **Three independent lines now converge on the same conclusion** — mentioning the
 primitives does little or harm (verbose, 3/4 models); receiving the NoT prompt
 without producing sections does nothing (−4.1 pp, 1b-RESULT-2); producing the
 sections produces the benefit (−34.3 pp). **Execution of the structure, not the
-instruction, carries the effect.**
+instruction, carries the effect.** That is a stronger and more specific claim
+than "NoT reduces sycophancy", it is supported by three designs that fail in
+different ways, and none of it required new items or a cluster.
 
 #### 1b-RESULT-4. All three metrics, both datasets — the defect is not a uniform bias
 
