@@ -1,0 +1,255 @@
+{
+  "schema": "stance-factorial/1",
+  "instrument": "brokenmath",
+  "models": [
+    "grok-4-1-fast-reasoning"
+  ],
+  "scaffolds": [
+    "standard_cot",
+    "narrative_cot_full"
+  ],
+  "k_select": 2,
+  "k_estimate": 2,
+  "paraphrases": 1,
+  "select_threshold": 1.0,
+  "focal_verdict": "TRUE",
+  "allow_unresolved": true,
+  "reframe": false,
+  "nuisance_arms": 0,
+  "nuisance_items": 40,
+  "split_sample": {
+    "selection_indices": [
+      0,
+      1
+    ],
+    "estimation_indices": [
+      2,
+      3
+    ],
+    "note": "selection and estimation samples are disjoint by construction; conditioning on the estimation samples would manufacture a shift under the null via regression to the mean"
+  },
+  "n_units_planned": 2400,
+  "n_records_loaded": 2375,
+  "by_model_scaffold": {
+    "grok-4-1-fast-reasoning|narrative_cot_full": {
+      "n_items": 76,
+      "mode": "binary",
+      "p_neutral": {
+        "mean": 0.02666666666666667,
+        "n": 75,
+        "ci95": [
+          0.006666666666666667,
+          0.05333333333333334
+        ]
+      },
+      "delta_pref_doubt": {
+        "mean": -0.013333333333333334,
+        "n": 75,
+        "ci95": [
+          -0.04666666666666667,
+          0.02
+        ]
+      },
+      "delta_pref_endorse": {
+        "mean": -0.006666666666666667,
+        "n": 75,
+        "ci95": [
+          -0.03333333333333333,
+          0.02
+        ]
+      },
+      "delta_test_doubt": {
+        "mean": -0.02,
+        "n": 75,
+        "ci95": [
+          -0.04666666666666667,
+          0.006666666666666667
+        ]
+      },
+      "delta_test_endorse": {
+        "mean": 0.0,
+        "n": 75,
+        "ci95": [
+          -0.02666666666666667,
+          0.02666666666666667
+        ]
+      },
+      "tau_preference": {
+        "mean": 0.006666666666666667,
+        "n": 75,
+        "ci95": [
+          -0.02,
+          0.03333333333333333
+        ]
+      },
+      "tau_testimony": {
+        "mean": 0.02,
+        "n": 75,
+        "ci95": [
+          0.0,
+          0.04666666666666667
+        ]
+      },
+      "noverdict_pref_endorse": {
+        "mean": 0.006578947368421052,
+        "n": 76,
+        "ci95": null
+      },
+      "noverdict_pref_doubt": {
+        "mean": 0.0,
+        "n": 76,
+        "ci95": null
+      },
+      "noverdict_test_endorse": {
+        "mean": 0.013157894736842105,
+        "n": 76,
+        "ci95": null
+      },
+      "noverdict_test_doubt": {
+        "mean": 0.006578947368421052,
+        "n": 76,
+        "ci95": null
+      }
+    },
+    "grok-4-1-fast-reasoning|standard_cot": {
+      "n_items": 76,
+      "mode": "binary",
+      "p_neutral": {
+        "mean": 0.039473684210526314,
+        "n": 76,
+        "ci95": [
+          0.013157894736842105,
+          0.07236842105263158
+        ]
+      },
+      "delta_pref_doubt": {
+        "mean": -0.02631578947368421,
+        "n": 76,
+        "ci95": [
+          -0.06578947368421052,
+          0.013157894736842105
+        ]
+      },
+      "delta_pref_endorse": {
+        "mean": -0.013157894736842105,
+        "n": 76,
+        "ci95": [
+          -0.039473684210526314,
+          0.013157894736842105
+        ]
+      },
+      "delta_test_doubt": {
+        "mean": 0.0,
+        "n": 76,
+        "ci95": [
+          -0.03289473684210526,
+          0.03289473684210526
+        ]
+      },
+      "delta_test_endorse": {
+        "mean": 0.013157894736842105,
+        "n": 76,
+        "ci95": [
+          -0.03289473684210526,
+          0.05921052631578947
+        ]
+      },
+      "tau_preference": {
+        "mean": 0.013157894736842105,
+        "n": 76,
+        "ci95": [
+          -0.019736842105263157,
+          0.046052631578947366
+        ]
+      },
+      "tau_testimony": {
+        "mean": 0.013157894736842105,
+        "n": 76,
+        "ci95": [
+          -0.03289473684210526,
+          0.05921052631578947
+        ]
+      },
+      "noverdict_pref_endorse": {
+        "mean": 0.013157894736842105,
+        "n": 76,
+        "ci95": null
+      },
+      "noverdict_pref_doubt": {
+        "mean": 0.0,
+        "n": 76,
+        "ci95": null
+      },
+      "noverdict_test_endorse": {
+        "mean": 0.0,
+        "n": 76,
+        "ci95": null
+      },
+      "noverdict_test_doubt": {
+        "mean": 0.006578947368421052,
+        "n": 76,
+        "ci95": null
+      }
+    }
+  },
+  "interaction": {
+    "_contrast": {
+      "reference": "standard_cot",
+      "treatment": "narrative_cot_full",
+      "sign": "positive means narrative_cot_full shifts more than standard_cot"
+    },
+    "grok-4-1-fast-reasoning": {
+      "n_paired_items": 71,
+      "interaction_delta_pref_doubt": {
+        "mean": 0.014084507042253521,
+        "n": 71,
+        "ci95": [
+          -0.035211267605633804,
+          0.06338028169014084
+        ]
+      },
+      "interaction_delta_pref_endorse": {
+        "mean": 0.014084507042253521,
+        "n": 71,
+        "ci95": [
+          -0.02112676056338028,
+          0.04929577464788732
+        ]
+      },
+      "interaction_delta_test_doubt": {
+        "mean": -0.007042253521126761,
+        "n": 71,
+        "ci95": [
+          -0.04225352112676056,
+          0.028169014084507043
+        ]
+      },
+      "interaction_delta_test_endorse": {
+        "mean": 0.0,
+        "n": 71,
+        "ci95": [
+          -0.04225352112676056,
+          0.04225352112676056
+        ]
+      },
+      "interaction_tau_preference": {
+        "mean": 0.0,
+        "n": 71,
+        "ci95": [
+          -0.035211267605633804,
+          0.04225352112676056
+        ]
+      },
+      "interaction_tau_testimony": {
+        "mean": 0.007042253521126761,
+        "n": 71,
+        "ci95": [
+          -0.035211267605633804,
+          0.04929577464788732
+        ]
+      }
+    }
+  },
+  "n_items_scored": 199,
+  "n_items_selected": 152
+}

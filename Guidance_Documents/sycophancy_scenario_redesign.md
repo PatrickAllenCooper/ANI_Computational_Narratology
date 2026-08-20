@@ -27,6 +27,24 @@ relationally rewarded, and can that be induced by permuting the scaffold
 itself?* — which the 2026-08-14 portfolio measured only in its two separated
 halves. Sections 3, 6, 7 and 8 updated for consistency.
 
+**Revision 2026-08-19/20.** Ran §4.8-A at adequate power (grok, n=100,
+152 items selected): **saturated**, not flat — grok shows no stance-induced
+sycophancy on BrokenMath (+0.6 pp, under the 3–5 pp threshold), so the section
+profile is untestable as designed. A `--no-reframe` control then falsified the
+working hypothesis that §4.2's reframing caused the saturation — the original
+proof-writing framing is equally saturated for grok (−1.3 / −0.7 pp). Read
+against the n=30 pilot's own data (nano clears neutral-correct selection on
+only 1–3 of 30 items), the cited "51–83% sycophant rate" almost certainly
+belongs to nano, not grok — pooling across models before choosing a test
+subject picked the one model with nothing to measure. **The ablation needs a
+different model and a redesigned selection criterion, which is a decision
+pending the collaborator, not a rerun.** Also fixed two real bugs surfaced by
+this work: `analyze_scaffold_ablation.py` was checking flatness before
+saturation, which would have reported this exact result as "no sectional
+account" — backwards; and no OpenAI-SDK client in `generators.py` set a
+request timeout, so a single hung call could wedge a worker for hours (two
+long runs did, silently, before the fix).
+
 **Four findings from this revision override earlier sequencing.**
 1. **§1b(i)** — the flagship effect size is not defensible until the ELEPHANT
    cache is re-scored without the 4,000-character truncation. Zero new
@@ -1241,6 +1259,50 @@ running to confirm the reframing is the cause rather than a grok-specific
 ceiling. Until it reports, the honest status is: **BrokenMath-as-reframed is
 saturated for grok; whether BrokenMath-as-original still has headroom is
 unverified.**
+
+#### `--no-reframe` control RESULT (2026-08-20): the reframing hypothesis is WRONG
+
+2400/2400 units, 25 timeouts (0.98% loss — the SDK-timeout fix failed these
+fast and moved on rather than wedging), 152 items selected across both
+scaffolds. Original proof-writing task, same items, same model:
+
+| scaffold | p_neutral | pref-endorse shift | n |
+|---|---:|---:|---:|
+| standard_cot | 0.039 | **−1.3** | 76 |
+| narrative_cot_full | 0.027 | **−0.7** | 75 |
+
+**Removing the reframing did not restore headroom.** Both shifts are inside the
+same near-zero band as the reframed run (+0.6 / −2.6), well under the 3–5 pp
+saturation threshold, on a well-powered sample. The hypothesis this control was
+built to test — that §4.2's decidable-claim reframing is what killed the
+instrument for grok — **is falsified**. The saturation is not an artifact of
+reframing; it is intrinsic to grok on this item set, in either framing.
+
+**This forces a re-read of the cited "51–83% sycophant rate," and the n=30
+pilot already contains the explanation.** §4.8-A's first pilot (30 items, three
+models) recorded, in passing, that **nano clears the neutral-correct selection
+bar on only 1–3 of 30 items** — i.e. nano calls the false theorem *TRUE at
+neutral, with no stance at all*, on roughly 90–97% of items. That is not a
+selection-mechanics footnote; read against this result, **it is very likely
+where the 51–83% figure actually lives.** The cited rate is a pooled-model
+quantity from the original proof-writing task, and grok — now confirmed
+near-immune on both baseline correctness and stance-inducibility — is almost
+certainly not the model carrying it. Pooling across models before choosing a
+test subject picked the one model with nothing to measure.
+
+**Consequence: the ablation needs a different model, not a different framing.**
+nano is the candidate the data points to, but it needs a differently-shaped
+design, not just a rerun — nano's failure mode is that it is *already wrong at
+neutral* on ~90%+ of items, so the current "does a stance push a
+neutral-correct item wrong" design has almost no neutral-correct items to push.
+Two ways to still use nano here: (a) lower `select_threshold` from 1.0 (unusual
+in this literature, but nano's near-ceiling neutral error makes an exact
+majority-of-k criterion the only way to find any usable items), or (b) invert
+the question entirely — select items where nano is neutral-*wrong* and ask
+whether the scaffold *corrects* it, which is a different (and arguably more
+policy-relevant) construct than stance-induced degradation and would need its
+own kill criteria before running. **This is a design decision, not a rerun —
+flagging for a call before spending further on it.**
 
 Tooling consequence: `analyze_scaffold_ablation` now checks saturation *before*
 flatness, because the two produce an identical knockout profile and mean
