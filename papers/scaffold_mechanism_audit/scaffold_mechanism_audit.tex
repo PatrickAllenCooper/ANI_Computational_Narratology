@@ -1,0 +1,741 @@
+% scaffold_mechanism_audit.tex -- Working draft, branch `sycophancy-scenario-redesign`.
+%
+% NEW WORK. This document is not the ACL/ARR submission text
+% (papers/sycophancy/sycophancy_paper.tex) and supersedes nothing in it until
+% the collaborator reviews and a merge decision is made. It reports an audit of
+% that paper's flagship instrument, a corrected effect-size range, a new
+% mechanism finding, an unresolved instrument failure on the propositional side,
+% and a set of open decisions. All numbers here are drawn verbatim from
+% Guidance_Documents/sycophancy_scenario_redesign.md on branch
+% sycophancy-scenario-redesign, which is the authoritative source; where the two
+% documents ever disagree, that file is correct and this one should be fixed.
+%
+% Reproducibility: every quantitative claim below cites the script and/or
+% artifact that produced it, and the commit that introduced it, in Appendix A.
+
+\documentclass[11pt]{article}
+
+% NOT [review] mode: that mode hardcodes "Anonymous ACL submission" in the
+% title block regardless of \author, which is an ARR double-blind convention
+% and would contradict this document's own draft banner. [preprint] respects
+% \author and is the correct mode for an internal, non-anonymous working draft.
+\usepackage[preprint]{acl}
+
+\usepackage{times}
+\usepackage{latexsym}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{microtype}
+\usepackage{inconsolata}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{tabularx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{url}
+\urlstyle{tt}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{positioning, arrows.meta}
+
+\definecolor{stdgrey}{HTML}{7E9AAB}
+\definecolor{ncotteal}{HTML}{0E7C7B}
+\definecolor{ncottealdk}{HTML}{0A5C5B}
+\definecolor{paleteal}{HTML}{D9ECEB}
+\definecolor{palealarm}{HTML}{C9D7E6}
+\definecolor{draftred}{HTML}{B3261E}
+\definecolor{draftbg}{HTML}{FBEAE9}
+\definecolor{goodgreen}{HTML}{0CA30C}
+\definecolor{correctorange}{HTML}{EC835A}
+
+\newcommand{\nano}{\texttt{gpt-5.4-nano}}
+\newcommand{\haiku}{\texttt{claude-haiku-4-5}}
+\newcommand{\sonnet}{\texttt{claude-sonnet-4-6}}
+\newcommand{\grok}{\texttt{grok-4-1-fast-reasoning}}
+\newcommand{\NoT}{\textsc{NoT}}
+\newcommand{\aitayta}{\texttt{aita\_yta}}
+\newcommand{\corrected}[1]{\textcolor{ncottealdk}{\textbf{#1}}}
+\newcommand{\falsified}[1]{\textcolor{draftred}{\textbf{#1}}}
+
+\newcommand{\draftbanner}{%
+  \begin{center}
+  \fcolorbox{draftred}{draftbg}{%
+    \parbox{0.92\linewidth}{\centering\small
+    \textcolor{draftred}{\textbf{WORKING DRAFT --- NEW MATERIAL, NOT THE ACL/ARR SUBMISSION}}\\[2pt]
+    Branch \texttt{sycophancy-scenario-redesign}. This document reports an audit of, and new
+    results extending, the companion submission
+    \texttt{papers/sycophancy/sycophancy\_paper.tex} in this repository. It supersedes
+    nothing there until reviewed and merged. Every reported claim is a corrected
+    reading, a new run, or an explicitly labelled proposal --- never a restatement
+    of the original abstract's numbers, several of which this document revises.
+    }%
+  }
+  \end{center}
+  \vspace{4pt}
+}
+
+\title{What Part of a Deliberative Scaffold Resists Sycophancy?\\
+\large An Instrument Audit, a Compliance-Gated Mechanism,\\and a Falsified Hypothesis on the Propositional Side}
+
+\author{Patrick Cooper \\ \small Working draft --- branch \texttt{sycophancy-scenario-redesign} --- not for distribution}
+
+\begin{document}
+\maketitle
+\draftbanner
+
+\begin{abstract}
+A companion paper in this project reports that a deliberative narrative scaffold
+(Narration-of-Thought, \NoT{}) cuts emotional-validation sycophancy by 26--53
+percentage points on four frontier generators, while showing sign-inconsistent
+effects on propositional (false-premise) sycophancy. We report four results that
+revise, extend, and in one place falsify that record.
+\textbf{(1) Instrument audit.} The judge scorer behind the flagship claim
+truncates every response to 4{,}000 characters before scoring, which discards up to
+96\% of \NoT{} responses (which place their commitment last) against 0--59\% of
+chain-of-thought responses. A within-response paired re-score removes this defect
+at zero new generations: the effect \emph{survives} on all four generators, but the
+published $-26$ to $-53$\,pp range should read \corrected{$-24$ to $-44$\,pp}, and one
+sub-claim (\aitayta{} validation) \falsified{does not survive} at all --- one
+generator reverses sign. Three metrics are each distorted in a \emph{different}
+direction by the same defect, not one uniform bias.
+\textbf{(2) Mechanism.} A length-matched control that existed but had never been
+run on this claim shows the effect is not a length artifact; pairing each \NoT{}
+response against its own chain-of-thought response and stratifying by whether the
+model actually produced the scaffold's five labelled sections shows the entire
+effect concentrates in the compliant stratum ($-34$ to $-45$\,pp) and is absent
+where the model received the prompt but ignored its structure ($-3$ to $-4$\,pp),
+replicated on an independent dataset and metric. The scaffold's reported hedging
+\emph{cost} shows no such dependence --- benefit and cost are separably caused, and
+\emph{execution of the structure, not receipt of the instruction, carries the
+effect}.
+\textbf{(3) A falsified hypothesis.} Attempting a controlled section-level
+ablation on the propositional side, at adequate power ($n{=}100$, 152 items
+selected), finds the tested generator saturated (stance-induced shift $+0.6$\,pp,
+under the paper's own 3--5\,pp kill threshold) --- and a raw-task control rules
+out the leading hypothesis that a task reframing caused this. Read against pilot
+data, the widely cited $51$--$83\%$ susceptibility rate for this instrument is
+very likely specific to a \emph{different} model than the one tested, not to the
+task; the ablation needs a different model and a redesigned selection criterion,
+which we flag as an open decision rather than resolve unilaterally.
+\textbf{(4) A second undetermined result.} A structurally identical nuisance check
+in a parallel moral-judgment study, treated in this program as having refuted an
+earlier positive finding, was itself underpowered by construction and pooled
+across models against its own stated contract; we reclassify that result as
+undetermined rather than dead. We close with two not-yet-run designs aimed
+directly at the programme's originating question --- inducing affirmation of a
+checkable falsehood when affirming is relationally rewarded --- and an explicit
+list of decisions pending the collaborator.
+\end{abstract}
+
+\section{Introduction}
+\label{sec:intro}
+
+The companion submission in this repository studies \NoT{}, a black-box system
+prompt that forces a model to enumerate stakeholders, project consequences at
+least two steps forward, state uncertainty, and commit to a decision before
+answering, and reports that it substantially reduces emotional-validation
+sycophancy while showing an inconsistent, sometimes adverse, effect on
+propositional sycophancy (endorsing a claim known to be false). That paper's own
+limitations section concedes several open threats: no length-matched control on
+the sycophancy claim specifically, a single in-family judge for the propositional
+result, and inter-judge reliability on the tone metrics that falls short of a
+pre-registered bar.
+
+This document is the result of taking those concessions seriously and auditing
+the instrument rather than the theory. Four things followed, in the order we
+found them, not the order that flatters the outcome: a real, previously
+undisclosed defect in the scoring path that we show is not fatal but is
+non-trivial (\S\ref{sec:audit}); a re-analysis of already-collected data that
+produces the strongest mechanistic claim in this line of work --- that the
+scaffold's benefit is gated on whether its structure is actually \emph{executed},
+not merely instructed (\S\ref{sec:mechanism}); an attempt to test that mechanism
+on the propositional side that instead surfaced a second, independent
+verification failure, this time in \emph{which model} the instrument was ever
+valid for (\S\ref{sec:ablation}); and a re-examination of an unrelated nuisance
+check in a parallel study, which turns out to share the same shape of error
+(\S\ref{sec:crowdgold}). We report all four plainly, including the ways our own
+tooling was initially wrong (\S\ref{sec:ablation}), because the thesis of this
+document is that the shape of the error matters more than its existence: every
+defect found here is arm-correlated, direction-specific, and traceable to a
+concrete line of code, not generic noise, and each one changes what should be
+believed rather than merely how confident to be in what was already believed.
+
+We close with two designs, not yet run, that target the project's actual
+originating question directly: can a prompt be permuted to make a model affirm a
+checkable falsehood because affirming it is relationally rewarded, and can the
+scaffold itself be permuted to cause or prevent this (\S\ref{sec:proposed})? The
+results in this document are what make that question askable with instruments we
+now trust, rather than instruments we have merely inherited.
+
+\section{Background: the seam this document targets}
+\label{sec:seam}
+
+Sorting the companion paper's existing verification record by \emph{what kind} of
+affirmation is being measured exposes a split neither that paper nor any design
+in this project's earlier portfolio targets directly. On social/emotional
+affirmation (validating the user's feelings or self-narrative), \NoT{} is
+strongly verified: $-25$ to $-52$\,pp on four of four generators, all
+$p<10^{-5}$ \citep{cheng25elephant}. On propositional affirmation (endorsing a
+claim known to be false), the record is sign-inconsistent: one generator
+improves significantly, another gets significantly worse
+\citep{petrov2025brokenmath}. No instrument in the prior portfolio puts a
+checkable falsehood and a relational reward on the \emph{same} claim, which is
+the configuration in which the two halves of the record make opposite
+predictions.
+
+This matters beyond taxonomy because it is the direct test of the mechanism the
+scaffold is meant to instantiate: agreement with a falsehood should be
+comparatively costly to a model that has to keep the falsehood coherent across a
+simulated future, and cheap to a model that merely has to validate a feeling. A
+false theorem is expensive to carry forward; a false premise whose consequences
+are diffuse and social may not be. Everything in
+\S\ref{sec:audit}--\ref{sec:ablation} is, in one way or another, an attempt to
+find out whether that conditional prediction is actually what is being measured
+--- and \S\ref{sec:ablation} shows that on the propositional side, it currently
+cannot be measured at all with the instrument as specified.
+
+\section{Auditing the flagship instrument}
+\label{sec:audit}
+
+\subsection{The judge scorer truncates responses, asymmetrically by arm}
+\label{sec:trunc}
+
+The scorer behind every headline social-sycophancy number passes only the first
+4{,}000 characters of a response to the judge model. Measured against the actual
+response cache, this discards a very different share of each arm:
+
+\begin{table}[t]
+\centering
+\small
+\begin{tabular}{lrr}
+\toprule
+Dataset & \NoT{} truncated & CoT truncated \\
+\midrule
+\aitayta{} & 92--96\% & 0--8.7\% \\
+oeq (headline) & 75--93\% & 0--59\% \\
+flip\_pairs\_free & 64--65\% & 0--8.7\% \\
+\bottomrule
+\end{tabular}
+\caption{Share of responses exceeding the 4{,}000-character judge cutoff, by
+generator range across the four models. \NoT{} places its labelled Decision
+section last, so on the Anthropic generators the judge is scoring the entire CoT
+response against roughly the first two-thirds of the \NoT{} response.}
+\label{tab:trunc}
+\end{table}
+
+The two arms are not being scored on the same object. This is distinct from the
+verbosity-bias caveat the companion paper already concedes, and compounds it:
+because \NoT{} places its commitment last by construction, the discarded tail is
+exactly where a closing affirmation would sit.
+
+\subsection{A paired re-score at zero new generations}
+\label{sec:rescore}
+
+We re-scored every truncated response twice in the same run --- once reproducing
+the 4{,}000-character production condition, once on the full text --- so the
+estimand is a within-response paired difference and judge drift cancels. This
+mattered: a fresh call at the production limit disagreed with the
+\emph{originally published} score by up to $+6.8$\,pp on its own, which would
+have contaminated any naive before/after comparison.
+
+\begin{table*}[t]
+\centering
+\small
+\begin{tabular}{lrrr}
+\toprule
+Generator & Published & \textbf{Corrected} & $\Delta$ \\
+\midrule
+\haiku{}  & $-36.0$ & \corrected{$-26.6$} & $+9.4$ \\
+\sonnet{} & $-25.7$ & \corrected{$-23.7$} & $+2.0$ \\
+\nano{}   & $-48.4$ & \corrected{$-44.1$} & $+4.3$ \\
+\grok{}   & $-52.5$ & \corrected{$-41.5$} & $+11.0$ \\
+\bottomrule
+\end{tabular}
+\caption{OEQ validation, published vs.\ truncation-corrected effect size
+(percentage points, \NoT{} minus CoT). Effect survives on all four generators;
+the published $-26$ to $-53$\,pp headline range should read $-24$ to
+$-44$\,pp. The two most dramatic published figures are the two most inflated.}
+\label{tab:rescore}
+\end{table*}
+
+The claim holds; the abstract's numbers do not. We regard this as a defence, not
+a refutation --- but any figure quoting $-53$\,pp is quoting an artifact of the
+judge never reaching the end of the response.
+
+\subsection{Extending to all three metrics and both flagship datasets}
+\label{sec:rescore-all}
+
+Extending the same paired re-score to \texttt{framing} and \texttt{indirectness},
+and to \aitayta{} (the single worst-affected cell in the programme, 93--99\%
+truncated), shows the defect is \emph{not} a uniform bias --- it distorts each
+metric in a different direction:
+
+\begin{table*}[t]
+\centering
+\small
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{llrrrr}
+\toprule
+Metric & Data & \haiku & \sonnet & \nano & \grok \\
+\midrule
+\multirow{2}{*}{validation}
+ & oeq  & $-36.0{\to}\mathbf{-26.6}$ & $-25.7{\to}\mathbf{-23.7}$ & $-48.4{\to}\mathbf{-44.1}$ & $-52.5{\to}\mathbf{-41.5}$ \\
+ & aita & $-20.0{\to}\mathbf{-4.7}$  & $-6.7{\to}\mathbf{+10.7}$  & $-34.2{\to}\mathbf{-27.2}$ & $-39.9{\to}\mathbf{-18.9}$ \\
+\multirow{2}{*}{framing}
+ & oeq  & $-41.2{\to}\mathbf{-43.2}$ & $-30.0{\to}\mathbf{-36.7}$ & $-10.3{\to}\mathbf{-12.6}$ & $-12.6{\to}\mathbf{-14.7}$ \\
+ & aita & $-30.0{\to}\mathbf{-35.3}$ & $-24.7{\to}\mathbf{-30.0}$ & $-32.0{\to}\mathbf{-29.2}$ & $-15.4{\to}\mathbf{-37.1}$ \\
+\multirow{2}{*}{indirect.}
+ & oeq  & $+6.7{\to}\mathbf{-8.0}$   & $+7.3{\to}\mathbf{-4.1}$   & $+4.8{\to}\mathbf{-1.4}$   & $+0.6{\to}\mathbf{-2.8}$ \\
+ & aita & $+21.3{\to}\mathbf{+12.0}$ & $+19.3{\to}\mathbf{+15.3}$ & $+14.4{\to}\mathbf{+8.9}$  & $+9.2{\to}\mathbf{+5.7}$ \\
+\bottomrule
+\end{tabular}
+\caption{Published $\to$ corrected effect (pp) across all three ELEPHANT tone
+metrics on both flagship datasets. Three metrics, three different directions.}
+\label{tab:rescore-all}
+\end{table*}
+
+\textbf{Validation} shrinks, and on \aitayta{} does not survive: \haiku{}
+collapses to $-4.7$\,pp and \falsified{\sonnet{} reverses sign to $+10.7$\,pp}.
+\textbf{Framing} gets \emph{stronger} almost everywhere (\grok{} on \aitayta{}
+moves $-15.4\to-37.1$); truncation was understating this benefit. \textbf{Indirectness}
+--- the paper's one reported cost, with an attached mechanistic story ("the
+model hedges more when forced to enumerate uncertainty") --- is an artifact on
+OEQ and reverses sign on all four generators; on \aitayta{} the backfire is real
+but roughly halved. One structural cause explains all three directions: because
+\NoT{} places its Decision section last, truncating at 4{,}000 characters means
+the judge reads the model enumerating stakeholders and uncertainty and never
+reaches the commitment, which reads as more hedging, less committed framing, and
+a missing closing affirmation, simultaneously.
+
+We additionally checked the moral-verdict extractor (\S\ref{apx:moral} in the
+appendix), which shares the same 4{,}000-character cap but is structurally
+bounded by a full-text regex pass before falling back to the truncated path; the
+resulting bias runs \emph{against} the paper's own both-NTA claim rather than
+manufacturing it, and is a fix rather than a crisis.
+
+\subsection{Length is not the mechanism, but the length control was not one}
+\label{sec:verbose}
+
+The companion paper concedes it never ran a length-matched control on the
+sycophancy claim specifically, though a calibrated verbose-CoT arm existed and
+had been spent on an unrelated depth-metric analysis. We ran it on the flagship
+cell for the first time and re-scored its own truncated responses so all three
+arms compare on complete text.
+
+\begin{table*}[t]
+\centering
+\small
+\begin{tabular}{lrrrr}
+\toprule
+Generator & CoT & Verbose & \NoT & \NoT$-$Verb.\\
+\midrule
+\haiku{}  & 0.627 & 0.760 & 0.360 & $-40.0$ \\
+\sonnet{} & 0.727 & 0.827 & 0.503 & $-32.3$ \\
+\nano{}   & 0.759 & 0.780 & 0.345 & $-43.5$ \\
+\grok{}   & 0.815 & 0.288 & 0.455 & $+16.7$ \\
+\bottomrule
+\end{tabular}
+\caption{OEQ validation rate under plain CoT, length-matched verbose CoT, and
+\NoT{}, corrected for truncation. On three of four generators, making CoT
+\emph{longer} makes validation \emph{worse}, and \NoT{}'s advantage against this
+comparator is larger than against plain CoT.}
+\label{tab:verbose}
+\end{table*}
+
+The length-bias objection --- the single most obvious attack on the flagship
+claim --- does not survive contact with the data. But the designated control is
+mis-specified: its own code comment claims "no deliberative-primitives
+structure," while its actual prompt text instructs the model to consider the
+situation "from every relevant perspective," to articulate "uncertainty about
+outcomes," and to commit "before giving your final answer" --- three of \NoT{}'s
+five primitives, restated in prose rather than enforced as labelled sections.
+What this arm actually tests is \emph{primitives-as-prose versus
+primitives-as-enforced-structure}, and structure wins by 32--44\,pp on three of
+four generators. \grok{} is the exception (verbose beats \NoT{} by $16.7$\,pp on
+validation and framing, though not on indirectness), and it is the generator
+that least often executes the scaffold at all --- 63\% compliance versus
+91--99\% for the others, which is the finding in \S\ref{sec:mechanism}.
+
+\section{Mechanism: execution of structure, not receipt of instruction}
+\label{sec:mechanism}
+
+Models do not always obey the scaffold. On the OEQ dataset, \grok{} emits none
+of \NoT{}'s five labelled section headers on 36\% of items. We pair every \NoT{}
+response against its \emph{own} CoT response on the same item and stratify by
+whether the five sections are present.
+
+\begin{table*}[t]
+\centering
+\small
+\begin{tabular}{lrrr}
+\toprule
+Generator & Complied & Compliant $\Delta$ & Non-compl.\ $\Delta$ \\
+\midrule
+\haiku{}  & 93\% & $-36.4$ $(n{=}140)$ & $-30.0$ $(n{=}10)$ \\
+\sonnet{} & 99\% & $-25.2$ $(n{=}147)$ & too few \\
+\nano{}   & 91\% & $-52.4$ $(n{=}105)$ & $+18.2$ $(n{=}11)$ \\
+\grok{}   & 63\% & $\mathbf{-81.5}$ $(n{=}92)$ & $-1.9$ $(n{=}52)$ \\
+\midrule
+\textbf{Pooled} & & \corrected{$\mathbf{-45.0}$ $(n{=}484)$} & $\mathbf{-2.7}$ $(n{=}74)$ \\
+\bottomrule
+\end{tabular}
+\caption{Item-paired \NoT{} vs.\ own-item CoT validation shift, stratified by
+scaffold compliance. Near-total dissociation.}
+\label{tab:compliance}
+\end{table*}
+
+When the model produces the five sections, validation falls 45\,pp; when it does
+not, validation is essentially unchanged. This is a better length control than
+length-matching directly: non-compliant \NoT{} responses are still longer than
+CoT and still carry the \NoT{} system prompt, yet show no effect --- length and
+prompt presence are roughly held fixed while section production varies, and the
+effect tracks section production. It also reframes \grok{}'s headline: its
+pooled $-52.5$\,pp figure dilutes an $-81.5$\,pp effect among the 63\% who
+comply with $-1.9$\,pp among the 37\% who do not, so per-protocol \grok{} is the
+\emph{strongest} responder, not the weakest.
+
+\paragraph{Replication.} The one independent dataset/metric pair with adequate
+compliance variation, \texttt{ss}/framing, replicates the dissociation
+($-29.1$\,pp compliant vs.\ $-8.9$\,pp non-compliant, $n{=}306$ vs.\ $n{=}269$),
+holding per model on three of four generators. \aitayta{} cannot test it ---
+every generator is 100\% compliant there, itself evidence that compliance is
+item-dependent, not purely a model property.
+
+\paragraph{The cost does not dissociate the same way.} \NoT{}'s reported
+indirectness backfire shows essentially no compliance dependence ($+5.4$\,pp
+compliant vs.\ $+4.1$\,pp non-compliant). Non-compliant responses received the
+prompt but did not produce the sections, so the \emph{benefit} tracks producing
+the structure while the \emph{cost} tracks receiving the prompt --- they are
+separably caused. This revises a prediction we had made in advance of running
+the ablation in \S\ref{sec:ablation}: if hedging does not depend on whether the
+sections are produced at all, deleting one section is unlikely to remove it, and
+a scaffold that keeps the sections while rewriting the header framing is the
+more promising route to the benefit without the cost.
+
+\paragraph{Confound check.} Compliant responses are much longer than
+non-compliant ones, so the compliant stratum is very nearly the truncated
+stratum from \S\ref{sec:trunc} --- compliance and truncation are confounded by
+construction. Substituting the untruncated re-scores from
+\S\ref{sec:rescore-all} (zero new API calls) shrinks but does not remove the
+dissociation: $-34.3$ vs.\ $-4.1$\,pp on validation, $-32.4$ vs.\ $-4.1$\,pp on
+framing --- roughly $8{:}1$ rather than $17{:}1$, and the indirectness row now
+shows no backfire in either stratum, agreeing with \S\ref{sec:rescore-all} by an
+independent route.
+
+\paragraph{Convergence.} Three independent analyses now agree: mentioning the
+primitives in prose does little or harm (\S\ref{sec:verbose}, three of four
+generators); receiving the \NoT{} prompt without producing sections does nothing
+($-2.7$ to $-4.1$\,pp); producing the sections produces the benefit ($-32$ to
+$-45$\,pp). \textbf{Execution of the structure, not the instruction, carries the
+effect.} This is a stronger and more falsifiable claim than "the scaffold
+reduces sycophancy," and none of the evidence for it required new items or
+compute beyond a handful of judge calls.
+
+\section{A second reclassified result: the Crowd-Gold nuisance check}
+\label{sec:crowdgold}
+
+A parallel study on this project's other verified-manipulation instrument ---
+requester-identity framing on high-consensus moral-judgment posts (crowd-vote
+AITA anecdotes filtered to $\geq\!90\%$ community consensus among $\geq\!50$
+voters), where the same underlying anecdote is presented either as the asker's
+own story or a third party's --- reported a pooled
+asker-shielding effect of $+3.9$\,pp ($p{=}0.0014$, $n{=}99$, $k{=}3$), with a
+per-model split of \nano{} $+6.1$\,pp, \grok{} $+5.1$\,pp, \haiku{} at ceiling
+and untestable. A follow-up nuisance-reference check --- rewording the same
+items in ways that preserve content and the correct verdict, to establish how
+much shift meaningless rewording alone produces --- was recorded as having
+\emph{overturned} this result, placing the pooled effect at the 79th percentile
+of inert-perturbation noise.
+
+We re-examined that check and found it could not have detected the effect it
+was used to reject. It ran at $n{=}40$, $k{=}2$ against an effect measured at
+$n{=}99$, $k{=}3$; reconstructing what pure binomial sampling error alone would
+produce on the identical 40-item panel, \nano{}'s entire measured nuisance
+distribution ($3.96$\,pp mean, $8.75$\,pp max-of-12) is statistically
+indistinguishable from a Monte-Carlo-only prediction ($2.97$ and $7.83$\,pp
+respectively) --- i.e.\ consistent with zero prompt brittleness at all. The
+check's own percentile additionally pooled across models against its
+implementing library's explicit instruction to compute the reference
+per-model, and compared the effect against a floor measured on a different
+40-item subset of the item panel rather than the matched panel (on which
+\grok{}'s "ratio 4.08, real" verdict becomes $\approx\!2.0$).
+
+We do not resurrect the original effect --- we report that the check which
+killed it lacked the power to have done so in either direction, and that this
+program's recorded verdict of "overturned" is currently unsupported. The correct
+status is \emph{undetermined}, pending a nuisance reference rebuilt at matched
+power and, ideally, with the exact-propensity readout available on the hosted
+tier (\S\ref{sec:hosted}), which removes the Monte Carlo term responsible for
+the underpowering. We flag this as a general risk: any nuisance or nullity check
+in this line of work must be power-matched to the effect it adjudicates, on the
+identical item panel, per model.
+
+\section{An attempted ablation that surfaced a verification failure}
+\label{sec:ablation}
+
+\S\ref{sec:seam} motivates a specific, falsifiable prediction: if the scaffold's
+resistance to propositional sycophancy works by the mechanism its design implies
+(a falsehood is costly to keep coherent across a projected future), then the
+Consequences section specifically should carry that resistance, while the
+Stakeholders section --- whose predicted role is de-centring the user, a
+social-sycophancy mechanism --- should be comparatively inert on a task with no
+social content at all. We attempted to test this with a controlled five-way
+single-section ablation on a false-theorem endorsement task, and instead
+surfaced a verification failure at two different scales.
+
+\subsection{First pilot: underpowered, and our own tool reported it backwards}
+\label{sec:ablation-pilot}
+
+An initial pilot (30 items, seven scaffold arms, two generators, binary $k{=}2$
+scoring) ran cleanly --- the permutation machinery worked, compliance with the
+forced verdict line was near-total --- but could not answer the question.
+\nano{} cleared the item-selection bar (calling the false theorem \texttt{FALSE}
+on every neutral-arm sample) on only 1--3 of 30 items, making its entire column
+statistical noise; \grok{} had usable item counts but binary $k{=}2$ scoring
+meant a single item moved a rate by 4.5\,pp, so the entire section-to-section
+spread separating "most damaging" from "least damaging" knockout was
+approximately one and a half items.
+
+Our own analysis tooling initially reported this cell as \emph{flat} --- "no
+sectional account; the black-box adversarial search has nothing to find" --- a
+confident, wrong, and directionally opposite conclusion, since absence of
+statistical resolution is not evidence of absence of a sectional effect. We
+gate that verdict path behind a minimum-item and resolution check before any
+flatness claim is issued, so a one-item sample cannot produce a falsification
+claim again.
+
+\subsection{Adequately powered rerun: saturated, not flat}
+\label{sec:ablation-n100}
+
+Rerunning the same design on \grok{} at $n{=}100$ items brought every cell to
+46--78 surviving items, above the resolution floor identified above.
+
+\begin{table}[t]
+\centering
+\small
+\begin{tabular}{lrr}
+\toprule
+Scaffold & $p_{\text{neutral}}$ & pref-endorse shift \\
+\midrule
+standard CoT & 0.032 & $+0.6$ \\
+\NoT{} (intact) & 0.052 & $-2.6$ \\
+drop Protagonist & 0.020 & $+0.0$ \\
+drop Stakeholders & 0.007 & $+0.0$ \\
+drop Consequences & 0.054 & $-3.4$ \\
+drop Uncertainty & 0.026 & $-0.6$ \\
+drop Decision & 0.022 & $+1.1$ \\
+\bottomrule
+\end{tabular}
+\caption{\grok{}, $n{=}100$ BrokenMath items, section-ablation cell. All shifts
+are inside noise around the paper's own 3--5\,pp saturation threshold.}
+\label{tab:ablation-n100}
+\end{table}
+
+\grok{} exhibits essentially no stance-induced sycophancy on this instrument at
+all ($+0.6$\,pp under plain CoT). The paper's own kill criterion --- a
+standard-CoT shift below 3--5\,pp means the instrument is saturated for that
+generator --- is met. There is no effect to ablate, so the section profile
+above is noise around zero and must not be read as a finding about which
+section matters.
+
+\subsection{The \texttt{--no-reframe} control falsifies the leading hypothesis}
+\label{sec:ablation-noreframe}
+
+The companion paper cites a $51$--$83\%$ CoT sycophant rate for this task as
+evidence of ample headroom, measured on the \emph{original} proof-writing
+formulation of the item; our ablation reframes each item as a decidable claim
+("determine whether this is true or false, end with \texttt{VERDICT:}\ldots")
+to get a mechanical forced-verdict headline. The leading hypothesis was that
+this reframing, not \grok{} itself, caused the saturation in
+\S\ref{sec:ablation-n100}. We ran the identical items and generator through the
+original, unreframed task text to test this directly.
+
+\begin{table}[t]
+\centering
+\small
+\begin{tabular}{lrrr}
+\toprule
+Scaffold & $p_{\text{neutral}}$ & shift & $n$ \\
+\midrule
+standard CoT & 0.039 & $-1.3$ & 76 \\
+\NoT{} (intact) & 0.027 & $-0.7$ & 75 \\
+\bottomrule
+\end{tabular}
+\caption{\grok{}, original (unreframed) task text, 2{,}400/2{,}400 units, 25
+timeouts (0.98\% loss).}
+\label{tab:noreframe}
+\end{table}
+
+\falsified{Removing the reframing did not restore headroom.} Both shifts sit in
+the same near-zero band as the reframed run, on a well-powered sample. The
+hypothesis this control was built to test --- that reframing killed the
+instrument for \grok{} --- is falsified: the saturation is intrinsic to \grok{}
+on this item set, independent of framing.
+
+This forces a re-reading of the cited $51$--$83\%$ rate, and the first pilot
+(\S\ref{sec:ablation-pilot}) already contains the likely explanation, recorded
+there only as a selection-mechanics footnote: \nano{} clears neutral-correct
+selection on just 1--3 of 30 items, i.e.\ it calls the false theorem
+\emph{true, with no stance manipulation at all}, on roughly 90--97\% of items.
+That is almost certainly where the pooled rate lives. Pooling across models
+before choosing which one to test picked the model with nothing left to
+measure.
+
+\subsection{An open decision, not a rerun}
+\label{sec:ablation-decision}
+
+The ablation needs a different generator and a redesigned selection criterion,
+not simply more items on \grok{}. \nano{} is the candidate the data points to,
+but its failure mode is the opposite of \grok{}'s: it is already wrong at
+neutral on most items, so the present design (does a stance push a
+neutral-\emph{correct} item wrong) has almost no eligible items to push. Two
+ways forward, both legitimate and neither obviously preferable: lower the
+neutral-correctness selection threshold so a workable item pool exists under the
+original design, or invert the construct entirely and ask whether the scaffold
+\emph{corrects} an item the model gets wrong at neutral --- a different, and
+arguably more policy-relevant, question than stance-induced degradation, which
+would need its own kill criteria before running. We flag this as pending the
+collaborator's decision rather than resolve it unilaterally, consistent with
+this document's position that a design choice this consequential should not be
+made by whichever model happened to be convenient to test.
+
+\subsection{Exact propensities are available on the hosted tier}
+\label{sec:hosted}
+
+The redesigned ablation, and the rebuilt nuisance check in
+\S\ref{sec:crowdgold}, are both cheaper than they first appear. Contrary to an
+earlier assumption in this project that exact teacher-forced verdict
+propensities require a local open-weight model, we confirmed live that
+\texttt{top\_logprobs} at the token position following a forced verdict line is
+available on every hosted generator tested (up to $k{=}20$ on one, $k{=}5$ on
+another, and via assistant-turn prefill on the Anthropic surface), at no
+additional cost on a call already being made. This removes the sampling-noise
+term responsible for \S\ref{sec:crowdgold}'s underpowering and brings the
+redesigned ablation's item requirement down to roughly 50--95 items rather than
+110--235 for binary scoring, per this project's own pre-registered
+sample-size rules.
+
+\section{Proposed, not yet run: targeting the originating question directly}
+\label{sec:proposed}
+
+Every result above audits or extends existing instruments. Two designs, written
+but not yet executed, are aimed directly at this programme's original question
+--- whether a prompt (or the scaffold itself) can be permuted to induce
+affirmation of a checkable falsehood specifically because affirming it is
+relationally rewarded, independent of whether the falsehood is emotionally or
+socially loaded (identity is one instance of this, not the construct itself).
+
+\textbf{Costly-Correction items.} Each item pairs an unfalsifiable
+experiential or relational claim, which should be affirmed, with an embedded
+checkable proposition, which should be corrected --- e.g.\ sunk investment,
+assigned role, or conversational ease, rather than group identity specifically,
+as the reward channel. The authoring invariant is that correcting the
+proposition must never require denying the experience; a four-quadrant outcome
+table (affirms/denies the experience $\times$ affirms/corrects the proposition)
+separates the target failure (affirms both) from over-correction (denies the
+experience), which is its own harm. BrokenMath's 451 expert-verified false
+theorems supply the checkable half of most items directly, which revises the
+authoring-cost estimate for this design down substantially from an earlier
+from-scratch estimate. A dedicated authoring-safety protocol accompanies this
+design, since items are deliberately engineered to make correction socially
+costly.
+
+\textbf{Scaffold-adversarial search.} The project's existing prompt-optimization
+machinery already permutes the system prompt and never the user turn, but only
+ever minimizes a judge-scored loss already shown to be gameable
+(\S\ref{sec:trunc}'s companion finding that an identical response scores $6\%$
+under one judge and $87\%$ under a held-out judge). Inverting the search
+direction, constraining candidates to a family that a blind human rater judges a
+plausible good-faith scaffold, and scoring against the mechanical
+Costly-Correction loss rather than a judge, asks whether \NoT{}'s resistance is
+structural or an artifact of its particular wording --- gated on
+Costly-Correction establishing measurable headroom first.
+
+Neither design has consumed budget yet; both are scoped in full in the
+project's design document and require the collaborator's approval before any
+further hosted-model spend.
+
+\section{Limitations}
+\label{sec:limitations}
+
+The mechanism claim in \S\ref{sec:mechanism} is as-treated, not randomized:
+scaffold compliance is model-chosen, and item identity is controlled by pairing
+but a model's choice to comply on a given item might independently correlate
+with how validating it would have been anyway; the compliant/non-compliant CoT
+baselines differ slightly ($0.731$ vs.\ $0.662$), which is direct if small
+evidence of this. The compliance detector is a five-keyword match that likely
+under-counts models paraphrasing the section headers, which biases toward
+\emph{under}-stating the compliant stratum's purity, i.e.\ conservatively. The
+clean, randomized version of this finding is exactly the ablation design in
+\S\ref{sec:ablation}, which is currently blocked on the open decision in
+\S\ref{sec:ablation-decision}.
+
+The propositional-sycophancy audit in \S\ref{sec:ablation} covers a single
+generator (\grok{}) at adequate power; the saturation finding is a property of
+that generator on this item set and framing, not (yet) a general claim about
+the task. The Crowd-Gold reclassification in \S\ref{sec:crowdgold} likewise
+establishes only that the existing check cannot adjudicate the effect, not that
+the effect is real; both are explicitly reported as undetermined rather than
+resolved in either direction. All ELEPHANT tone metrics, even after the
+truncation correction in \S\ref{sec:audit}, remain dependent on a single judge
+model whose inter-judge reliability the companion paper reports as falling
+short of its own pre-registered bar on two of three metrics; the corrected
+numbers in this document repair one confound in that instrument, not all of
+them.
+
+\section{Open decisions}
+\label{sec:decisions}
+
+\begin{enumerate}
+\item Which generator and selection criterion should the redesigned BrokenMath
+  ablation use (\S\ref{sec:ablation-decision})? We do not resolve this here.
+\item Should the corrected effect-size range in \S\ref{sec:rescore} (\emph{$-24$
+  to $-44$\,pp}) replace the published range in the companion submission before
+  any further review, and should the withdrawn \aitayta{} validation claim
+  (\S\ref{sec:rescore-all}) be removed pending a clean re-run?
+\item Is the Crowd-Gold asker-shielding effect (\S\ref{sec:crowdgold}) worth a
+  properly power-matched nuisance rebuild, given it is currently the
+  programme's only completed stance-manipulation result outside \NoT{} itself?
+\item Should \S\ref{sec:proposed}'s two designs be funded at the scale
+  currently scoped, and does the Costly-Correction authoring-safety protocol
+  need review before any items are drafted?
+\end{enumerate}
+
+\appendix
+\section*{Appendix A: Reproducibility map}
+\label{apx:repro}
+Every quantitative claim in this document corresponds to a script and/or cached
+artifact under \texttt{divergence\_study\_outputs/} and a commit on
+\texttt{sycophancy-scenario-redesign}, enumerated in
+\texttt{Guidance\_Documents/sycophancy\_scenario\_redesign.md}, \S1b--1c and
+\S4.8, which is the authoritative source for this document. Key scripts:
+\texttt{scripts/rescore\_elephant\_untruncated.py} (\S\ref{sec:rescore},
+\ref{sec:rescore-all}); \texttt{scripts/analyze\_length\_matched\_elephant.py}
+(\S\ref{sec:verbose}, \ref{sec:mechanism}); \texttt{scripts/run\_elephant.py}
+(the verbose-arm run, \S\ref{sec:verbose}); \texttt{scripts/nuisance.py} and
+\texttt{scripts/run\_crowdgold\_nuisance.py} (\S\ref{sec:crowdgold});
+\texttt{scripts/run\_stance\_factorial.py} and
+\texttt{scripts/scaffold\_permutations.py} (\S\ref{sec:ablation}, all
+permutation arms are asserted at import time to be byte-exact diffs off the
+live canonical scaffold prompt); \texttt{scripts/analyze\_scaffold\_ablation.py}
+(the saturation-before-flatness fix in \S\ref{sec:ablation-pilot}).
+
+\section*{Appendix B: the moral-verdict extractor}
+\label{apx:moral}
+The extractor that classifies free-form moral verdicts shares the scorer's
+4{,}000-character cap, but runs a full-text regex pass first and only falls back
+to the truncated LLM path on a miss, which bounds its exposure. Measured on
+\texttt{flip\_pairs\_free}: \NoT{}'s regex-miss rate is $3.0$--$11.7\%$, of
+which $2.7$--$10.7\%$ (nearly all) exceed the cap; CoT's miss rate is
+$11.7$--$38.3\%$, of which $0.0$--$3.4\%$ (nearly none) exceed it. A failed
+extraction is coded \texttt{OTHER}, which the both-NTA metric treats as
+\emph{not} NTA --- the resulting bias understates the paper's reported both-NTA
+increase under \NoT{} rather than manufacturing it. Incidentally, CoT's much
+higher raw miss rate suggests that being told to commit to a decision makes a
+model's verdict more mechanically legible, independent of the compliance
+finding in \S\ref{sec:mechanism}.
+
+\bibliography{references}
+
+\end{document}
