@@ -124,6 +124,12 @@ divergence_study_outputs/elephant_gen_*.json
 divergence_study_outputs/elephant_score_*.json
 divergence_study_outputs/e2_elephant_*.json
 
+# Aggregate ELEPHANT response cache: rebuilt/appended by every run_elephant.py
+# and rescore_elephant_untruncated.py call, crossed GitHub's 50MB warning bar
+# at 64MB (2026-08-20). Regeneratable from the per-cell caches above plus the
+# manifest; kept local-only rather than pushed on every growth.
+divergence_study_outputs/elephant_singleagent_raw.csv
+
 # AGT follow-up: regeneratable from agt_bootstrap.ipynb
 activation_guided_thinking/contrast_pair_specs.jsonl
 

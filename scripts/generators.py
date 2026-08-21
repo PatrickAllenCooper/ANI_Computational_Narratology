@@ -583,11 +583,22 @@ def generate(
             max_tokens=max_tokens,
             json_mode=json_mode,
         )
-    # Default: OpenAI / Azure-Foundry-OpenAI
+    # Default: OpenAI / Azure-Foundry-OpenAI.  CONFIRMED 2026-08-21: reasoning
+    # models on this branch (gpt-5 family) consume completion tokens for
+    # internal reasoning before any visible text, and `reasoning_effort` is
+    # passed here whenever `_is_reasoning(model)` -- so an un-floored
+    # max_tokens can be exhausted entirely by reasoning with zero visible
+    # output. The deepseek branch above already floors at 8192 for exactly
+    # this reason; this branch silently didn't, and a real run against
+    # gpt-5.4-nano at max_tokens=2048 came back 77.5% genuinely empty (186/240
+    # calls) as a direct result -- not truncated, not NOVERDICT-with-content,
+    # completely empty completions with reasoning_effort quietly eating the
+    # entire budget. Mirrors the deepseek floor rather than inventing a new one.
+    eff_tokens = max(max_tokens, 8192) if _is_reasoning(model) else max_tokens
     return _call_openai(
         model, system, user,
         sample_idx=sample_idx,
-        max_tokens=max_tokens,
+        max_tokens=eff_tokens,
         reasoning_effort=reasoning_effort if _is_reasoning(model) else None,
         json_mode=json_mode,
     )

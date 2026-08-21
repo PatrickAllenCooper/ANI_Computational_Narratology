@@ -1321,6 +1321,55 @@ items. Concretely: **80 items, exact propensities, and either drop nano or lower
 its `--select-threshold` to 0.5** so enough items survive. Same seven arms, same
 runner, roughly the same spend.
 
+#### Model triage RESULT (2026-08-21): nano, haiku, sonnet neutral-arm baseline
+
+Before committing a full pilot to any one candidate, ran a cheap neutral-arm-only
+check (`scripts/probe_neutral_baseline.py`) across all three: 40 items,
+standard_cot, k_select=5, reframe=True — same prompt construction as the real
+ablation (reuses `build_units`/`execute_units`/`cell_estimate` unchanged), only
+the neutral-arm units kept before execution so nothing is spent on stance arms
+(480 stance-arm units built, 0 executed).
+
+**Found and fixed a real infrastructure bug along the way.** The first nano
+run came back with p(TRUE)=0.113 but **77.5% NOVERDICT** — and cross-checking
+against the cache directly showed 186 of 240 calls were not merely missing a
+verdict line, they were **completely empty responses**, never even written to
+cache (`execute_unit` only caches non-empty text). Root cause:
+`scripts/generators.py`'s default OpenAI/Azure branch passes
+`reasoning_effort="medium"` to any `_is_reasoning`-matched model (the "gpt-5"
+hint catches `gpt-5.4-nano`) but — unlike the `deepseek` branch three lines
+above it, which already floors at 8192 — never raised `max_tokens` to
+compensate. At `max_tokens=2048`, nano's internal reasoning tokens exhausted
+the entire budget before any visible text, on the large majority of calls.
+Same bug class as the Qwen3 CURC issue, worse in effect (total empty output,
+not truncation). Fixed by mirroring the existing deepseek-branch floor onto
+the default branch. Re-ran nano only: **77.5% → 29.6% NOVERDICT**, cache
+naturally backfilled only the previously-missing calls.
+
+Clean result, all three now measured under the same corrected instrument:
+
+| model | p(TRUE) at neutral | NOVERDICT | n |
+|---|---:|---:|---:|
+| gpt-5.4-nano | **0.204** | 29.6% | 240 |
+| claude-sonnet-4-6 | 0.500 | 2.1% | 240 |
+| claude-haiku-4-5 | 0.692 | 0.0% | 240 |
+
+Reading this against the ablation's actual requirement (a usable pool of
+neutral-*correct* items, not just low error): nano and sonnet both land near
+50% correct-at-neutral (nano: 100−20.4−29.6≈50%; sonnet: 100−50.0−2.1≈48%);
+haiku is markedly worse at ~31% correct. Combined with the original quartet
+analysis (§1a: nano showed a *significant* stance-caused shift, +14.67pp;
+haiku/sonnet were null on that specific causal contrast — see
+`divergence_study_outputs/brokenmath_summary.json`), **nano remains the
+strongest candidate**: comparable neutral-arm pool size to sonnet, and unlike
+sonnet or haiku, prior evidence of genuine stance-*inducibility*, not just
+baseline error. Also noted: at least part of nano's remaining 29.6%
+non-compliance is a format-compliance quirk, not another budget issue — one
+inspected case had `finish_reason="stop"`, 8,116 completion tokens, and a
+5-character response that was literally `"FALSE"` with no `VERDICT:` prefix,
+which the extractor doesn't currently accept as a bare fallback. Minor,
+un-fixed, doesn't change the recommendation.
+
 #### Sequencing and why this ordering
 
 A → B → D is the critical path: A says *which section matters*, B says *whether
