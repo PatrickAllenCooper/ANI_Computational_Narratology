@@ -881,3 +881,50 @@ Two new caveats, both material:
   **p = 0.004**: haiku +3.6, nano −51.9, grok −54.6 are not estimates of one effect. On
   `ss`/framing haiku's non-compliant stratum is *significantly negative* (−20.5
   [−33.8, −7.4]) and its interaction is +5.0. **No single number is "the" moderation.**
+
+## S0.5 R1 RETRACTED (2026-08-22): the compliance moderation is not identified
+
+Following up S0.4's two caveats with the actual bracketing and heterogeneity analysis
+retracts the result. `analyze_length_matched_elephant.py` (409 → 1418 lines, selftest
+12 → 32 checks all passing, verified against the pre-change file across 9 metric/dataset
+cells with **zero** numeric differences, so no point estimate moves).
+
+**The stratum carrying the null is 40% missing, and the stratum definition causes the
+missingness.** `sections_present()` counts section labels; an empty response contains
+none; so every non-response scores zero sections and is filed non-compliant *by
+construction*. Pooled non-compliant is **74 complete cases out of 113 potential** (30
+unscored on the NoT side, 9 on neither). On nano it is **11 of 45**.
+
+| quantity | complete case | Manski bracket |
+|---|---|---|
+| compliant Δ | −34.3 [−39.8, −28.9] | [−34.4, −34.2] |
+| non-compliant Δ | −4.1 [−13.4, +5.3] | **[−34.5, +8.0]** |
+| interaction | −30.2, z ≈ −5.3 | **[−42.4, +0.3] — contains zero** |
+
+At the lower edge the non-compliant Δ is −34.5 against a compliant −34.3: the two are
+indistinguishable and the moderation vanishes. The bracket is itself a *lower* bound on
+the uncertainty — it brackets the missing score, not the missing stratum label.
+
+**And there is no single moderation number.** Within generator: haiku **+3.6** (SE 16.0),
+nano **−51.9** (SE 10.6), grok **−54.6** (SE 7.4) — **different in sign**. Cochran
+Q = 11.2 on 2 df, **p = 0.0037, I² = 82%**. IV-pooled within generator is −46.6 against
+−30.2 pooled across; the 16.4 pp gap is stratum/generator confounding, since the
+non-compliant stratum is 70% grok and the compliant 19%, with no common support in CoT
+length (median 1,872 vs 3,716 chars).
+
+**Two boundaries on the retraction**, both reported rather than chosen between: the
+interaction bracket crosses zero only on the **truncation-corrected** scores (uncorrected
+it stays [−54.9, −12.2]); and on the **`ss`/framing replication the bracket is [−9.6, −8.1]
+and the moderation survives**. The retraction is specific to the `oeq`/validation cell —
+which is the cell the audit paper led with. If the claim is made at all, it should be made
+on `ss`/framing, per generator, with brackets attached.
+
+Also: the previously quoted p = 6.9×10⁻⁸ was one lucky B=2000 seed. Default B is now
+8,000, tails below 1e−4 print as an order of magnitude, and z carries its Monte Carlo SE
+(z = −5.34 ± 0.04 from resampling alone).
+
+**Consequence.** §1's list of "scaffold elements our experiments actually implicate" loses
+its first entry. Item-specific narrative content deposited into the context was inferred
+from R1; R1 no longer supports it. The programme's strongest causal evidence is now the
+`ss`/framing replication and the verbose-arm register finding (§3b), neither of which was
+ever the headline.

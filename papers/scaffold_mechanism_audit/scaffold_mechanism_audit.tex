@@ -76,7 +76,7 @@
 }
 
 \title{What Part of a Deliberative Scaffold Resists Sycophancy?\\
-\large An Instrument Audit, a Compliance-Gated Mechanism,\\and a Falsified Hypothesis on the Propositional Side}
+\large An Instrument Audit, Three Retracted Mechanism Claims,\\and a Falsified Hypothesis on the Propositional Side}
 
 \author{Patrick Cooper \\ \small Working draft --- branch \texttt{sycophancy-scenario-redesign} --- not for distribution}
 
@@ -99,25 +99,28 @@ published $-26$ to $-53$\,pp range should read \corrected{$-24$ to $-44$\,pp}, a
 sub-claim (\aitayta{} validation) \falsified{does not survive} at all --- one
 generator reverses sign. Three metrics are each distorted in a \emph{different}
 direction by the same defect, not one uniform bias.
-\textbf{(2) Mechanism, stated more cautiously than we first stated it.} A
-length-matched control that existed but had never been run on this claim shows
-the effect is not a length artifact; pairing each \NoT{} response against its own
-chain-of-thought response and stratifying by whether the model actually produced
-the scaffold's five labelled sections shows the effect concentrated where the
-prompt visibly took effect (\corrected{$-32$ to $-34$\,pp} corrected) against
-$-4$\,pp where it did not, replicated on an independent dataset and metric
-($z{=}-3.58$, $p{=}3.4\times10^{-4}$). We \falsified{withdraw} two claims we
-drew from this. The scaffold's hedging \emph{cost} does \emph{not} dissociate:
-that asymmetry rested on truncated scores and disappears under the same
-correction as (1), so ``benefit and cost are separably caused'' is retracted.
-And the non-compliant stratum is one in which the prompt left no detectable
-trace on the output at all --- $82\%$ of one generator's non-compliant responses
-contain none of the five section keywords, and item-paired \emph{median} lengths
-there are $0.91$--$1.21\times$ their own chain-of-thought --- so this is a
-manipulation-failure moderation, roughly a three-fold gradient rather than a
-dissociation. It establishes that the headline pools a treated with an
-effectively untreated stratum; it does not establish that structure rather than
-deposited content carries the effect.
+\textbf{(2) A mechanism claim we now \falsified{retract}.} A length-matched
+control that existed but had never been run does show the effect is not a length
+artifact. But the compliance-stratified result we built on that --- pairing each
+\NoT{} response against its own chain-of-thought response and reporting a large
+effect where the model produced the five labelled sections against nothing where
+it did not --- does not survive being given confidence intervals, which it had
+never had. Three failures, each sufficient. The hedging \emph{cost} does not
+dissociate: that asymmetry rested on truncated scores and disappears under the
+same correction as (1), so ``benefit and cost are separably caused'' is
+withdrawn. \emph{Non-response is filed into the null-carrying stratum by
+construction} --- an empty response contains no section labels --- so the
+non-compliant stratum is 74 complete cases out of 113, and its Manski bracket
+is $[-34.5, +8.0]$\,pp against a compliant $-34.3$; the \textbf{interaction
+bracket is $[-42.4, +0.3]$ and contains zero}. And the per-generator
+interactions \textbf{differ in sign} ($+3.6$, $-51.9$, $-54.6$; Cochran
+$Q{=}11.2$, $p{=}0.0037$, $I^2{=}82\%$), while the strata differ in composition
+($70\%$ vs $19\%$ one generator) and have no common support in
+chain-of-thought length. There is no single moderation number here, and the one
+we reported is not identified without an assumption about why 39 responses are
+missing. The claim survives on an independent dataset/metric pair
+(\texttt{ss}/framing, bracket $[-9.6,-8.1]$), which is where it should now be
+made, if at all.
 \textbf{(3) A falsified hypothesis.} Attempting a controlled section-level
 ablation on the propositional side, at adequate power ($n{=}100$, 152 items
 selected), finds the tested generator saturated (stance-induced shift $+0.6$\,pp,
@@ -459,6 +462,41 @@ detectable trace on the output'', which makes this a manipulation-failure
 moderation: it establishes that the headline pools a treated with an
 effectively untreated stratum, and it does not by itself separate producing
 structure from any other consequence of the prompt having taken effect.
+
+\paragraph{Intervals, and the retraction they force.} This analysis never had
+confidence intervals; adding them removes the result. Item-clustered bootstrap
+(8{,}000 draws, resampling items) gives compliant $-34.3$ $[-39.8, -28.9]$ and
+non-compliant $-4.1$ $[-13.4, +5.3]$, interaction $-30.2$, $z\approx-5.3$. That
+much survives. Two things do not.
+
+\emph{First, the stratum that carries the null is 40\% missing, and the missingness
+is caused by the stratum definition.} \texttt{sections\_present()} counts section
+labels in the response text, and an empty response contains none --- so every
+non-response scores zero sections and is filed non-compliant \emph{by
+construction}. The pooled non-compliant stratum is $74$ complete cases out of
+$113$ potential ($30$ unscored on the \NoT{} side, $9$ on neither); on \nano{} it
+is $11$ of $45$. The Manski bracket over those pairs is $[-34.5, +8.0]$\,pp,
+whose lower edge sits at the compliant point estimate of $-34.3$ (bracket
+$[-34.4, -34.2]$), and the \textbf{interaction bracket is $[-42.4, +0.3]$\,pp,
+which contains zero}. The bracket is itself a lower bound on the uncertainty: it
+brackets the missing \emph{score}, not the missing \emph{stratum label}.
+
+\emph{Second, there is no single moderation to report.} Within generator the
+interaction is \haiku{} $+3.6$ (SE $16.0$), \nano{} $-51.9$ (SE $10.6$),
+\grok{} $-54.6$ (SE $7.4$) --- different in sign, with Cochran $Q = 11.2$ on
+2\,df, $p = 0.0037$, $I^2 = 82\%$. Inverse-variance pooling within generator
+gives $-46.6$ against $-30.2$ pooled across, and that $16.4$\,pp gap is
+stratum/generator confounding: the non-compliant stratum is $70\%$ \grok{} and
+the compliant stratum $19\%$, and the two have no common support in
+chain-of-thought length (median $1{,}872$ vs $3{,}716$ characters). They are not
+exchangeable subsets of one population.
+
+Two boundaries on the retraction, both of which we report rather than choose
+between. The interaction bracket crosses zero only on the \emph{truncation-corrected}
+scores; on the uncorrected ones it stays at $[-54.9, -12.2]$. And on the
+\texttt{ss}/framing replication the bracket is $[-9.6, -8.1]$ and the moderation
+\emph{survives}. The retraction is therefore specific to the
+\texttt{oeq}/validation cell --- which is the cell this paper led with.
 
 \paragraph{Convergence, stated at the strength the corrected numbers support.}
 Two analyses agree: mentioning the primitives in prose does little or harm
