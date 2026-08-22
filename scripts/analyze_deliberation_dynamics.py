@@ -69,14 +69,51 @@ DEFAULT_ROLES_CSV = OUT_DIR / "debate_mind_change_rates.csv"
 # Loading
 # ---------------------------------------------------------------------------
 
-def load_debates(path: Path) -> dict:
-    """(scenario, sample, model) -> {perspective_id: {round: row}}."""
+def load_debates(path: Path, *, round_alias: Optional[dict] = None,
+                 resolve_novel: bool = True) -> dict:
+    """(scenario, sample, model) -> {perspective_id: {round: row}}.
+
+    resolve_novel guards a real artefact. In the open-action-space arm the
+    ``decision`` column is the literal string "NOVEL" for every agent that
+    proposes its own action -- 219 of 300 rows. Three agents proposing three
+    COMPLETELY DIFFERENT actions therefore all read as the same position, and
+    the arm scores 74% unanimous. Resolving each proposal to its own
+    ``novel_action_label`` puts unanimity at 13%. The uncorrected reading
+    inverts the finding, so the correction is on by default and the flag exists
+    only to demonstrate the artefact.
+    """
     rows = list(csv.DictReader(path.open()))
     cell: dict = defaultdict(dict)
     for r in rows:
+        rd = (round_alias or {}).get(r["round"], r["round"])
+        row = dict(r)
+        if resolve_novel and row.get("novel_action_label"):
+            row["decision"] = row["novel_action_label"]
         key = (r["scenario_id"], r["sample_idx"], r["gen_model"])
-        cell[key].setdefault(r["perspective_id"], {})[r["round"]] = r
+        cell[key].setdefault(r["perspective_id"], {})[rd] = row
     return dict(cell)
+
+
+def structural_comparison(named: dict) -> dict:
+    """Contagion measures side by side across structural variants."""
+    out: dict = {}
+    print("\n" + "=" * 74)
+    print("STRUCTURAL COMPARISON -- which structures propagate, which resist")
+    print("=" * 74)
+    print(f"{'structure':<26}{'unanim r0':>10}{'unanim r2':>10}{'distinct r2':>13}"
+          f"{'conformity excess':>19}{'p':>10}")
+    for lab, d in named.items():
+        div = diversity_by_round(d)
+        e = conformity_all_baselines(d)["empirical"]
+        if not div or not e:
+            continue
+        out[lab] = {"diversity": div, "conformity_empirical": e,
+                    "movement": movement_by_transition(d)}
+        print(f"{lab:<26}{div['round0']['unanimous_rate']:>9.0%}"
+              f"{div['round2']['unanimous_rate']:>10.0%}"
+              f"{div['round2']['mean_distinct']:>13.2f}"
+              f"{e['excess']:>+19.1%}{e['p_value']:>10.2g}")
+    return out
 
 
 def action_space(agents: dict) -> set[str]:
