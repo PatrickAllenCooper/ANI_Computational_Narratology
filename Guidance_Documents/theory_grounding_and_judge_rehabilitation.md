@@ -48,9 +48,13 @@ named and correctly framed; nothing there needs to change.
 
 Two, and neither is the element the theory names:
 
-1. **Item-specific narrative content deposited into the context.** This is what the
-   compliance dissociation actually shows, once corrected (§2).
+1. ~~**Item-specific narrative content deposited into the context.**~~ **WITHDRAWN
+   2026-08-22 — see §S0.5.** This was inferred from the compliance moderation, and that
+   moderation is not identified: its interaction Manski bracket is [−42.4, +0.3] and the
+   per-generator effects differ in sign. Nothing licenses this entry any more.
 2. **Hedging register.** Newly surfaced, and the most uncomfortable finding here (§3).
+   With entry 1 withdrawn this is now the *only* scaffold element our experiments
+   implicate in an outcome — and it is the one no theory in the programme predicted.
 
 The element the theory names — consequence-horizon depth driving a complexity cost — has
 never been shown to do anything, and §5 gives evidence that the scaffold may not move it
@@ -96,9 +100,16 @@ detectable trace on the output**.
 
 That reframes what R1 can adjudicate. No account predicts an effect where the
 intervention failed, so R1 does not discriminate between mechanistic accounts and does
-not bear on min-$K_C$. It is a **manipulation-failure moderation analysis**. It remains
-real, large, and important, because it establishes that the flagship number pools a
-treated with an effectively untreated stratum.
+not bear on min-$K_C$. It is a **manipulation-failure moderation analysis**.
+
+> **SUPERSEDED 2026-08-22 — see §S0.5.** This section says the moderation "remains real,
+> large, and important." It is none of those on the `oeq`/validation cell. Non-response is
+> filed into the non-compliant stratum *by construction*, leaving 74 complete cases of
+> 113; the interaction Manski bracket is **[−42.4, +0.3]** and contains zero; and the
+> per-generator interactions differ in **sign** (Cochran Q p = 0.0037, I² = 82%). The
+> unpaired approximations quoted below are superseded by item-clustered bootstrap values,
+> and the p = 3.4×10⁻⁴ figure by z ≈ −5.3 with its own Monte Carlo SE. The claim survives
+> only on `ss`/framing.
 
 `scripts/analyze_length_matched_elephant.py` contains no bootstrap, McNemar, binomtest
 or scipy call, so **there are no confidence intervals on R1 anywhere**. Unpaired
