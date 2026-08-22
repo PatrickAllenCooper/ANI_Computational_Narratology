@@ -1018,3 +1018,102 @@ programme is: the only scaffold element our experiments implicate in an outcome 
 register**, the effect is reproduced by a verbose control that contains none of the
 scaffold's primitives, and where ground truth exists on both classes the scaffold makes the
 judge worse rather than better.
+
+---
+
+# Deep experiments RESULT (2026-08-22)
+
+Three analyses, each adversarially verified, all **CONFIRMED-WITH-CORRECTIONS**.
+
+## D1. Complexity at matched length: the compression family is not measuring anything stable
+
+The PI's challenge was right — text complexity is well-measured, and the failure was in the
+*design*, not the measures. Confirmed: three of four generators have **literally zero**
+NoT/CoT length overlap (gaps of 1,777 / 2,607 / 1,122 bytes), so arm is a deterministic
+function of length and residualising removes the arm contrast by construction.
+
+Fixing it by design — recomputing every proxy on a **fixed character budget taken identically
+from both arms**, at head and mid-document positions, sweeping W ∈ {300…2400}, item-clustered
+bootstrap, 2,939 NoT / 2,974 CoT paired documents — does not rescue the complexity story. It
+kills it:
+
+**Every compression proxy is nominally significant in 26–29 of 32 cells and only ~47%
+consistent in sign.** gzip runs +0.0087 [+0.0076, +0.0097] at W=300 head and −0.0162
+[−0.0171, −0.0152] at W=1200 mid; on the same cell it is +0.0034 on sonnet and −0.0433 on
+grok. A measure whose sign depends on the budget, the window position, and the generator is
+not measuring a property of the arm.
+
+One measure survives the sweep — the 5-gram conditional-entropy-rate estimate, −0.0134
+bits/char [−0.0147, −0.0121] at W=800 head, negative in 31 of 32 cells. Two caveats kill it as
+a headline: at W ≤ 1200 characters that statistic is a 4-gram **reuse rate**, not an entropy
+rate; and against the **verbose control** it shrinks to −0.0027 [−0.0055, +0.0000] mid-document
+and *reverses sign* on grok (+0.0174 [+0.0127, +0.0221]).
+
+**Reframe the paper's claim.** "Collapses under length residualisation" invites exactly the
+reply the PI made. The correct and stronger statement is: the design was collinear, we removed
+the collinearity by construction, and at matched exposure the compression family returns an
+answer whose sign is set by arbitrary analyst choices. Retire the family rather than
+residualise it.
+
+**And state the scope honestly:** compression length of *emitted text* is not the quantity the
+theory names. The theory is about the description length of the **causal model** the trace
+implies. A matched-window text result, in either direction, can only ever falsify a proxy — it
+cannot bear on min-$K_C$ itself.
+
+## D2. The deliberation protocol: built, costed, not run
+
+`scripts/run_crowdgold_deliberation.py` puts the three-role five-round protocol on the
+Crowd-Gold items under the stance manipulation. 13 calls per cell (3 roles × rounds 0–2, one
+moderator integration, 3 binary votes), group verdict read through `verdict_format`, per-agent
+votes recorded, criterion-based read-out through `analyze_crowdgold_sdt`, and the paper's
+per-role rejection claim promoted to a first-class bootstrapped statistic. **Selftest 52/52
+offline.** Pilot: grok × 2 arms × 220 screened items = 5,720 calls, **$3.77**. Full three-model
+run: 16,302 calls, **$54.79**. Not run — the verification pass flagged five items to address
+first, all cheap.
+
+## D3. The 95% consensus carries no trace of deliberation
+
+This is the sharpest result of the day, and it is about **Experiment 2 of the ACL submission**.
+
+The protocol *is* a genuine voting mechanism in its message space and outcome rule — real
+players, action sets, timing, an aggregation rule; single-agent inference has none of these, so
+the earlier "nothing here is a game" was correctly scoped but wrongly generalised. But it has
+**no payoffs and no disagreement outcome**, so no equilibrium concept applies and acceptance is
+uninformative by construction. The honest statement: *the protocol implements the message space
+and outcome rule of a unanimity mechanism and supplies neither preferences nor a disagreement
+point.*
+
+**The empirical finding is worse than the structural one.** Reproduced independently, twice:
+
+| rejections per debate | observed | expected if the three votes were INDEPENDENT |
+|---|---:|---:|
+| 0 | 78 | 78.065 |
+| 1 | 4 | 3.871 |
+| 2 | 0 | 0.064 |
+| 3 | 0 | 0.000 |
+
+Individual acceptance p = 242/246 = 0.98374. Unanimity observed 78/82 = **0.951220**;
+p³ = **0.952008**. A difference of 0.0008, χ² ≈ 0.004.
+
+**The joint distribution of votes is exactly what three independent coin flips produce.**
+Deliberation left no trace whatsoever in the vote profile. If the agents were responding to each
+other, or to the content of the moderator's proposal, or to each other's stated stakes, that
+would appear as correlation — excess unanimity or excess multi-rejection. There is none.
+
+**And the paper's own discriminator has no power.** The claim that residual rejections
+concentrate in roles whose stake the proposal undermines rests on 4 rejections; under random
+placement, P(none lands on a decider seat) = **0.195**. Role split: decider 0/82,
+primary_affected 3/82, third_party 1/82. That pattern is not distinguishable from chance.
+
+Round 3 is the tell: **242 of 246 ACCEPT_WITH_MODIFICATION, 4 ACCEPT, 0 REJECT.** Essentially
+every agent asked for a change, then essentially every agent accepted the integrated proposal.
+That is the signature of agreeable agents, not of resolved conflict — and agreeableness is the
+phenomenon this programme exists to study.
+
+**What this does not say.** It does not say the protocol is worthless, and it does not say the
+consensus is fake — the moderator does address a mean 2.98 of 3 modification requests, which is
+real work. It says the 95% consensus figure **cannot distinguish** "the mechanism resolved a
+conflict" from "the agents were agreeable," and the discriminator the paper offers for that
+distinction does not discriminate. On Crowd-Gold it becomes separable, because "did the group
+agree" and "did the group get it right" are two different measurements there. That is what D2
+was built to run.
