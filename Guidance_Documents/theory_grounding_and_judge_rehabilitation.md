@@ -497,6 +497,16 @@ So the cheapest test of R4's entire claim is not the missing mean-over-panel arm
 have**, which costs nothing and may absorb most of the gap the robust optimiser was built
 to close. Run that before funding anything.
 
+> **SUPERSEDED 2026-08-22 — read §S0.1 before using this paragraph.** That calibration
+> has now been run. It absorbs most of the *level* gap, which is the one quantity a
+> per-judge threshold is defined to move, but on the Goodhart estimand — the
+> hand→optimised *reduction* — it absorbs **−21% on indirectness**, the construct the
+> Goodhart result is actually about. **The Goodhart gap survives calibration intact.**
+> The threshold model is also formally rejected for all three constructs. Calibration is
+> a mandatory free baseline arm, not the answer, and the HELM study retains a real
+> target. The one thing that does move is validation, where calibration absorbs 92% of a
+> 54.3 pp cross-judge disagreement this section wrongly called vacuous.
+
 The honest, narrower, more useful version of Q2: *for which judgements does a cheap
 per-judge threshold calibration close most of the reliability gap, and for which does no
 threshold help because there is no shared latent construct?* Our own data answers it for
@@ -730,3 +740,144 @@ the inside.
 confounded by the gold-quality gradient in §9. The only item here that is not a funding
 problem — it is structural, and the correct response is to ship the bound and decline the
 certificate.
+
+---
+
+# Stage 0 RESULTS (2026-08-22) — all four free analyses, each adversarially verified
+
+Every one came back **CONFIRMED-WITH-CORRECTIONS**, and in two places the correction
+reverses the conclusion the analysis itself reached. No API calls, no spend.
+
+## S0.1 Judge calibration (Gate −1): SPLIT, and the headline reverses
+
+The per-response Goodhart data *is* on disk (namespaces `sg_ref_narrative_cot`,
+`sg_holdout_sg_claude-haiku-4-5`, `rg_holdout_claude-haiku-4-5`, 2,250 files each) and
+aggregating it reproduces `tab:goodhart` cell-for-cell: validation 1/2/3/0,
+indirectness 6/87/59/10, framing 3/4/27/52. A one-additive-probit-intercept-per-(judge,
+construct) calibration, fitted out-of-sample on the hand-NoT arm, was applied to the
+n=138 fully-paired optimised responses.
+
+**On levels it looks decisive and that reading is wrong.** Levels are the one thing a
+per-judge threshold is *defined* to move, and after fitting, the hand-arm rate is
+identical for every judge by construction. The Goodhart claim is not about levels — it
+is that optimising against grok bought a *reduction* grok sees and held-out judges do
+not. On that estimand:
+
+| construct | grok† | haiku | nano | sonnet | raw spread of reductions | calibrated | absorbed |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| validation | 65.2 | 18.1 | 24.6 | 10.9 | **54.3** | 4.5 | **+92%** |
+| indirectness | 10.1 | 0.0 | 14.5 | 31.9 | **31.9** | 38.6 | **−21%** |
+| framing | 38.4 | 23.9 | 66.7 | 37.0 | **42.8** | 20.4 | **+52%** |
+
+**The Goodhart gap survives calibration intact.** On indirectness — the construct the
+Goodhart result is actually about — calibration absorbs nothing and slightly *increases*
+the disagreement. In calibrated terms the headline becomes 61%→39% for the training
+judge and 61%→61% for the held-out judge, which is the same finding, not a dissolved one.
+This reverses the reading recorded in §7 above.
+
+Two further results. **The threshold model is formally rejected** for all three
+constructs — additive probit vs saturated on the n=138 binomial counts gives
+G² = 16.63 / 19.90 / 15.74 on df=4, p = 0.0023 / 0.00052 / 0.0034; there is a real
+judge × arm interaction and framing's calibrated ordering *inverts*. And **validation is
+where the threshold story is strongest**, not where it is vacuous: judges disagree about
+the validation reduction by 54.3 pp (grok 65.2 vs sonnet 10.9), the second-largest
+disagreement in the table, and calibration absorbs 92% of it.
+
+The MTMM reproduces exactly (convergent validation +0.478, framing +0.277, indirectness
+−0.028; method factor +0.017; HTHM baseline +0.052 — note the ordering is convergent >
+HTHM > method, not the textbook form). **New:** every framing pair involving nano is
+*perfectly nested* — a zero discordant cell — so framing's r = 0.277 is not weak
+agreement, it is the **maximum attainable value given the marginals** (φ_max = 0.282 and
+0.312, ratio 1.000). That is the algebraic signature of one shared ordering read at
+different thresholds. Indirectness has one nested pair and two negative ones: no single
+ordering fits. Replicated independently on n=138 model responses (validation +0.28/+0.39,
+framing +0.23/+0.24, indirectness +0.05/+0.08).
+
+Gold exists but is thin: `data/judge_gold.jsonl`, 30 OEQ items, three judges only — **no
+sonnet**, and sonnet is the judge carrying the entire framing gap. The gold is on *human*
+OEQ answers, not the model responses being calibrated.
+
+**Consequence for the HELM study.** Calibration becomes a *mandatory baseline arm*, not
+the answer: it is free, it absorbs most of the disagreement on validation and about half
+on framing, and it must be beaten before any scaffold arm is credited with anything. But
+it does not close the Goodhart gap, so the study retains a real target. Also verified:
+**R4's panel-robust result is mathematically invariant to per-judge calibration**, since a
+threshold shift is a monotone transform of one judge's rate and the robust objective is a
+within-judge contrast.
+
+## S0.2 Mediation at n=3,957: the realized-content account is null
+
+`scaled_coded_results.csv` × `scaled_decisions.csv` joins one-to-one to **11,961** rows
+(100 scenarios × 20 samples × 3 conditions × 2 generators; analysis n=11,909 after 52
+`content_filtered` rows). Within `narrative_cot` alone (n=3,957), with item fixed effects
+and item-clustered SEs, the four realized-content variables are **jointly null once
+`output_len` is controlled**: F(4,99) = 1.38, **p = 0.25**, incremental R² = 0.0009.
+
+The only survivor is `max_causal_hops` at +0.0199 [+0.0005, +0.0392], standardised
+β = +0.041 — while `output_len` carries five times more (β = −0.213, p = 5.3×10⁻⁶) **in
+the direction opposite to the arm effect**. Confirmed by an independent re-estimation
+with a second estimator agreeing to five decimals.
+
+This does not cancel the Stage 2 prefix transplant: **within the arm, receipt is a
+constant**, so the receipt side of the content-vs-receipt contrast has zero variance here.
+Stage 2 is still required, but re-scoped — it is now the only design that can vary content
+and structure independently.
+
+## S0.3 Horizon dose-response: CANCELLED, ~$268 not spent
+
+Three independent reasons, and the first is decisive.
+
+**Half the experiment is already on disk.** `scaffold_permutations.py` self-asserts
+`horizon_2step == canonical` and `horizon_absent == drop_consequences`. Both extreme arms
+have already run on sonnet at n=90/arm. Deleting section 3 outright — the largest
+manipulation the design contains — moves the DV by only δ = −0.222 [−0.344, −0.089].
+
+**The DV cannot resolve the design.** `max_causal_hops` takes exactly **two values ({4, 5})
+across all 540 ablation rows**. The implied adjacent-step gap is p(5) ≈ 0.111 against an
+MDE at n=90 of 0.184, so the design as costed cannot resolve the contrast it exists to
+measure; reaching it needs ≈290/arm, roughly 3× the money (corrected down from an
+initial 7–8× estimate).
+
+**The scaffold does not move the variable on one of two generators.** gpt-4o: Cliff's
+δ = **−0.048** on `max_causal_hops` (3.062 vs 3.109) against +0.852 stakeholders and
++0.990 uncertainty — verified to three decimals. Nano does move (+0.569) but has **zero
+length overlap** between arms (NoT min 6,751 > CoT max 5,753), so no length-controlled
+estimate is identified there; the decile-stratified estimator is empty on both generators.
+
+**The DV is also unreliable**, and this applies to the ACL paper's causal-depth claims,
+not just to this design: `max_causal_hops_three_sources.csv` gives parser-vs-judge
+Spearman +0.395 and judge-vs-judge +0.20, consistency ICC(3,1) = **0.281**. Two provenance
+corrections worth recording: the scaled file's DV is written by
+`ncot_divergence_pilot.ipynb` with `SCALED_JUDGE_MODEL = "gpt-4o-mini"` (judge *2*, not
+judge 1), and the `j1_` prefix names three different models across three files.
+
+## S0.4 Compliance CIs: the moderation has intervals now, and two new caveats
+
+`analyze_length_matched_elephant.py` now carries item-clustered bootstrap CIs and an
+interaction test. Compliant **−34.3 [−39.8, −29.4]**, non-compliant **−4.1 [−13.4, +5.2]**,
+interaction **−30.2**, z ≈ −5.3, **p ≈ 1×10⁻⁷** (quoted at the precision the estimator
+supports; a single B=2000 draw gave 6.9×10⁻⁸, which is a lucky seed).
+
+**A claim of ours is refuted:** the estimator *was* genuinely item-paired all along. The
+two lists are appended in lockstep within a single loop over matched items, so
+difference-of-means is algebraically the mean of per-item differences. The gap was
+inference, not pairing.
+
+Two new caveats, both material:
+
+- **Non-response is structurally confounded with the stratum.** An empty response scores
+  zero sections, so every non-response is filed non-compliant *by construction*. 39
+  `narrative_cot` rows are dropped for non-response (34 nano, 5 grok, 1 sonnet, 0 haiku);
+  all 39 would have joined the non-compliant stratum, making it complete-case n=74 out of
+  a potential 104. The Manski bracket on the pooled non-compliant delta is
+  **[−28.9, 0.0]** against a compliant bracket of [−34.43, −34.23]. **At the lower edge the
+  moderation vanishes.** "The non-compliant stratum shows no effect" currently rests on
+  treating 29 empty nano responses as uninformative.
+- **The pooled interaction confounds stratum with generator, and the effects are
+  significantly heterogeneous.** The non-compliant stratum is 70% grok (52/74); the
+  compliant stratum is 19% grok (92/484), and the strata have no common support in CoT
+  length (median 1,872 vs 3,716 chars). Within-generator inverse-variance pooling gives
+  **−46.8 pp** (SE 5.6, z = −8.29), half again the pooled −30.2. Cochran Q = 11.0, df=2,
+  **p = 0.004**: haiku +3.6, nano −51.9, grok −54.6 are not estimates of one effect. On
+  `ss`/framing haiku's non-compliant stratum is *significantly negative* (−20.5
+  [−33.8, −7.4]) and its interaction is +5.0. **No single number is "the" moderation.**
