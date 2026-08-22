@@ -62,6 +62,7 @@ import json
 import random
 import re
 import sys
+from collections import defaultdict
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass
 from pathlib import Path
@@ -488,16 +489,26 @@ def _load_elephant_items(*, n_yta: int, n_nta: int, seed: int = 44) -> list[Crow
 # ---------------------------------------------------------------------------
 
 def gen_cache_path(model: str, arm: str, item_id: str, idx: int,
-                   scaffold: str = SCAFFOLD_STANDARD) -> Path:
+                   scaffold: str = SCAFFOLD_STANDARD,
+                   max_tokens: Optional[int] = None) -> Path:
     """Cache path for one cell.
 
     The unscaffolded path is left EXACTLY as it was so the 6,723 already-paid-for
     baseline rows keep resolving; scaffolded cells get their own namespace.
+
+    Scaffolded paths encode the token cap, because a scaffolded response that
+    hits the cap is TRUNCATED PAST ITS OWN VERDICT LINE -- a pilot at 1,024
+    tokens produced 53/60 max_tokens finishes and 52/60 responses with no
+    verdict at all. Without the cap in the key, re-running at a larger cap
+    would silently serve those truncated responses straight back out of cache
+    and the fix would look like it had failed. The unscaffolded arm is exempt
+    only because its cap has never changed and its cached rows predate this.
     """
     if scaffold == SCAFFOLD_STANDARD:
         return OUT_DIR / f"cg_gen_{_safe(model)}_{arm}_{_safe(item_id)}_{idx:02d}.json"
-    return (OUT_DIR /
-            f"cg_gen_{_safe(model)}_{_safe(scaffold)}_{arm}_{_safe(item_id)}_{idx:02d}.json")
+    cap = f"_t{max_tokens}" if max_tokens else ""
+    return (OUT_DIR / f"cg_gen_{_safe(model)}_{_safe(scaffold)}{cap}_"
+                      f"{arm}_{_safe(item_id)}_{idx:02d}.json")
 
 
 def mem_cache_path(model: str, item_id: str) -> Path:
@@ -519,7 +530,7 @@ def run_cell(
     scaffold: str = SCAFFOLD_STANDARD,
 ) -> dict:
     """Generate (or read cache) one (model, scaffold, arm, item, sample) cell."""
-    cache = gen_cache_path(model, arm, item.item_id, idx, scaffold)
+    cache = gen_cache_path(model, arm, item.item_id, idx, scaffold, max_tokens)
     if cache.exists():
         rec = json.loads(cache.read_text())
     else:
@@ -565,7 +576,73 @@ def run_cell(
         "not_at_fault": int(verdict in NOT_AT_FAULT_VERDICTS),
         "output_len": len(rec.get("output", "")),
         "post_sha256": rec.get("post_sha256", ""),
+        "finish_reason": rec.get("finish_reason", ""),
+        "truncated": int(rec.get("finish_reason", "") in
+                         ("max_tokens", "length", "MAX_TOKENS")),
     }
+
+
+# ---------------------------------------------------------------------------
+# Truncation guard
+# ---------------------------------------------------------------------------
+
+#: A scaffolded arm that runs out of tokens narrates PAST the forced VERDICT
+#: line, so the parse failure lands preferentially on the arm under study. This
+#: repo has now been bitten by arm-correlated truncation three times (the
+#: 4,000-char ELEPHANT judge cutoff, the 3,000-char kc_graph extractor cap, and
+#: a pilot of this very runner at 1,024 tokens where 53/60 narrative_cot cells
+#: hit max_tokens and 52/60 never emitted a verdict at all). It is never again
+#: allowed to be a silent footnote.
+MAX_TRUNCATION_SHARE = 0.05
+MAX_NOVERDICT_SHARE = 0.05
+
+
+def truncation_report(rows: Sequence[dict]) -> dict:
+    """Per-(scaffold, arm) truncation and NOVERDICT shares, with a pass flag."""
+    cells: dict[str, dict] = {}
+    groups: dict[tuple[str, str, str], list[dict]] = defaultdict(list)
+    for r in rows:
+        groups[(r.get("model", ""), r.get("scaffold", SCAFFOLD_STANDARD),
+                r["arm"])].append(r)
+    worst_t = worst_n = 0.0
+    for (m, sc, arm), rs in sorted(groups.items()):
+        t = sum(int(r.get("truncated", 0)) for r in rs) / len(rs)
+        nv = sum(1 for r in rs if r["verdict"] == NOVERDICT) / len(rs)
+        cells[f"{m}|{sc}|{arm}"] = {
+            "n": len(rs), "truncated": round(t, 4), "noverdict": round(nv, 4),
+            "mean_chars": round(sum(r["output_len"] for r in rs) / len(rs), 1),
+        }
+        worst_t, worst_n = max(worst_t, t), max(worst_n, nv)
+    return {
+        "cells": cells,
+        "worst_truncation": round(worst_t, 4),
+        "worst_noverdict": round(worst_n, 4),
+        "max_truncation_share": MAX_TRUNCATION_SHARE,
+        "max_noverdict_share": MAX_NOVERDICT_SHARE,
+        "pass": worst_t <= MAX_TRUNCATION_SHARE and worst_n <= MAX_NOVERDICT_SHARE,
+    }
+
+
+def print_truncation_report(rep: dict) -> None:
+    print("\n" + "=" * 72)
+    print("TRUNCATION / PARSE GUARD")
+    print("=" * 72)
+    print(f"{'model|scaffold|arm':<58}{'n':>4}{'trunc':>8}{'NOVER':>8}{'chars':>8}")
+    for k, v in rep["cells"].items():
+        flag = "  <-- FAILS" if (v["truncated"] > MAX_TRUNCATION_SHARE
+                                 or v["noverdict"] > MAX_NOVERDICT_SHARE) else ""
+        print(f"{k:<58}{v['n']:>4}{v['truncated']:>8.1%}{v['noverdict']:>8.1%}"
+              f"{v['mean_chars']:>8.0f}{flag}")
+    if not rep["pass"]:
+        print(f"\n  *** GUARD FAILED. Worst truncation {rep['worst_truncation']:.1%} "
+              f"(limit {MAX_TRUNCATION_SHARE:.0%}), worst NOVERDICT "
+              f"{rep['worst_noverdict']:.1%} (limit {MAX_NOVERDICT_SHARE:.0%}).")
+        print("  Truncation here is ARM-CORRELATED by construction: a scaffolded")
+        print("  arm narrates past the forced VERDICT line. Raise")
+        print("  --max-tokens-scaffolded and re-run before reading ANY contrast.")
+    else:
+        print(f"\n  guard PASSED (worst truncation {rep['worst_truncation']:.1%}, "
+              f"worst NOVERDICT {rep['worst_noverdict']:.1%})")
 
 
 # ---------------------------------------------------------------------------
@@ -963,7 +1040,7 @@ RESULT_FIELDS = (
     "model", "scaffold", "arm", "item_id", "sample_idx", "gold_verdict",
     "n_votes", "consensus", "source", "verdict", "noncommittal", "at_fault",
     "not_at_fault", "output_len", "post_sha256", "recognized", "mem_score",
-    "n_sections", "complied",
+    "n_sections", "complied", "finish_reason", "truncated",
 )
 
 
@@ -1205,6 +1282,9 @@ def main(argv: list[str] | None = None) -> int:
               f"({len(exclude_ids) / max(1, len(items)):.1%})"
               f"{' -- EXCLUDED from metrics' if args.exclude_recognized else ' -- reported only'}")
 
+    trunc = truncation_report(rows)
+    print_truncation_report(trunc)
+
     applied_excl = exclude_ids if args.exclude_recognized else []
     shield = asker_shielding(rows, gold="YTA", exclude_ids=applied_excl)
     shield_stance = asker_shielding(
@@ -1236,6 +1316,7 @@ def main(argv: list[str] | None = None) -> int:
         "exclude_recognized": bool(args.exclude_recognized),
         "n_excluded": len(applied_excl),
         "gates": gates,
+        "truncation_guard": trunc,
         "shims": {"verdict_format": not HAVE_VERDICT_FORMAT,
                   "local_backend": not HAVE_LOCAL_BACKEND},
     }, indent=2, ensure_ascii=False))
@@ -1245,6 +1326,10 @@ def main(argv: list[str] | None = None) -> int:
     print("stance arm (as_asker_stance vs third_person) shift per model: "
           f"{ {m: round(v['shift'], 4) for m, v in shield_stance['per_model'].items()} }")
 
+    if not trunc["pass"]:
+        print("\n  NOTE: the truncation guard failed; contrasts above are NOT "
+              "readable as behaviour.\n")
+        return 4
     if args.pilot:
         return 0 if gates["go"] else 3
     return 0

@@ -99,16 +99,25 @@ published $-26$ to $-53$\,pp range should read \corrected{$-24$ to $-44$\,pp}, a
 sub-claim (\aitayta{} validation) \falsified{does not survive} at all --- one
 generator reverses sign. Three metrics are each distorted in a \emph{different}
 direction by the same defect, not one uniform bias.
-\textbf{(2) Mechanism.} A length-matched control that existed but had never been
-run on this claim shows the effect is not a length artifact; pairing each \NoT{}
-response against its own chain-of-thought response and stratifying by whether the
-model actually produced the scaffold's five labelled sections shows the entire
-effect concentrates in the compliant stratum ($-34$ to $-45$\,pp) and is absent
-where the model received the prompt but ignored its structure ($-3$ to $-4$\,pp),
-replicated on an independent dataset and metric. The scaffold's reported hedging
-\emph{cost} shows no such dependence --- benefit and cost are separably caused, and
-\emph{execution of the structure, not receipt of the instruction, carries the
-effect}.
+\textbf{(2) Mechanism, stated more cautiously than we first stated it.} A
+length-matched control that existed but had never been run on this claim shows
+the effect is not a length artifact; pairing each \NoT{} response against its own
+chain-of-thought response and stratifying by whether the model actually produced
+the scaffold's five labelled sections shows the effect concentrated where the
+prompt visibly took effect (\corrected{$-32$ to $-34$\,pp} corrected) against
+$-4$\,pp where it did not, replicated on an independent dataset and metric
+($z{=}-3.58$, $p{=}3.4\times10^{-4}$). We \falsified{withdraw} two claims we
+drew from this. The scaffold's hedging \emph{cost} does \emph{not} dissociate:
+that asymmetry rested on truncated scores and disappears under the same
+correction as (1), so ``benefit and cost are separably caused'' is retracted.
+And the non-compliant stratum is one in which the prompt left no detectable
+trace on the output at all --- $82\%$ of one generator's non-compliant responses
+contain none of the five section keywords, and item-paired \emph{median} lengths
+there are $0.91$--$1.21\times$ their own chain-of-thought --- so this is a
+manipulation-failure moderation, roughly a three-fold gradient rather than a
+dissociation. It establishes that the headline pools a treated with an
+effectively untreated stratum; it does not establish that structure rather than
+deposited content carries the effect.
 \textbf{(3) A falsified hypothesis.} Attempting a controlled section-level
 ablation on the propositional side, at adequate power ($n{=}100$, 152 items
 selected), finds the tested generator saturated (stance-induced shift $+0.6$\,pp,
@@ -402,16 +411,21 @@ holding per model on three of four generators. \aitayta{} cannot test it ---
 every generator is 100\% compliant there, itself evidence that compliance is
 item-dependent, not purely a model property.
 
-\paragraph{The cost does not dissociate the same way.} \NoT{}'s reported
-indirectness backfire shows essentially no compliance dependence ($+5.4$\,pp
-compliant vs.\ $+4.1$\,pp non-compliant). Non-compliant responses received the
-prompt but did not produce the sections, so the \emph{benefit} tracks producing
-the structure while the \emph{cost} tracks receiving the prompt --- they are
-separably caused. This revises a prediction we had made in advance of running
-the ablation in \S\ref{sec:ablation}: if hedging does not depend on whether the
-sections are produced at all, deleting one section is unlikely to remove it, and
-a scaffold that keeps the sections while rewriting the header framing is the
-more promising route to the benefit without the cost.
+\paragraph{The cost claim does not survive the truncation correction.} On the
+\emph{published} scores \NoT{}'s indirectness backfire shows essentially no
+compliance dependence ($+5.4$\,pp compliant vs.\ $+4.1$\,pp non-compliant), and
+we initially read that asymmetry as mechanism: the \emph{benefit} tracks
+producing the structure while the \emph{cost} tracks merely receiving the
+prompt, hence separably caused. \textbf{We withdraw that claim.} Those are
+truncated scores, and the correction below removes the effect it rests on: the
+corrected row is $-2.3$\,pp compliant vs.\ $-4.1$\,pp non-compliant, with no
+backfire in either stratum and therefore no asymmetry to explain. The only
+indirectness cost that survives correction anywhere is on \aitayta{}, where all
+four generators are 100\% compliant and no stratum contrast exists even in
+principle. We record the retraction rather than deleting the claim because the
+downstream prediction it motivated --- that deleting a section would not remove
+hedging, so a header rewrite is the better route --- was pre-registered against
+the ablation in \S\ref{sec:ablation} on this reasoning, and now rests on nothing.
 
 \paragraph{Confound check.} Compliant responses are much longer than
 non-compliant ones, so the compliant stratum is very nearly the truncated
@@ -423,13 +437,42 @@ framing --- roughly $8{:}1$ rather than $17{:}1$, and the indirectness row now
 shows no backfire in either stratum, agreeing with \S\ref{sec:rescore-all} by an
 independent route.
 
-\paragraph{Convergence.} Three independent analyses now agree: mentioning the
-primitives in prose does little or harm (\S\ref{sec:verbose}, three of four
-generators); receiving the \NoT{} prompt without producing sections does nothing
-($-2.7$ to $-4.1$\,pp); producing the sections produces the benefit ($-32$ to
-$-45$\,pp). \textbf{Execution of the structure, not the instruction, carries the
-effect.} This is a stronger and more falsifiable claim than "the scaffold
-reduces sycophancy," and none of the evidence for it required new items or
+\paragraph{It is a dose--response, not a dissociation, and it is not a length
+control.} Two corrections to how we described this. First, the non-compliant
+stratum is not inert: on the one stratum-balanced replication
+(\texttt{ss}/framing, $n{=}306$ vs.\ $n{=}269$) its $-8.9$\,pp effect is
+significantly non-zero, and an unpaired two-proportion interval on the
+validation row puts the non-compliant estimate at $-4.1$ $[-19.5, +11.3]$
+against $-34.3$ $[-40.2, -28.4]$ compliant --- an interaction at
+$z{=}-3.58$, $p{=}3.4\times10^{-4}$, but a roughly three-fold gradient rather
+than an on/off contrast. Second, we described this as a better length control
+than length-matching, on the grounds that non-compliant \NoT{} responses are
+still longer than CoT. That holds only of means and by a negligible margin.
+Item-paired \emph{median} \NoT{}/CoT character ratios in the non-compliant
+stratum are $1.21$ (\haiku), $1.02$ (\sonnet), $0.91$ (\nano) and $1.01$
+(\grok) --- on \nano{} the median non-compliant \NoT{} response is
+\emph{shorter} than its own CoT --- against $1.38$--$5.14$ in the compliant
+stratum. And $82\%$ of \grok{}'s non-compliant responses contain none of the
+five section keywords at all. The non-compliant stratum is therefore not
+``received the prompt, declined the headers'' but ``the prompt left no
+detectable trace on the output'', which makes this a manipulation-failure
+moderation: it establishes that the headline pools a treated with an
+effectively untreated stratum, and it does not by itself separate producing
+structure from any other consequence of the prompt having taken effect.
+
+\paragraph{Convergence, stated at the strength the corrected numbers support.}
+Two analyses agree: mentioning the primitives in prose does little or harm
+(\S\ref{sec:verbose}, three of four generators); and the effect is far larger
+where the prompt visibly took effect ($-32.4$ to $-34.3$\,pp corrected) than
+where it did not ($-4.1$\,pp). \textbf{Whatever carries the effect requires the
+prompt to have taken effect on the output, and is not supplied by the
+instruction alone.} We previously stated this as ``execution of the structure,
+not the instruction, carries the effect.'' That is stronger than the design
+licenses: compliance is model-chosen rather than assigned, and the non-compliant
+stratum is one in which the manipulation left no trace, so no account predicts
+an effect there. Separating \emph{structure} from \emph{item-specific content
+deposited into the context} requires an experiment in which the two are varied
+independently, which is \S\ref{sec:proposed}. None of the evidence here required new items or
 compute beyond a handful of judge calls.
 
 \section{A second reclassified result: the Crowd-Gold nuisance check}
