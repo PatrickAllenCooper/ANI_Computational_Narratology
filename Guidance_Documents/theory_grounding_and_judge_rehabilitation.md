@@ -939,3 +939,82 @@ its first entry. Item-specific narrative content deposited into the context was 
 from R1; R1 no longer supports it. The programme's strongest causal evidence is now the
 `ss`/framing replication and the verbose-arm register finding (§3b), neither of which was
 ever the headline.
+
+---
+
+# Stage 1 RESULT (2026-08-22): NoT does not improve judgment on the one instrument with ground truth on both classes
+
+4,482 calls, **zero errors**, 3 models × {`narrative_cot`, `standard_cot_verbose`} × 3 stance
+arms × the same 249 Scruples items as the cached baseline, so every contrast is item-paired
+against the 6,723 rows already on disk. Read with `analyze_crowdgold_sdt.py` under all three
+ESH codings. Actual cost ≈ $13.
+
+## The headline: the scaffold reduces discriminability and accuracy
+
+On the **neutral** (`third_person`) arm — no stance, no authorship claim, nothing to be
+sycophantic about — `narrative_cot` versus the untreated baseline:
+
+| | Δd′ published | Δd′ dropped | Δd′ not-at-fault | Δaccuracy (3 codings) |
+|---|---:|---:|---:|---|
+| claude-haiku-4-5 | **−0.340** | **−0.230** | **−0.443** | −9.2 / −0.8 / −3.4 pp |
+| grok-4-1-fast | **−0.181** | **−0.863** | **−0.739** | −1.3 / −1.1 / −0.3 pp |
+| gpt-5.4-nano | −0.114 | +0.123 | +0.330 | −1.1 / −2.1 / +1.2 pp |
+
+**On two of three models the scaffold lowers discriminability under every coding, and lowers
+accuracy under every coding.** It never robustly improves either. Haiku loses 9.2 pp of
+accuracy on the published coding (0.838 → 0.746). This is the first time in the programme
+that NoT has been scored against ground truth on *both* gold classes, and it does not help.
+
+## The specificity test fails, and the register control reproduces the effect
+
+Does the scaffold move the decision criterion on the neutral arm, where there is no
+sycophancy to reduce? Item-bootstrap 95% CIs, all three codings:
+
+| model | scaffold | Δc published | Δc dropped | Δc not-at-fault | stable? |
+|---|---|---|---|---|---|
+| nano | narrative_cot | **+0.206 \*** | **+0.252 \*** | +0.133 | **yes, 2/3 sig** |
+| nano | verbose | +0.128 | +0.114 | +0.026 | yes, 0/3 sig |
+| haiku | narrative_cot | **−0.290 \*** | −0.193 | +0.026 | flips |
+| haiku | verbose | **−0.317 \*** | −0.172 | +0.142 | flips |
+| grok | narrative_cot | +0.023 | −0.323 | **−0.374 \*** | flips |
+| grok | verbose | +0.057 | −0.272 | **−0.305 \*** | flips |
+
+**The one sign-stable result is nano: `narrative_cot` shifts the criterion toward leniency on
+a neutral item, positive under all three codings and significant under two.** That is the
+specificity test failing — a global criterion intervention, not an anti-sycophancy one, on an
+item where there is nothing to be sycophantic about.
+
+**And on the other two models the verbose register control moves the criterion in near
+lockstep with the scaffold** — haiku −0.290 vs −0.317, grok −0.323 vs −0.272 and −0.374 vs
+−0.305. Whatever NoT is doing to the criterion on haiku and grok, ~2,700 characters of
+unstructured verbose reasoning does the same. This is §3b's register finding replicating on a
+ground-truth-anchored instrument with both gold classes, which ELEPHANT can never provide.
+
+## Two by-products
+
+**Compliance variation is instrument-specific, not model-specific.** `narrative_cot`
+compliance here is 100% (haiku), 93.2% (nano), 90.2% (grok) — against 63% for grok on
+ELEPHANT-OEQ. There is no usable within-scaffold compliance variation on this instrument, so
+the compliance stratification cannot be run here at all. Any design treating compliance as a
+moderator must measure it per cell rather than carrying a per-model rate across instruments.
+
+**The NOVERDICT rate is a pre-existing model property, not an arm effect.** The guard flagged
+6–9% on nano and grok. Truncation was **0.0%**, the untreated baseline shows nano 7.2% and
+grok 5.3%, and the two scaffolds are within a point of each other inside every model. The
+guard fires on an absolute threshold; the differential defect it exists to catch is absent
+here. It should be changed to compare against a per-model baseline rate.
+
+## What this does to the programme
+
+The specificity test was named in §6 as "the highest-value single measurement in the
+programme" precisely because it needs no baseline stance effect. It has now been run, and
+together with the XSTest over-refusal result (36 vs 11, p = 3.5×10⁻⁴) and the agentic hedging
+result (refuse 22/hedge 2 → 12/12, p = 0.0034), **three independent instruments now show the
+scaffold moving behaviour where there is no sycophancy to reduce.** On this one it also
+degrades discriminability and accuracy against ground truth.
+
+With R1 retracted (§S0.5) and this result in hand, the honest summary of the mechanism
+programme is: the only scaffold element our experiments implicate in an outcome is **hedging
+register**, the effect is reproduced by a verbose control that contains none of the
+scaffold's primitives, and where ground truth exists on both classes the scaffold makes the
+judge worse rather than better.
