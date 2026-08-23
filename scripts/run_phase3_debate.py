@@ -247,12 +247,15 @@ def run_open_mod(s: Scenario, idx: int, gen_model: str, arm: str,
         + "\n\n=== Round 2 (Final positions) ===\n"
         + _fmt_block("r2", r2_texts)
     )
-    taxonomy_str = "\n".join(
-        f"  {k}: {v}" for k, v in s.decision_taxonomy.items()
-    )
+    # OPEN_MODERATOR_USER_TEMPLATE requires {taxonomy_labels}, not {taxonomy}:
+    # passing the wrong key raised KeyError('taxonomy_labels') on every call to
+    # this moderator. The other two callers (run_debate_std_cot_ablation.py and
+    # run_cross_vendor_moderator.py) pass the comma-separated quoted-label form,
+    # and it is reproduced byte-for-byte here so the three agree.
+    taxonomy_labels = ", ".join(f'"{k}"' for k in s.decision_taxonomy)
     user = OPEN_MODERATOR_USER_TEMPLATE.format(
         scenario=s.prompt,
-        taxonomy=taxonomy_str,
+        taxonomy_labels=taxonomy_labels,
         transcript=transcript,
     )
     result = _call_mod(OPEN_MODERATOR_SYSTEM, user, seed=idx + 5000)

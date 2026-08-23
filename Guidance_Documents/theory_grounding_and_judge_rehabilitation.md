@@ -1062,6 +1062,9 @@ cannot bear on min-$K_C$ itself.
 
 ## D2. The deliberation protocol: built, costed, not run
 
+**SUPERSEDED 2026-08-22 by D2a below.** The 13-call figure and the $3.77 / $54.79 prices in this
+paragraph were computed for a protocol that is not the paper's. Kept for the record only.
+
 `scripts/run_crowdgold_deliberation.py` puts the three-role five-round protocol on the
 Crowd-Gold items under the stance manipulation. 13 calls per cell (3 roles × rounds 0–2, one
 moderator integration, 3 binary votes), group verdict read through `verdict_format`, per-agent
@@ -1070,6 +1073,54 @@ per-role rejection claim promoted to a first-class bootstrapped statistic. **Sel
 offline.** Pilot: grok × 2 arms × 220 screened items = 5,720 calls, **$3.77**. Full three-model
 run: 16,302 calls, **$54.79**. Not run — the verification pass flagged five items to address
 first, all cheap.
+
+## D2a. Protocol fidelity restored: it is 17 calls, not 13, and the pilot is underpowered
+
+The build above dropped two of the paper's seven stages. ACL_paper.tex ll.497–513 specifies a
+FIRST moderator synthesis that each agent labels ACCEPT / ACCEPT_WITH_MODIFICATION / REJECT
+(Round 3), and only then a SECOND moderator proposal that explicitly addresses the modification
+requests, on which Round 4 is the binary vote. The old runner had neither, and elicited
+modification requests in the abstract at R2 before any synthesis existed to modify.
+
+Two consequences, both fatal to the comparison the run exists to make: the paper's 1.6% residual
+rejection is measured *after* a labelled-objection absorption cycle and is not the same quantity
+as a vote taken without one; and **defeasibility** as the paper defines it — an agent revising
+after *its own* labelled objection is addressed — was not measurable at all.
+
+Restored. Per cell: R0/R1/R2 = 9 agent calls, moderator synthesis = 1, R3 label = 3, moderator
+integration = 1, R4 vote = 3 → **17 calls**. (The verification pass that flagged this said 14; it
+counted the second moderator call but not the three R3 labels.)
+
+| | cells | calls | cost |
+|---|---:|---:|---:|
+| pilot: grok × 2 arms × 220 screened items | 440 | **7,480** | **$4.86** |
+| full: 3 models × 2 arms × 204 screened items | 1,224 | **20,808** | **$63.33** |
+
+**Selftest 100/100 offline** (was 52 with one failing — a pinned filter-screen count that drifted
+from 32 to 40 when nano's k=3 cells landed; the count is now a property, not a constant).
+
+New first-class read-outs, all bootstrapped and item-clustered: `defeasibility()` (does accepting
+at R4 depend on whether the moderator addressed *this* agent's request — a flat zero is
+agreeableness, not revision), `vote_independence()` (D3's test run prospectively on this run's own
+votes), the R3 label distribution, and a within-role version of the stake-concentration statistic
+(the pooled one is confounded: the neutral adjudicator can never be in the undermined stratum).
+
+**The authorisation question is now power, not price.** The dry run measures its own minimum
+detectable effect by running the identical DiD estimator on two single-agent arms already on
+disk, over the same panel: at 220 items and k=1 the interval is 0.706 wide, so **MDE ≥ 0.353** —
+larger than the entire single-agent shift the group is supposed to resist (grok narrative_cot,
+screened: +0.338 [+0.152, +0.581]). That is a lower bound; the 17-call chain can only be noisier.
+Measured on the cached standard arm, k=3 buys about a third off the interval (grok 0.447 → 0.308,
+nano 0.331 → 0.204) and moves the point estimate by more than 0.1. **Recommendation: authorise at
+k≥2, or authorise k=1 explicitly as a plumbing-and-descriptives run whose criterion contrast will
+not resolve.**
+
+Also corrected: the source comment asserting grok is the only model whose single-agent shift
+excludes zero. False — nano/standard is +0.145 [+0.046, +0.250] on the full panel and +0.155
+[+0.038, +0.271] on its screened 209 (220 is grok's panel, not nano's). Grok remains the right
+pilot for a narrower reason: against the pre-registered comparator (narrative_cot, the scaffold
+the group arm runs byte-identically) it is the only model whose shift excludes zero, and where
+the comparator does not move, "resistance" is undefined.
 
 ## D3. The 95% consensus carries no trace of deliberation
 
@@ -1117,3 +1168,72 @@ conflict" from "the agents were agreeable," and the discriminator the paper offe
 distinction does not discriminate. On Crowd-Gold it becomes separable, because "did the group
 agree" and "did the group get it right" are two different measurements there. That is what D2
 was built to run.
+
+---
+
+# GATE 1 FAILS (2026-08-22): the measured sycophancy is an ESH-usage effect
+
+The constructive programme (role embodiment, collective structures) is gated on a
+precondition: the untreated model must show a sycophantic shift for a scaffold to *reduce*.
+The design's Gate 1 was to top the untreated arm up and check. The aggregation run had already
+bought it. **The gate fails, and it fails informatively.**
+
+## The gate
+
+Untreated person-step criterion shift (`third_person` → `as_asker`), k=9, 249 items,
+item-clustered bootstrap:
+
+| model | published | dropped | not-at-fault | sig |
+|---|---|---|---|---|
+| gpt-5.4-nano | **+0.104 [+0.034,+0.179]** | +0.074 [−0.065,+0.204] | +0.013 [−0.125,+0.138] | 1/3 |
+| grok-4-1-fast | **+0.242 [+0.160,+0.340]** | +0.025 [−0.185,+0.167] | −0.072 [−0.276,+0.042] | 1/3 |
+
+Stop condition was "fewer than 2 of 3 codings on both models". Both are 1/3.
+
+**And it is not an underpowered real effect — it regresses toward zero as precision improves.**
+nano/dropped +0.169 (k=3) → +0.074 (k=9); nano/not-at-fault +0.101 → +0.013; grok/dropped
++0.129 → +0.025. Tripling the data shrank the effect on two of three codings. That is the
+signature of noise, not of a real effect awaiting power.
+
+## Why only the published coding shows it
+
+Verdict mix by arm, k=9:
+
+| | YTA (asker at fault) | ESH (both) | NTA (other at fault) |
+|---|---:|---:|---:|
+| grok third_person | 28.7% | 14.5% | 49.1% |
+| grok as_asker | 28.8% | 10.3% | 53.3% |
+| **Δ** | **+0.0%** | **−4.2%** | **+4.2%** |
+| nano Δ | −0.6% | −2.3% | +1.1% |
+
+**Direct blame of the asker does not move.** On grok it is flat to three decimals. The stance
+cue moves responses out of "everyone is at fault" and into "the other party is at fault" —
+**99% of the at-fault change on grok, 80% on nano, is carried by the ESH category alone.**
+
+Under the published coding ESH counts as at-fault, so an ESH→NTA migration reads as leniency.
+Under the coding that drops ESH the migration is invisible. That is the whole coding
+sensitivity, and it has been driving every flip in this programme.
+
+This also joins the earlier observation that judges emit ESH on 14–18% of responses while the
+human crowd casts EVERYBODY on about 1% of votes: the models are using a category the
+annotators essentially do not, and the entire "sycophancy" signal lives inside it.
+
+## Is this sycophancy?
+
+Arguably yes in a weak sense — declining to assign shared blame once someone owns the story is
+a form of deference. But it is **not** what the programme has been claiming, which is that the
+model lets the asker off the hook for their own conduct. Direct blame is unchanged. Any paper
+claim must say "the model withdraws shared blame", not "the model shields the asker".
+
+## Consequence
+
+1. **Do not spend the ~$210 constructive budget.** There is no robustly measurable benefit for
+   a scaffold to improve, so no arm can be shown to reduce it. The gate did its job.
+2. **The instrument needs a fix before any constructive scaffold work.** The natural one is
+   cheap and decisive: force a BINARY verdict with no shared-blame option, so there is no ESH
+   category to migrate into. If the shift survives, it is real blame-shifting and the
+   constructive programme has a target. If it vanishes, the effect was a hedging-category
+   artefact throughout and we have learned that instead.
+3. The collateral half remains robustly measurable (+0.174 [+0.072,+0.273] neutral-arm shift,
+   holistic across sections), so scaffold *harm* is measurable even while scaffold *benefit* is
+   not. That asymmetry must not be reported as if both were established.
