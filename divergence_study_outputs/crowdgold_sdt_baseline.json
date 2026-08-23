@@ -1,0 +1,517 @@
+{
+  "models": [
+    "claude-haiku-4-5",
+    "gpt-5.4-nano",
+    "grok-4-1-fast-reasoning"
+  ],
+  "scaffolds": [
+    "standard"
+  ],
+  "n_rows": 6723,
+  "codings": {
+    "published": {
+      "claude-haiku-4-5|standard|third_person": {
+        "d_prime": 2.396940300330193,
+        "criterion": -0.49374988952972365,
+        "accuracy": 0.8384925975773889,
+        "hit_rate": 0.9562289562289562,
+        "fa_rate": 0.2399103139013453,
+        "n_signal": 297,
+        "n_noise": 446,
+        "n_excluded": 4
+      },
+      "claude-haiku-4-5|standard|as_asker": {
+        "d_prime": 2.518750334178002,
+        "criterion": -0.4644148214313099,
+        "accuracy": 0.8559782608695652,
+        "hit_rate": 0.9591836734693877,
+        "fa_rate": 0.21266968325791855,
+        "n_signal": 294,
+        "n_noise": 442,
+        "n_excluded": 11
+      },
+      "claude-haiku-4-5|standard|as_asker_stance": {
+        "d_prime": 2.585894477676058,
+        "criterion": -0.4712266799606664,
+        "accuracy": 0.8619756427604871,
+        "hit_rate": 0.9627118644067797,
+        "fa_rate": 0.20495495495495494,
+        "n_signal": 295,
+        "n_noise": 444,
+        "n_excluded": 8
+      },
+      "gpt-5.4-nano|standard|third_person": {
+        "d_prime": 1.823271183150617,
+        "criterion": 0.08969570689036699,
+        "accuracy": 0.8241279069767442,
+        "hit_rate": 0.7955390334572491,
+        "fa_rate": 0.1575178997613365,
+        "n_signal": 269,
+        "n_noise": 419,
+        "n_excluded": 59
+      },
+      "gpt-5.4-nano|standard|as_asker": {
+        "d_prime": 1.6808261232644737,
+        "criterion": 0.23430717776588084,
+        "accuracy": 0.8068862275449101,
+        "hit_rate": 0.7286245353159851,
+        "fa_rate": 0.14035087719298245,
+        "n_signal": 269,
+        "n_noise": 399,
+        "n_excluded": 79
+      },
+      "gpt-5.4-nano|standard|as_asker_stance": {
+        "d_prime": 1.6556154222075454,
+        "criterion": 0.20968787879509815,
+        "accuracy": 0.8032544378698225,
+        "hit_rate": 0.7326007326007326,
+        "fa_rate": 0.1488833746898263,
+        "n_signal": 273,
+        "n_noise": 403,
+        "n_excluded": 71
+      },
+      "grok-4-1-fast-reasoning|standard|third_person": {
+        "d_prime": 2.6942729420651315,
+        "criterion": -0.1676576050880091,
+        "accuracy": 0.9038189533239038,
+        "hit_rate": 0.9366197183098591,
+        "fa_rate": 0.1182033096926714,
+        "n_signal": 284,
+        "n_noise": 423,
+        "n_excluded": 40
+      },
+      "grok-4-1-fast-reasoning|standard|as_asker": {
+        "d_prime": 2.6055192931465467,
+        "criterion": 0.06636540946821268,
+        "accuracy": 0.9066478076379066,
+        "hit_rate": 0.8932384341637011,
+        "fa_rate": 0.08450704225352113,
+        "n_signal": 281,
+        "n_noise": 426,
+        "n_excluded": 40
+      },
+      "grok-4-1-fast-reasoning|standard|as_asker_stance": {
+        "d_prime": 2.751994219915259,
+        "criterion": 0.1811399865638358,
+        "accuracy": 0.9191489361702128,
+        "hit_rate": 0.8853046594982079,
+        "fa_rate": 0.05868544600938967,
+        "n_signal": 279,
+        "n_noise": 426,
+        "n_excluded": 42
+      },
+      "decomposition": {
+        "claude-haiku-4-5|standard|PERSON (3rd -> as_asker)": {
+          "delta": 0.02933506809841374,
+          "ci_low": -0.12080680211899503,
+          "ci_high": 0.18220628534246558,
+          "excludes_zero": false,
+          "n_items": 249,
+          "n_boot": 1000
+        },
+        "claude-haiku-4-5|standard|PURE STANCE (asker -> +stance)": {
+          "delta": -0.006811858529356507,
+          "ci_low": -0.1991665454337015,
+          "ci_high": 0.18483664641283082,
+          "excludes_zero": false,
+          "n_items": 249,
+          "n_boot": 1000
+        },
+        "claude-haiku-4-5|standard|TOTAL (3rd -> +stance)": {
+          "delta": 0.022523209569057234,
+          "ci_low": -0.18886566185096643,
+          "ci_high": 0.2173237588777711,
+          "excludes_zero": false,
+          "n_items": 249,
+          "n_boot": 1000
+        },
+        "gpt-5.4-nano|standard|PERSON (3rd -> as_asker)": {
+          "delta": 0.14461147087551385,
+          "ci_low": 0.046266225359116286,
+          "ci_high": 0.24991583451752397,
+          "excludes_zero": true,
+          "n_items": 249,
+          "n_boot": 1000
+        },
+        "gpt-5.4-nano|standard|PURE STANCE (asker -> +stance)": {
+          "delta": -0.024619298970782688,
+          "ci_low": -0.11800316363728969,
+          "ci_high": 0.06491991619094206,
+          "excludes_zero": false,
+          "n_items": 249,
+          "n_boot": 1000
+        },
+        "gpt-5.4-nano|standard|TOTAL (3rd -> +stance)": {
+          "delta": 0.11999217190473116,
+          "ci_low": 0.0180449052340802,
+          "ci_high": 0.22743111164334706,
+          "excludes_zero": true,
+          "n_items": 249,
+          "n_boot": 1000
+        },
+        "grok-4-1-fast-reasoning|standard|PERSON (3rd -> as_asker)": {
+          "delta": 0.23402301455622176,
+          "ci_low": 0.08943672903968036,
+          "ci_high": 0.39704076883224837,
+          "excludes_zero": true,
+          "n_items": 249,
+          "n_boot": 1000
+        },
+        "grok-4-1-fast-reasoning|standard|PURE STANCE (asker -> +stance)": {
+          "delta": 0.11477457709562311,
+          "ci_low": -0.01855543911824209,
+          "ci_high": 0.2550894708363537,
+          "excludes_zero": false,
+          "n_items": 249,
+          "n_boot": 1000
+        },
+        "grok-4-1-fast-reasoning|standard|TOTAL (3rd -> +stance)": {
+          "delta": 0.3487975916518449,
+          "ci_low": 0.20681545853158245,
+          "ci_high": 0.5145500159490761,
+          "excludes_zero": true,
+          "n_items": 249,
+          "n_boot": 1000
+        }
+      },
+      "specificity": {},
+      "compliance": {}
+    },
+    "dropped": {
+      "claude-haiku-4-5|standard|third_person": {
+        "d_prime": 3.5110210508688233,
+        "criterion": 0.12528308060171922,
+        "accuracy": 0.9622950819672131,
+        "hit_rate": 0.9501915708812261,
+        "fa_rate": 0.02865329512893983,
+        "n_signal": 261,
+        "n_noise": 349,
+        "n_excluded": 137
+      },
+      "claude-haiku-4-5|standard|as_asker": {
+        "d_prime": 3.6978244667106184,
+        "criterion": 0.18327374782116623,
+        "accuracy": 0.9691056910569106,
+        "hit_rate": 0.9538461538461539,
+        "fa_rate": 0.01971830985915493,
+        "n_signal": 260,
+        "n_noise": 355,
+        "n_excluded": 132
+      },
+      "claude-haiku-4-5|standard|as_asker_stance": {
+        "d_prime": 3.9354723400353038,
+        "criterion": 0.27151366556084067,
+        "accuracy": 0.9754901960784313,
+        "hit_rate": 0.9568627450980393,
+        "fa_rate": 0.011204481792717087,
+        "n_signal": 255,
+        "n_noise": 357,
+        "n_excluded": 135
+      },
+      "gpt-5.4-nano|standard|third_person": {
+        "d_prime": 2.611247741404959,
+        "criterion": 0.6346896632577299,
+        "accuracy": 0.8900343642611683,
+        "hit_rate": 0.75,
+        "fa_rate": 0.024861878453038673,
+        "n_signal": 220,
+        "n_noise": 362,
+        "n_excluded": 165
+      },
+      "gpt-5.4-nano|standard|as_asker": {
+        "d_prime": 2.560827255881353,
+        "criterion": 0.8037767093425714,
+        "accuracy": 0.8637931034482759,
+        "hit_rate": 0.683982683982684,
+        "fa_rate": 0.017191977077363897,
+        "n_signal": 231,
+        "n_noise": 349,
+        "n_excluded": 167
+      },
+      "gpt-5.4-nano|standard|as_asker_stance": {
+        "d_prime": 2.4776193577351835,
+        "criterion": 0.7359497577214298,
+        "accuracy": 0.8624787775891342,
+        "hit_rate": 0.6932773109243697,
+        "fa_rate": 0.022792022792022793,
+        "n_signal": 238,
+        "n_noise": 351,
+        "n_excluded": 158
+      },
+      "grok-4-1-fast-reasoning|standard|third_person": {
+        "d_prime": 4.40038820052572,
+        "criterion": 0.8027521167053282,
+        "accuracy": 0.97,
+        "hit_rate": 0.920704845814978,
+        "fa_rate": 0.0,
+        "n_signal": 227,
+        "n_noise": 373,
+        "n_excluded": 147
+      },
+      "grok-4-1-fast-reasoning|standard|as_asker": {
+        "d_prime": 4.169280120507486,
+        "criterion": 0.9318086561915181,
+        "accuracy": 0.9526813880126183,
+        "hit_rate": 0.8770491803278688,
+        "fa_rate": 0.0,
+        "n_signal": 244,
+        "n_noise": 390,
+        "n_excluded": 113
+      },
+      "grok-4-1-fast-reasoning|standard|as_asker_stance": {
+        "d_prime": 4.1337123160935825,
+        "criterion": 0.9579941408558077,
+        "accuracy": 0.9502332814930016,
+        "hit_rate": 0.8677685950413223,
+        "fa_rate": 0.0,
+        "n_signal": 242,
+        "n_noise": 401,
+        "n_excluded": 104
+      },
+      "decomposition": {
+        "claude-haiku-4-5|standard|PERSON (3rd -> as_asker)": {
+          "delta": 0.05799066721944701,
+          "ci_low": -0.26144437103523444,
+          "ci_high": 0.31688067855343094,
+          "excludes_zero": false,
+          "n_items": 249,
+          "n_boot": 1000
+        },
+        "claude-haiku-4-5|standard|PURE STANCE (asker -> +stance)": {
+          "delta": 0.08823991773967443,
+          "ci_low": -0.1429531731681516,
+          "ci_high": 0.3837653583342785,
+          "excludes_zero": false,
+          "n_items": 249,
+          "n_boot": 1000
+        },
+        "claude-haiku-4-5|standard|TOTAL (3rd -> +stance)": {
+          "delta": 0.14623058495912145,
+          "ci_low": -0.25018564331317583,
+          "ci_high": 0.562635057248788,
+          "excludes_zero": false,
+          "n_items": 249,
+          "n_boot": 1000
+        },
+        "gpt-5.4-nano|standard|PERSON (3rd -> as_asker)": {
+          "delta": 0.16908704608484149,
+          "ci_low": -0.028668630182129506,
+          "ci_high": 0.40501247814775343,
+          "excludes_zero": false,
+          "n_items": 249,
+          "n_boot": 1000
+        },
+        "gpt-5.4-nano|standard|PURE STANCE (asker -> +stance)": {
+          "delta": -0.0678269516211416,
+          "ci_low": -0.3293065096836849,
+          "ci_high": 0.17592864309247347,
+          "excludes_zero": false,
+          "n_items": 249,
+          "n_boot": 1000
+        },
+        "gpt-5.4-nano|standard|TOTAL (3rd -> +stance)": {
+          "delta": 0.10126009446369988,
+          "ci_low": -0.13133597825403331,
+          "ci_high": 0.3382106776853916,
+          "excludes_zero": false,
+          "n_items": 249,
+          "n_boot": 1000
+        },
+        "grok-4-1-fast-reasoning|standard|PERSON (3rd -> as_asker)": {
+          "delta": 0.1290565394861899,
+          "ci_low": 0.017908805108844517,
+          "ci_high": 0.26801013810003094,
+          "excludes_zero": true,
+          "n_items": 249,
+          "n_boot": 1000
+        },
+        "grok-4-1-fast-reasoning|standard|PURE STANCE (asker -> +stance)": {
+          "delta": 0.026185484664289604,
+          "ci_low": -0.06438211994777432,
+          "ci_high": 0.11290766261944918,
+          "excludes_zero": false,
+          "n_items": 249,
+          "n_boot": 1000
+        },
+        "grok-4-1-fast-reasoning|standard|TOTAL (3rd -> +stance)": {
+          "delta": 0.1552420241504795,
+          "ci_low": 0.03067311473389167,
+          "ci_high": 0.3012204672652653,
+          "excludes_zero": true,
+          "n_items": 249,
+          "n_boot": 1000
+        }
+      },
+      "specificity": {},
+      "compliance": {}
+    },
+    "not_at_fault": {
+      "claude-haiku-4-5|standard|third_person": {
+        "d_prime": 2.9561441417532635,
+        "criterion": 0.5084096039304495,
+        "accuracy": 0.9205921938088829,
+        "hit_rate": 0.835016835016835,
+        "fa_rate": 0.02242152466367713,
+        "n_signal": 297,
+        "n_noise": 446,
+        "n_excluded": 4
+      },
+      "claude-haiku-4-5|standard|as_asker": {
+        "d_prime": 3.1259925068475556,
+        "criterion": 0.5587381799552944,
+        "accuracy": 0.9279891304347826,
+        "hit_rate": 0.8435374149659864,
+        "fa_rate": 0.01583710407239819,
+        "n_signal": 294,
+        "n_noise": 442,
+        "n_excluded": 11
+      },
+      "claude-haiku-4-5|standard|as_asker_stance": {
+        "d_prime": 3.2606809360186793,
+        "criterion": 0.6918121533612185,
+        "accuracy": 0.925575101488498,
+        "hit_rate": 0.8271186440677966,
+        "fa_rate": 0.009009009009009009,
+        "n_signal": 295,
+        "n_noise": 444,
+        "n_excluded": 8
+      },
+      "gpt-5.4-nano|standard|third_person": {
+        "d_prime": 2.289483760143823,
+        "criterion": 0.8576919302100628,
+        "accuracy": 0.8357558139534884,
+        "hit_rate": 0.6133828996282528,
+        "fa_rate": 0.021479713603818614,
+        "n_signal": 269,
+        "n_noise": 419,
+        "n_excluded": 59
+      },
+      "gpt-5.4-nano|standard|as_asker": {
+        "d_prime": 2.3581360115591976,
+        "criterion": 0.959138332466891,
+        "accuracy": 0.8248502994011976,
+        "hit_rate": 0.587360594795539,
+        "fa_rate": 0.015037593984962405,
+        "n_signal": 269,
+        "n_noise": 399,
+        "n_excluded": 79
+      },
+      "gpt-5.4-nano|standard|as_asker_stance": {
+        "d_prime": 2.2964882277786036,
+        "criterion": 0.884491827838483,
+        "accuracy": 0.8284023668639053,
+        "hit_rate": 0.6043956043956044,
+        "fa_rate": 0.019851116625310174,
+        "n_signal": 273,
+        "n_noise": 403,
+        "n_excluded": 71
+      },
+      "grok-4-1-fast-reasoning|standard|third_person": {
+        "d_prime": 3.669203333908471,
+        "criterion": 1.2063278200043053,
+        "accuracy": 0.8939179632248939,
+        "hit_rate": 0.7359154929577465,
+        "fa_rate": 0.0,
+        "n_signal": 284,
+        "n_noise": 423,
+        "n_excluded": 40
+      },
+      "grok-4-1-fast-reasoning|standard|as_asker": {
+        "d_prime": 3.7514090682339782,
+        "criterion": 1.1673472379490866,
+        "accuracy": 0.9052333804809052,
+        "hit_rate": 0.7615658362989324,
+        "fa_rate": 0.0,
+        "n_signal": 281,
+        "n_noise": 426,
+        "n_excluded": 40
+      },
+      "grok-4-1-fast-reasoning|standard|as_asker_stance": {
+        "d_prime": 3.723171630334662,
+        "criterion": 1.1814659568987447,
+        "accuracy": 0.902127659574468,
+        "hit_rate": 0.7526881720430108,
+        "fa_rate": 0.0,
+        "n_signal": 279,
+        "n_noise": 426,
+        "n_excluded": 42
+      },
+      "decomposition": {
+        "claude-haiku-4-5|standard|PERSON (3rd -> as_asker)": {
+          "delta": 0.05032857602484486,
+          "ci_low": -0.24263059445659818,
+          "ci_high": 0.2922288370028333,
+          "excludes_zero": false,
+          "n_items": 249,
+          "n_boot": 1000
+        },
+        "claude-haiku-4-5|standard|PURE STANCE (asker -> +stance)": {
+          "delta": 0.13307397340592408,
+          "ci_low": -0.029072904276487233,
+          "ci_high": 0.3910068943674019,
+          "excludes_zero": false,
+          "n_items": 249,
+          "n_boot": 1000
+        },
+        "claude-haiku-4-5|standard|TOTAL (3rd -> +stance)": {
+          "delta": 0.18340254943076895,
+          "ci_low": -0.1452440591351848,
+          "ci_high": 0.5537432376685327,
+          "excludes_zero": false,
+          "n_items": 249,
+          "n_boot": 1000
+        },
+        "gpt-5.4-nano|standard|PERSON (3rd -> as_asker)": {
+          "delta": 0.1014464022568281,
+          "ci_low": -0.09315539563847564,
+          "ci_high": 0.3266682229318365,
+          "excludes_zero": false,
+          "n_items": 249,
+          "n_boot": 1000
+        },
+        "gpt-5.4-nano|standard|PURE STANCE (asker -> +stance)": {
+          "delta": -0.07464650462840794,
+          "ci_low": -0.33263582684993476,
+          "ci_high": 0.16600043356021232,
+          "excludes_zero": false,
+          "n_items": 249,
+          "n_boot": 1000
+        },
+        "gpt-5.4-nano|standard|TOTAL (3rd -> +stance)": {
+          "delta": 0.026799897628420166,
+          "ci_low": -0.19779453580535844,
+          "ci_high": 0.25912785800971394,
+          "excludes_zero": false,
+          "n_items": 249,
+          "n_boot": 1000
+        },
+        "grok-4-1-fast-reasoning|standard|PERSON (3rd -> as_asker)": {
+          "delta": -0.038980582055218704,
+          "ci_low": -0.1107019672184637,
+          "ci_high": 0.021300150425347164,
+          "excludes_zero": false,
+          "n_items": 249,
+          "n_boot": 1000
+        },
+        "grok-4-1-fast-reasoning|standard|PURE STANCE (asker -> +stance)": {
+          "delta": 0.014118718949658104,
+          "ci_low": -0.04198704442483381,
+          "ci_high": 0.06757123687084832,
+          "excludes_zero": false,
+          "n_items": 249,
+          "n_boot": 1000
+        },
+        "grok-4-1-fast-reasoning|standard|TOTAL (3rd -> +stance)": {
+          "delta": -0.0248618631055606,
+          "ci_low": -0.09640741163913802,
+          "ci_high": 0.04793499198884277,
+          "excludes_zero": false,
+          "n_items": 249,
+          "n_boot": 1000
+        }
+      },
+      "specificity": {},
+      "compliance": {}
+    }
+  }
+}
