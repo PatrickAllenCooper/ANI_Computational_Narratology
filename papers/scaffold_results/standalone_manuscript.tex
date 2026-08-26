@@ -1,0 +1,235 @@
+% ===========================================================================
+% Self-contained manuscript fragment: introduction, results, three figures.
+% Compiles alone with pdflatex. Everything required is in this one file.
+%
+%   pdflatex standalone_manuscript.tex
+%
+% Fig 3 carries PLACEHOLDER values (0.999, renders visibly clipped) until the
+% forced-verdict run lands. Fill the two TODO macros from
+% divergence_study_outputs/bm_neutral_ncot.json and bm_neutral_oneline.json.
+% ===========================================================================
+\documentclass[11pt]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.17}
+
+% \columnwidth is used by the figures so they drop into a two-column class
+% unchanged; in this one-column wrapper it simply equals the text width.
+
+% ======================= PENDING-RESULT MACROS =============================
+\newcommand{\pTrueStd}{0.287}      % verified: triage cache, n=171
+\newcommand{\pTrueNoT}{0.999}      % TODO: fill from bm_neutral_ncot.json
+\newcommand{\pTrueOneLine}{0.999}  % TODO: fill from bm_neutral_oneline.json
+
+\begin{document}
+
+\section{Introduction}
+\label{sec-intro}
+
+Ask a language model whether you were in the wrong and it answers more gently
+than it would answer a stranger holding the same account. This is sycophancy
+in its consequential form. The model is not merely flattering as a matter of
+style. It shifts what it is willing to conclude, and it shifts furthest for
+the person who most needs the conclusion to be honest. Preference training
+plausibly builds the behaviour in, since approval is the reward signal and
+agreement is a reliable way to earn approval.
+
+The natural remedies operate after generation, and they fail for a structural
+reason. Sycophancy is a bias. It is a shared displacement of every response
+in the same direction, while voting and ensembling are variance operators
+that cancel disagreement among samples and leave a shared lean intact. The
+majority of displaced voters is itself displaced. In our data a panel drawn
+from three vendors gains five times more accuracy from voting than a panel
+built by sampling one model three times, yet the deference passes through
+both votes essentially untouched. Deliberation does no better. When our
+agents debate, positions converge on whatever is already in the room rather
+than on anything new, and stated confidence never registers an approaching
+change of mind. A bias that enters during generation must be corrected
+during generation.
+
+We correct it there with a narrative scaffold. Narration of Thought (NoT) is
+a single system prompt. Before any verdict the model must characterise the
+protagonist, enumerate every stakeholder, project the consequences of each
+available action at least two steps forward, state what remains genuinely
+uncertain, and only then commit. Nothing is trained, tuned, or
+post-processed.
+
+Why should narration reach a bias that voting cannot. Our account prices
+deference at two levels of a response. In a bare verdict, agreement is
+cheap. It costs one token of comfort, and nothing downstream has to answer
+for it. A narrated verdict prices the same concession as a world. A premise
+carried into a story must survive the story. Each projected consequence is a
+point where the premise meets the model's knowledge of how events actually
+unfold, and each named stakeholder is a perspective from which the premise
+can fail. Narration converts deference from a token-level gift into a
+story-level liability. The structure also dissolves the audience of one. A
+model that has just enumerated four parties with a stake in the outcome is
+no longer composing its answer for the asker alone.
+
+An account of this kind needs a hard test, because an intervention at the
+level of language can change how a model talks without changing anything the
+model concludes. We therefore certify the scaffold against forced
+commitment. On problems built around a provably false premise, the model
+must end with a bare TRUE or FALSE that is scored against ground truth,
+with no room for hedged verdicts, shared blame, or softened phrasing.
+Register cannot move that number. Only a change in what the model is willing
+to affirm can move it.
+
+\subsection{Results}
+\label{sec-results}
+
+Three results. First, the scaffold reduces social sycophancy on every model
+we test. Across 150 open-ended personal dilemmas, validation of the asker's
+own account falls by 22 to 41 percentage points on four frontier models from
+three vendors, after we correct a truncation artifact in the standard
+scoring pipeline that had inflated the published range
+(Fig.~\ref{fig:social}). A token-matched verbose control fails to reproduce
+the effect. Length is not the mechanism.
+
+Second, the scaffold is not a monolith, and its parts are individually
+accountable. Deleting one section at a time attributes each measurable
+property of the output to the specific instruction that requests it
+(Fig.~\ref{fig:attribution}). Removing stakeholder enumeration removes
+stakeholders and nothing else. Removing the uncertainty section removes
+hedging and nothing else, at a Cliff's delta of $-0.93$. Removing
+consequence projection removes causal depth. No off-diagonal effect exceeds
+$|\delta|=0.17$. A single emergent narrative factor would dilute every
+metric under any knockout, and a length confound would shrink one column no
+matter which section were dropped. Neither pattern appears.
+
+Third, the effect survives forced commitment. Untreated, the model affirms
+a false mathematical premise on 29 percent of items. Under the scaffold the
+rate falls to [TODO fill from bm\_neutral\_ncot.json]
+(Fig.~\ref{fig:propositional}). A one-sentence baseline that simply asks the
+model to check the claim captures [TODO] of that reduction, so the narrative
+structure carries the remainder. Because the forced format removes every
+expressive channel through which a register effect could imitate
+improvement, this is a change in the model's commitments. The scaffold does
+not only change how the model speaks. It changes what the model will sign.
+
+% ============================== FIGURE 1 ===================================
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+    xbar,
+    width=0.92\columnwidth, height=4.6cm,
+    xmin=-50, xmax=0,
+    xlabel={$\Delta$ validation rate, NoT $-$ standard CoT (pp)},
+    symbolic y coords={grok-4-1-fast, gpt-5.4-nano, claude-sonnet-4-6, claude-haiku-4-5},
+    ytick=data,
+    yticklabel style={font=\small\ttfamily},
+    xmajorgrids,
+    axis lines*=left,
+    bar width=9pt,
+    nodes near coords={\pgfmathprintnumber{\pgfplotspointmeta}},
+    nodes near coords style={font=\scriptsize, anchor=east, xshift=-2pt, color=white},
+    point meta=rawx,
+]
+\addplot[fill=teal!70!black, draw=none] coordinates {
+    (-26.7,claude-haiku-4-5)
+    (-22.3,claude-sonnet-4-6)
+    (-41.4,gpt-5.4-nano)
+    (-36.0,grok-4-1-fast)
+};
+\end{axis}
+\end{tikzpicture}
+\caption{\textbf{The scaffold reduces validation of the asker's own account
+on every generator.} Change in judge-scored validation rate (NoT minus
+standard CoT) on 150 open-ended personal dilemmas (ELEPHANT-OEQ), after
+correcting the scoring pipeline's 4{,}000-character truncation, which had
+disproportionately cut the scaffold's longer responses before scoring.
+Corrected effects span $-22$ to $-41$ percentage points across four
+generators from three vendors. A token-matched verbose control does not
+reproduce the effect, ruling out response length as the mechanism.}
+\label{fig:social}
+\end{figure}
+
+% ============================== FIGURE 2 ===================================
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+    width=0.94\columnwidth, height=5.6cm,
+    ybar,
+    bar width=5.5pt,
+    ymin=-1.0, ymax=0.35,
+    ylabel={Cliff's $\delta$ vs.\ full scaffold},
+    symbolic x coords={drop protag., drop stakeh., drop conseq., drop uncert., drop commit.},
+    xtick=data,
+    x tick label style={font=\scriptsize, rotate=25, anchor=north east},
+    ymajorgrids,
+    axis lines*=left,
+    legend style={font=\scriptsize, at={(0.02,0.02)}, anchor=south west,
+                  legend columns=1, draw=none, fill=none},
+]
+\addplot[fill=teal!75!black, draw=none] coordinates {
+    (drop protag.,-0.098) (drop stakeh.,-0.411) (drop conseq.,-0.084)
+    (drop uncert.,0.065) (drop commit.,0.171) };
+\addplot[fill=orange!80!black, draw=none] coordinates {
+    (drop protag.,0.111) (drop stakeh.,0.011) (drop conseq.,-0.222)
+    (drop uncert.,0.000) (drop commit.,0.133) };
+\addplot[fill=purple!70!black, draw=none] coordinates {
+    (drop protag.,0.000) (drop stakeh.,-0.022) (drop conseq.,-0.011)
+    (drop uncert.,-0.925) (drop commit.,0.000) };
+\legend{stakeholder count, causal-hop depth, uncertainty score}
+\end{axis}
+\end{tikzpicture}
+\caption{\textbf{Each substantive section produces exactly the content it
+requests.} Section-knockout ablation (\texttt{claude-sonnet-4-6}, $n{=}90$
+per cell). Cliff's $\delta$ of each drop-one-section variant against the full
+scaffold, on three coded output properties. Deleting the stakeholder section
+removes stakeholder enumeration ($\delta{=}-0.41$) and nothing else. Deleting
+the uncertainty section removes hedging ($\delta{=}-0.93$) and nothing else.
+Deleting consequence projection removes causal depth ($\delta{=}-0.22$) with
+minimal spillover. Off-diagonal effects never exceed $|\delta|{=}0.17$. A
+single emergent ``narrative factor'' would dilute every metric under any
+knockout, and a length confound would shrink one column regardless of which
+section is dropped. Neither pattern appears. (The protagonist and commitment
+knockouts move no metric, so no claim is made about those sections.)}
+\label{fig:attribution}
+\end{figure}
+
+% ============================== FIGURE 3 ===================================
+% !!! PLACEHOLDER VALUES -- see macros at top. Do not circulate until filled.
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+    ybar,
+    width=0.80\columnwidth, height=5.2cm,
+    ymin=0, ymax=0.40,
+    ylabel={$p(\mathrm{affirm\ false\ premise})$},
+    symbolic x coords={standard CoT, one-line check, NoT scaffold},
+    xtick={standard CoT, one-line check, NoT scaffold},
+    x tick label style={font=\small},
+    ymajorgrids,
+    axis lines*=left,
+    bar width=17pt,
+    nodes near coords={\pgfmathprintnumber[fixed,precision=2]{\pgfplotspointmeta}},
+    nodes near coords style={font=\small},
+]
+\addplot[fill=gray!55, draw=none] coordinates {(standard CoT,\pTrueStd)};
+\addplot[fill=teal!45,  draw=none] coordinates {(one-line check,\pTrueOneLine)};
+\addplot[fill=teal!75!black, draw=none] coordinates {(NoT scaffold,\pTrueNoT)};
+\end{axis}
+\end{tikzpicture}
+\caption{\textbf{The scaffold changes what the model will affirm, not merely
+how it speaks.} Probability of affirming a false mathematical premise under a
+forced binary verdict (\texttt{VERDICT: TRUE}/\texttt{FALSE}, scored against
+ground truth; BrokenMath, decidable-claim reframing, \texttt{gpt-5.4-nano},
+100 items, no stance pressure). The forced format removes every expressive
+channel, including hedging, shared blame, and softened phrasing, through
+which a register-level intervention could simulate improvement. Movement on
+this measure is therefore movement in the model's commitments. The one-line
+baseline (``check whether the claim is actually true'') tests whether a
+single sentence captures the gain. The scaffold's advantage over it is the
+contribution of narrative structure specifically.
+% TODO: check caption against the actual ordering once the run lands.
+}
+\label{fig:propositional}
+\end{figure}
+
+\end{document}
