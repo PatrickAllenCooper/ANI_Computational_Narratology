@@ -210,3 +210,118 @@ pretext (Crowd-Gold deliberation protocol is built and costed at ~$5
 pilot), (2) a powered H-SIG design (more samples per item), (3) cross
 embody_author with narrative_cot to test whether commitment amplifies
 interest (the commitment-separation hypothesis predicts it does).
+
+---
+
+# Addendum: E2 (embodiment x commitment cross), E3 (powered signal), E4 (deliberation pilot)
+
+Status: PRE-REGISTERED 2026-08-31, after the E1/H-PANEL results above and
+before any E2/E3/E4 generation. PI direction (2026-08-31): run all three
+follow-ups; the organising frame is that embodiment is the control apparatus
+and the narrative/commitment structure is the payload it should eventually
+control; the deliverable after these runs is a clear statement of exactly
+what embodiment buys.
+
+## E2: does commitment amplify interest? (embodiment x narrative cross)
+
+Three new arms in `scripts/run_bm_cross_sig.py` cross the E1 role heads with
+the five-section narrative scaffold: `embody_author_nar`,
+`embody_neutral_nar`, `embody_rival_nar`. Construction rules:
+
+- each cross arm's head is BYTE-IDENTICAL to the corresponding E1 head, so
+  the interest manipulation is unchanged;
+- all three cross arms share a byte-identical tail that carries the
+  answer-as-yourself sentence and the five narrative sections VERBATIM from
+  the live `narrative_cot` prompt (asserted at import against
+  `PROMPTS["narrative_cot"]`, so a canonical edit fails loudly);
+- the ally arm is dropped (it carried no clean prediction and inverted in
+  E1); neutral is kept because the panel analysis needs it.
+
+Everything else is byte-identical to E1: same 100 items (seed 44), six
+samples per item, neutral stance cell, nano, max_tokens 2048.
+
+Hypotheses, all item-clustered bootstrap CIs (10k draws):
+
+- **H-AMP (primary).** Commitment amplifies interest:
+  DiD = [p(author_nar) - p(rival_nar)] - [p(author) - p(rival)] > 0.
+  The plain-arm term is computed on the E1 caches; the bootstrap resamples
+  items jointly across all four arms so the DiD is item-paired. This is the
+  clean estimand: within each scaffold level the tail is constant, so the
+  DiD cancels both the head effects and the scaffold main effect.
+- **H-BACKFIRE-UNIF (secondary).** The narrative backfire is
+  role-independent: p(role_nar) - p(role) is within noise of the E1
+  narrative-standard gap (+6.7pp) for each of the three roles. Large
+  role-dependence in either direction is informative: if the backfire
+  concentrates in the author arm, commitment entrenches interest; if it
+  vanishes under rival, opposed interest inoculates against commitment.
+- **H-PANEL-NAR (secondary).** The opposed-alignment panel survives
+  commitment: mixed {author_nar, neutral_nar, rival_nar} < {author_nar x3},
+  same majority-of-3 construction as E1. Also reported: mixed_nar vs
+  mixed_plain, i.e. how much of the individual-level backfire the panel
+  absorbs.
+
+Kill criterion. If the H-AMP CI covers zero and |DiD| < 0.02, commitment
+does not measurably amplify interest on this instrument at this model, and
+the control-apparatus framing must rest on panel composition alone.
+
+Spend: 3 arms x 600 units = 1,800 nano generations.
+
+## E3: powered item-level signal (H-SIG with the attenuation fixed)
+
+E1's H-SIG was null with six samples per arm per item, and the registered
+caveat was severe attenuation. The powered design trades breadth for depth:
+
+- Items: the FIRST 50 items of the seed-44 load order (a pre-registered,
+  outcome-blind subset; no selection on any measured quantity).
+- Arms: `embody_author`, `embody_rival` (sensitivity), `standard_cot`
+  (untreated error). Prompts byte-identical to E1/Section-0.
+- Samples: k=30 per arm per item (sample indices 0-29; indices 0-5 are the
+  existing caches, so 24 new draws per cell). New spend: 3 x 50 x 24 =
+  3,600 nano generations.
+
+Statistics:
+
+- **H-SIG-POW (primary).** Spearman rho between s_i = p_i(author) -
+  p_i(rival) and e_i = p_i(TRUE | standard_cot), item-clustered bootstrap
+  CI across the 50 items.
+- **Reliability gate (registered so "underpowered" and "null" cannot be
+  conflated again).** Split-half reliability of s_i: correlate s_i from
+  even sample indices with s_i from odd indices, Spearman-Brown corrected.
+  If reliability < 0.2 the design is reported as still underpowered and
+  H-SIG stays open; only with reliability >= 0.2 AND a CI covering zero
+  with |rho| < 0.2 is the signal design declared dead on this instrument.
+
+## E4: deliberation pilot on Crowd-Gold (roles with social bite)
+
+`scripts/run_crowdgold_deliberation.py` is already built and carries its own
+registration in its module docstring (programme item 4.8-F: the 17-call,
+seven-stage protocol, criterion-shift readout, stake concentration,
+defeasibility, prospective vote-independence test). This addendum registers
+only the decision to EXECUTE its pilot as designed: grok-4-1-fast-reasoning
+agents, arms {third_person, as_asker}, the full 249-item crowd-gold panel,
+after a dry-run cost check (authorised ceiling: $15; the design estimate is
+~$5). No change to the runner's registered hypotheses or estimators.
+
+Sample-size amendment, recorded 2026-08-31 BEFORE generation, on dry-run
+output only (no outcome data involved): the runner's own MDE probe reports
+that at one sample per cell the minimum detectable resistance (>= 0.353)
+exceeds the single-agent shift the group is asked to resist (+0.338), so a
+k=1 null would be uninterpretable and even full resistance would sit at the
+detection boundary. The pilot therefore runs with --samples 2, priced by
+the same dry run at $9.68 (plus the documented 20-35% tokenizer
+undercount, so <= ~$13), within the registered ceiling. Relation to H-PANEL: E1's panel result used opposed interests
+with a mathematical pretext and no interaction between members; E4 tests
+opposed roles with social stakes that talk to each other. If the mixed-role
+deliberation resists the as_asker stance shift better than the cached
+single-agent arms (a criterion shift closer to zero), the de-biasing result
+generalises from voting to deliberation.
+
+## The synthesis deliverable
+
+After E2-E4, a section titled "What embodiment buys" gets written into this
+document stating, with numbers: (1) how large the interest knob is alone
+(E1), (2) whether the commitment payload amplifies it (E2), (3) whether
+role-swap disagreement carries an exploitable signal (E3), and (4) whether
+opposed-role combination de-biases collectives on both instruments (E1
+panels, E4 deliberation). That is the PI's requested "clear explanation of
+exactly what embodiment buys us."
