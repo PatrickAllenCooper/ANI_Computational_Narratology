@@ -1,7 +1,10 @@
-% sections_draft.tex -- Introduction and Results, drafted 2026-08-26.
+% sections_draft.tex -- Introduction and Results, drafted 2026-08-26,
+% corrected 2026-08-31 after the matched forced-verdict run reversed the
+% third claim (NoT raises false-premise affirmation, +6.7pp, item-clustered
+% 95% CI [+3.3, +10.5]; the one_line arm was served the standard prompt by
+% a configuration fallback and is reported as an untreated replicate).
 % Style constraints applied. No em dashes. No colons or semicolons in prose.
-% Figures live in intro_and_figures.tex. Fig 3 values are PENDING the
-% forced-verdict run and are marked TODO where they appear.
+% Figures live in intro_and_figures.tex.
 
 \section{Introduction}
 \label{sec-intro}
@@ -27,7 +30,7 @@ than on anything new, and stated confidence never registers an approaching
 change of mind. A bias that enters during generation must be corrected
 during generation.
 
-We correct it there with a narrative scaffold. Narration of Thought (NoT) is
+We intervene there with a narrative scaffold. Narration of Thought (NoT) is
 a single system prompt. Before any verdict the model must characterise the
 protagonist, enumerate every stakeholder, project the consequences of each
 available action at least two steps forward, state what remains genuinely
@@ -48,12 +51,24 @@ no longer composing its answer for the asker alone.
 
 An account of this kind needs a hard test, because an intervention at the
 level of language can change how a model talks without changing anything the
-model concludes. We therefore certify the scaffold against forced
+model concludes. We therefore test the scaffold against forced
 commitment. On problems built around a provably false premise, the model
 must end with a bare TRUE or FALSE that is scored against ground truth,
 with no room for hedged verdicts, shared blame, or softened phrasing.
 Register cannot move that number. Only a change in what the model is willing
 to affirm can move it.
+
+The scaffold fails this test, and it fails in the informative direction.
+Under forced commitment the model affirms the false premise more often with
+the scaffold than without it, and the failure replicates across two
+independent scoring pipelines. What survives every control is the social
+effect. The honest summary of this programme is therefore a dissociation.
+Narration reliably changes what the model does to its audience. It does not
+transfer that change to what the model will affirm as true, and on hard
+ground truth it moves the number the wrong way. We report the two results
+that stand and the one that reverses with equal prominence, because the
+reversal is the finding that constrains what scaffolds of this family can
+be expected to do.
 
 \subsection{Results}
 \label{sec-results}
@@ -77,12 +92,27 @@ $|\delta|=0.17$. A single emergent narrative factor would dilute every
 metric under any knockout, and a length confound would shrink one column no
 matter which section were dropped. Neither pattern appears.
 
-Third, the effect survives forced commitment. Untreated, the model affirms
-a false mathematical premise on 29 percent of items. Under the scaffold the
-rate falls to [TODO fill from bm\_neutral\_ncot.json]
-(Fig.~\ref{fig:propositional}). A one-sentence baseline that simply asks the
-model to check the claim captures [TODO] of that reduction, so the narrative
-structure carries the remainder. Because the forced format removes every
-expressive channel through which a register effect could imitate
-improvement, this is a change in the model's commitments. The scaffold does
-not only change how the model speaks. It changes what the model will sign.
+Third, the effect does not survive forced commitment, and the sign
+reverses. Untreated, the model affirms a false mathematical premise on
+15.7 percent of scored units. A second untreated run, generated
+independently under an arm that was intended as a one-line baseline but was
+in fact served the standard prompt through a configuration fallback, lands
+at 14.7 percent. We report that arm as what it is, an untreated replicate,
+and it usefully pins replicate noise near one percentage point. Under the
+scaffold the rate rises to 22.3 percent (Fig.~\ref{fig:propositional}). The
+increase of 6.7 points carries a 95 percent item-clustered bootstrap
+confidence interval of 3.3 to 10.5 points, and against the second untreated
+replicate it is 7.7 points with an interval of 4.2 to 11.3. Abstention does
+not explain it. The scaffold declines to give a verdict on 26.5 percent of
+units against 32.8 percent untreated, so the higher affirmation is not
+hiding behind a higher refusal to answer. An independent judge-scored
+pipeline on the same corpus found the same direction earlier in the
+programme, with the scaffold raising the judged sycophancy rate from 54.7
+to 69.3 percent. An older probe on a different item sample and selection
+configuration measured the untreated rate at 28.7 percent over 171 units.
+We do not mix the two regimes. Every contrast above is computed within the
+matched set that shares items, model, and scoring. Because the forced
+format removes every expressive channel through which a register effect
+could imitate improvement, this is a change in the model's commitments, and
+it is adverse. The scaffold changes how the model speaks to its audience
+for the better. What the model will sign, it makes worse.

@@ -8,20 +8,23 @@
 %          arm-level validation deltas, ELEPHANT-OEQ, 150 items/arm)
 %   Fig 2: divergence_study_outputs/subinstruction_attribution.csv
 %          (n=90 per cell, claude-sonnet-4-6)
-%   Fig 3: PENDING -- the forced-verdict BrokenMath run is in flight.
-%          p(TRUE) for standard_cot from the completed triage cache (0.287,
-%          n=171). The \pTrueNoT and \pTrueOneLine macros below are
-%          PLACEHOLDERS and MUST be replaced from
-%          divergence_study_outputs/bm_neutral_{ncot,oneline}.json before
-%          this figure is shown to anyone.
+%   Fig 3: divergence_study_outputs/bm_neutral_{standard,oneline,ncot}.json
+%          (matched three-arm forced-verdict run, 2026-08-26; n=600 units
+%          per arm, shared items). The run REVERSED the drafted claim: NoT
+%          RAISES false-premise affirmation. The one_line arm was generated
+%          with the standard prompt via a PROMPTS-key fallback and is
+%          reported as a second untreated replicate. The older triage-cache
+%          value (0.287, n=171, different item sample and selection config)
+%          is disclosed as a discrepancy note and never mixed in. CIs are
+%          item-clustered bootstrap, 10k draws (analyze_bm_embodiment.py).
 %
 % Requires: pgfplots (\pgfplotsset{compat=1.17} or later).
 % ---------------------------------------------------------------------------
 
-% ======================= PENDING-RESULT MACROS ==============================
-\newcommand{\pTrueStd}{0.287}      % verified: triage cache, n=171
-\newcommand{\pTrueNoT}{0.999}      % TODO: fill from bm_neutral_ncot.json
-\newcommand{\pTrueOneLine}{0.999}  % TODO: fill from bm_neutral_oneline.json
+% ================= MATCHED THREE-ARM RUN (2026-08-26) =======================
+\newcommand{\pTrueStd}{0.157}      % bm_neutral_standard.json, n=600
+\newcommand{\pTrueStdRep}{0.147}   % bm_neutral_oneline.json: untreated REPLICATE
+\newcommand{\pTrueNoT}{0.223}      % bm_neutral_ncot.json, n=600
 
 % =========================== INTRODUCTION ===================================
 \section{Introduction}
@@ -97,20 +100,26 @@ deleting the uncertainty instruction removes hedging and nothing else;
 deleting consequence projection removes causal depth --- a diagonal
 attribution pattern that rules out both a single emergent ``narrative
 factor'' and a length confound (\S\ref{sec:attribution},
-Fig.~\ref{fig:attribution}). (3)~Under forced propositional commitment, where
-the untreated model affirms a false premise on 29\% of items, the scaffold
-reduces affirmation to \pTrueNoT{} --- an effect on what the model
-\emph{concludes}, not on how it speaks
+Fig.~\ref{fig:attribution}). (3)~Under forced propositional commitment the
+prediction fails, and it fails with the sign reversed. The untreated model
+affirms a false premise on \pTrueStd{} of scored units, an independent
+untreated replicate lands at \pTrueStdRep{}, and the scaffold raises
+affirmation to \pTrueNoT{}, an increase of $+6.7$ points with a 95\%
+item-clustered bootstrap CI of $[+3.3, +10.5]$, with fewer abstentions than
+either untreated arm and in the same direction as an earlier judge-scored
+finding on the same corpus
 (\S\ref{sec:propositional}, Fig.~\ref{fig:propositional}).
-% TODO: sentence above assumes the pending run is positive; rewrite from
-% bm_neutral_ncot.json before submission.
 
-Together these results locate the intervention and the bias at the same
-layer. Sycophancy is applied during generation, wherever the model can spend
-deference cheaply; the scaffold works by making it expensive there ---
-forcing every concession to be carried through an elaborated, multi-party,
-consequence-bearing account of the situation before it can be handed to the
-person asking.
+Together these results dissociate the two things a scaffold of this kind
+might do. The social effect is real, replicated, and robust to length and
+truncation controls. It does not transfer to propositional
+truth-commitment, and on hard ground truth the scaffold moves affirmation
+of false premises the wrong way. The honest conclusion is that narration
+changes what the model does to its audience without improving, and in this
+setting while degrading, what the model will affirm as true. We report the
+reversal with the same prominence as the confirmations because it is the
+finding that constrains what prompt-level narrative interventions of this
+family can be expected to deliver.
 
 % ============================== FIGURE 1 ====================================
 \begin{figure}[t]
@@ -198,17 +207,16 @@ knockouts move no metric, so no claim is made about those sections.)}
 \end{figure}
 
 % ============================== FIGURE 3 ====================================
-% !!! PLACEHOLDER VALUES -- see macros at top. Do not circulate until filled.
 \begin{figure}[t]
 \centering
 \begin{tikzpicture}
 \begin{axis}[
     ybar,
     width=0.80\columnwidth, height=5.2cm,
-    ymin=0, ymax=0.40,
+    ymin=0, ymax=0.30,
     ylabel={$p(\mathrm{affirm\ false\ premise})$},
-    symbolic x coords={standard CoT, one-line check, NoT scaffold},
-    xtick={standard CoT, one-line check, NoT scaffold},
+    symbolic x coords={standard CoT, standard CoT (rep.), NoT scaffold},
+    xtick={standard CoT, standard CoT (rep.), NoT scaffold},
     x tick label style={font=\small},
     ymajorgrids,
     axis lines*=left,
@@ -217,23 +225,28 @@ knockouts move no metric, so no claim is made about those sections.)}
     nodes near coords style={font=\small},
 ]
 \addplot[fill=gray!55, draw=none] coordinates {(standard CoT,\pTrueStd)};
-\addplot[fill=teal!45,  draw=none] coordinates {(one-line check,\pTrueOneLine)};
-\addplot[fill=teal!75!black, draw=none] coordinates {(NoT scaffold,\pTrueNoT)};
+\addplot[fill=gray!35, draw=none] coordinates {(standard CoT (rep.),\pTrueStdRep)};
+\addplot[fill=orange!80!black, draw=none] coordinates {(NoT scaffold,\pTrueNoT)};
 \end{axis}
 \end{tikzpicture}
-\caption{\textbf{The scaffold changes what the model will affirm, not merely
-how it speaks.} Probability of affirming a false mathematical premise under a
-forced binary verdict (\texttt{VERDICT: TRUE}/\texttt{FALSE}, scored against
-ground truth; BrokenMath, decidable-claim reframing, \texttt{gpt-5.4-nano},
-100 items, no stance pressure). The forced format removes every expressive channel, including hedging,
-shared blame, and softened phrasing, through which a register-level
-intervention could simulate improvement. Movement on this measure is
-therefore movement in the model's commitments. The one-line baseline
-(``check whether the claim is actually true'') tests whether a single
-sentence captures the gain; the scaffold's advantage over it is the
-contribution of narrative structure specifically.
-% TODO: caption's final sentence must be checked against the actual ordering
-% once bm_neutral_ncot.json / bm_neutral_oneline.json land.
-}
+\caption{\textbf{Under forced commitment the scaffold makes the
+propositional failure worse, not better.} Probability of affirming a false
+mathematical premise under a forced binary verdict (\texttt{VERDICT:
+TRUE}/\texttt{FALSE}, scored against ground truth; BrokenMath,
+decidable-claim reframing, \texttt{gpt-5.4-nano}, 100 items, 600 scored
+units per arm on shared items, no stance pressure). The scaffold's bar is
+the tallest. The increase over standard CoT is $+6.7$ points with a 95\%
+item-clustered bootstrap CI of $[+3.3, +10.5]$, and the scaffold abstains
+less than either untreated arm (26.5\% vs.\ 32.8\% and 35.2\%), so the rise
+is not an artifact of differential refusal. The middle bar was generated as
+an intended one-line baseline that a configuration fallback served the
+standard prompt instead. It is reported as what it is, an independent
+untreated replicate, and the two gray bars differ by $1.0$ point (CI
+$[-1.5, +3.3]$), which bounds replicate noise. The forced format removes
+every expressive channel, including hedging, shared blame, and softened
+phrasing, through which a register-level intervention could simulate
+improvement or harm. Movement on this measure is movement in the model's
+commitments, and here it moves against the scaffold, replicating an
+independent judge-scored finding on the same corpus.}
 \label{fig:propositional}
 \end{figure}
