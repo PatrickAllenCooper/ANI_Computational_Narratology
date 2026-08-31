@@ -133,3 +133,80 @@ Reference arms are cache-reads, zero spend. Outputs:
 Analysis in `scripts/analyze_bm_embodiment.py`, which also computes the
 item-clustered bootstrap CI for the Section-0 three-arm contrast (the
 handoff's standing debt) since it is the same estimator on the same caches.
+
+---
+
+## RESULTS (2026-08-31, appended after the full run; nothing above edited)
+
+Execution. Pilot (800 units) passed both sanity gates and the full run
+completed the same day. Four units, all in the author arm, were lost to API
+timeouts after exhausted retries. No sweep pass was run, deliberately: a
+rerun would give every empty-response unit a second draw, silently changing
+the estimand from single-draw semantics and breaking comparability with the
+Section-0 reference arms. The four lost units enter the missingness
+accounting. Total new spend approximately 3,200 generations.
+
+Arm estimates (missing = NOVERDICT, denominators = 600 planned units):
+author 0.192 (25.2% missing), ally 0.157 (27.5%), neutral 0.180 (27.5%),
+rival 0.163 (26.8%). Reference arms reproduce Section 0 exactly.
+
+**H-ORD: direction confirmed at the boundary, monotonicity not confirmed.**
+Delta(author - rival) = +0.028, 95% item-clustered CI [+0.000, +0.058]. The
+point estimate is positive as registered and the kill criterion (CI covers
+zero AND |Delta| < 0.02) is not triggered, but the interval touches zero, so
+this is a marginal effect, not a clean one. The registered four-arm trend is
++0.400 with CI [-0.316, +0.800]: the middle of the ordering inverts (ally
+0.157 sits below neutral 0.180), so no monotonicity claim is licensed.
+
+**H-CTRL: not established.** The registered criterion required the CI to
+exclude the [-0.01, +0.01] replicate-noise band. It does not (lower bound
++0.000). The point estimate (2.8pp) is about three times replicate noise,
+but the claim that interest roles are a *reliable* criterion knob on this
+instrument at this model is not licensed. Role identity moves the number
+far less than scaffold structure does: every embody arm and standard_cot
+sit within [0.157, 0.192], while narrative_cot stands alone at 0.223. On
+this instrument, what the prompt makes the model *do* (narrate and commit)
+dominates who the prompt says the model *is*.
+
+**H-PANEL: the registered primary panel claim HOLDS; the strong claim is
+directional only.** Mixed opposed-alignment panel {author, neutral, rival}
+affirms the false premise at 0.162 vs 0.188 for the homogeneous author
+panel: difference -0.026, 95% CI [-0.047, -0.007], excluding zero. Mixing
+opposed interests into an interested panel measurably de-biases it. Against
+the disinterested neutral panel the mixed panel is -0.010 with CI
+[-0.031, +0.008]: directionally better, not significant, and at worst
++0.008. Opposed-alignment combination is therefore at least as good as
+removing interest entirely, and strictly better than the worst-case
+interested panel. This is the community result the PI asked for, at pilot
+strength.
+
+**H-SIG: null.** Item-level interest sensitivity does not predict untreated
+item error: rho = +0.045, CI [-0.216, +0.299]. Caveat registered here
+rather than discovered post hoc: per-item sensitivity is estimated from six
+samples per arm, so attenuation toward zero is severe. A powered version
+needs many more samples per item on fewer items before this signal design
+is declared dead.
+
+**Manski bounds** on the primary contrast are sign-crossing
+([-0.240, +0.280]) at ~26% missingness, as anticipated in the design
+section; per the registered rule the Manski-robust version of H-ORD is
+indeterminate. Missingness is nearly identical across the four arms
+(25.2 to 27.5%), so differential abstention is an unlikely driver of the
+observed ordering.
+
+Interpretation for the programme. Embodiment-as-control-apparatus on
+ground truth is weak on nano: real enough to keep (the author-rival
+direction held, and the panel test built on it worked), too small to
+exploit as a primary knob at this effect size. The scaffold-structure
+effect (the NoT backfire, +6.7pp) remains the largest lever on this
+instrument, consistent with the commitment-device hypothesis in
+`Guidance_Documents/not_origins_review.md`. The communal direction is the
+one that advanced today: engineered opposition de-biases a panel where
+voting alone cannot, which is exactly the "mutual combination of
+alignments pushes toward objectivity" thesis, established here in its weak
+form. Natural next steps, in order of information per dollar: (1) replicate
+the panel result where roles have social bite rather than mathematical
+pretext (Crowd-Gold deliberation protocol is built and costed at ~$5
+pilot), (2) a powered H-SIG design (more samples per item), (3) cross
+embody_author with narrative_cot to test whether commitment amplifies
+interest (the commitment-separation hypothesis predicts it does).
