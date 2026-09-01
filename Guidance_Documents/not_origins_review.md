@@ -215,3 +215,49 @@ Leave archived unless a specific need arises: NC-DAG formalism, Phi corpus
 alignment, gzip/K_C surface proxies (falsified), the 5-way ESH instrument, raw
 audience-presence designs (scooped), SycophancyEval (saturated), the
 95%-consensus headline (vote carries no signal).
+
+## 8. Steering-amplification roadmap (added 2026-09-01, after E1-E4)
+
+The E1-E4 results (prereg_embodiment_community.md) decompose embodiment into
+three components with different amplification profiles: a weak, item-invariant
+criterion offset (+2.8pp, sensitivity reliability 0.064 -- the geometry of a
+content-independent additive bias, i.e. of a steering vector); a saturable
+verdict channel shared with commitment (E2 crowding-out); and a high-gain
+stake-conditioned objection response (+63pp concentration, +36pp
+defeasibility). Amplification targets the third, never the second.
+
+Substrates, in cost order:
+
+1. **Prompt dose (existing machinery).** Dose-graded stake heads via the
+   stance factorial's dose axis, applied antisymmetrically to opposed seats
+   in the deliberation protocol (aggregation-passthrough forbids unbalanced
+   amplification). Expected: a gain curve with a saturation knee (E2).
+   Also: raise R3 objection bandwidth (severity grading, forced modification
+   content).
+2. **Activation space (local model; contrastive corpora already cached from
+   E1/E3).** Extract v_stake by CAA / difference-in-means (persona vectors,
+   Chen et al. 2025, arXiv 2507.21509; role vectors rival targeted
+   anti-sycophancy steering and are geometrically independent of the
+   sycophancy direction, arXiv 2605.21006; internalized debate leaves
+   linearly separable agent subspaces, IMAD, ACL 2026, arXiv 2604.24881).
+   Four registered-in-spirit predictions: (a) alpha-dose reproduces the E1
+   ordering then extends it; dose-response uniform across items per E3
+   item-invariance; (b) opposed steering +/- alpha*v with byte-identical
+   prompts reproduces stake concentration -- embodiment without words,
+   eliminating token-matching confounds entirely; (c) substitution geometry:
+   projections of v_interest and v_commitment onto the verdict direction
+   overlap and saturate even if the full vectors are near-orthogonal;
+   remedy is orthogonalisation or stage separation; (d) v_stake activation
+   read online is a per-token stake meter, the live version of the
+   derivable signal.
+3. **Control loop.** Close the open-loop doctrine: moderator re-synthesises
+   until residual objections concentrate only in necessarily-undermined
+   seats, using the defeasibility gap (38.3% vs 2.1%) to separate principled
+   objection from stubbornness. Amplification = loop gain; defeasibility is
+   the stability criterion.
+
+Guardrails from the data: stop at the saturation knee; abort if the
+defeasibility gap closes (zealotry overdose); watch P(reject | not
+undermined) (currently 13%) as the false-objection rate; amplify the
+opposed/critical direction before the advocate direction (both our seat
+asymmetry and arXiv 2605.21006's persona asymmetry point that way).
