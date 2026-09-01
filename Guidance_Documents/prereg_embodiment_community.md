@@ -388,3 +388,95 @@ per item. Recommendation to the PI: close H-SIG on cost grounds -- the
 interest effect is nearly item-invariant, so role-swap disagreement
 carries almost no item-discriminating information on this instrument; the
 reliable item-level signal here is untreated error itself.
+
+---
+
+## E4 RESULTS (2026-09-01, appended after the run; nothing above edited)
+
+Execution. 880 cells x 17 calls = 14,960 grok generations at two samples
+per cell, full 220-item screened panel, both arms, ~5.2 hours, cost within
+the registered ceiling. Artifacts: `cg_deliberation_rows.csv`,
+`cg_deliberation_votes.csv`, `cg_deliberation_summary.json`.
+
+**Registered headline (resistance): directional, unresolved at pilot
+power.** Group criterion shift dc = +0.205 vs single-agent narrative_cot
++0.338; resist = +0.133, 95% CI [-0.120, +0.421]. The group moved less
+than the single agent, as the community thesis predicts, but the pilot MDE
+(~0.18 at k=2, anticipated in the dry run) cannot resolve a +0.13 effect.
+Not evidence of resistance; not evidence against it.
+
+**Stake concentration: the strongest embodiment effect measured anywhere
+in this programme.** Within stake-bearing seats, P(reject | own stake
+undermined by the group verdict) = 76.0% vs 13.0% otherwise: delta +0.630,
+95% CI [+0.581, +0.675]. Assigned roles with social stakes fight for those
+stakes, massively and predictably -- and this under the same narrative_cot
+scaffold that erased role separation on BrokenMath.
+
+**No deference import.** The writer-advocate's rejection rate does NOT
+rise when the writer is the actual user (third_person 34.8% -> as_asker
+33.7%). The group mechanism did not smuggle the user's stance in through
+its advocate seat.
+
+**Defeasibility is real here, unlike in the paper's own run.** Among
+agents lodging a labelled objection, acceptance after the moderator
+addressed THEIR request: 38.3%; after it did not: 2.1%. Delta +0.362
+[+0.317, +0.402]. Residual rejection 68.2% (paper: 1.6%) -- these agents
+are not blanket-acceptors, and their revision is conditioned on their own
+objection being absorbed, which is the mechanism the ACL paper claimed and
+never demonstrated.
+
+**Votes carry a trace of the deliberation.** D3's prospective independence
+test rejects hard: observed rejections-per-debate {0:141, 1:622, 2:106,
+3:9} against independent expectation {268, 390, 189, 31}, chi2 = 249.9;
+unanimity 0.161 vs 0.305 expected. Where the original ACL run's votes were
+indistinguishable from three independent coin flips, opposed embodied
+stakes produce structured, seat-anchored disagreement.
+
+---
+
+## What embodiment buys (the synthesis the PI asked for)
+
+One sentence: embodiment reliably buys a STAKE STRUCTURE, not a verdict
+shift -- and the stake structure is the control surface.
+
+With numbers, on the four registered questions:
+
+1. **Alone, the interest knob is real but small (E1).** Author-minus-rival
+   on ground-truth false premises: +2.8pp [+0.0, +5.8]. Every role arm
+   sits within [0.157, 0.192] while scaffold structure moves +6.7pp. Too
+   weak to be a primary criterion knob on formal content.
+
+2. **Commitment does not amplify it; it crowds it out (E2).** DiD -2.5pp
+   [-7.0, +2.2]; under the narrative scaffold the roles converge and the
+   ordering vanishes. The backfire concentrates where interest is absent
+   (neutral +6.0pp, rival +4.8pp, author +2.3pp n.s.): interest and
+   commitment are partial substitutes saturating one criterion channel.
+   Ordering constraint for any control design: embodiment must be applied
+   BEFORE commitment structure, because commitment saturates the channel
+   and erases role separation.
+
+3. **Role-swap disagreement is not an item-level signal on formal ground
+   truth (E3), but stake-conditioned objection is a near-perfect signal in
+   social judgment (E4).** On BrokenMath, sensitivity reliability 0.064 at
+   k=30 (item-invariant; ~440 samples/item to measure; close on cost). In
+   deliberation, rejection localises on the seat whose stake the verdict
+   undermines at +63.0pp [+58.1, +67.5], with genuine defeasibility
+   (+36.2pp) and strongly interdependent votes (chi2 249.9). The
+   derivable signal the PI asked for exists, and it lives in WHO objects,
+   not in how verdicts move under role swap.
+
+4. **Opposed-role combination de-biases collectives only in the
+   low-commitment regime (E1 panels, E2, E4).** Voting: mixed panel beats
+   interested-homogeneous by -2.6pp [-4.7, -0.7] on plain arms; under
+   commitment the advantage collapses to -0.4pp and the +4.4pp backfire
+   passes through the vote. Deliberation: the group shifted less than the
+   single agent (+0.205 vs +0.338) but the pilot cannot resolve it.
+
+Design doctrine that falls out: assign opposed embodied interests first;
+let the individual reasoners stay uncommitted (no narrative scaffold at
+the member level, where it both inflates error and destroys the role
+separation the mechanism depends on); read the stake-conditioned objection
+signal off the deliberation; and if a commitment device is wanted, bind it
+to the aggregation step only. Embodiment's value is architectural, not
+direct: it manufactures the structured disagreement that makes collective
+error-correction measurable and steerable.

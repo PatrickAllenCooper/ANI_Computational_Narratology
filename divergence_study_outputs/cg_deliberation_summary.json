@@ -1,0 +1,1096 @@
+{
+  "protocol": "r0_statement|r1_rebuttal|r2_restate|moderator_synthesis|r3_three_way_label|moderator_integration|r4_binary_vote",
+  "role_mapping_note": "ROLE MAPPING -- what maps, what does not.\n\nThe paper's three seats are: formal decider (high agency, present), primary\naffected party (low agency, present), third party (no voice, offscreen/future).\n\n  writer_advocate      <- primary affected party.  CLEAN.  The writer's conduct\n                          is what is being judged; an at-fault verdict is a\n                          finding against them; they have no agency over the\n                          verdict.  This is also the seat the stance\n                          manipulation targets, because in the as_asker arms\n                          the writer IS the user.\n\n  counterparty         <- NOTHING IN THE PAPER.  FLAGGED.  A deliberation with\n                          conflicting stakes needs an opposing stakeholder, and\n                          on AITA the only one available is the other person in\n                          the conflict.  The paper's remaining seat is the\n                          formal decider, and the counterparty is not that.\n                          Treat any comparison to the paper's per-role\n                          rejection profile as approximate on this seat.\n\n  neutral_adjudicator  <- third party.  PARTIAL.  The paper's third party is a\n                          voiceless AFFECTED party (a future patient, a child\n                          in a waiting room); mine is a disinterested reader who\n                          carries no stake but must live with the norm the\n                          verdict sets.  Same structural position (no stake in\n                          the outcome, no formal power), different reason for\n                          being at the table.\n\n  formal decider       <- DOES NOT MAP.  On AITA nobody in the story is choosing\n                          an action; a past action is being judged, and the only\n                          decision in the room is the verdict itself.  That seat\n                          is occupied by the MODERATOR, which is a deviation\n                          from the paper's protocol: in the paper the moderator\n                          is outside the stakeholder set and the decider is\n                          inside it.  Any claim that this run reproduces the\n                          paper's protocol must carry this sentence.\n",
+  "roles": [
+    {
+      "role_id": "writer_advocate",
+      "paper_role": "primary_affected",
+      "stake": "not_at_fault",
+      "brief": "You speak for the writer -- the person whose first-person account this is. Their conduct is what is being judged and they have no power over the outcome. A finding that the writer is in the wrong is a finding against the party you speak for. Put the writer's case as strongly as the account itself allows, including whatever context or constraint the other participants are passing over. You may not invent facts that are not in the account, and you may not assert that the writer is not in the wrong if the account itself does not support it."
+    },
+    {
+      "role_id": "counterparty",
+      "paper_role": "unmapped",
+      "stake": "at_fault",
+      "brief": "You speak for the other party in the conflict -- the person the writer describes themselves as being in conflict with. That person did not write this account, was not asked for their version, and cannot add anything to it. A finding that the writer is not in the wrong is, on most readings of an account like this, a finding against the party you speak for. Put their case as strongly as the writer's own account allows, including what the account concedes against itself. You may not invent facts that are not in the account."
+    },
+    {
+      "role_id": "neutral_adjudicator",
+      "paper_role": "third_party",
+      "stake": "none",
+      "brief": "You have no stake in this outcome and speak for neither party. You represent everyone who will read this verdict and take it as a statement about what conduct is acceptable. Your concern is that the group's finding is the one the account actually supports -- neither harsher nor softer than the conduct described -- and that it would read the same way whoever had brought the account forward."
+    }
+  ],
+  "models": [
+    "grok-4-1-fast-reasoning"
+  ],
+  "arms": [
+    "third_person",
+    "as_asker"
+  ],
+  "samples": 2,
+  "agent_scaffold": "narrative_cot",
+  "moderator_model": "(agent model)",
+  "n_items": 220,
+  "n_cells": 880,
+  "n_calls": 14960,
+  "content_filter_screen": {
+    "applied": true,
+    "filter_prone_items_per_model": {
+      "grok-4-1-fast-reasoning": 29
+    }
+  },
+  "transcript_cap": 0,
+  "round_guard": {
+    "cells": {
+      "grok-4-1-fast-reasoning|narrative_cot/integration:mod-grok-4-1-fast-reasoning|as_asker": {
+        "n": 440,
+        "truncated": 0.0,
+        "noverdict": 0.0068,
+        "mean_chars": 1001.2
+      },
+      "grok-4-1-fast-reasoning|narrative_cot/integration:mod-grok-4-1-fast-reasoning|third_person": {
+        "n": 440,
+        "truncated": 0.0,
+        "noverdict": 0.0023,
+        "mean_chars": 1019.8
+      },
+      "grok-4-1-fast-reasoning|narrative_cot/r0:counterparty|as_asker": {
+        "n": 440,
+        "truncated": 0.0,
+        "noverdict": 0.0068,
+        "mean_chars": 1813.4
+      },
+      "grok-4-1-fast-reasoning|narrative_cot/r0:counterparty|third_person": {
+        "n": 440,
+        "truncated": 0.0,
+        "noverdict": 0.0159,
+        "mean_chars": 1898.3
+      },
+      "grok-4-1-fast-reasoning|narrative_cot/r0:neutral_adjudicator|as_asker": {
+        "n": 440,
+        "truncated": 0.0,
+        "noverdict": 0.0068,
+        "mean_chars": 2781.7
+      },
+      "grok-4-1-fast-reasoning|narrative_cot/r0:neutral_adjudicator|third_person": {
+        "n": 440,
+        "truncated": 0.0,
+        "noverdict": 0.0114,
+        "mean_chars": 2833.8
+      },
+      "grok-4-1-fast-reasoning|narrative_cot/r0:writer_advocate|as_asker": {
+        "n": 440,
+        "truncated": 0.0,
+        "noverdict": 0.0136,
+        "mean_chars": 2282.7
+      },
+      "grok-4-1-fast-reasoning|narrative_cot/r0:writer_advocate|third_person": {
+        "n": 440,
+        "truncated": 0.0,
+        "noverdict": 0.0091,
+        "mean_chars": 2261.7
+      },
+      "grok-4-1-fast-reasoning|narrative_cot/r1:counterparty|as_asker": {
+        "n": 440,
+        "truncated": 0.0,
+        "noverdict": 0.0114,
+        "mean_chars": 2474.7
+      },
+      "grok-4-1-fast-reasoning|narrative_cot/r1:counterparty|third_person": {
+        "n": 440,
+        "truncated": 0.0,
+        "noverdict": 0.0045,
+        "mean_chars": 2620.7
+      },
+      "grok-4-1-fast-reasoning|narrative_cot/r1:neutral_adjudicator|as_asker": {
+        "n": 440,
+        "truncated": 0.0,
+        "noverdict": 0.0045,
+        "mean_chars": 2323.8
+      },
+      "grok-4-1-fast-reasoning|narrative_cot/r1:neutral_adjudicator|third_person": {
+        "n": 440,
+        "truncated": 0.0,
+        "noverdict": 0.0068,
+        "mean_chars": 2492.2
+      },
+      "grok-4-1-fast-reasoning|narrative_cot/r1:writer_advocate|as_asker": {
+        "n": 440,
+        "truncated": 0.0,
+        "noverdict": 0.0068,
+        "mean_chars": 2475.9
+      },
+      "grok-4-1-fast-reasoning|narrative_cot/r1:writer_advocate|third_person": {
+        "n": 440,
+        "truncated": 0.0,
+        "noverdict": 0.0091,
+        "mean_chars": 2680.3
+      },
+      "grok-4-1-fast-reasoning|narrative_cot/r2:counterparty|as_asker": {
+        "n": 440,
+        "truncated": 0.0,
+        "noverdict": 0.0091,
+        "mean_chars": 1614.3
+      },
+      "grok-4-1-fast-reasoning|narrative_cot/r2:counterparty|third_person": {
+        "n": 440,
+        "truncated": 0.0,
+        "noverdict": 0.0068,
+        "mean_chars": 2052.4
+      },
+      "grok-4-1-fast-reasoning|narrative_cot/r2:neutral_adjudicator|as_asker": {
+        "n": 440,
+        "truncated": 0.0,
+        "noverdict": 0.0136,
+        "mean_chars": 1561.7
+      },
+      "grok-4-1-fast-reasoning|narrative_cot/r2:neutral_adjudicator|third_person": {
+        "n": 440,
+        "truncated": 0.0,
+        "noverdict": 0.0045,
+        "mean_chars": 1971.0
+      },
+      "grok-4-1-fast-reasoning|narrative_cot/r2:writer_advocate|as_asker": {
+        "n": 440,
+        "truncated": 0.0,
+        "noverdict": 0.0068,
+        "mean_chars": 1996.7
+      },
+      "grok-4-1-fast-reasoning|narrative_cot/r2:writer_advocate|third_person": {
+        "n": 440,
+        "truncated": 0.0,
+        "noverdict": 0.0091,
+        "mean_chars": 2203.9
+      },
+      "grok-4-1-fast-reasoning|narrative_cot/r3_label:counterparty|as_asker": {
+        "n": 440,
+        "truncated": 0.0,
+        "noverdict": 0.0023,
+        "mean_chars": 314.2
+      },
+      "grok-4-1-fast-reasoning|narrative_cot/r3_label:counterparty|third_person": {
+        "n": 440,
+        "truncated": 0.0,
+        "noverdict": 0.0023,
+        "mean_chars": 322.4
+      },
+      "grok-4-1-fast-reasoning|narrative_cot/r3_label:neutral_adjudicator|as_asker": {
+        "n": 440,
+        "truncated": 0.0,
+        "noverdict": 0.0023,
+        "mean_chars": 41.3
+      },
+      "grok-4-1-fast-reasoning|narrative_cot/r3_label:neutral_adjudicator|third_person": {
+        "n": 440,
+        "truncated": 0.0,
+        "noverdict": 0.0,
+        "mean_chars": 46.4
+      },
+      "grok-4-1-fast-reasoning|narrative_cot/r3_label:writer_advocate|as_asker": {
+        "n": 440,
+        "truncated": 0.0,
+        "noverdict": 0.0023,
+        "mean_chars": 176.1
+      },
+      "grok-4-1-fast-reasoning|narrative_cot/r3_label:writer_advocate|third_person": {
+        "n": 440,
+        "truncated": 0.0,
+        "noverdict": 0.0023,
+        "mean_chars": 230.1
+      },
+      "grok-4-1-fast-reasoning|narrative_cot/r4_vote:counterparty|as_asker": {
+        "n": 440,
+        "truncated": 0.0,
+        "noverdict": 0.0,
+        "mean_chars": 524.7
+      },
+      "grok-4-1-fast-reasoning|narrative_cot/r4_vote:counterparty|third_person": {
+        "n": 440,
+        "truncated": 0.0,
+        "noverdict": 0.0,
+        "mean_chars": 527.8
+      },
+      "grok-4-1-fast-reasoning|narrative_cot/r4_vote:neutral_adjudicator|as_asker": {
+        "n": 440,
+        "truncated": 0.0,
+        "noverdict": 0.0023,
+        "mean_chars": 512.4
+      },
+      "grok-4-1-fast-reasoning|narrative_cot/r4_vote:neutral_adjudicator|third_person": {
+        "n": 440,
+        "truncated": 0.0,
+        "noverdict": 0.0,
+        "mean_chars": 517.2
+      },
+      "grok-4-1-fast-reasoning|narrative_cot/r4_vote:writer_advocate|as_asker": {
+        "n": 440,
+        "truncated": 0.0,
+        "noverdict": 0.0023,
+        "mean_chars": 529.3
+      },
+      "grok-4-1-fast-reasoning|narrative_cot/r4_vote:writer_advocate|third_person": {
+        "n": 440,
+        "truncated": 0.0,
+        "noverdict": 0.0,
+        "mean_chars": 524.9
+      },
+      "grok-4-1-fast-reasoning|narrative_cot/synthesis:mod-grok-4-1-fast-reasoning|as_asker": {
+        "n": 440,
+        "truncated": 0.0,
+        "noverdict": 0.0,
+        "mean_chars": 871.1
+      },
+      "grok-4-1-fast-reasoning|narrative_cot/synthesis:mod-grok-4-1-fast-reasoning|third_person": {
+        "n": 440,
+        "truncated": 0.0,
+        "noverdict": 0.0023,
+        "mean_chars": 873.8
+      }
+    },
+    "worst_truncation": 0.0,
+    "worst_noverdict": 0.0159,
+    "max_truncation_share": 0.05,
+    "max_noverdict_share": 0.05,
+    "pass": true
+  },
+  "outcome_guard": {
+    "cells": {
+      "grok-4-1-fast-reasoning|deliberation_ncot|as_asker": {
+        "n": 440,
+        "truncated": 0.0,
+        "noverdict": 0.0068,
+        "mean_chars": 1001.2
+      },
+      "grok-4-1-fast-reasoning|deliberation_ncot|third_person": {
+        "n": 440,
+        "truncated": 0.0,
+        "noverdict": 0.0023,
+        "mean_chars": 1019.8
+      }
+    },
+    "worst_truncation": 0.0,
+    "worst_noverdict": 0.0068,
+    "max_truncation_share": 0.05,
+    "max_noverdict_share": 0.05,
+    "pass": true
+  },
+  "criterion": {
+    "models": [
+      "grok-4-1-fast-reasoning"
+    ],
+    "scaffolds": [
+      "deliberation_ncot",
+      "narrative_cot",
+      "standard",
+      "standard_cot_verbose"
+    ],
+    "codings": {
+      "published": {
+        "cells": {
+          "grok-4-1-fast-reasoning|deliberation_ncot|third_person": {
+            "d_prime": 1.9567388508104149,
+            "criterion": 0.06693963978723738,
+            "accuracy": 0.8405466970387244,
+            "hit_rate": 0.8208092485549133,
+            "fa_rate": 0.14661654135338345,
+            "n_signal": 173,
+            "n_noise": 266,
+            "n_excluded": 1
+          },
+          "grok-4-1-fast-reasoning|deliberation_ncot|as_asker": {
+            "d_prime": 2.111074046204637,
+            "criterion": 0.2723648477837976,
+            "accuracy": 0.8604118993135011,
+            "hit_rate": 0.7848837209302325,
+            "fa_rate": 0.09056603773584905,
+            "n_signal": 172,
+            "n_noise": 265,
+            "n_excluded": 3
+          },
+          "grok-4-1-fast-reasoning|narrative_cot|third_person": {
+            "d_prime": 2.459822930695935,
+            "criterion": -0.14083326570362287,
+            "accuracy": 0.8863636363636364,
+            "hit_rate": 0.9195402298850575,
+            "fa_rate": 0.13533834586466165,
+            "n_signal": 87,
+            "n_noise": 133,
+            "n_excluded": 0
+          },
+          "grok-4-1-fast-reasoning|narrative_cot|as_asker": {
+            "d_prime": 2.4381230737673105,
+            "criterion": 0.19714030229359836,
+            "accuracy": 0.8954545454545455,
+            "hit_rate": 0.8505747126436781,
+            "fa_rate": 0.07518796992481203,
+            "n_signal": 87,
+            "n_noise": 133,
+            "n_excluded": 0
+          },
+          "grok-4-1-fast-reasoning|standard|third_person": {
+            "d_prime": 2.686742429334828,
+            "criterion": -0.12788672417636637,
+            "accuracy": 0.9056316590563166,
+            "hit_rate": 0.9310344827586207,
+            "fa_rate": 0.1111111111111111,
+            "n_signal": 261,
+            "n_noise": 396,
+            "n_excluded": 3
+          },
+          "grok-4-1-fast-reasoning|standard|as_asker": {
+            "d_prime": 2.639258473666235,
+            "criterion": 0.12878942206921884,
+            "accuracy": 0.9104704097116844,
+            "hit_rate": 0.8846153846153846,
+            "fa_rate": 0.07268170426065163,
+            "n_signal": 260,
+            "n_noise": 399,
+            "n_excluded": 1
+          },
+          "grok-4-1-fast-reasoning|standard_cot_verbose|third_person": {
+            "d_prime": 2.3995978757788308,
+            "criterion": -0.09496319307950885,
+            "accuracy": 0.8837209302325582,
+            "hit_rate": 0.9069767441860465,
+            "fa_rate": 0.13178294573643412,
+            "n_signal": 86,
+            "n_noise": 129,
+            "n_excluded": 5
+          },
+          "grok-4-1-fast-reasoning|standard_cot_verbose|as_asker": {
+            "d_prime": 2.5939314997421485,
+            "criterion": 0.22579110191218688,
+            "accuracy": 0.908675799086758,
+            "hit_rate": 0.8620689655172413,
+            "fa_rate": 0.06060606060606061,
+            "n_signal": 87,
+            "n_noise": 132,
+            "n_excluded": 1
+          }
+        },
+        "person_step_criterion": {
+          "grok-4-1-fast-reasoning|deliberation_ncot": {
+            "delta": 0.20542520799656022,
+            "ci_low": 0.05347585312689018,
+            "ci_high": 0.35691800425304293,
+            "excludes_zero": true,
+            "n_items": 220,
+            "n_boot": 1000
+          },
+          "grok-4-1-fast-reasoning|narrative_cot": {
+            "delta": 0.3379735679972212,
+            "ci_low": 0.15240046348706787,
+            "ci_high": 0.5812301662050408,
+            "excludes_zero": true,
+            "n_items": 220,
+            "n_boot": 1000
+          },
+          "grok-4-1-fast-reasoning|standard": {
+            "delta": 0.2566761462455852,
+            "ci_low": 0.11611820676629397,
+            "ci_high": 0.44829405574564907,
+            "excludes_zero": true,
+            "n_items": 220,
+            "n_boot": 1000
+          },
+          "grok-4-1-fast-reasoning|standard_cot_verbose": {
+            "delta": 0.3207542949916957,
+            "ci_low": 0.10498542733577909,
+            "ci_high": 0.587784531816467,
+            "excludes_zero": true,
+            "n_items": 220,
+            "n_boot": 1000
+          }
+        }
+      },
+      "dropped": {
+        "cells": {
+          "grok-4-1-fast-reasoning|deliberation_ncot|third_person": {
+            "d_prime": 3.208940517729463,
+            "criterion": 0.8765569684597625,
+            "accuracy": 0.9116022099447514,
+            "hit_rate": 0.7686567164179104,
+            "fa_rate": 0.0043859649122807015,
+            "n_signal": 134,
+            "n_noise": 228,
+            "n_excluded": 78
+          },
+          "grok-4-1-fast-reasoning|deliberation_ncot|as_asker": {
+            "d_prime": 3.4573427614309162,
+            "criterion": 1.1392155822844456,
+            "accuracy": 0.9013333333333333,
+            "hit_rate": 0.7238805970149254,
+            "fa_rate": 0.0,
+            "n_signal": 134,
+            "n_noise": 241,
+            "n_excluded": 65
+          },
+          "grok-4-1-fast-reasoning|narrative_cot|third_person": {
+            "d_prime": 3.4897673936114164,
+            "criterion": 0.4867221371541801,
+            "accuracy": 0.9572192513368984,
+            "hit_rate": 0.9014084507042254,
+            "fa_rate": 0.008620689655172414,
+            "n_signal": 71,
+            "n_noise": 116,
+            "n_excluded": 33
+          },
+          "grok-4-1-fast-reasoning|narrative_cot|as_asker": {
+            "d_prime": 3.600026263466652,
+            "criterion": 0.8493435844829766,
+            "accuracy": 0.9353233830845771,
+            "hit_rate": 0.8333333333333334,
+            "fa_rate": 0.0,
+            "n_signal": 78,
+            "n_noise": 123,
+            "n_excluded": 19
+          },
+          "grok-4-1-fast-reasoning|standard|third_person": {
+            "d_prime": 4.3299477835450695,
+            "criterion": 0.8203414504785066,
+            "accuracy": 0.967741935483871,
+            "hit_rate": 0.912621359223301,
+            "fa_rate": 0.0,
+            "n_signal": 206,
+            "n_noise": 352,
+            "n_excluded": 102
+          },
+          "grok-4-1-fast-reasoning|standard|as_asker": {
+            "d_prime": 4.098226559806374,
+            "criterion": 0.9513810417319786,
+            "accuracy": 0.9494097807757167,
+            "hit_rate": 0.8654708520179372,
+            "fa_rate": 0.0,
+            "n_signal": 223,
+            "n_noise": 370,
+            "n_excluded": 67
+          },
+          "grok-4-1-fast-reasoning|standard_cot_verbose|third_person": {
+            "d_prime": 3.371868967392386,
+            "criterion": 0.5355851031804385,
+            "accuracy": 0.95,
+            "hit_rate": 0.8805970149253731,
+            "fa_rate": 0.008849557522123894,
+            "n_signal": 67,
+            "n_noise": 113,
+            "n_excluded": 40
+          },
+          "grok-4-1-fast-reasoning|standard_cot_verbose|as_asker": {
+            "d_prime": 3.6105159521800054,
+            "criterion": 0.8468118346454849,
+            "accuracy": 0.9390862944162437,
+            "hit_rate": 0.8356164383561644,
+            "fa_rate": 0.0,
+            "n_signal": 73,
+            "n_noise": 124,
+            "n_excluded": 23
+          }
+        },
+        "person_step_criterion": {
+          "grok-4-1-fast-reasoning|deliberation_ncot": {
+            "delta": 0.26265861382468314,
+            "ci_low": 0.005334309718348695,
+            "ci_high": 0.47836703834848704,
+            "excludes_zero": true,
+            "n_items": 220,
+            "n_boot": 1000
+          },
+          "grok-4-1-fast-reasoning|narrative_cot": {
+            "delta": 0.36262144732879653,
+            "ci_low": 0.039853430279673474,
+            "ci_high": 0.6117398159203619,
+            "excludes_zero": true,
+            "n_items": 220,
+            "n_boot": 1000
+          },
+          "grok-4-1-fast-reasoning|standard": {
+            "delta": 0.13103959125347198,
+            "ci_low": 0.00950833676565288,
+            "ci_high": 0.2724114495193837,
+            "excludes_zero": true,
+            "n_items": 220,
+            "n_boot": 1000
+          },
+          "grok-4-1-fast-reasoning|standard_cot_verbose": {
+            "delta": 0.3112267314650464,
+            "ci_low": -0.007241195235584863,
+            "ci_high": 0.5888454543183009,
+            "excludes_zero": false,
+            "n_items": 220,
+            "n_boot": 1000
+          }
+        }
+      },
+      "not_at_fault": {
+        "cells": {
+          "grok-4-1-fast-reasoning|deliberation_ncot|third_person": {
+            "d_prime": 2.775254746913958,
+            "criterion": 1.147646169272359,
+            "accuracy": 0.8382687927107062,
+            "hit_rate": 0.5953757225433526,
+            "fa_rate": 0.0037593984962406013,
+            "n_signal": 173,
+            "n_noise": 266,
+            "n_excluded": 1
+          },
+          "grok-4-1-fast-reasoning|deliberation_ncot|as_asker": {
+            "d_prime": 3.057736902508534,
+            "criterion": 1.3688066228788305,
+            "accuracy": 0.8283752860411899,
+            "hit_rate": 0.563953488372093,
+            "fa_rate": 0.0,
+            "n_signal": 172,
+            "n_noise": 265,
+            "n_excluded": 3
+          },
+          "grok-4-1-fast-reasoning|narrative_cot|third_person": {
+            "d_prime": 2.9054922017790767,
+            "criterion": 0.8309727454355323,
+            "accuracy": 0.8909090909090909,
+            "hit_rate": 0.735632183908046,
+            "fa_rate": 0.007518796992481203,
+            "n_signal": 87,
+            "n_noise": 133,
+            "n_excluded": 0
+          },
+          "grok-4-1-fast-reasoning|narrative_cot|as_asker": {
+            "d_prime": 3.3321754658278313,
+            "criterion": 1.0093718755230998,
+            "accuracy": 0.9,
+            "hit_rate": 0.7471264367816092,
+            "fa_rate": 0.0,
+            "n_signal": 87,
+            "n_noise": 133,
+            "n_excluded": 0
+          },
+          "grok-4-1-fast-reasoning|standard|third_person": {
+            "d_prime": 3.6023175852617184,
+            "criterion": 1.2199039374371266,
+            "accuracy": 0.8888888888888888,
+            "hit_rate": 0.7203065134099617,
+            "fa_rate": 0.0,
+            "n_signal": 261,
+            "n_noise": 396,
+            "n_excluded": 3
+          },
+          "grok-4-1-fast-reasoning|standard|as_asker": {
+            "d_prime": 3.670945022225928,
+            "criterion": 1.187868927928781,
+            "accuracy": 0.8983308042488619,
+            "hit_rate": 0.7423076923076923,
+            "fa_rate": 0.0,
+            "n_signal": 260,
+            "n_noise": 399,
+            "n_excluded": 1
+          },
+          "grok-4-1-fast-reasoning|standard_cot_verbose|third_person": {
+            "d_prime": 2.7508140078279997,
+            "criterion": 0.8967517562017849,
+            "accuracy": 0.8697674418604651,
+            "hit_rate": 0.686046511627907,
+            "fa_rate": 0.007751937984496124,
+            "n_signal": 86,
+            "n_noise": 129,
+            "n_excluded": 5
+          },
+          "grok-4-1-fast-reasoning|standard_cot_verbose|as_asker": {
+            "d_prime": 3.194082715767546,
+            "criterion": 1.0759063524583354,
+            "accuracy": 0.8812785388127854,
+            "hit_rate": 0.7011494252873564,
+            "fa_rate": 0.0,
+            "n_signal": 87,
+            "n_noise": 132,
+            "n_excluded": 1
+          }
+        },
+        "person_step_criterion": {
+          "grok-4-1-fast-reasoning|deliberation_ncot": {
+            "delta": 0.22116045360647152,
+            "ci_low": -0.015079376912269904,
+            "ci_high": 0.4206839409593789,
+            "excludes_zero": false,
+            "n_items": 220,
+            "n_boot": 1000
+          },
+          "grok-4-1-fast-reasoning|narrative_cot": {
+            "delta": 0.17839913008756747,
+            "ci_low": -0.09315465703386971,
+            "ci_high": 0.38556944322745124,
+            "excludes_zero": false,
+            "n_items": 220,
+            "n_boot": 1000
+          },
+          "grok-4-1-fast-reasoning|standard": {
+            "delta": -0.03203500950834548,
+            "ci_low": -0.09280781564184992,
+            "ci_high": 0.03036963284834293,
+            "excludes_zero": false,
+            "n_items": 220,
+            "n_boot": 1000
+          },
+          "grok-4-1-fast-reasoning|standard_cot_verbose": {
+            "delta": 0.1791545962565505,
+            "ci_low": -0.12569527880697073,
+            "ci_high": 0.41128707052856495,
+            "excludes_zero": false,
+            "n_items": 220,
+            "n_boot": 1000
+          }
+        }
+      }
+    }
+  },
+  "resistance": {
+    "published|grok-4-1-fast-reasoning|deliberation_ncot|vs|narrative_cot": {
+      "dc_group": 0.20542520799656022,
+      "dc_group_ci": [
+        0.05347585312689018,
+        0.35691800425304293
+      ],
+      "dc_single_agent": 0.3379735679972212,
+      "dc_single_agent_ci": [
+        0.15240046348706787,
+        0.5812301662050408
+      ],
+      "resistance_signed": 0.132548360000661,
+      "ci_low": -0.12000960741436845,
+      "ci_high": 0.4205405926432498,
+      "excludes_zero": false,
+      "ci_width": 0.5405502000576182,
+      "resistance_abs": 0.132548360000661,
+      "abs_ci_low": -0.12000960741436845,
+      "abs_ci_high": 0.4205405926432498,
+      "abs_excludes_zero": false,
+      "n_items": 220,
+      "n_boot": 1000,
+      "comparator_shift_excludes_zero": true,
+      "single_agent_has_a_shift_to_resist": true,
+      "primary": true
+    },
+    "published|grok-4-1-fast-reasoning|deliberation_ncot|vs|standard": {
+      "dc_group": 0.20542520799656022,
+      "dc_group_ci": [
+        0.05347585312689018,
+        0.35691800425304293
+      ],
+      "dc_single_agent": 0.2566761462455852,
+      "dc_single_agent_ci": [
+        0.11611820676629397,
+        0.44829405574564907
+      ],
+      "resistance_signed": 0.05125093824902499,
+      "ci_low": -0.16108345811474084,
+      "ci_high": 0.2794502783296758,
+      "excludes_zero": false,
+      "ci_width": 0.4405337364444166,
+      "resistance_abs": 0.05125093824902499,
+      "abs_ci_low": -0.16108345811474084,
+      "abs_ci_high": 0.2794502783296758,
+      "abs_excludes_zero": false,
+      "n_items": 220,
+      "n_boot": 1000,
+      "comparator_shift_excludes_zero": true,
+      "single_agent_has_a_shift_to_resist": true,
+      "primary": false
+    },
+    "published|grok-4-1-fast-reasoning|deliberation_ncot|vs|standard_cot_verbose": {
+      "dc_group": 0.20542520799656022,
+      "dc_group_ci": [
+        0.05347585312689018,
+        0.35691800425304293
+      ],
+      "dc_single_agent": 0.3207542949916957,
+      "dc_single_agent_ci": [
+        0.10498542733577909,
+        0.587784531816467
+      ],
+      "resistance_signed": 0.1153290869951355,
+      "ci_low": -0.13894633311072224,
+      "ci_high": 0.4125592035729927,
+      "excludes_zero": false,
+      "ci_width": 0.5515055366837149,
+      "resistance_abs": 0.1153290869951355,
+      "abs_ci_low": -0.1372856505021483,
+      "abs_ci_high": 0.4125592035729927,
+      "abs_excludes_zero": false,
+      "n_items": 220,
+      "n_boot": 1000,
+      "comparator_shift_excludes_zero": true,
+      "single_agent_has_a_shift_to_resist": true,
+      "primary": false
+    },
+    "dropped|grok-4-1-fast-reasoning|deliberation_ncot|vs|narrative_cot": {
+      "dc_group": 0.26265861382468314,
+      "dc_group_ci": [
+        0.005334309718348695,
+        0.47836703834848704
+      ],
+      "dc_single_agent": 0.36262144732879653,
+      "dc_single_agent_ci": [
+        0.039853430279673474,
+        0.6117398159203619
+      ],
+      "resistance_signed": 0.09996283350411339,
+      "ci_low": -0.3056255898736363,
+      "ci_high": 0.48586083457279117,
+      "excludes_zero": false,
+      "ci_width": 0.7914864244464275,
+      "resistance_abs": 0.09996283350411339,
+      "abs_ci_low": -0.3056255898736363,
+      "abs_ci_high": 0.48586083457279117,
+      "abs_excludes_zero": false,
+      "n_items": 220,
+      "n_boot": 1000,
+      "comparator_shift_excludes_zero": true,
+      "single_agent_has_a_shift_to_resist": true,
+      "primary": false
+    },
+    "dropped|grok-4-1-fast-reasoning|deliberation_ncot|vs|standard": {
+      "dc_group": 0.26265861382468314,
+      "dc_group_ci": [
+        0.005334309718348695,
+        0.47836703834848704
+      ],
+      "dc_single_agent": 0.13103959125347198,
+      "dc_single_agent_ci": [
+        0.00950833676565288,
+        0.2724114495193837
+      ],
+      "resistance_signed": -0.13161902257121116,
+      "ci_low": -0.3787778383862699,
+      "ci_high": 0.17630470677600973,
+      "excludes_zero": false,
+      "ci_width": 0.5550825451622796,
+      "resistance_abs": -0.13161902257121116,
+      "abs_ci_low": -0.3628690985580837,
+      "abs_ci_high": 0.17420467693340713,
+      "abs_excludes_zero": false,
+      "n_items": 220,
+      "n_boot": 1000,
+      "comparator_shift_excludes_zero": true,
+      "single_agent_has_a_shift_to_resist": true,
+      "primary": false
+    },
+    "dropped|grok-4-1-fast-reasoning|deliberation_ncot|vs|standard_cot_verbose": {
+      "dc_group": 0.26265861382468314,
+      "dc_group_ci": [
+        0.005334309718348695,
+        0.47836703834848704
+      ],
+      "dc_single_agent": 0.3112267314650464,
+      "dc_single_agent_ci": [
+        -0.007241195235584863,
+        0.5888454543183009
+      ],
+      "resistance_signed": 0.048568117640363284,
+      "ci_low": -0.3443794085664489,
+      "ci_high": 0.4613620535210361,
+      "excludes_zero": false,
+      "ci_width": 0.805741462087485,
+      "resistance_abs": 0.048568117640363284,
+      "abs_ci_low": -0.3368785546040215,
+      "abs_ci_high": 0.461223384343994,
+      "abs_excludes_zero": false,
+      "n_items": 220,
+      "n_boot": 1000,
+      "comparator_shift_excludes_zero": false,
+      "single_agent_has_a_shift_to_resist": false,
+      "primary": false
+    },
+    "not_at_fault|grok-4-1-fast-reasoning|deliberation_ncot|vs|narrative_cot": {
+      "dc_group": 0.22116045360647152,
+      "dc_group_ci": [
+        -0.015079376912269904,
+        0.4206839409593789
+      ],
+      "dc_single_agent": 0.17839913008756747,
+      "dc_single_agent_ci": [
+        -0.09315465703386971,
+        0.38556944322745124
+      ],
+      "resistance_signed": -0.04276132351890405,
+      "ci_low": -0.40182261912562134,
+      "ci_high": 0.30800457647075985,
+      "excludes_zero": false,
+      "ci_width": 0.7098271955963812,
+      "resistance_abs": -0.04276132351890405,
+      "abs_ci_low": -0.3482889369219434,
+      "abs_ci_high": 0.3063548901754575,
+      "abs_excludes_zero": false,
+      "n_items": 220,
+      "n_boot": 1000,
+      "comparator_shift_excludes_zero": false,
+      "single_agent_has_a_shift_to_resist": false,
+      "primary": false
+    },
+    "not_at_fault|grok-4-1-fast-reasoning|deliberation_ncot|vs|standard": {
+      "dc_group": 0.22116045360647152,
+      "dc_group_ci": [
+        -0.015079376912269904,
+        0.4206839409593789
+      ],
+      "dc_single_agent": -0.03203500950834548,
+      "dc_single_agent_ci": [
+        -0.09280781564184992,
+        0.03036963284834293
+      ],
+      "resistance_signed": -0.253195463114817,
+      "ci_low": -0.4686246272233101,
+      "ci_high": -0.002450845442897309,
+      "excludes_zero": true,
+      "ci_width": 0.4661737817804128,
+      "resistance_abs": -0.18912544409812604,
+      "abs_ci_low": -0.3933885415088936,
+      "abs_ci_high": 0.0500787980891938,
+      "abs_excludes_zero": false,
+      "n_items": 220,
+      "n_boot": 1000,
+      "comparator_shift_excludes_zero": false,
+      "single_agent_has_a_shift_to_resist": false,
+      "primary": false
+    },
+    "not_at_fault|grok-4-1-fast-reasoning|deliberation_ncot|vs|standard_cot_verbose": {
+      "dc_group": 0.22116045360647152,
+      "dc_group_ci": [
+        -0.015079376912269904,
+        0.4206839409593789
+      ],
+      "dc_single_agent": 0.1791545962565505,
+      "dc_single_agent_ci": [
+        -0.12569527880697073,
+        0.41128707052856495
+      ],
+      "resistance_signed": -0.042005857349921016,
+      "ci_low": -0.42666193374532024,
+      "ci_high": 0.333959018524952,
+      "excludes_zero": false,
+      "ci_width": 0.7606209522702723,
+      "resistance_abs": -0.042005857349921016,
+      "abs_ci_low": -0.3506679885626266,
+      "abs_ci_high": 0.32378177606143954,
+      "abs_excludes_zero": false,
+      "n_items": 220,
+      "n_boot": 1000,
+      "comparator_shift_excludes_zero": false,
+      "single_agent_has_a_shift_to_resist": false,
+      "primary": false
+    }
+  },
+  "role_rejection_table": {
+    "counterparty|gold=NTA|group=at_fault": {
+      "n": 63,
+      "reject_rate": 0.4126984126984127
+    },
+    "counterparty|gold=NTA|group=noncommittal": {
+      "n": 1,
+      "reject_rate": 1.0
+    },
+    "counterparty|gold=NTA|group=not_at_fault": {
+      "n": 468,
+      "reject_rate": 0.7863247863247863
+    },
+    "counterparty|gold=YTA|group=at_fault": {
+      "n": 277,
+      "reject_rate": 0.148014440433213
+    },
+    "counterparty|gold=YTA|group=noncommittal": {
+      "n": 3,
+      "reject_rate": 0.0
+    },
+    "counterparty|gold=YTA|group=not_at_fault": {
+      "n": 68,
+      "reject_rate": 0.6764705882352942
+    },
+    "neutral_adjudicator|gold=NTA|group=at_fault": {
+      "n": 63,
+      "reject_rate": 0.1111111111111111
+    },
+    "neutral_adjudicator|gold=NTA|group=not_at_fault": {
+      "n": 468,
+      "reject_rate": 0.06837606837606838
+    },
+    "neutral_adjudicator|gold=YTA|group=at_fault": {
+      "n": 277,
+      "reject_rate": 0.07942238267148015
+    },
+    "neutral_adjudicator|gold=YTA|group=noncommittal": {
+      "n": 3,
+      "reject_rate": 0.0
+    },
+    "neutral_adjudicator|gold=YTA|group=not_at_fault": {
+      "n": 68,
+      "reject_rate": 0.2647058823529412
+    },
+    "writer_advocate|gold=NTA|group=at_fault": {
+      "n": 62,
+      "reject_rate": 0.6290322580645161
+    },
+    "writer_advocate|gold=NTA|group=noncommittal": {
+      "n": 1,
+      "reject_rate": 0.0
+    },
+    "writer_advocate|gold=NTA|group=not_at_fault": {
+      "n": 468,
+      "reject_rate": 0.07692307692307693
+    },
+    "writer_advocate|gold=YTA|group=at_fault": {
+      "n": 277,
+      "reject_rate": 0.7653429602888087
+    },
+    "writer_advocate|gold=YTA|group=noncommittal": {
+      "n": 3,
+      "reject_rate": 1.0
+    },
+    "writer_advocate|gold=YTA|group=not_at_fault": {
+      "n": 68,
+      "reject_rate": 0.16176470588235295
+    }
+  },
+  "stake_concentration": {
+    "roles": "all",
+    "within_role": false,
+    "delta": 0.6498401826484018,
+    "ci_low": 0.6073205923070729,
+    "ci_high": 0.6893592677345538,
+    "excludes_zero": true,
+    "n_votes": 2627,
+    "n_undermined": 875,
+    "n_not_undermined": 1752,
+    "n_items": 220,
+    "n_boot": 1000,
+    "reject_rate_undermined": 0.76,
+    "reject_rate_not_undermined": 0.11015981735159817
+  },
+  "stake_undermined_esh_coding": "published -- ESH counts as at-fault, so ESH undermines the writer-advocate and not the counterparty. The criterion read-out is reported under all three ESH codings; this one statistic is not, and a result that turns on ESH should be checked by hand.",
+  "stake_concentration_within_role": {
+    "roles": [
+      "counterparty",
+      "writer_advocate"
+    ],
+    "within_role": true,
+    "delta": 0.6298630136986302,
+    "ci_low": 0.5809447419534942,
+    "ci_high": 0.6752331988142523,
+    "excludes_zero": true,
+    "n_votes": 1751,
+    "n_undermined": 875,
+    "n_not_undermined": 876,
+    "n_items": 220,
+    "n_boot": 1000,
+    "reject_rate_undermined": 0.76,
+    "reject_rate_not_undermined": 0.13013698630136986
+  },
+  "rejection_by_role_and_arm": {
+    "writer_advocate|third_person": {
+      "n": 440,
+      "reject_rate": 0.3477272727272727
+    },
+    "writer_advocate|as_asker": {
+      "n": 439,
+      "reject_rate": 0.33712984054669703
+    },
+    "counterparty|third_person": {
+      "n": 440,
+      "reject_rate": 0.5159090909090909
+    },
+    "counterparty|as_asker": {
+      "n": 440,
+      "reject_rate": 0.5795454545454546
+    },
+    "neutral_adjudicator|third_person": {
+      "n": 440,
+      "reject_rate": 0.09545454545454546
+    },
+    "neutral_adjudicator|as_asker": {
+      "n": 439,
+      "reject_rate": 0.08428246013667426
+    }
+  },
+  "r3_label_table": {
+    "overall": {
+      "ACCEPT": 1589,
+      "REJECT": 941,
+      "ACCEPT_WITH_MODIFICATION": 105,
+      "NOVERDICT": 5
+    },
+    "by_role": {
+      "writer_advocate": {
+        "ACCEPT": 506,
+        "REJECT": 353,
+        "ACCEPT_WITH_MODIFICATION": 19,
+        "NOVERDICT": 2
+      },
+      "counterparty": {
+        "ACCEPT": 274,
+        "REJECT": 534,
+        "ACCEPT_WITH_MODIFICATION": 70,
+        "NOVERDICT": 2
+      },
+      "neutral_adjudicator": {
+        "ACCEPT": 809,
+        "REJECT": 54,
+        "ACCEPT_WITH_MODIFICATION": 16,
+        "NOVERDICT": 1
+      }
+    },
+    "by_arm": {
+      "third_person": {
+        "ACCEPT": 789,
+        "REJECT": 481,
+        "ACCEPT_WITH_MODIFICATION": 48,
+        "NOVERDICT": 2
+      },
+      "as_asker": {
+        "REJECT": 460,
+        "ACCEPT": 800,
+        "ACCEPT_WITH_MODIFICATION": 57,
+        "NOVERDICT": 3
+      }
+    }
+  },
+  "defeasibility": {
+    "n_objectors": 1045,
+    "n_items": 219,
+    "n_addressed": 856,
+    "n_not_addressed": 189,
+    "revision_rate_overall": 0.31770334928229665,
+    "residual_rejection_rate": 0.6822966507177033,
+    "accept_rate_addressed": 0.38317757009345793,
+    "accept_rate_not_addressed": 0.021164021164021163,
+    "delta": 0.36201354892943677,
+    "ci_low": 0.3172458628841608,
+    "ci_high": 0.40219276200050263,
+    "excludes_zero": true,
+    "n_boot": 1000
+  },
+  "vote_independence": {
+    "n_debates": 878,
+    "n_excluded_unparsed": 2,
+    "p_accept_per_agent": 0.673120728929385,
+    "observed": {
+      "0": 141,
+      "1": 622,
+      "2": 106,
+      "3": 9
+    },
+    "expected_if_independent": {
+      "0": 267.777,
+      "1": 390.112,
+      "2": 189.445,
+      "3": 30.666
+    },
+    "chi2": 249.9219713486195,
+    "df": 3,
+    "unanimity_observed": 0.16059225512528474,
+    "unanimity_if_independent": 0.30498529132941476,
+    "interpretation": "chi2 near zero reproduces D3: the vote profile is what three independent draws produce and the deliberation left no trace in it"
+  },
+  "primary_contrast": {
+    "coding": "published",
+    "comparator": "narrative_cot",
+    "form": "signed"
+  },
+  "comparator_rows": 2200
+}
