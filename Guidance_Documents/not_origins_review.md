@@ -261,3 +261,42 @@ defeasibility gap closes (zealotry overdose); watch P(reject | not
 undermined) (currently 13%) as the false-objection rate; amplify the
 opposed/critical direction before the advocate direction (both our seat
 asymmetry and arXiv 2605.21006's persona asymmetry point that way).
+
+### 8.1 Control-loop investigation: Phase 0 done, ladder registered in spirit
+
+Phase 0 (2026-09-01, zero spend, `scripts/analyze_loop_step.py` on the E4
+caches, 875 debates / 220 items, item-clustered CIs). Every deliberation
+debate already contains one closed loop iteration (synthesis -> R3 seat
+objections -> integration -> final verdict) with crowd gold, so the
+one-step dynamics were measured retrospectively:
+
+- The loop CORRECTS conditionally: fix rate P(final ok | synthesis wrong)
+  = 12.0% [7.1, 17.6] vs break rate 2.8% [1.7, 4.1]; rate gap +9.2pp
+  [+4.0, +15.4].
+- But an UNGATED loop turn is net-negative in counts (-0.7pp [-2.0, +0.7])
+  because right syntheses outnumber wrong ones six to one. The loop needs
+  a sensor -- the textbook control-theory situation.
+- SENSORS EXIST, and they are the stake structure itself: a MIS-LOCALISED
+  objection (a stake-bearing seat objecting although the synthesis did not
+  undermine its stake) flags a wrong synthesis at precision 42.9% against
+  a 14.3% base rate, lift +32.8pp [+18.9, +45.8]; the stakeless neutral
+  seat's objection carries lift +20.7pp [+7.2, +35.9]; the composite flag
+  reaches recall 54.4% at precision 39.5%. Objections that interest cannot
+  explain are information about content -- the theoretical claim, now
+  measured.
+- The integration step already responds to the signal: fix rate among
+  flagged wrong syntheses is +18.8pp [+9.8, +28.6] above unflagged.
+- The gated counterfactual (integrate only flagged debates) improves on
+  ungated but is still net ~zero (-0.1pp [-1.4, +1.1]): with precision
+  ~0.4, flagged-right debates still absorb break risk. The two levers this
+  isolates: sensor precision (severity filtering, REJECT-only vs AWM,
+  later the activation stake-meter) and per-fix efficacy (tell the
+  moderator WHY the debate was flagged; iterate).
+
+Ladder from here: L1 (zero spend) rerun on the E5 tripled data + severity-
+filtered sensors; L2 (small spend) a second label->integrate cycle applied
+ONLY to flagged debates, moderator told the flag reason -- measures
+marginal fix/break of a true gated iteration (~4 calls x ~20% of debates);
+L3 stake-dose x loop-gain interaction and per-iteration disturbance
+rejection (resistance across loop turns); L4 the activation stake-meter as
+sensor on a local model.
