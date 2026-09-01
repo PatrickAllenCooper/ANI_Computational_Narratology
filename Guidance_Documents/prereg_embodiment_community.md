@@ -522,3 +522,63 @@ the k-scaling measured in the dry run implies the residual interval (~0.15
 half-width) is near the floor this design can reach at pilot-scale
 budgets, and the question moves to a different design (different model, or
 the standard-comparator question, each needing its own registration).
+
+---
+
+# Addendum 3: L2, the gated second loop iteration
+
+Status: PRE-REGISTERED 2026-09-01, before any L2 generation. PI authorised
+continuing the loop programme to completion (2026-09-01). Background:
+Phase-0 retrospective (`scripts/analyze_loop_step.py`, results in
+not_origins_review.md Sec 8.1) found the deliberation's single
+objection-absorption cycle corrects conditionally (fix 12.0% vs break
+2.8%) but is net-negative ungated, and that mis-localised objections are a
+3x-precision error sensor. L2 is the first true closed-loop experiment:
+apply a SECOND label->integrate->vote cycle ONLY to flagged debates.
+
+Gate, frozen from Phase 0 (computed on iteration-1 artifacts only, vs the
+FIRST synthesis, observable at sensing time, no gold): composite flag =
+the neutral adjudicator objected at R3, OR a stake-bearing seat objected
+although the synthesis did not undermine its stake (`flagged()` in
+analyze_loop_step.py, unchanged).
+
+Protocol per flagged debate (runner `scripts/run_loop_iteration.py`):
+iteration 1 is REPLAYED from cache with a hard guard that raises on any
+cache miss (replay provably spends nothing); then R3b: each agent labels
+the integrated proposal S2 with the byte-identical R3 template; then three
+moderator sub-arms, each producing a third proposal S3 and three R4b votes
+with the byte-identical templates:
+
+- `blind`: integration prompt identical in form to iteration 1 (no note);
+- `generic`: an audit note saying the deliberation was flagged for
+  re-examination, with no reason given;
+- `informed`: the audit note states the flag reason (which seat objected
+  although its stated interest was not opposed, and/or that the neutral
+  adjudicator objected), derived from observable structure only, no gold.
+
+15 calls per flagged debate (3 shared R3b + 3 x (1 integration + 3
+votes)). Expected flagged population ~20% of debates; at the k=4 E5 data
+(~1,755 debates) about 350 flagged, ~5,250 grok calls, estimated $3-5.
+Ceiling: $10.
+
+Hypotheses, item-clustered bootstrap CIs:
+
+- **L2-PRIMARY.** In flagged debates, the informed second iteration nets
+  positive accuracy: P(S3 correct) - P(S2 correct) > 0, informed sub-arm.
+- **L2-INFO (mechanism).** informed > blind on the same contrast, paired
+  within debate: the flag's CONTENT, not merely a second pass, carries
+  the correction.
+- **L2-NUDGE (sensitivity).** generic vs blind separates
+  reconsideration-pressure from information.
+- **L2-STABILITY.** Iteration-2 defeasibility (accept-when-addressed gap
+  on R3b/R4b) remains positive; a collapse means iteration is degrading
+  the mechanism (oscillation, not convergence).
+
+Kill criteria. If the informed arm's net accuracy CI covers zero and the
+point estimate is <= +0.02 in the flagged population, one gated iteration
+does not pay at this sensor precision; the lever moves to sensor precision
+(severity filtering, stake-meter) before any further iteration spend. If
+S3 breaks more right-S2 debates than it fixes wrong-S2 debates in ALL
+three sub-arms, iteration is harmful on this protocol and the loop
+programme reverts to sensor-only designs (flag-and-escalate, no
+self-repair).

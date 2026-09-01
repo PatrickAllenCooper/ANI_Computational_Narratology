@@ -85,6 +85,7 @@ def load_debates(rows_path: Path = ROWS_PATH, votes_path: Path = VOTES_PATH,
                 continue
             seat = v["role_id"]
             d[f"obj_{seat}"] = v["objected_r3"] == "1"
+            d[f"rej_{seat}"] = v["r3_label"] == "REJECT"
             want = v["role_stake"]
             if d["syn_code"] is not None and want in ("at_fault", "not_at_fault"):
                 d[f"undermined_{seat}"] = (
@@ -108,6 +109,23 @@ def neutral_objected(d: dict) -> bool:
 def flagged(d: dict) -> bool:
     """The composite sensor: neutral objection OR mis-localised objection."""
     return neutral_objected(d) or mislocalised(d)
+
+
+# --- severity-filtered variants (L1): objection = REJECT only, not AWM ------
+
+def mislocalised_reject(d: dict) -> bool:
+    return any(
+        d.get(f"rej_{s}") and not d.get(f"undermined_{s}", True)
+        for s in STAKE_SEATS
+    )
+
+
+def neutral_rejected(d: dict) -> bool:
+    return bool(d.get("rej_neutral_adjudicator"))
+
+
+def flagged_severe(d: dict) -> bool:
+    return neutral_rejected(d) or mislocalised_reject(d)
 
 
 # ---------------------------------------------------------------------------
@@ -187,7 +205,10 @@ def analyze(debates: Sequence[dict], *, draws: int = DEFAULT_DRAWS,
     # Sensor validity: P(synthesis wrong | signal) - P(wrong | no signal).
     for name, sig in (("neutral_objection", neutral_objected),
                       ("mislocalised_objection", mislocalised),
-                      ("composite_flag", flagged)):
+                      ("composite_flag", flagged),
+                      ("neutral_reject", neutral_rejected),
+                      ("mislocalised_reject", mislocalised_reject),
+                      ("composite_flag_severe", flagged_severe)):
         def lift(ds, s=sig):
             a = _rate(ds, s, lambda d: not d["syn_ok"])
             b = _rate(ds, lambda d: not s(d), lambda d: not d["syn_ok"])
@@ -235,11 +256,15 @@ def print_report(res: dict) -> None:
     print(f"net gain (counts, UNGATED loop): {_fmt(res['net_gain_counts_ungated'])}")
     print(f"net gain (counts, GATED loop):   {_fmt(res['net_gain_counts_gated'])}")
     print("\nsensors: P(synthesis wrong | signal) - P(wrong | no signal)")
-    for name in ("neutral_objection", "mislocalised_objection", "composite_flag"):
+    for name in ("neutral_objection", "mislocalised_objection", "composite_flag",
+                 "neutral_reject", "mislocalised_reject",
+                 "composite_flag_severe"):
         p = res[f"sensor_{name}_precision"]
         r = res[f"sensor_{name}_recall"]
+        ps = "n/a  " if p is None else f"{p:.3f}"
+        rs = "n/a  " if r is None else f"{r:.3f}"
         print(f"  {name:<24} lift {_fmt(res[f'sensor_{name}_lift'])}   "
-              f"precision {p:.3f}  recall {r:.3f}  n={res[f'sensor_{name}_n']}")
+              f"precision {ps}  recall {rs}  n={res[f'sensor_{name}_n']}")
     print(f"\nfix-rate gap (flagged - unflagged wrong syntheses): "
           f"{_fmt(res['fix_rate_flagged_minus_unflagged'])}")
 
