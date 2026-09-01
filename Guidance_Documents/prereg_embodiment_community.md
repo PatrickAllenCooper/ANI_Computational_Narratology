@@ -325,3 +325,66 @@ role-swap disagreement carries an exploitable signal (E3), and (4) whether
 opposed-role combination de-biases collectives on both instruments (E1
 panels, E4 deliberation). That is the PI's requested "clear explanation of
 exactly what embodiment buys us."
+
+---
+
+## E2/E3 RESULTS (2026-08-31/09-01, appended after the runs; nothing above edited)
+
+Execution. E2 cross pilot (600 units) passed both gates (noverdict 20.0 to
+22.5%, every unit executed, all finish_reason=stop); full cross completed
+1,800/1,800 and E3 completed 4,500/4,500 the same night. Total new spend
+about 5,500 nano generations. Analysis: 10k-draw item-clustered bootstrap,
+missing = NOVERDICT (assume-complete), `bm_cross_sig_analysis.json`.
+
+Cache-refill note, disclosed for exact reproducibility: because E3 extends
+the same cache namespace, its execution re-drew E1 empty-response units at
+indices 0-5 on the 50 shared items (the standing execute-until-cached
+regime on this instrument). Plain-arm point estimates in this analysis
+therefore differ slightly from the E1 section above (author 0.205 vs 0.192;
+rival 0.180 vs 0.163); the primary contrast is stable (author - rival
++0.025 here vs +0.028 in E1), so no E1 conclusion changes.
+
+**H-AMP: commitment does NOT amplify interest; the sign points the other
+way.** DiD = -0.025, 95% CI [-0.070, +0.022]. The registered kill criterion
+(CI covers zero AND |DiD| < 0.02) is not formally triggered, but the
+directional hypothesis is unsupported and the point estimate is negative:
+under the narrative scaffold the three role arms converge to
+0.228/0.240/0.228 and the author-rival ordering vanishes. Manski bounds
+[-0.448, +0.440] are uninformative at this missingness, as expected of a
+four-term contrast.
+
+**H-BACKFIRE-UNIF: the backfire is not uniform, and the non-uniformity is
+the finding.** Narrative-minus-plain gap by role: neutral +0.060
+[+0.028, +0.095]; rival +0.048 [+0.012, +0.088]; author +0.023
+[-0.015, +0.063] (the only role where the CI covers zero), against the
+Section-0 gap of +0.066. Commitment adds the most error exactly where
+interest is absent or opposed, and the least where the model already had
+an interest. Interest and commitment behave as partial SUBSTITUTES pushing
+the same criterion toward affirmation, saturating a shared channel -- not
+as multipliers. This refines the commitment-device hypothesis: assigned
+interest is itself a weak commitment device, and the narrative scaffold is
+a stronger one that crowds it out.
+
+**H-PANEL-NAR: commitment destroys the panel advantage and passes through
+majority voting.** Mixed panel minus homogeneous author panel under
+narrative: -0.004 [-0.025, +0.016] (the same contrast was -0.026
+[-0.047, -0.007] in E1 plain arms). Mechanically forced: opposed-alignment
+mixing only helps while the roles disagree, and commitment erased the
+disagreement. Mixed panel under narrative minus mixed panel plain: +0.044
+[+0.012, +0.079] -- the scaffold-induced error survives majority-of-3
+intact, consistent with the earlier aggregation-passthrough finding that
+voting buys diversity benefits but does not filter shared criterion
+shifts.
+
+**H-SIG-POW: the reliability gate did its job, and what it measured argues
+for closure.** rho = +0.229 [-0.076, +0.519]; split-half Spearman-Brown
+reliability of the sensitivity s_i = 0.064 (gate: 0.2), so the registered
+verdict is STILL UNDERPOWERED and no null is licensed. But the gate
+measurement is itself informative: at k=30 per arm, the implied true
+item-level sd of interest sensitivity is only ~4pp around the +3pp mean,
+while untreated error e_i is a highly stable item property (reliability
+0.950). Reaching reliability 0.5 would need roughly 440 samples per arm
+per item. Recommendation to the PI: close H-SIG on cost grounds -- the
+interest effect is nearly item-invariant, so role-swap disagreement
+carries almost no item-discriminating information on this instrument; the
+reliable item-level signal here is untreated error itself.
