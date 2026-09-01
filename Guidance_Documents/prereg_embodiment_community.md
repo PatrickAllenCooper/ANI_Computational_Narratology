@@ -480,3 +480,45 @@ signal off the deliberation; and if a commitment device is wanted, bind it
 to the aggregation step only. Embodiment's value is architectural, not
 direct: it manufactures the structured disagreement that makes collective
 error-correction measurable and steerable.
+
+---
+
+# Addendum 2: E5 (powered deliberation resistance test)
+
+Status: PRE-REGISTERED 2026-09-01, before any E5 generation. PI decisions
+(2026-09-01): the synthesis is ratified; the powered resistance spend is
+authorised ($15-20); H-SIG is CLOSED on cost grounds per the E3
+recommendation (reopenable only with a design that prices reliability >=
+0.5, i.e. hundreds of samples per item, on a different instrument or
+model).
+
+E5 changes NO hypothesis and NO estimator. It deepens both sides of the
+registered E4 headline, allocating spend where the variance is:
+
+- **Group arm: k 2 -> 4.** The deliberation cache keys on sample index, so
+  a resumed run at --samples 4 generates only indices 2-3: 880 new cells x
+  17 calls = 14,960 grok calls, ~$10 estimated (same rate as the pilot).
+- **Comparator arm: k 1 -> 3.** The preregistered comparator
+  (single-agent grok narrative_cot) has ONE sample per cell in
+  cg_scaffold_combined_rows.csv and is therefore the noisiest term in the
+  resistance DiD; the E4 dry run measured that k=3 takes about a third off
+  a single-agent criterion interval. Extension via run_crowdgold_aita with
+  byte-identical parameters (five-way instrument, cap 2560, same 99+150
+  item panel, seed 44), --samples 3: 996 new single calls, ~$1-2.
+  Parameter identity is verified mechanically before spend: the planned
+  grid must hit ALL 498 existing index-0 caches; any miss aborts the run.
+- **Readout.** After both generations complete, the deliberation runner is
+  re-invoked at --samples 4 with --compare-rows pointing at a merged CSV
+  (the combined rows with grok narrative_cot replaced by the fresh
+  three-sample rows); every call hits cache, so this pass is pure
+  analysis. The headline remains the E4 preregistered contrast: published
+  coding, narrative_cot comparator, signed resist, marked >> in the
+  runner's output.
+
+Decision rule, registered now: resistance is established iff the 95% CI on
+the >> contrast excludes zero. If the CI still covers zero, no further
+spend on this instrument at this model regardless of the point estimate --
+the k-scaling measured in the dry run implies the residual interval (~0.15
+half-width) is near the floor this design can reach at pilot-scale
+budgets, and the question moves to a different design (different model, or
+the standard-comparator question, each needing its own registration).
