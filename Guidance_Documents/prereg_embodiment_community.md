@@ -1228,3 +1228,70 @@ token spend from the caches, not the estimate.
   claim stays confined to grok and the embodiment theme gets a hard
   negative: on three of four models the narrative role does not bind
   stake to behaviour.
+
+## ADDENDUM 6 RESULTS -- Stages 0, 1, 3 (2026-09-02; measured spend $16.64)
+
+Script `scripts/analyze_stake_grip.py`; artefacts
+`stake_grip_analysis.json`, `cg_deliberation_haiku_screen_{rows,votes}.csv`,
+`cg_deliberation_sonnet_screen_{rows,votes}.csv`.
+
+Grip side-by-side (composite fire / R4 reject share / stake-seat reject
+concentration / stake-seat OBJECTION concentration):
+
+| community model | debates | G1 fire | G2 reject | G3 reject conc | objection conc | grip |
+|---|---|---|---|---|---|---|
+| grok-4-1-fast-reasoning | 1677 | 0.201 | 0.333 | +0.631 [+0.587, +0.673] | +0.808 | YES |
+| gpt-5.4-nano | 828 | 0.854 | 0.024 | +0.034 [+0.018, +0.051] | +0.113 | no |
+| claude-haiku-4-5 | 79 | 0.241 | 0.000 | 0 (no rejects) | +0.054 | no |
+| claude-sonnet-4-6 | 32 | 0.062 | 0.010 | +0.031 [0, +0.094] | +0.031 | no |
+
+Three failure modes, one success. nano objects to nearly everything
+regardless of stake; haiku objects rarely and never rejects, regardless
+of stake; sonnet almost never objects (and got 32/32 right on these
+easy prefix items, so its flag is unevaluable). grok's stake seats
+object 96.5% of the time when undermined and 15.6% when not. **Branch
+"neither": grok is the exception among four models.** The stake
+structure that makes the opposed-alignment community a sensor is a
+property of the model-embodiment pair, not of the protocol. The
+embodiment theme takes a hard negative on 3 of 4 models: the narrative
+role is worn but does not bind stake to behaviour.
+
+**Stage 0 (exploratory).** nano's accept-with-modification channel is
+noise at every threshold (precision 0.18-0.21). Its rare R4 REJECT
+channel is informative: on the 53 debates (6.4%) with any reject,
+precision 0.26 and grok routing +0.226 [+0.096, +0.351]; on the 20
+where the community revised its verdict, precision 0.50. The stake
+structure exists in nano but is expressed as a reject 2.4% of the
+time; recall 0.10 makes it unusable as a sensor.
+
+**Post-hoc observation on the haiku screen (n=79, 14 wrong
+syntheses).** Despite zero stake gating, haiku's composite flag had
+precision 0.47, recall 0.64, P(wrong | unflagged) 0.083, and routing
+haiku-flagged debates to cached grok standard majority-3 moved them
+0.684 -> 0.947 (n=19) with unflagged unchanged (0.933 -> 0.950). If
+real, this is a SECOND sensor mechanism -- a low-dissent community whose
+rare objections are competence-gated rather than stake-gated -- and it
+would mean the routing architecture generalises even where the
+embodiment mechanism does not. It is not evidence for the embodiment
+claim. It is a discovery-set observation on 40 items and is confirmed
+or not by Addendum 6a below.
+
+# Addendum 6a: confirm the haiku flag on fresh items (registered 2026-09-02 13:45 MDT, before generation)
+
+Deviation from Addendum 6's stop rule, taken because the observation
+above bears directly on the generalisation question and the authorised
+ceiling has $23 unspent. Extend haiku to 100 items (`--n-yta 41 --n-nta
+59`, k=1, both arms; 60 NEW items = 120 debates, ~$14). The 40 screen
+items are the discovery set and are excluded from the confirmation
+readout.
+
+Confirmation criteria, on the 60 new items only:
+(C1) composite-flag lift, P(synthesis wrong | flag) - P(wrong | no
+     flag) > 0 with 95% item-clustered CI excluding zero;
+(C2) grok routing on haiku-flagged debates, delta vs haiku S2 > 0 with
+     95% CI excluding zero, point positive in both arms;
+(C3) the same rule on haiku-UNflagged debates is not better than S2
+     (sensor-specific gain > 0).
+Positive iff C1 and C2 and C3. Also re-read G1-G3 and objection
+concentration on all 200 debates. Whatever the outcome, the grip verdict
+for haiku stands: this tests a different mechanism.
