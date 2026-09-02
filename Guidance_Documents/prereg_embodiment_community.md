@@ -1070,3 +1070,90 @@ claude-haiku-4-5:standard --sens-vendors
 grok_std=grok-4-1-fast-reasoning:standard --alpha 0.05` (a single
 primary test; no Bonferroni) followed by `analyze_loop_step` on the nano
 rows for the sensor-validity replication.
+
+## S3 RESULTS -- the nano community (2026-09-02, 14,212 calls, ~$24)
+
+Run: 836 cells complete (787 on the main pass; a 49-cell burst of
+`Connection error` after five retries during a transient endpoint outage
+was backfilled from cache with a second identical invocation, 0 errors).
+Truncation 0.0%, no-verdict 1.2% worst cell. 828 codable debates on the
+209-item restricted panel. Artefacts: `cg_deliberation_nano_rows.csv`,
+`cg_deliberation_nano_votes.csv`, `cg_deliberation_nano_summary.json`,
+`actuator_ladder_nano_analysis.json`, `loop_step_nano_analysis.json`.
+
+**PRIMARY (a): NULL.** Routing nano-flagged debates to haiku standard
+majority-3: 0.820 -> 0.856, delta +0.035, 95% CI [-0.025, +0.096]
+(n=707). Halves {+0.042, +0.029}, arms {as_asker +0.037, third_person
++0.033}: point positive everywhere, but neither the CI nor the +0.05
+size criterion is met. Same rule on nano-UNflagged: +0.017 [-0.044,
++0.073]; sensor-specific gain +0.019.
+
+**Secondary (b): grok routing is positive but the sensor is not the
+reason.** grok standard majority-3 on nano-flagged: +0.091 [+0.050,
++0.136]; on unflagged +0.033 [-0.017, +0.085]; sensor-specific +0.057.
+But routing ALL nano debates to grok is +0.082 [+0.044, +0.124], and
+the composed system (0.906) is no better than grok alone on the panel
+(0.911). The flag is not selecting; grok is simply the stronger judge
+on this panel. The same holds for haiku (composed 0.859 vs alone 0.861).
+
+**Sensor validity does NOT replicate; the stake structure collapses.**
+This is the finding.
+
+| | grok community (E4/L1) | nano community (S3) |
+|---|---|---|
+| composite flag fire rate | 20% (337/1677) | **85%** (707/828) |
+| seats objecting per debate | mostly 0-1 | 3 in 41%, >=2 in 76%, 0 in 4% |
+| REJECT votes | present; drives severe flag | near-absent: 53/828 debates have any; severe flag n=3 |
+| stake concentration (reject rate, undermined - not) | +0.657 [+0.619, +0.693] | **+0.033** [+0.019, +0.046] |
+| composite flag lift on synthesis error | large; precision high enough to route on | +0.056 [-0.017, +0.119], precision 0.180 |
+| fix-rate gap flagged - unflagged | +0.196 [+0.136, +0.266] | +0.079 [+0.029, +0.139] |
+| S2 accuracy (final) | 0.843 | 0.829 (gold-YTA 0.757, gold-NTA 0.878) |
+
+Nano's embodied seats object to almost every synthesis, almost always
+as ACCEPT-WITH-MODIFICATION, and object whether or not their stake was
+undermined (writer's advocate objects 76% of the time while undermined
+only 37%; counterparty 74% vs 63%). The neutral seat objects 62% of the
+time. Stake concentration survives in sign (rejects are still 3.4x
+likelier from an undermined seat) but at a base rate of 3% it carries
+almost no addressing information. The composite flag, which on grok
+was a selective pointer to WHERE the community had gone wrong, on nano
+is nearly the constant function.
+
+**Registered kill criterion fires: the sensor lift fails to replicate,
+so the stake structure is model-specific and the architecture claim is
+confined to grok until shown otherwise.** More precisely: the
+sensor-plus-decorrelated-actuator architecture requires a community
+model whose objection behaviour is stake-GATED -- one that withholds
+objection when its stake is served and rejects (not merely amends) when
+it is undermined. grok-4-1-fast-reasoning under the five-section
+narrative embodiment has that property; gpt-5.4-nano does not. The
+protocol, prompts, panel, and coding were byte-identical.
+
+What this says about embodiment, which is the PI's growth theme:
+embodiment as a control apparatus works only when the model actually
+binds the assigned stake to its behaviour. nano wears the role but its
+disagreement is indiscriminate -- it produces the *form* of stakeholder
+dissent without the *selectivity* that makes dissent informative. That
+is a measurable property (stake concentration, fire rate, reject rate),
+and it should be treated as a PRECONDITION to be screened for before
+any community is used as a sensor. It is also the first place where
+the embodiment machinery has an observable per-model "grip" metric.
+
+Exploratory observations (not registered): nano's community errs toward
+leniency (gold-YTA 0.757) where grok's erred toward blame; the flag
+fires more on gold-NTA (91%) than gold-YTA (77%), i.e. nano's seats
+object most where the community is most often right. A1 against-interest
+on nano is slightly harmful (-0.021 [-0.040, -0.002]) and A2 neutral
+deference is exactly zero -- within-community direction is absent here
+too, replicating the grok result.
+
+**Addendum 5 closes.** Spend ~$31 of the $35 ceiling. Outcomes: S1
+registered configuration confirmed; S2 null (content re-correlates);
+S2b saturated; S3 kill criterion fired (model-specific stake
+structure). Registered next steps, in order of information per dollar:
+(i) a stake-grip screen -- for each candidate community model, run the
+protocol on a small panel and measure fire rate, reject rate, and stake
+concentration before any actuator work; (ii) a third community model
+(claude-haiku-4-5 as all seats) to determine whether grok is the
+exception or nano is; (iii) reverse routing (haiku community -> grok
+actuator) only if (ii) shows haiku has grip.

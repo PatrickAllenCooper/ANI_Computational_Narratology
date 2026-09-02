@@ -375,7 +375,8 @@ reverse routing and a second task are the next registrations.
 ### 8.4 Reinforcing the routed signal (prereg Addendum 5, 2026-09-02)
 
 Three cheap levers tried on the grok panel, all resolved; S3
-(generalisation to a nano community) in flight.
+(generalisation to a nano community) resolved with the kill criterion
+firing -- see the end of this section.
 
 - S1 (sensor x actuator selection, half-0 select / half-1 confirm): the
   registered configuration stands. No candidate beats composite + haiku
@@ -400,3 +401,25 @@ items, by whose stake -- and its correct consumer is a decorrelated judge
 that is shown nothing else. The narrative/embodiment apparatus
 manufactures the disagreement structure; the structure is a pointer, not
 an argument.
+
+- S3 (same protocol, gpt-5.4-nano as every seat and moderator, 828
+  debates): the pointer disappears. The composite flag fires on 85% of
+  debates (grok: 20%); seats object almost always, almost always as
+  accept-with-modification, and regardless of whether their stake was
+  undermined; stake concentration falls from +0.657 to +0.033; the flag's
+  lift on synthesis error is +0.056 [-0.017, +0.119]. Routing
+  nano-flagged debates to haiku is +0.035 [-0.025, +0.096] (null); to
+  grok +0.091, but routing everything to grok is +0.082 and the composed
+  system is no better than grok alone. Kill criterion: the stake
+  structure is model-specific; the architecture claim is confined to grok
+  until a second model shows grip.
+
+What S3 adds to the embodiment theme, which is the PI's growth category:
+embodiment is a control apparatus only where the model binds the
+assigned stake to its behaviour. nano adopts the role's voice but not its
+selectivity; it produces the form of stakeholder dissent without the
+information. "Stake grip" -- fire rate, reject rate, stake concentration
+on a small panel -- is therefore a measurable per-model precondition, and
+the first per-model metric this project has for whether embodiment took.
+Next registrations: a stake-grip screen across candidate community
+models; haiku as the community to decide whether grok is the exception.
