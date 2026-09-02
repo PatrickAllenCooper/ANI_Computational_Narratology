@@ -129,12 +129,16 @@ def replay_debate(model: str, arm: str, item, idx: int, *,
         (c["round"], c["role_id"]): c.get("output") or "" for c in calls
     }
     r2 = {rid: by_round[("r2", rid)] for rid in rcd.ROLE_ORDER}
+    r3 = {rid: by_round[("r3_label", rid)] for rid in rcd.ROLE_ORDER}
     proposal = next(t for (rnd, _), t in by_round.items()
                     if rnd == "integration")
     return {
         "row": row,
         "vote_rows": vote_rows,
         "r2": r2,
+        "r3": r3,
+        "r3_objections": {rid: rcd.extract_objection(r3[rid])[1]
+                          for rid in rcd.ROLE_ORDER},
         "synthesis_verdict": row["synthesis_verdict"],
         "proposal": proposal,
         "s2_verdict": row["verdict"],

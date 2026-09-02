@@ -83,6 +83,10 @@ def load_debates(rows_path: Path = ROWS_PATH, votes_path: Path = VOTES_PATH,
                 "syn_ok": correct(r["synthesis_verdict"], r["gold_verdict"]),
                 "s2_ok": correct(r["verdict"], r["gold_verdict"]),
                 "syn_code": syn_code,
+                "n_objectors": int(r.get("n_objectors") or 0),
+                "n_reject": int(r.get("n_reject") or 0),
+                "unanimous_accept": r.get("unanimous_accept") == "1",
+                "verdict_revised": r.get("verdict_revised") == "1",
             }
     with open(votes_path) as f:
         for v in csv.DictReader(f):
@@ -248,10 +252,16 @@ def selective_emission(debates: Sequence[dict]) -> dict:
 # ---------------------------------------------------------------------------
 
 def run_ladder(debates: Sequence[dict], comp: dict[tuple, list[str]], *,
-               draws: int = DEFAULT_DRAWS, seed: int = 23) -> dict:
+               draws: int = DEFAULT_DRAWS, seed: int = 23,
+               primary_vendor: tuple[str, str] = ("claude-haiku-4-5", "standard"),
+               sens_vendors: Sequence[tuple[str, str, str]] = (
+                   ("nano_std", "gpt-5.4-nano", "standard"),
+                   ("haiku_narr", "claude-haiku-4-5", "narrative_cot"),
+                   ("nano_narr", "gpt-5.4-nano", "narrative_cot")),
+               alpha: float = ZERO_SPEND_ALPHA) -> dict:
     fl = [d for d in debates if flagged(d)]
     unfl = [d for d in debates if not flagged(d)]
-    a = ZERO_SPEND_ALPHA
+    a = alpha
     res: dict = {"n_debates": len(debates), "n_flagged": len(fl),
                  "A0_selective_emission": selective_emission(debates)}
 
@@ -274,18 +284,18 @@ def run_ladder(debates: Sequence[dict], comp: dict[tuple, list[str]], *,
         draws=draws, seed=seed + 4, label="A2 neutral REJECT only")
 
     # A3a -- cross-vendor escalation from cache
-    haiku_std = make_rule_vendor(comp, "claude-haiku-4-5", "standard")
+    haiku_std = make_rule_vendor(comp, *primary_vendor)
+    res["A3a_primary_vendor"] = list(primary_vendor)
     res["A3a"] = evaluate(fl, haiku_std, alpha=a, draws=draws, seed=seed + 5,
-                          label="A3a haiku standard majority-3")
+                          label=f"A3a {primary_vendor[0]} {primary_vendor[1]} majority")
     res["A3a_unflagged"] = evaluate(unfl, haiku_std, alpha=a, draws=draws,
                                     seed=seed + 6,
                                     label="A3a rule on UNFLAGGED (context)")
     d_fl, d_un = res["A3a"]["delta"], res["A3a_unflagged"]["delta"]
     res["A3a_sensor_specific_gain"] = (
         None if d_fl is None or d_un is None else d_fl - d_un)
-    for tag, m, sc in (("nano_std", "gpt-5.4-nano", "standard"),
-                       ("haiku_narr", "claude-haiku-4-5", "narrative_cot"),
-                       ("nano_narr", "gpt-5.4-nano", "narrative_cot")):
+    res["A3a_sens_tags"] = [t for t, _, _ in sens_vendors]
+    for tag, m, sc in sens_vendors:
         res[f"A3a_sens_{tag}"] = evaluate(
             fl, make_rule_vendor(comp, m, sc), alpha=a, draws=draws,
             seed=seed + 7, label=f"A3a {m} {sc}")
@@ -314,9 +324,10 @@ def print_report(res: dict) -> None:
         s = a0[k]
         print(f"   hold {k:<15} coverage {s['coverage']:.3f}  emitted "
               f"{s['accuracy_emitted']:.3f}  held {s['accuracy_held']:.3f}")
-    for k in ("A1", "A1_sens_reject_only", "A1_sens_flip", "A2",
-              "A2_sens_reject_only", "A3a", "A3a_unflagged",
-              "A3a_sens_nano_std", "A3a_sens_haiku_narr", "A3a_sens_nano_narr"):
+    keys = ["A1", "A1_sens_reject_only", "A1_sens_flip", "A2",
+            "A2_sens_reject_only", "A3a", "A3a_unflagged"]
+    keys += [f"A3a_sens_{t}" for t in res.get("A3a_sens_tags", [])]
+    for k in keys:
         e = res[k]
         tag = "POSITIVE" if e["positive"] else "null"
         primary = k in ("A1", "A2", "A3a")
@@ -411,12 +422,22 @@ def main(argv: Sequence[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description="Actuator ladder, zero-spend rungs")
     ap.add_argument("--draws", type=int, default=DEFAULT_DRAWS)
     ap.add_argument("--json", type=Path, default=ANALYSIS_PATH)
+    ap.add_argument("--rows", type=Path, default=ROWS_PATH)
+    ap.add_argument("--votes", type=Path, default=VOTES_PATH)
+    ap.add_argument("--primary-vendor", default="claude-haiku-4-5:standard",
+                    help="model:scaffold whose cached verdicts are the A3a actuator")
+    ap.add_argument("--sens-vendors",
+                    default="nano_std=gpt-5.4-nano:standard,"
+                            "haiku_narr=claude-haiku-4-5:narrative_cot,"
+                            "nano_narr=gpt-5.4-nano:narrative_cot",
+                    help="comma list of tag=model:scaffold")
+    ap.add_argument("--alpha", type=float, default=ZERO_SPEND_ALPHA)
     ap.add_argument("--selftest", action="store_true")
     a = ap.parse_args(argv)
     if a.selftest:
         return _selftest()
 
-    debates = load_debates()
+    debates = load_debates(a.rows, a.votes)
     items = rcd.load_items(source="scruples", n_yta=99, n_nta=150,
                            min_votes=50, min_consensus=0.90, seed=44)
     by_id = {i.item_id: i for i in items}
@@ -425,7 +446,14 @@ def main(argv: Sequence[str] | None = None) -> int:
           f"flagged from cache for R2 verdicts ...")
     attach_r2_verdicts(fl, by_id)
     comp = load_comparator()
-    res = run_ladder(debates, comp, draws=a.draws)
+    pm, ps = a.primary_vendor.split(":")
+    sens = []
+    for part in a.sens_vendors.split(","):
+        tag, ms = part.split("=")
+        m, s = ms.split(":")
+        sens.append((tag, m, s))
+    res = run_ladder(debates, comp, draws=a.draws, primary_vendor=(pm, ps),
+                     sens_vendors=sens, alpha=a.alpha)
     print_report(res)
     a.json.write_text(json.dumps(res, indent=2, default=str))
     print(f"\nwrote {a.json}")
