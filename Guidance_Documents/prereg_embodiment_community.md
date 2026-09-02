@@ -1157,3 +1157,70 @@ concentration before any actuator work; (ii) a third community model
 (claude-haiku-4-5 as all seats) to determine whether grok is the
 exception or nano is; (iii) reverse routing (haiku community -> grok
 actuator) only if (ii) shows haiku has grip.
+
+# Addendum 6: the stake-grip screen, gated, ceiling $40 (registered 2026-09-02 12:30 MDT, before any call)
+
+PI capped the next cycle at $40. Costs below are the deliberation
+runner's own dry-run cost model, which uses MEASURED per-model
+narrative completion lengths (haiku 1,196 tokens; sonnet 1,311) and
+list prices (haiku 1/5, sonnet 3/15 USD per Mtok). My earlier $5
+estimate for the haiku screen was wrong because haiku is ~3x more
+verbose than grok inside the five-section scaffold.
+
+**Stake grip** is defined on a community model's debates as all three of:
+(G1) composite-flag fire rate <= 0.50 (grok 0.20, nano 0.85);
+(G2) REJECT share of R3 votes >= 0.05 (nano ~0.025);
+(G3) stake concentration (reject rate undermined - not undermined,
+     pooled seats) >= +0.20 with 95% bootstrap CI excluding zero
+     (grok +0.657, nano +0.033).
+A model with grip can serve as a sensor; a model without it cannot,
+whatever its accuracy.
+
+**Stage 0 ($0) -- nano sensor recalibration, exploratory.** On the 828
+nano debates, evaluate stricter sensors (all three seats object;
+neutral objects AND a stake seat is mis-localised; >= 1 REJECT;
+n_objectors >= 2 AND S1 != S2) for fire rate, precision, lift, and the
+haiku-routing delta. Reported as exploratory; no criterion. Purpose: to
+know whether nano's failure is threshold or structure.
+
+**Stage 1 ($9.25) -- haiku grip screen.** `--models claude-haiku-4-5
+--arms third_person,as_asker --samples 1 --n-yta 16 --n-nta 24` (a
+deterministic per-class prefix of the panel, so every cell is reused by
+any later extension; content-filter screen may drop a few). 80 debates,
+240 R3 votes. Readout: G1-G3. Decision: grip -> Stage 2; no grip ->
+skip to Stage 3.
+
+**Stage 2 (~$14, conditional on haiku grip) -- extend haiku to 100
+items** (`--n-yta 41 --n-nta 59`, 200 debates). Then at $0: (a) re-read
+G1-G3 on 200 debates; (b) reverse routing, haiku-flagged -> grok
+standard majority-3 (cached) and -> nano standard majority-3 (cached),
+paired vs haiku S2, 95% CI, both arms; (c) haiku community S2 vs
+single-agent haiku standard on the same items. Power note: ~40 flagged
+debates detects only |delta| >= ~0.28; this is a directional pilot and
+is reported as such. A k=2 / full-panel extension is a FUTURE
+registration.
+
+**Stage 3 ($11.85) -- sonnet 4.6 mini-screen.** `--models
+claude-sonnet-4-6 --samples 1 --n-yta 7 --n-nta 9`, 32 debates, 96
+votes. Readout G1-G3, coarse (G3's CI will be wide; report point and
+CI, call grip only if all three are met). Purpose: within one vendor,
+is grip a capability property (haiku vs sonnet) or a vendor property?
+Runs only if cumulative measured spend after Stage 2 is <= $28. If
+Stage 2 was skipped and sonnet shows grip, the remainder (~$18) extends
+sonnet by 24 items for a firmer G3.
+
+**Stop rules.** Stop when the ceiling is reached, or when Stage 3 is
+read, whichever first. Every readout is reported with the measured
+token spend from the caches, not the estimate.
+
+**What each branch concludes.**
+- haiku grip + sonnet grip: nano is the exception; the architecture is
+  not grok-specific; sensor property generalises across two vendors.
+- haiku grip, sonnet no grip (or wide): grip is not monotone in
+  capability; report as-is.
+- haiku no grip, sonnet grip: grip is capability-linked within the
+  Anthropic family; grok and sonnet form the "has grip" class.
+- neither: grok is the exception among four models; the architecture
+  claim stays confined to grok and the embodiment theme gets a hard
+  negative: on three of four models the narrative role does not bind
+  stake to behaviour.
