@@ -924,3 +924,60 @@ should not be assumed to reproduce +0.19. (3) One model pair, one task.
 The registered next step, if this is carried further, is the reverse
 routing (haiku deliberation flagged -> grok) and a second task family,
 each registered before generation.
+
+---
+
+# Addendum 5: reinforcing the routed signal (registered 2026-09-02, before any rung was computed)
+
+PI authorised spend and asked what boosts the A3a outcome. Three levers,
+in spend order. A4/A5 (within-community self-repair with evidence
+discipline) are DEFERRED: the actuator question they were written to
+answer has been answered from outside the community; they remain
+registered for a later cycle.
+
+**S1 -- sensor and actuator selection with held-out confirmation ($0).**
+Candidate sensors, pre-declared: composite (registered), severe,
+any_objection (n_objectors >= 1), any_reject_vote (n_reject >= 1),
+not_unanimous_accept, verdict_revised (S1 != S2), composite OR
+any_reject_vote. Candidate actuators, pre-declared: haiku standard
+majority-3 (registered); haiku+nano standard 6-vote majority (tie -> S2);
+haiku majority-3 applied only when its three samples are unanimous
+(else S2). Objective: composed-system accuracy over ALL codable debates.
+Selection on item half 0 (sha256 parity), confirmation on half 1.
+Positive iff the selected configuration beats the registered one
+(composite + haiku maj-3) on half 1 with a 95% item-clustered CI
+excluding zero. Otherwise the ranking is reported as exploratory and the
+registered configuration stands.
+
+**S2 -- crux escalation (~$3, ~1,000 haiku calls).** All 337 flagged
+debates. haiku standard receives the post AND the three R3 objection
+texts (the MODIFICATION / UNRESOLVABLE lines), never S1/S2 or any
+verdict, k=3, majority; tie -> S2. Paired against A3a (haiku cold) on the
+same debates. Hypothesis, from A1's null: the community's content carries
+no direction, so crux-informed haiku will NOT beat cold haiku; a positive
+would mean the objections carry content a decorrelated reader can use
+even though the community itself cannot. Positive iff delta(crux - cold)
+95% CI excludes zero in either direction (two-sided; a significant
+NEGATIVE is the re-correlation result and is reported as such).
+
+**S2b -- actuator stabilisation (~$3, ~1,500 haiku calls).** Extend
+haiku standard to k=5 on the panel; report A3a with majority-5 vs
+majority-3. Not a stopping rung; expected +0.01-0.02 on flagged.
+
+**S3 -- generalisation across the community model (~$24, 14,212 nano
+calls, k=2 pilot arms).** Run the deliberation protocol with
+gpt-5.4-nano as all three agents and moderator (`--models gpt-5.4-nano
+--samples 2`, panel restricted by nano's content-filter screen, 40
+items). Then, at zero further spend, route nano-flagged debates to (a)
+haiku standard majority-3 and (b) grok standard majority-3, both cached
+on every (item, arm). PRIMARY: (a), delta on nano-flagged vs nano S2,
+95% CI excludes zero, delta >= +0.05, point positive in both arms, AND
+sensor-specific gain > 0 (the same rule on nano-unflagged is not better).
+Secondary: (b); the composite flag's lift on nano synthesis errors
+(sensor validity replicates); stake concentration and defeasibility in
+the nano community. Kill: if (a) and (b) are both null while the sensor
+lift replicates, the actuator is grok-specific; if the sensor lift itself
+fails to replicate, the stake structure is model-specific and the
+architecture claim is confined to grok until shown otherwise.
+
+Ceiling for this addendum: $35.
