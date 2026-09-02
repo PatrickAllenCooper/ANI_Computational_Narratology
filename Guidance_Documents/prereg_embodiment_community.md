@@ -1229,7 +1229,27 @@ token spend from the caches, not the estimate.
   negative: on three of four models the narrative role does not bind
   stake to behaviour.
 
-## ADDENDUM 6 RESULTS -- Stages 0, 1, 3 (2026-09-02; measured spend $16.64)
+## CORRECTION (2026-09-02 16:20 MDT): the haiku and sonnet grip verdicts below are RETRACTED
+
+Both the haiku screen/extension and the sonnet screen FAILED their own
+ROUND-LEVEL truncation guard -- printed plainly in each run's console
+log ("*** GUARD FAILED... GUARD FAILED -- the contrasts above are NOT
+readable as behaviour. Raise the token caps and re-run.") -- and this
+was missed at the time because the live verification grepped
+`ERROR|guard` (lowercase), which matches the separate, passing OUTCOME
+guard line but not the failing `GUARD FAILED` line. `--max-tokens-vote`
+(default 512) is sized to grok's R4 behaviour (mean 91 completion
+tokens); haiku averages 487 tokens at the same round and truncated on
+81-97% of R4 votes across every seat and arm (sonnet 0-19%, milder but
+still over the 5% limit). A vote round that returns `NOVERDICT` on 92%
+of calls cannot support a reject-rate or stake-concentration estimate;
+the near-zero grip readouts for haiku and sonnet reported below measure
+truncation, not disposition. Grok and nano both passed the round-level
+guard cleanly (0% truncation) and their entries stand. Re-run with
+raised caps below; see "ADDENDUM 6 CORRECTED RESULTS" beneath the
+original (retracted) section.
+
+## ADDENDUM 6 RESULTS -- Stages 0, 1, 3 (2026-09-02; measured spend $16.64) [RETRACTED for haiku/sonnet rows, see correction above]
 
 Script `scripts/analyze_stake_grip.py`; artefacts
 `stake_grip_analysis.json`, `cg_deliberation_haiku_screen_{rows,votes}.csv`,
@@ -1296,7 +1316,7 @@ Positive iff C1 and C2 and C3. Also re-read G1-G3 and objection
 concentration on all 200 debates. Whatever the outcome, the grip verdict
 for haiku stands: this tests a different mechanism.
 
-## 6a RESULTS (2026-09-02; 2,040 new calls, $14.18; Addendum 6 total $30.82 of $40)
+## 6a RESULTS [RETRACTED, built on the truncated haiku_100 run above] (2026-09-02; 2,040 new calls, $14.18; Addendum 6 total $30.82 of $40)
 
 **NOT CONFIRMED.** 60 new items, 120 debates (119 codable), 29 flagged
 (fire 0.242, identical to discovery), 11 wrong syntheses.
@@ -1316,10 +1336,16 @@ votes, stake-seat objection rates 0.18 / 0.13 against undermined rates
 0.49 / 0.51 -- haiku's dissent is unrelated to stake at n=199. Grip
 verdict unchanged: no.
 
-**Addendum 6 closes.** Four community models under a byte-identical
-protocol; one (grok) has stake grip and yields a routable sensor; the
-other three do not, each failing differently (nano indiscriminate,
-haiku compliant, sonnet silent). The routing architecture as a
-stake-structure phenomenon is confined to grok. A non-stake flag from a
-compliant community (haiku) points the right way but did not clear
-confirmation on 60 items.
+**[RETRACTED, see correction above] Addendum 6 closes.** Four community
+models under a byte-identical protocol; one (grok) has stake grip and
+yields a routable sensor; the other three do not, each failing
+differently (nano indiscriminate, haiku compliant, sonnet silent). The
+routing architecture as a stake-structure phenomenon is confined to
+grok. A non-stake flag from a compliant community (haiku) points the
+right way but did not clear confirmation on 60 items.
+
+**None of this paragraph is retracted for nano.** It is retracted for
+haiku and sonnet because their R4 vote rounds were 81-97% and 0-19%
+truncated respectively (round-level guard FAILED, missed at read time);
+"compliant" and "silent" described truncation, not disposition. See
+"ADDENDUM 6 CORRECTED RESULTS" below for the re-run.
