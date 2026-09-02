@@ -735,3 +735,116 @@ post is a re-sample, not new evidence, and the data say so three ways
 not_origins_review.md Sec 8.2 for what this rules in for L3/L4.
 
 Spend: ~5k grok calls, within the $10 ceiling.
+
+---
+
+# Addendum 4: the actuator ladder (registered 2026-09-02, before any rung was computed)
+
+Premise, from L2: the deliberation is a good sensor (composite flag, lift
++0.325, precision 0.41) with no actuator -- re-running the same agents on
+the same post re-samples the same posterior (~59% accurate on flagged
+debates). Every rung below is a different way to inject information that
+is NOT already in the three agents' shared posterior. Rungs are ordered by
+spend. PI instruction: run in order, stop at the first positive outcome.
+
+**Population.** Flagged debates from the k=4 rows (composite flag, frozen
+in analyze_loop_step.py; 337 debates, 210 items). Sub-populations per rung
+are stated. The comparator in every rung is S2, the integrated proposal's
+verdict, on the SAME debates (paired).
+
+**Primary outcome, every rung.** Paired accuracy gain
+delta = P(actuated verdict correct) - P(S2 correct) on the rung's
+population, item-clustered bootstrap percentile CI. Non-codable actuated
+verdicts fall back to S2 (delta contribution 0), so abstention cannot
+manufacture a gain.
+
+**Positive outcome, registered.** A rung is positive iff ALL of:
+(i) the CI excludes zero -- 98.75% CI for the four zero-spend rungs,
+which share one dataset (Bonferroni over 4 at family alpha 0.05); 95% CI
+for each spend rung, which brings new data and is run only if every
+prior rung was null;
+(ii) delta >= +0.05 on the rung population (below that, a fix on 20% of
+debates is <1pp overall and not worth an actuator);
+(iii) point delta > 0 in BOTH item halves (items split by parity of
+sha256(item_id)) AND in BOTH arms (third_person, as_asker). These are
+directional replication checks, not powered tests; they guard against a
+positive carried by one arm or one lucky item cluster.
+
+**Stopping rule.** Zero-spend rungs are all computed (they are free) and
+reported; the ladder's RESULT is the first positive rung in registered
+order, later positives are secondary. Spend rungs start only if no
+zero-spend rung is positive, proceed strictly in order, and stop at the
+first positive. Total spend ceiling for the ladder: $25.
+
+**Sensor-specific gain (interpretive check, all rungs where computable).**
+delta_flagged - delta_unflagged. An actuator that helps unflagged debates
+as much as flagged ones is a better model, not an actuator wired to the
+sensor; report both so the two are never confused.
+
+## Zero-spend rungs (from the k=4 caches; iteration 1 replayed under the no-spend guard)
+
+**A0 -- selective emission (baseline, not a stopping rung).** Emit the
+S2 verdict on unflagged debates only, hold flagged. Report accuracy at
+coverage 0.80 (composite flag) and at the severe-flag coverage, against
+0.85 overall. Every generative rung must beat "hold the flagged 20%".
+
+**A1 -- statement against interest.** Population: debates with a
+mis-localised objection (a stake seat objected although S1 favoured its
+stake; n~231). Exactly one seat can be mis-localised per debate (S1
+favours exactly one side). Actuated verdict = that seat's OWN R2 final
+verdict (its stated position before the synthesis existed). Rationale:
+a seat that rejects a synthesis favouring its brief is speaking against
+interest; that is the classic credibility signal (Spence 1973 signalling;
+the statement-against-interest hearsay exception, FRE 804(b)(3)).
+Sensitivity: REJECT-only mis-localised (n~176); the flip rule (actuated =
+the verdict class opposite S1) which needs no R2 parse.
+
+**A2 -- stakeless deference.** Population: debates where the neutral
+adjudicator objected at R3 (n~122). Actuated verdict = the neutral's R2
+final verdict. Rationale: the neutral has no stake, so its objection is
+never interest-explained; it is the seat the protocol built to carry
+content. Sensitivity: neutral REJECT only (n~94).
+
+**A3a -- cross-vendor escalation, cached.** Population: all flagged
+(n~337). Actuated verdict = a second vendor's cached single-agent verdict
+on the same (item, arm): PRIMARY claude-haiku-4-5 `standard`, majority
+over its k=3 samples (ties -> S2). Sensitivity: gpt-5.4-nano standard
+majority-3; haiku and nano narrative_cot k=1. Rationale: a different
+model's posterior has decorrelated errors; the aggregation-passthrough
+result (handoff Sec 2) already showed cross-vendor diversity buys
+accuracy on this task. The sensor-specific gain check is essential here:
+if haiku beats S2 on unflagged debates by as much, the finding is "route
+everything to haiku", not an actuator.
+
+## Spend rungs (only if A1-A3a are all null)
+
+**A3b -- crux escalation (~$2, ~700 haiku calls).** Population: all
+flagged. A haiku adjudicator receives the post AND the three R3 objection
+texts (the disagreement), not the transcript, and returns a verdict;
+k=2, majority with S2 as tie-break. Tests whether the crux, handed to a
+decorrelated model, beats the same model reading the post cold (A3a).
+
+**A4 -- quote-gated second cycle (~$3, ~2,400 grok calls).** Population:
+all flagged. Re-run the L2 blind cycle with one change: R3b responses
+must anchor every claim about the account to a verbatim quoted span;
+spans are verified by substring match against the post and any objection
+containing an unverified claim is struck before the moderator sees it.
+Paired control already exists: the L2 blind arm's S3. Rationale: verified
+quotes are the mechanic in the oversight-via-debate results that hold
+(Michael et al. 2023, arXiv 2311.08702; Khan et al. 2024, PMLR
+235:23662-23733), and their absence is a candidate reason L2 re-rolled.
+Kenton et al. 2024 (debate did not replicate off reading comprehension)
+is the registered caution.
+
+**A5 -- composed (~$5).** A3b with quote-verified objections only. Run
+only if A3b and A4 are both null but both point-positive.
+
+**Out of ladder.** Activation-level actuation (L4) and training on the
+sensor as reward need infrastructure this repo does not have; they are
+the next registration if the ladder ends null.
+
+**Kill.** If every rung through A4 is null, the conclusion is that the
+stake structure's information is exhausted by the flag itself -- it
+locates contested debates and carries no usable direction -- and the
+programme's deliverable is the sensor plus selective emission (A0), with
+escalation to humans as the actuator.
