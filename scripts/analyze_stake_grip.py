@@ -193,6 +193,74 @@ def stage0(rows: Path, votes: Path, *, draws: int) -> dict:
 
 
 # ---------------------------------------------------------------------------
+# Addendum 6a: confirm a discovery-set flag on fresh items
+# ---------------------------------------------------------------------------
+
+def confirm_flag(debates: Sequence[dict], discovery_items: set[str], *,
+                 actuator_model: str = "grok-4-1-fast-reasoning",
+                 draws: int = 2000, seed: int = 17) -> dict:
+    comp = load_comparator()
+    rule = make_rule_vendor(comp, actuator_model, "standard")
+    new = [d for d in debates if d["item"] not in discovery_items]
+    fl = [d for d in new if flagged(d)]
+    un = [d for d in new if not flagged(d)]
+
+    # C1: flag lift on synthesis error, item-clustered
+    by_item: dict[str, list] = defaultdict(list)
+    for d in new:
+        by_item[d["item"]].append(d)
+
+    def lift(ds):
+        f = [int(not d["syn_ok"]) for d in ds if flagged(d)]
+        u = [int(not d["syn_ok"]) for d in ds if not flagged(d)]
+        if not f or not u:
+            return None
+        return sum(f) / len(f) - sum(u) / len(u)
+
+    lp, llo, lhi = _boot_ci(by_item, lift, draws=draws, seed=seed)
+    c1 = lp is not None and llo is not None and llo > 0
+    ef = evaluate(fl, rule, alpha=0.05, draws=draws, seed=seed + 1,
+                  label=f"{actuator_model} on new flagged") if fl else None
+    eu = evaluate(un, rule, alpha=0.05, draws=draws, seed=seed + 2,
+                  label=f"{actuator_model} on new unflagged") if un else None
+    c2 = bool(ef and ef["lo"] is not None and ef["lo"] > 0
+              and all(v is not None and v > 0 for v in ef["delta_by_arm"].values()))
+    c3 = bool(ef and eu and ef["delta"] is not None and eu["delta"] is not None
+              and ef["delta"] - eu["delta"] > 0 and eu["delta"] <= 0)
+    return {
+        "n_new_debates": len(new), "n_new_items": len({d["item"] for d in new}),
+        "n_flagged": len(fl), "fire_rate": len(fl) / len(new) if new else None,
+        "n_synthesis_wrong": sum(1 for d in new if not d["syn_ok"]),
+        "precision": (sum(1 for d in fl if not d["syn_ok"]) / len(fl)) if fl else None,
+        "recall": (sum(1 for d in fl if not d["syn_ok"])
+                   / max(1, sum(1 for d in new if not d["syn_ok"]))),
+        "C1_lift": {"delta": lp, "lo": llo, "hi": lhi, "pass": c1},
+        "C2_route_flagged": ef, "C2_pass": c2,
+        "C3_route_unflagged": eu, "C3_pass": c3,
+        "positive": bool(c1 and c2 and c3),
+    }
+
+
+def print_confirm(c: dict) -> None:
+    print(f"\n=== 6a confirmation on {c['n_new_items']} NEW items, {c['n_new_debates']} debates ===")
+    print(f"  flagged {c['n_flagged']} (fire {c['fire_rate']:.3f}); synthesis wrong {c['n_synthesis_wrong']}; "
+          f"precision {c['precision'] if c['precision'] is None else round(c['precision'], 3)}  recall {c['recall']:.3f}")
+    l = c["C1_lift"]
+    fmt = lambda v: "n/a" if v is None else f"{v:+.3f}"
+    print(f"  C1 lift {fmt(l['delta'])} [{fmt(l['lo'])}, {fmt(l['hi'])}]  {'PASS' if l['pass'] else 'fail'}")
+    e = c["C2_route_flagged"]
+    if e:
+        print(f"  C2 route flagged: S2 {e['acc_s2']:.3f} -> {e['acc_actuated']:.3f}  delta {fmt(e['delta'])} "
+              f"[{fmt(e['lo'])}, {fmt(e['hi'])}]  arms {{{', '.join(f'{k}: {v:+.3f}' for k, v in e['delta_by_arm'].items())}}}  "
+              f"{'PASS' if c['C2_pass'] else 'fail'}")
+    u = c["C3_route_unflagged"]
+    if u:
+        print(f"  C3 route unflagged: S2 {u['acc_s2']:.3f} -> {u['acc_actuated']:.3f}  delta {fmt(u['delta'])}  "
+              f"{'PASS' if c['C3_pass'] else 'fail'}")
+    print(f"  POSITIVE: {c['positive']}")
+
+
+# ---------------------------------------------------------------------------
 
 def print_grip(label: str, g: dict, spend: Optional[dict]) -> None:
     c = g["G3_stake_concentration"]
@@ -220,6 +288,9 @@ def main(argv: Sequence[str] | None = None) -> int:
     ap.add_argument("--model", default="claude-haiku-4-5")
     ap.add_argument("--draws", type=int, default=2000)
     ap.add_argument("--stage0", action="store_true")
+    ap.add_argument("--confirm-against", default=None,
+                    help="tag of the discovery-set run whose items are excluded "
+                         "from the 6a confirmation readout")
     ap.add_argument("--json", type=Path, default=OUT_DIR / "stake_grip_analysis.json")
     ap.add_argument("--selftest", action="store_true")
     a = ap.parse_args(argv)
@@ -252,6 +323,12 @@ def main(argv: Sequence[str] | None = None) -> int:
                                price_in=pin, price_out=pout)
         print_grip(f"{a.model} / {a.tag}", g, spend)
         existing[f"{a.model}:{a.tag}"] = {"grip": g, "spend": spend}
+        if a.confirm_against:
+            disc = {r["item_id"] for r in csv.DictReader(
+                open(OUT_DIR / f"{a.confirm_against}_rows.csv"))}
+            c = confirm_flag(debates, disc, draws=a.draws)
+            print_confirm(c)
+            existing[f"{a.model}:{a.tag}"]["confirm_6a"] = c
     a.json.write_text(json.dumps(existing, indent=1))
     print(f"\nwrote {a.json}")
     return 0
@@ -309,6 +386,27 @@ def _selftest() -> int:
           0.0 < g_mid["G2_reject_share"] < 0.2)
     check("stake concentration excludes the neutral seat",
           g_grok["G3_stake_concentration"]["n_votes"] == 2 * 60 * 2)
+
+    # confirm_flag on a synthetic world where the flag is an oracle for
+    # synthesis error and the actuator is always right: all three pass.
+    g_ = globals()
+    real_lc = g_["load_comparator"]
+    debates, _ = world(p_obj=0.0, p_rej_und=0.0, p_rej_not=0.0)
+    comp = defaultdict(list)
+    for i, d in enumerate(debates):
+        wrong = i % 4 == 0
+        d["syn_ok"] = d["s2_ok"] = not wrong
+        d["s1"] = d["s2"] = "NTA" if wrong else "YTA"
+        d["obj_neutral_adjudicator"] = "x" if wrong else ""
+        comp[("grok-4-1-fast-reasoning", "standard", d["arm"], d["item"])] = ["YTA"] * 3
+    g_["load_comparator"] = lambda: comp
+    try:
+        c = confirm_flag(debates, {"i000", "i001"}, draws=200)
+    finally:
+        g_["load_comparator"] = real_lc
+    check("6a: discovery items excluded", c["n_new_items"] == 58)
+    check("6a: oracle flag + perfect actuator is positive", c["positive"])
+    check("6a: unflagged routing is neutral", c["C3_route_unflagged"]["delta"] == 0.0)
     print(f"\n{'ALL OK' if not fails else str(len(fails)) + ' FAILED'}")
     return 1 if fails else 0
 
