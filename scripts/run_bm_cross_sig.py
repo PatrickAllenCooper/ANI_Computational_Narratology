@@ -230,10 +230,15 @@ def _selftest() -> int:
     check(f"sig indices 0-5 hit existing caches (>=600 of {len(low_idx)})",
           hits >= 600)
 
-    # Cross arms must NOT collide with any existing cache namespace.
-    cross_cached = sum(Path(u.cache_path).exists() for u in cross_units)
-    check("cross arms start from a cold cache (new namespace)",
-          cross_cached == 0)
+    # Cross arms must NOT collide with any existing cache namespace. Before
+    # E2 ran this meant "cold cache"; once E2 has run, its caches legitimately
+    # exist, so the durable property is that no cross-arm cache path is also
+    # an E1 / Section-0 cache path (distinct scaffold key in the filename).
+    cross_paths = {Path(u.cache_path) for u in cross_units}
+    e1_paths = {Path(u.cache_path) for u in sig_units}
+    check("cross arms occupy their own cache namespace (no E1 collision)",
+          not (cross_paths & e1_paths)
+          and all("_nar" in p.name for p in cross_paths))
 
     print(f"\n{'ALL OK' if not fails else str(len(fails)) + ' FAILED'}")
     return 1 if fails else 0

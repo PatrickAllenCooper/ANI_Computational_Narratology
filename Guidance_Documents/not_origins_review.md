@@ -300,3 +300,46 @@ marginal fix/break of a true gated iteration (~4 calls x ~20% of debates);
 L3 stake-dose x loop-gain interaction and per-iteration disturbance
 rejection (resistance across loop turns); L4 the activation stake-meter as
 sensor on a local model.
+
+### 8.2 L1 and L2 done (2026-09-01/02): the loop has no restoring force
+
+Full numbers in prereg_embodiment_community.md (E5 RESULTS, L1 RESULTS,
+L2 RESULTS). What they add to the roadmap:
+
+- **L1 (k=4, 1,677 debates).** Phase 0 replicates with every interval
+  narrower and no sign change. The loop's use of the sensor is now firm:
+  flagged wrong syntheses are fixed +19.6pp [+13.6, +26.6] more often
+  than unflagged. Severity filtering (REJECT-only) is a modest lever
+  (+0.026 precision, -0.096 recall), not a different sensor.
+
+- **L2 (337 flagged debates, three moderator sub-arms, ~5k calls).** The
+  registered primary is null: an informed second iteration nets +0.012
+  [-0.039, +0.063] in the flagged population; blind +0.009, generic
+  +0.033, all intervals covering zero. Flag CONTENT does nothing
+  (informed - blind +0.006 [-0.028, +0.041]). The kill criterion for
+  "iteration does not pay at this sensor precision" fires; the
+  "iteration is harmful" criterion does not (net >= 0 in all sub-arms).
+
+- **The mechanism did not degrade -- the verdict just re-rolled.**
+  Iteration-2 defeasibility is LARGER than iteration 1 (accept when
+  addressed 0.629 vs 0.010; iteration 1: 0.366 vs 0.009). Yet within
+  flagged debates both iterations look the same: iteration 1 fix 0.196 /
+  break 0.151, iteration 2 fix 0.32 / break 0.21, fix-to-break ratio
+  1.3-1.5 both times, net ~0 both times. Stability across passes does
+  not predict correctness (S3 correct 0.60 whether or not it changed from
+  S2), and a majority over S1/S2/S3 does not beat S3 alone (-0.018
+  [-0.066, +0.034]). On contested items the passes are close to
+  exchangeable draws at ~59% accuracy with a slight drift toward truth.
+
+The control-theoretic reading is exact: the plant has a sensor (the
+stake structure detects contested debates at lift +0.33) but no
+actuator with a restoring force -- re-running the same three agents on
+the same post is a re-sample of the same posterior, not new evidence.
+Iterating the same protocol cannot converge. What this rules IN for L3/L4:
+the next lever must add INFORMATION, not passes -- either a sharper
+sensor (the activation stake-meter, precision well above 0.41 so the
+break exposure of correct-but-flagged debates falls) or an escalation
+path (flag-and-route to a different model / retrieval / human) rather
+than self-repair. The dose-graded L3 keeps its rationale (does stake
+dose move the sensor's precision?) but its "loop gain" half is moot
+until the actuator changes.

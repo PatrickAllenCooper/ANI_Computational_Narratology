@@ -673,3 +673,65 @@ S3 breaks more right-S2 debates than it fixes wrong-S2 debates in ALL
 three sub-arms, iteration is harmful on this protocol and the loop
 programme reverts to sensor-only designs (flag-and-escalate, no
 self-repair).
+
+## L2 RESULTS (2026-09-02)
+
+Run. `scripts/run_loop_iteration.py --workers 10` on the k=4 rows:
+1,680 debates replayed from cache under the no-spend guard (zero misses),
+3 ineligible (non-codable synthesis or final), 337 flagged (20.1%, exactly
+the registered estimate), 5,055 grok calls, all 337 completed, 1,011
+outcome rows (1,005 codable), 3,033 vote rows. Analysis JSON at
+`divergence_study_outputs/loop_iter2_analysis.json`; item-clustered
+bootstrap, 4,000 draws.
+
+| sub-arm | n | net P(S3 ok) - P(S2 ok) | fix P(S3 ok / S2 wrong) | break P(S3 wrong / S2 ok) |
+|---|---|---|---|---|
+| blind | 336 | +0.009 [-0.043, +0.064] | 0.319 [0.232, 0.415] | 0.215 [0.152, 0.288] |
+| generic | 335 | +0.033 [-0.027, +0.094] | 0.379 [0.275, 0.492] | 0.215 [0.144, 0.296] |
+| informed | 334 | +0.012 [-0.039, +0.063] | 0.324 [0.232, 0.423] | 0.210 [0.141, 0.291] |
+
+Paired contrasts within debate: L2-INFO informed - blind +0.006 [-0.028,
++0.041]; L2-NUDGE generic - blind +0.027 [-0.013, +0.062]; informed -
+generic -0.018 [-0.050, +0.018]. L2-STABILITY: accept when own
+modification addressed 0.629 vs 0.010 when not (n=1,950 R3b objectors).
+
+Hypothesis outcomes.
+
+- **L2-PRIMARY: NOT supported.** Informed net +0.012, CI covers zero,
+  point <= +0.02. Kill criterion 1 fires: one gated iteration does not
+  pay at this sensor precision.
+- **L2-INFO: null.** The flag's content adds nothing over a blind second
+  pass. The moderator does not exploit "this objection was not
+  stake-explained".
+- **L2-NUDGE: null,** directionally the best sub-arm but the interval
+  covers zero; not a result.
+- **L2-STABILITY: supported, strongly.** Defeasibility did not collapse;
+  it grew (0.63 vs 0.37 in iteration 1). The label/vote apparatus is
+  intact across iterations.
+- **Kill criterion 2 does NOT fire:** net >= 0 in all three sub-arms;
+  iteration is not harmful, only unproductive.
+
+The fair comparison (same flagged population, iteration 1 vs 2). Within
+the 337 flagged debates iteration 1 had S1 accuracy 0.591 -> S2 0.582,
+fix 0.196 (n=138 wrong), break 0.151 (n=199 right). Iteration 2: S2 0.58
+-> S3 0.59-0.62, fix 0.32-0.38, break 0.21. Fix-to-break ratio 1.3 in
+iteration 1 and 1.5-1.8 in iteration 2; net in counts ~0 both times
+because the flagged population is 58-59% correct and every pass exposes
+that majority to the break rate. Iteration 2 moves the verdict string
+41% of the time (correctness flips ~26%, vs ~17% in iteration 1).
+
+Exploratory (not registered, reported for the record): S3 accuracy is
+the same whether S3 changed from S2 or not (0.593 vs 0.600 informed;
+0.599 vs 0.576 blind; 0.600 vs 0.636 generic) -- stability across passes
+is not a correctness signal; a majority vote over S1/S2/S3 does not beat
+S3 alone (-0.018 [-0.066, +0.034] informed). On contested items the three
+proposals behave as near-exchangeable draws at ~59% accuracy.
+
+Decision, per the registration. The loop programme's lever moves to
+sensor precision and to escalation designs. No further self-repair
+iteration spend on this protocol: re-running the same agents on the same
+post is a re-sample, not new evidence, and the data say so three ways
+(net ~0 twice, no information effect, no stability signal). See
+not_origins_review.md Sec 8.2 for what this rules in for L3/L4.
+
+Spend: ~5k grok calls, within the $10 ceiling.
