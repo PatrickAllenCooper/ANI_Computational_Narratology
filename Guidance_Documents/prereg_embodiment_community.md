@@ -1295,3 +1295,31 @@ Confirmation criteria, on the 60 new items only:
 Positive iff C1 and C2 and C3. Also re-read G1-G3 and objection
 concentration on all 200 debates. Whatever the outcome, the grip verdict
 for haiku stands: this tests a different mechanism.
+
+## 6a RESULTS (2026-09-02; 2,040 new calls, $14.18; Addendum 6 total $30.82 of $40)
+
+**NOT CONFIRMED.** 60 new items, 120 debates (119 codable), 29 flagged
+(fire 0.242, identical to discovery), 11 wrong syntheses.
+- C1 flag lift: precision 0.207 (discovery 0.474), recall 0.545;
+  lift +0.152, 95% CI [+0.000, +0.302]. Lower bound on zero: fail.
+- C2 grok routing on flagged: 0.724 -> 0.897, +0.172 [+0.000, +0.323],
+  arms {as_asker +0.250, third_person +0.118}. Lower bound on zero: fail.
+- C3 unflagged: 0.923 -> 0.923, +0.000. Pass.
+Direction replicates in both arms; magnitude roughly halves (the
+discovery set's precision was a small-sample high). Reported as
+directional, unconfirmed. The haiku flag is a weaker, non-stake sensor
+than the discovery set suggested; a decisive test would need ~3x the
+items and is not registered.
+
+Grip re-read on all 199 haiku debates: fire 0.241, R4 rejects 0 of 597
+votes, stake-seat objection rates 0.18 / 0.13 against undermined rates
+0.49 / 0.51 -- haiku's dissent is unrelated to stake at n=199. Grip
+verdict unchanged: no.
+
+**Addendum 6 closes.** Four community models under a byte-identical
+protocol; one (grok) has stake grip and yields a routable sensor; the
+other three do not, each failing differently (nano indiscriminate,
+haiku compliant, sonnet silent). The routing architecture as a
+stake-structure phenomenon is confined to grok. A non-stake flag from a
+compliant community (haiku) points the right way but did not clear
+confirmation on 60 items.
