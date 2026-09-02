@@ -343,3 +343,31 @@ path (flag-and-route to a different model / retrieval / human) rather
 than self-repair. The dose-graded L3 keeps its rationale (does stake
 dose move the sensor's precision?) but its "loop gain" half is moot
 until the actuator changes.
+
+### 8.3 The actuator ladder (2026-09-02): the sensor plus a decorrelated model is the loop
+
+Registered as prereg Addendum 4 (spend-ordered, stop at first positive)
+and stopped at the third zero-spend rung. Full table in the prereg.
+
+- Within-community direction is absent. The against-interest objector's
+  own verdict agrees with the synthesis 193/231 times (+0.000); the flip
+  rule is harmful (-0.143); deferring to the neutral seat is +0.057 and
+  fails replication. Mis-localised objections are about reasoning, not
+  direction. The flag knows WHERE, not WHICH WAY.
+- Direction from outside works, and only where the sensor says. Routing
+  flagged debates to a second vendor's plain answer (haiku standard,
+  majority of 3 cached samples) lifts them 0.582 -> 0.774, +0.193
+  [+0.067, +0.310] at 98.75%, replicating in both item halves and both
+  arms; the same rule on UNflagged debates is worse than the deliberation
+  (-0.040). Sensor-specific gain +0.232.
+- The composed system beats both components: 0.881 vs 0.843
+  (deliberation alone, +0.039 [+0.018, +0.060]) and 0.850 (haiku alone,
+  +0.032 [-0.004, +0.068]).
+
+This is the thesis the PI stated at the outset, measured: agents whose
+alignments are combined push toward objectivity in a way that yields a
+SIGNAL, and the signal's use is to route. The embodied community is the
+sensor; the decorrelated model is the actuator; the stake structure is the
+wiring between them. The correction is asymmetric (mostly leniency
+errors, gold-YTA 0.61 -> 0.93) and one model pair on one task family;
+reverse routing and a second task are the next registrations.

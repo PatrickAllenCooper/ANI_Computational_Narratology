@@ -848,3 +848,79 @@ stake structure's information is exhausted by the flag itself -- it
 locates contested debates and carries no usable direction -- and the
 programme's deliverable is the sensor plus selective emission (A0), with
 escalation to humans as the actuator.
+
+## ACTUATOR LADDER RESULTS (2026-09-02; zero-spend rungs; ladder STOPPED at A3a)
+
+`scripts/analyze_actuator_ladder.py`, 1,677 codable debates, 337 flagged,
+iteration 1 replayed from cache under the no-spend guard, 4,000 draws,
+98.75% CIs on the zero-spend family. Analysis JSON at
+`divergence_study_outputs/actuator_ladder_analysis.json`.
+
+| rung | population | S2 acc -> actuated | delta [98.75% CI] | halves | arms | verdict |
+|---|---|---|---|---|---|---|
+| A1 against-interest R2 verdict | mis-localised, n=231 | 0.571 -> 0.571 | +0.000 [-0.074, +0.074] | 0.000 / 0.000 | -0.009 / +0.008 | null |
+| A1 sens REJECT-only | n=176 | 0.551 -> 0.557 | +0.006 [-0.089, +0.102] | | | null |
+| A1 sens flip rule | n=231 | 0.571 -> 0.429 | -0.143 [-0.407, +0.129] | | | null (harmful) |
+| A2 neutral's R2 verdict | neutral objected, n=122 | 0.607 -> 0.664 | +0.057 [-0.080, +0.205] | +0.018 / +0.091 | +0.108 / 0.000 | null |
+| A2 sens REJECT-only | n=94 | 0.564 -> 0.638 | +0.074 [-0.099, +0.252] | | | null |
+| **A3a haiku standard majority-3** | **all flagged, n=337** | **0.582 -> 0.774** | **+0.193 [+0.067, +0.310]** | **+0.167 / +0.212** | **+0.185 / +0.200** | **POSITIVE** |
+| A3a on UNFLAGGED (context) | n=1,340 | 0.908 -> 0.869 | -0.040 [-0.100, +0.016] | | | worse |
+| A3a sens nano standard maj-3 | flagged | 0.582 -> 0.671 | +0.089 [-0.031, +0.215] | | | null, directional |
+| A3a sens haiku narrative k=1 | flagged | 0.582 -> 0.682 | +0.101 [-0.026, +0.233] | | | null, directional |
+| A3a sens nano narrative k=1 | flagged | 0.582 -> 0.665 | +0.083 [-0.040, +0.215] | | | null, directional |
+
+A0 baseline: holding the composite-flagged 20% raises emitted accuracy
+from 0.843 to 0.908 at coverage 0.799 (severe flag: 0.895 at 0.844).
+
+**Ladder result: A3a is positive on all three registered criteria; per
+the stopping rule the ladder stops here and no spend rung is run.**
+
+Sensor-specific gain: +0.232 (flagged +0.193 vs unflagged -0.040). This
+is the check that separates "a better model" from "an actuator": haiku
+is WORSE than the deliberation on the 80% of debates the sensor passes
+and much better on the 20% it flags. The finding is not "use haiku"; it
+is "the stake structure knows where grok's deliberation is unreliable,
+and a decorrelated model repairs exactly those cases".
+
+Composed system (all 1,677 debates; deliberation verdict unless flagged,
+haiku majority-3 if flagged), 95% item-clustered CIs:
+
+| system | accuracy | vs. |
+|---|---|---|
+| deliberation everywhere (S2) | 0.843 | |
+| haiku everywhere | 0.850 | |
+| **routed: flag -> haiku** | **0.881** | +0.039 [+0.018, +0.060] over S2; +0.032 [-0.004, +0.068] over haiku |
+
+The routed system beats the deliberation alone decisively and beats
+haiku alone directionally (the second interval touches zero; not claimed
+as established). Both components alone are within a point of each other;
+composing them through the sensor is worth ~3-4 points.
+
+Where the gain comes from. On flagged debates the lift is concentrated on
+gold-YTA items (0.610 -> 0.927, n=177) and modest on gold-NTA (0.550 ->
+0.606, n=160). Contested deliberations err mostly by leniency toward the
+writer; haiku's criterion on those items is harsher (P(at-fault) 0.66-0.69
+against a gold-YTA share of 0.50-0.56) but it is discriminating, not
+merely harsh: an always-at-fault rule would score 0.525 on flagged debates
+and haiku scores 0.774. Disclosed so the effect is not over-read as
+symmetric error correction.
+
+What A1 says. The against-interest objector's own R2 verdict agrees with
+S2 in 193 of 231 debates (only 38 changed): mis-localised objections are
+objections to REASONING, not to the verdict's direction. The flip rule is
+actively harmful (-0.143). So the flag carries contested-ness and no
+usable direction from inside the community -- the reading the kill
+criterion anticipated -- and the direction has to come from outside. A2
+is the one within-community rule with a positive point (neutral seat,
++0.057) and it fails replication on the third_person arm.
+
+Caveats. (1) The haiku verdicts are cached single-agent `standard` calls
+on the same (item, arm), not a haiku deliberation; the actuator is "a
+different vendor's plain answer", which is also the cheapest possible
+one. (2) The primary was registered as haiku standard majority-3 before
+computation; the k=1 narrative sensitivities are noisier and directional
+only, so the majority-of-3 aggregation matters and a single haiku call
+should not be assumed to reproduce +0.19. (3) One model pair, one task.
+The registered next step, if this is carried further, is the reverse
+routing (haiku deliberation flagged -> grok) and a second task family,
+each registered before generation.
