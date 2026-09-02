@@ -523,6 +523,97 @@ half-width) is near the floor this design can reach at pilot-scale
 budgets, and the question moves to a different design (different model, or
 the standard-comparator question, each needing its own registration).
 
+## E5 RESULTS (2026-09-01, readout after both extensions landed)
+
+Data. Group arm k=4 (`--pilot --samples 4`): 1,680 cells on a 210-item
+restricted panel (86 gold-YTA, 124 gold-NTA), both guards PASSED (worst
+round-level NOVERDICT 1.2%, outcome NOVERDICT 0.1%, zero truncation).
+Comparator: grok `narrative_cot` k=3 on the same panel (sample 0
+byte-reproduces the original run; NOVERDICT 8.4% at sample 0, 9.3% at
+samples 1-2, balanced across arms 8.8% vs 9.2%, zero truncation).
+Panel note: the content-filter screen globs live single-agent caches, so
+the k=3 extension surfaced refusals on 9 further items (39 vs 30) and the
+panel moved 219 -> 210. The restriction is per-model and applies to both
+arms identically; every contrast below is on the 210-item panel.
+Three of 1,752 group cells were lost to endpoint failures during a
+rate-limit window (0.2%); their items remain via the other samples.
+
+Headline (registered: coding=published, comparator=narrative_cot,
+signed, 10,000 item-bootstrap draws):
+
+| quantity | estimate | 95% CI |
+|---|---|---|
+| group criterion shift dc (third_person -> as_asker) | +0.132 | [+0.029, +0.240] |
+| single-agent narrative_cot dc | +0.282 | [+0.168, +0.423] |
+| **resistance = dc_single - dc_group** | **+0.150** | **[-0.001, +0.323]** |
+
+The registered decision rule ("established iff the CI excludes zero")
+is NOT met, by the narrowest margin the instrument can produce: the
+2.5th percentile is -0.001 (at 2,000 draws it printed +0.000). We report
+it as registered: resistance is not established at the 0.05 level on
+this model; it is a p ~ 0.05 result with a point estimate that has been
+stable across k (pilot +0.133, powered +0.150) and interval width that
+fell from 0.58 to 0.32. Sensitivity comparators point the same way and
+are wider (vs standard +0.130 [-0.045, +0.332]; vs standard_cot_verbose
++0.185 [-0.051, +0.450]). The group is NOT immune to the manipulation:
+its own shift (+0.132) excludes zero. It is moved about half as far as
+the single agent.
+
+Per the registered rule, no further spend on this instrument at this
+model. The next step for this question, if it is pursued, is a different
+design (registered separately), not more samples here.
+
+Structural signals replicate at k=4 with tight intervals, unchanged in
+direction and magnitude from the pilot:
+
+- stake concentration (reject when own stake undermined minus reject
+  when not): +0.657 [+0.619, +0.693]; reject rate 77.2% vs 11.5%
+  (n=5,031 votes, 210 items);
+- defeasibility (accept when own modification addressed minus accept
+  when not): +0.357 [+0.324, +0.390]; 36.6% vs 0.9% (n=2,002 objectors).
+
+Verdict on E5 as a whole: the verdict-level resistance effect stays at
+the boundary; the who-objects structure is now measured to +/-0.04. This
+is the same asymmetry the E4 synthesis named ("the signal lives in who
+objects, not in verdict swaps"), now with the power to say so.
+
+## L1 RESULTS (2026-09-01, loop dynamics at k=4, zero spend)
+
+`scripts/analyze_loop_step.py` on 1,677 codable debates, 210 items:
+
+| quantity | estimate | 95% CI |
+|---|---|---|
+| synthesis accuracy | 0.850 | [0.810, 0.887] |
+| final accuracy | 0.843 | [0.801, 0.881] |
+| fix rate P(final ok / synthesis wrong) | 0.108 | [0.071, 0.149] |
+| break rate P(final wrong / synthesis ok) | 0.028 | [0.019, 0.038] |
+| net gain in counts, UNGATED turn | -0.008 | [-0.018, +0.002] |
+| net gain in counts, GATED turn | -0.002 | [-0.011, +0.008] |
+| fix-rate gap, flagged minus unflagged wrong syntheses | +0.196 | [+0.136, +0.266] |
+
+Sensors, P(synthesis wrong / signal) - P(wrong / no signal), with
+precision and recall on wrong syntheses:
+
+| sensor | lift | precision | recall | n |
+|---|---|---|---|---|
+| neutral objected (any) | +0.219 [+0.091, +0.351] | 0.352 | 0.171 | 122 |
+| mis-localised objection (any) | +0.323 [+0.205, +0.442] | 0.429 | 0.394 | 231 |
+| composite flag (registered L2 gate) | +0.325 [+0.236, +0.416] | 0.409 | 0.550 | 337 |
+| neutral REJECT only | +0.270 [+0.133, +0.411] | 0.404 | 0.151 | 94 |
+| mis-localised REJECT only | +0.328 [+0.186, +0.467] | 0.443 | 0.311 | 176 |
+| composite, REJECT only | +0.338 [+0.245, +0.432] | 0.435 | 0.454 | 262 |
+
+Reading. Phase 0 replicates at double the data with every interval
+narrower and no sign change. The ungated turn is net-negative in counts
+(consistent with the arithmetic in the registration: 85% of syntheses
+are right and 2.8% of them break); the gated turn is not. The loop
+already uses the sensor: wrong syntheses that carry a flag are fixed at
++0.196 higher rate than wrong syntheses that do not, an interval now
+comfortably off zero. Severity filtering (REJECT only) buys +0.026
+precision for -0.096 recall on the composite -- a modest lever, not a
+different sensor. The registered L2 gate remains the unfiltered
+composite (frozen before L2 generation).
+
 ---
 
 # Addendum 3: L2, the gated second loop iteration
