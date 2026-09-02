@@ -1169,10 +1169,14 @@ verbose than grok inside the five-section scaffold.
 
 **Stake grip** is defined on a community model's debates as all three of:
 (G1) composite-flag fire rate <= 0.50 (grok 0.20, nano 0.85);
-(G2) REJECT share of R3 votes >= 0.05 (nano ~0.025);
-(G3) stake concentration (reject rate undermined - not undermined,
-     pooled seats) >= +0.20 with 95% bootstrap CI excluding zero
-     (grok +0.657, nano +0.033).
+(G2) REJECT share of R4 votes >= 0.05 (nano 0.025; R4 is the binary
+     vote the severe flag and the stake-concentration statistic use);
+(G3) stake concentration on the two stake seats (R4 reject rate when
+     the seat's stake was undermined minus when it was not) >= +0.20
+     with 95% item-clustered bootstrap CI excluding zero (nano +0.035;
+     grok's pooled figure was +0.657, its stake-seat figure is
+     recomputed by the same script for the side-by-side).
+(Clarified 12:40 MDT, before any Stage 1 output was read.)
 A model with grip can serve as a sensor; a model without it cannot,
 whatever its accuracy.
 
