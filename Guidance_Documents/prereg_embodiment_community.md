@@ -981,3 +981,92 @@ fails to replicate, the stake structure is model-specific and the
 architecture claim is confined to grok until shown otherwise.
 
 Ceiling for this addendum: $35.
+
+## ADDENDUM 5 RESULTS -- S1, S2, S2b (2026-09-02; S3 in flight)
+
+Scripts: `scripts/analyze_signal_reinforcement.py` (S1/S2/S2b, zero API
+calls), `scripts/run_crux_escalation.py` (S2 generation, 1,011 haiku
+calls, 0 errors), `scripts/run_crowdgold_aita.py --samples 5 --tag
+cg_scaffold_k5_haiku_std` (S2b, 996 new haiku calls, 0% truncation, 0%
+no-verdict). Artefacts: `signal_reinforcement_analysis.json`,
+`crux_escalation_rows.csv`, `cg_scaffold_k5_haiku_std_rows.csv`.
+
+**S1 -- NOT POSITIVE; the registered configuration stands.** 21
+candidates (7 sensors x 3 actuators), objective composed-system
+accuracy over all 1,677 codable debates. Half 0 (n=783): winner
+composite + haiku/nano 6-vote at 0.903, registered composite + haiku
+maj-3 second at 0.897. Half 1 (n=894, 112 items): S2 alone 0.822,
+registered 0.868, selected 0.858; delta(selected - registered) = -0.010,
+95% item-clustered CI [-0.032, +0.011]. Exploratory half-1 ranking puts
+the registered configuration joint first (0.868, tied with composite +
+haiku-unanimous-else-S2). Two things worth keeping:
+
+1. *The sensor does work beyond "always ask haiku".* With haiku maj-3
+   fixed, broad sensors that fire on 85-98% of debates
+   (any_objection, any_reject_vote, not_unanimous_accept,
+   composite_or_reject) score 0.852-0.862 on half 0; the composite
+   sensor, firing on 18%, scores 0.897 and severe (14%) 0.890. Routing
+   only the flagged 18% to the second vendor beats routing everything,
+   because the unflagged 82% is where the community is right and haiku
+   is merely comparable. This is the sensor-specific gain of A3a,
+   confirmed on the selection half by a different objective.
+2. *Adding nano's votes adds nothing on held-out data.* nano standard is
+   a weaker single agent on this panel and dilutes haiku's majority.
+
+**S2 -- NULL (two-sided), point toward re-correlation.** n=337 flagged
+debates, 0 missing, 1 tie fallback, 3 debates with an uncodable sample.
+acc S2 0.582, cold haiku 0.774, crux haiku 0.739. delta(crux - cold) =
+-0.036, 95% CI [-0.095, +0.026]; by arm as_asker +0.025, third_person
+-0.091. Crux vs S2 is still +0.157 [+0.072, +0.245], so a second-vendor
+reader who is SHOWN the community's objections remains far better than
+the community, but no better than the same reader shown nothing.
+Registered hypothesis (from A1's null) holds: the community's objection
+content carries no direction a decorrelated reader can use.
+
+Exploratory cut (not registered; n small per cell): the loss is
+concentrated where the community's own error lives. On gold-NTA debates
+crux - cold = -0.094 (cold 0.606 -> crux 0.512); on gold-YTA +0.017
+(0.927 -> 0.944). Where the neutral seat objected, -0.074; where only a
+stake seat objected mis-localised, -0.014. Where cold haiku disagreed
+with S2 (117 debates), crux sided with S2 in 29 (25%). Reading: the
+objection texts import the community's over-blaming criterion into the
+outside reader -- the same direction as the deliberation's characteristic
+error (low warranted-affirmation on gold-NTA) -- rather than any
+item-specific evidence. This is the re-correlation mechanism in
+miniature, not significant at n=337 but pointed the way the L2 informed
+sub-arm and A1 pointed. Disclosure: objection texts sometimes name
+verdict labels themselves ("preventing an NTA verdict"); we injected no
+verdict, but the community's content is not verdict-free, and that is
+part of what is being tested.
+
+**S2b -- as expected, no stabilisation gain.** On flagged, haiku maj-5
+vs maj-3: 0.777 vs 0.774, delta +0.003 [-0.018, +0.027]. A3a recomputed
+with maj-5 vs S2: +0.196 [+0.094, +0.291], halves {0: +0.188, 1: +0.202},
+arms {as_asker +0.179, third_person +0.211}. The A3a effect is not a
+sampling artefact of three draws; the actuator is already saturated at
+k=3. (Some k=5 cells have fewer than 5 codable samples because ESH/NAH
+verdicts are uncodable under the published binary coding; the majority
+rule ignores them as before.)
+
+**Where this leaves the architecture.** The three cheap levers on the
+grok panel are exhausted: the registered sensor is the right sensor,
+the registered actuator is the right actuator, and showing the actuator
+the community's reasoning does not help and probably hurts. What the
+routed signal is, precisely: a *structural* flag (who objected, against
+whose stake) selecting *which* items to hand to an *uninformed*
+decorrelated judge. Content flows out of the community only as
+addressing information, never as evidence. S3 asks whether that same
+structural flag arises when the community is a different model.
+
+**S3 status.** Launched 2026-09-02 08:27 (`--models gpt-5.4-nano
+--samples 2`, 209-item panel after nano's content-filter screen removed
+40, 836 cells, 14,212 calls). The first process was terminated by a
+session reset at 08:29 after 80 calls; relaunched detached at ~08:45,
+resumes from cache, ~80 calls/min, ETA ~3 h. Analysis on completion:
+`python -m scripts.analyze_actuator_ladder --rows
+divergence_study_outputs/cg_deliberation_nano_rows.csv --votes
+divergence_study_outputs/cg_deliberation_nano_votes.csv --primary-vendor
+claude-haiku-4-5:standard --sens-vendors
+grok_std=grok-4-1-fast-reasoning:standard --alpha 0.05` (a single
+primary test; no Bonferroni) followed by `analyze_loop_step` on the nano
+rows for the sensor-validity replication.

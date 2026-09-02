@@ -371,3 +371,32 @@ sensor; the decorrelated model is the actuator; the stake structure is the
 wiring between them. The correction is asymmetric (mostly leniency
 errors, gold-YTA 0.61 -> 0.93) and one model pair on one task family;
 reverse routing and a second task are the next registrations.
+
+### 8.4 Reinforcing the routed signal (prereg Addendum 5, 2026-09-02)
+
+Three cheap levers tried on the grok panel, all resolved; S3
+(generalisation to a nano community) in flight.
+
+- S1 (sensor x actuator selection, half-0 select / half-1 confirm): the
+  registered configuration stands. No candidate beats composite + haiku
+  maj-3 on held-out items (best challenger -0.010 [-0.032, +0.011]).
+  The instructive part is the sensor comparison at fixed actuator:
+  routing the 18% flagged beats routing 85-98% of debates by ~0.04,
+  because the unflagged majority is where the community is right and the
+  second vendor is merely comparable. The flag is doing the work, not
+  the vendor swap.
+- S2 (crux escalation): showing the second vendor the community's three
+  objection texts does not help (-0.036 [-0.095, +0.026] vs cold) and
+  the loss sits on gold-NTA (-0.094), where the community's own
+  over-blaming error lives. Content leaving the community re-correlates
+  the outside judge with the community's criterion. Consistent with A1
+  and the L2 informed sub-arm.
+- S2b: haiku maj-5 vs maj-3 is +0.003; A3a at maj-5 is +0.196
+  [+0.094, +0.291]. Already saturated at k=3.
+
+Net statement of the mechanism, sharpened by these nulls: the signal the
+opposed-alignment community yields is *addressing information* -- which
+items, by whose stake -- and its correct consumer is a decorrelated judge
+that is shown nothing else. The narrative/embodiment apparatus
+manufactures the disagreement structure; the structure is a pointer, not
+an argument.
