@@ -424,7 +424,7 @@ the first per-model metric this project has for whether embodiment took.
 Next registrations: a stake-grip screen across candidate community
 models; haiku as the community to decide whether grok is the exception.
 
-### 8.5 The stake-grip screen (prereg Addendum 6, 2026-09-02, $30.82)
+### 8.5 The stake-grip screen (prereg Addendum 6, 2026-09-02, $30.82) [CORRECTION IN PROGRESS: haiku and sonnet rows below are retracted -- their R4 vote round failed its own round-level truncation guard at 81-97% and 0-19% respectively, missed at read time by a case-sensitive grep. Re-running with raised token caps; see prereg for the live correction.]
 
 Grip defined and measured (`scripts/analyze_stake_grip.py`): composite
 fire rate <= 0.5, R4 reject share >= 0.05, stake-seat reject
