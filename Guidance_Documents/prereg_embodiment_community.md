@@ -2252,3 +2252,12 @@ model whose grip was native, not taught (Addendum 4, grok, +0.193 CI
 problem; three addenda of trying with prompt-level induction and a
 zero/low-spend budget did not close it, at three different sensor
 designs and three different sharpening attempts.
+
+**Authorized closed, 2026-09-03 (PI sign-off).** The two honest next
+steps this section names -- a fundamentally different induction method,
+or a population an order of magnitude larger than this line's combined
+spend -- are explicitly NOT authorized at this time. The induced-
+sensor-to-actuator line stops here, on the registered kill gates,
+pending a specific reason to reopen it. Addendum 10 already showed
+scale weakening the effect, not strengthening it, so reopening on a
+default "more data would probably fix it" assumption is not warranted.
