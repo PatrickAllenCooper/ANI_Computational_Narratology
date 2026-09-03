@@ -1695,3 +1695,73 @@ a clean round-level guard; (2) scaling either screen past 40/28 items to
 tighten the CIs; (3) running rungs 2-4 now that rung 1 has already
 cleared the bar, which the stop rule places outside this addendum's
 scope by construction. Any of these would need its own registration.
+
+## POST-HOC CHECK (zero additional spend): does the induced signal serve the PI's actual goal?
+
+G3 is a process metric -- it measures whether REJECT tracks stake. The
+PI's original direction for this whole community programme (top of this
+document) is narrower and more demanding: "combining agents whose
+alignments oppose one another pushes the collective toward objectivity in
+a way that yields a derivable signal." That has two parts, and rung 1 was
+only checked against the first. Checked against both, on the exact 40/28
+shared debates, using cached data already paid for:
+
+**Part 1, the derivable signal: CONFIRMED, and the signal got BETTER
+CALIBRATED, not just louder.** `analyze_actuator_ladder.py`'s composite
+flag (Addendum 4's sensor: a neutral objection OR a mis-localised one) on
+these same debates:
+
+| model | condition | coverage | acc\|unflagged | acc\|flagged | flag lift |
+|---|---|---|---|---|---|
+| haiku | baseline | 0.53 | 0.833 | 0.895 | **-0.061** (backwards) |
+| haiku | fewshot | 0.55 | 0.909 | 0.750 | **+0.159** (correctly signed) |
+| nano | baseline | 0.15 | 0.875 | 0.872 | **+0.003** (useless) |
+| nano | fewshot | 0.59 | 0.848 | 0.696 | **+0.153** (correctly signed) |
+
+At baseline, on both models, being flagged was UNINFORMATIVE or actively
+backwards about whether the debate's own final verdict was wrong. Under
+the few-shot intervention, on the identical debates, the flag becomes
+genuinely diagnostic of error on both models, at a lift comparable to
+Addendum 4's A3a rung which produced a real, CI-clean accuracy gain when
+grok's (natively-gripped) flag was routed to an actuator. This is the
+first evidence that few-shot-induced grip is not just a process artifact:
+it appears to make these two cheap models' dissent actually TRACK
+correctness, not just fire more often.
+
+**Part 2, the collective's OWN verdict getting more objective as a
+result: NOT CONFIRMED, and probably the wrong place to look.** Paired,
+item-clustered bootstrap on S2 accuracy (the deliberation's own final
+verdict vs gold), same debates, baseline vs fewshot:
+
+| model | S2 acc baseline | S2 acc fewshot | paired delta | 95% CI |
+|---|---|---|---|---|
+| claude-haiku-4-5 | 0.825 | 0.787 | -0.037 | [-0.100, +0.025] (noise) |
+| gpt-5.4-nano | 0.821 | 0.750 | **-0.071** | **[-0.143, -0.018]** (real cost) |
+
+Letting the induced dissent directly perturb the group's own consensus
+vote cost nano real accuracy (CI excludes zero) and was flat for haiku.
+This is not a contradiction of Part 1 -- it is a restatement of what
+Addendum 4 already found (L2's "the deliberation is a good sensor with no
+actuator" premise, and A0's registered requirement that any generative
+rung must beat "hold the flagged debates out of the vote entirely"): an
+interest-motivated objection is evidence the debate is worth a second
+look, not evidence about which way the second look should come out.
+Trusting the collective's own re-litigated verdict conflates the two.
+Addendum 4 already built and validated the fix for exactly this failure
+mode -- route flagged debates to an external actuator instead of trusting
+the in-community revote -- and it produced a real gain (+0.193
+CI[+0.067,+0.310]) when the sensor was grok's native grip. That fix has
+never been tried with an INDUCED sensor.
+
+**What this leaves as the concrete next step, not yet registered or
+run:** repeat Addendum 4's A3a rung (population = composite-flagged
+debates, actuated verdict = a second vendor's cached single-agent
+verdict, same positive-outcome criteria: CI excludes zero, delta >=
++0.05, consistent sign in both item halves and both arms) with the
+few-shot-boosted haiku and nano communities standing in as the sensor,
+instead of requiring grok. If it clears the same bar Addendum 4's grok
+run did, embodiment-as-control-apparatus is realized exactly as
+originally specified: cheap, few-shot-inducible dissent generates a
+well-calibrated flag, and an external actuator (not the community's own
+vote) turns that flag into a genuine accuracy gain -- on vendors an order
+of magnitude cheaper than the one that has it natively.

@@ -543,3 +543,21 @@ narrated stake-computation requirement or extended test-time reasoning,
 both of which are now wired but unused per the registered stop rule)
 has not been exhausted -- it has barely been started, and it just
 worked once.
+
+A zero-spend post-hoc check against the PI's original two-part community
+goal (opposed alignments -> derivable signal -> collective pushed toward
+objectivity, prereg_embodiment_community.md top) found the two parts
+dissociate. The signal half is confirmed and improved: Addendum 4's
+composite flag, which was uninformative-to-backwards about error at
+baseline (lift -0.061 haiku, +0.003 nano), becomes genuinely diagnostic
+of error under the few-shot intervention (+0.159 haiku, +0.153 nano),
+comparable to the lift that made Addendum 4's grok-sensor actuator rung
+work. The objectivity half does not follow automatically: letting the
+induced dissent perturb the community's own final vote cost nano real
+accuracy (-0.071, CI excludes zero) and was flat for haiku. This is
+Addendum 4's own finding restated, not a new failure -- a good sensor
+still needs an external actuator, not a trust-the-revote design. The
+next concrete step is repeating Addendum 4's A3a rung (route
+composite-flagged debates to a second vendor's cached verdict) with the
+few-shot-boosted haiku/nano communities as the sensor instead of
+requiring grok's native grip -- not yet registered or run.
