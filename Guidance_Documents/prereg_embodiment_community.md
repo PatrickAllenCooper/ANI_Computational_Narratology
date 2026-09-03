@@ -2261,3 +2261,146 @@ sensor-to-actuator line stops here, on the registered kill gates,
 pending a specific reason to reopen it. Addendum 10 already showed
 scale weakening the effect, not strengthening it, so reopening on a
 default "more data would probably fix it" assumption is not warranted.
+
+# Addendum 12: a second task family for Addendum 4's actuator ladder (registered 2026-09-03, staged, before any generation)
+
+PI direction (2026-09-03): after Addendum 11 closed, continue the
+programme on the one lever that has NOT been tried and is not part of
+the closed induced-sensor line -- Addendum 4's single fully-powered
+positive result (grok's NATIVE stake-grip flags debates; routing them
+to a cached external actuator lifts accuracy +0.193, CI [+0.067,
++0.310]) has only ever been measured on one task family (AITA/Crowd-
+Gold). Addenda 4 and 5 both named "a second task family" as the
+explicit next registration; it was never executed. This is that
+registration. It does NOT touch few-shot induction, sharpening, or any
+part of the closed Addendum 9-11 line: grok's grip here is native, as
+in Addendum 4, not taught.
+
+## Stage 0: corpus and design (DONE, zero spend, 2026-09-03)
+
+**Candidate corpora considered.** A genuinely different task family
+needs ground truth, natural opposed interests, and enough narrative
+material for the existing multi-round embodiment protocol (which
+depends on a real first-person account to argue over, not a label).
+Scruples Dilemmas (Lourie, Le Bras & Choi 2021 -- the SAME paper and
+annotation pipeline as the Anecdotes corpus every prior addendum uses)
+was checked first because it shares provenance and trust level. Its
+raw form is a poor fit: dilemma "actions" are one-line gerund phrases
+(median 47 characters, e.g. "asking my boyfriend to stop calling me
+'hot'"), far too terse to embody. But every dilemma action carries the
+SAME `id` as a full anecdote in the local `scruples-anecdotes.jsonl`
+(Dilemmas is built by pairing two real Anecdotes and asking a FRESH
+crowd "which action was more wrong"). Verified by direct join, zero API
+spend: 99.1-99.7% of dilemma action ids across all four splits (dev,
+test, train, train-extra) resolve to a full anecdote body in the local
+corpus (`scripts/load_scruples_dilemmas.py`, selftest passing). This
+recovers full narrative text for BOTH sides of each pair -- as much
+material to embody as the AITA runner has -- while genuinely changing
+the task structure (a COMPARATIVE verdict between two independent
+first-person accounts, not an at-fault verdict against one narrator)
+and the ground-truth definition (relative wrongness by a fresh crowd,
+not the original post's own vote distribution).
+
+**Corpus, measured (`python -m scripts.load_scruples_dilemmas
+--verify`, zero spend):**
+
+| split | pairs | joined | gold_label==0 share | controversial share |
+|---|---|---|---|---|
+| dev | 2,340 | 99.9% | 0.518 | 0.661 |
+| test | 2,360 | 99.7% | 0.519 | 0.669 |
+| train | 23,596 | 99.8% | 0.512 | 0.692 |
+| train-extra | 39,990 | 99.8% | 0.512 | 0.588 |
+
+`load_dilemma_consensus(min_annotators=4)` over dev+test+train (train-
+extra excluded by default: it fails the annotator-count floor, exactly
+39,990 of 39,990 rows dropped, i.e. it carries fewer annotators per
+pair than the primary splits) yields 14,958 fully-joined,
+non-hypothetical pairs, mean 1,684/1,694 characters per side --
+comparable narrative length to the AITA corpus. Controversial share
+(59-69%, vs a design target of "genuinely contested") is much higher
+than AITA's typical item, which is expected: Dilemmas was built
+specifically to be a hard, close-call comparison, and is reported as a
+covariate below, not filtered out by default (a `--exclude-
+controversial` flag exists for a sensitivity check).
+
+## Stage 0.5: protocol adaptation (design, not yet built)
+
+Three seats, same structure as the AITA runner
+(`scripts/run_crowdgold_deliberation.py`), remapped:
+
+| role | maps to |
+|---|---|
+| `person_a_advocate` | speaks for the person whose action is `actions[0]`; argues A's account, not B's, is the less-wrong one |
+| `person_b_advocate` | symmetric, for `actions[1]` |
+| `neutral_adjudicator` | unchanged: no stake, concerned only that the comparative verdict the two accounts actually support is reached |
+
+`stake_undermined(person_a_advocate) = (group_verdict picks A as more
+wrong)`, symmetric for B -- the same definition shape as
+`stake_undermined` in the AITA runner, just keyed to a two-way pick
+instead of an at-fault verdict against one narrator.
+
+Same 7-round protocol (R0 statement / R1 rebuttal / R2 restate per
+seat; moderator synthesis, now picking A or B; R3 three-way label +
+modification request; moderator integration; R4 binary vote), same
+markers (`MODIFICATION REQUIRED:` / `UNRESOLVABLE CONCERN:` /
+`ADDRESSED:`), same extraction discipline (line-start markers, never
+substring matches). The only load-bearing prompt change is the
+verdict instrument: `VERDICT: A` / `VERDICT: B` in place of
+YTA/NTA/ESH/NAH/INFO, and both full accounts (not one account plus an
+inferred counterparty) are shown to every seat from R0 onward.
+
+Estimated new engineering: a new runner
+(`scripts/run_crowdgold_dilemma.py`) sharing the round-scaffolding,
+cache, and cost-model machinery of the AITA runner via import, not
+copy-paste, with its own instrument, role table, and prompts; a new
+verdict extractor (`A`/`B`, reusing the existing marker-line
+discipline); selftest mirroring the AITA runner's offline stub
+end-to-end coverage before any real call.
+
+## Staged plan and gates, in order (nothing after Stage 0 is authorized yet)
+
+- **Stage 1 (grip screen, mirrors Addendum 6, ceiling TBD at
+  registration, ~$10-15 estimated): does grok's native grip generalize
+  to this instrument at all?** Small panel (40-60 pairs), grok as all
+  three seats, both arms if a stance manipulation is meaningful here
+  (TBD during build -- Dilemmas has no natural "as_asker" analogue
+  since neither account is addressed to the model; if none is
+  registered this stage measures grip only, no resistance/criterion-
+  shift readout). Compute G1 (composite fire rate), G2 (reject share),
+  G3 (stake concentration) exactly as Addendum 6 defined them. Round-
+  level truncation/NOVERDICT guard enforced before any G1-G3 number is
+  trusted (Addendum 6's own retraction-and-correction is the standing
+  reason this guard is checked BEFORE reporting, not after).
+  **Gate: G3 CI must exclude zero AND clear +0.20 for "grip
+  generalizes"; real-but-weak (CI excludes zero, point estimate below
+  0.20) is reported as a graded finding, not rounded up to a yes/no.
+  G3 CI covering zero -> stop, report that the native-grip mechanism is
+  AITA-specific and does not transfer to a comparative instrument on
+  the same corpus family.**
+- **Stage 2 (actuator ladder, conditional on Stage 1 clearing,
+  budget registered separately before spend): repeat Addendum 4's A3a
+  rung on this instrument** -- route flagged debates to an external
+  actuator (a fresh single-model baseline on this NEW instrument;
+  no cache exists yet, so this stage's cost is not zero the way
+  Addendum 4's A3a was). Same positive-outcome bar as every prior
+  actuator test in this programme: item-clustered bootstrap, CI
+  excludes zero, delta >= 0.05, positive in both item halves, beats
+  routing every debate unconditionally.
+- **What a positive Stage 2 result would mean:** Addendum 4's circuit
+  is a general property of grok's embodiment, not an AITA artifact --
+  substantially strengthens the standing claim.
+- **What a null Stage 2 result would mean (grip generalizes but the
+  actuator gain does not):** the same signal/actuator dissociation
+  Addenda 9-11 found on the INDUCED side would now also hold on the
+  NATIVE side for a second task, arguing the dissociation is about task
+  structure, not about induction vs. native grip.
+- **What a Stage 1 null would mean:** grok's native grip is itself
+  AITA-specific (single-narrator at-fault framing), not a general
+  embodiment property -- a materially different, more cautionary
+  finding than anything the programme has produced so far, worth
+  exactly as much space in the write-up as a positive result.
+
+No further spend below Stage 0 is authorized by this registration.
+Stage 1's exact item count, arms, and dollar ceiling are registered
+in a follow-up entry in this document before any Stage-1 call is made,
+per house rule.
