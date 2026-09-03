@@ -561,3 +561,32 @@ next concrete step is repeating Addendum 4's A3a rung (route
 composite-flagged debates to a second vendor's cached verdict) with the
 few-shot-boosted haiku/nano communities as the sensor instead of
 requiring grok's native grip -- not yet registered or run.
+
+### 8.8 The actuator step, induced-sensor version: null at this sample size (prereg Addendum 9, 2026-09-03, zero spend)
+
+Ran exactly the step 8.7 left open. `scripts/
+analyze_induced_sensor_actuator.py` re-applies Addendum 4's registered
+A3a rule (cached single-agent majority-of-3, cross-vendor from the
+sensor) to the composite-flagged subsets of 8.7's few-shot runs: haiku
+(36/80 flagged) actuated by nano and by grok; nano (23/56 flagged)
+actuated by haiku and by grok. All four point deltas are positive
+(+0.03 to +0.26), consistent with 8.7's flag-calibration story, but
+**none clears the registered bar**: every 97.5% CI touches or crosses
+zero, and every pair fails to replicate across both item halves (one
+half is flat or negative in all four cases). This reads as underpowered,
+not falsified -- these flagged populations (23-36 debates) are an order
+of magnitude smaller than Addendum 4's 337-debate grok population that
+DID clear the bar (+0.193, CI [+0.067, +0.310]), and a single bad item
+half can null out a family this small on its own.
+
+Net position after Addendum 9: the PI's original two-part goal (opposed
+alignments -> derivable, well-calibrated signal -> an actuator turns
+that signal into a real accuracy gain) is confirmed end-to-end exactly
+once, with grok's native grip (Addendum 4). With a few-shot-INDUCED
+sensor, only the first half is confirmed (Addendum 8's flag-calibration
+result); the second half (actuator gain) is directionally consistent
+but not demonstrated at the sample sizes this zero-spend screen affords.
+Closing that gap needs a larger flagged population, which needs new
+generation spend on the 40/28-item panels or a larger panel -- outside
+this addendum's zero-spend scope. This is the honest stopping point for
+the induced-sensor line without a fresh budget line and registration.

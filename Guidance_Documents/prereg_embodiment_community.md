@@ -1765,3 +1765,80 @@ originally specified: cheap, few-shot-inducible dissent generates a
 well-calibrated flag, and an external actuator (not the community's own
 vote) turns that flag into a genuine accuracy gain -- on vendors an order
 of magnitude cheaper than the one that has it natively.
+# Addendum 9: does an induced sensor support Addendum 4's actuator? (registered 2026-09-03, zero spend, before any rung computed)
+
+Direct continuation of the post-hoc check above. Addendum 4's A3a rung
+(cross-vendor cached escalation) is re-run unmodified in its registered
+form -- same rule (`make_rule_vendor`), same primary outcome (paired
+accuracy delta, item-clustered bootstrap), same positive-outcome
+criteria (CI excludes zero, delta >= +0.05, consistent sign in both item
+halves and both arms) -- with two changes: the debate population is the
+composite-flagged subset of Addendum 8 rung 1's few-shot runs (not the
+main grok cg_deliberation rows), and the actuator vendor is chosen to be
+a DIFFERENT vendor from the sensor (haiku's flagged debates are actuated
+by nano and by grok; nano's flagged debates are actuated by haiku and by
+grok), since the sensor itself is no longer grok. All actuator verdicts
+come from the already-cached `cg_scaffold_combined_rows_k3.csv`
+single-agent comparator (`standard` scaffold, majority of k=3, ties fall
+back to S2) -- zero additional spend, no new generation calls.
+
+**Positive outcome, per (sensor model, actuator model) pair:** identical
+to Addendum 4's registered A3a criteria, applied to this population.
+**What a positive result would mean:** the sensor+actuator architecture
+that already works for grok's native grip also works for a few-shot-
+induced sensor, i.e. embodiment-as-control-apparatus is realized on
+vendors two orders of magnitude cheaper than grok, with no training or
+activation-level work. **What a null result would mean:** the flag-
+calibration improvement documented above is real but the flagged
+population is too small (40/28 items, screened down further by the flag
+itself) to power a paired bootstrap the way Addendum 4's 337-debate
+population could, or the induced signal, while better-calibrated than
+baseline, still isn't precise enough for a cross-vendor actuator to beat
+S2 by 5 points -- either way this stays a directional read, not a killed
+line, given the population size difference from Addendum 4.
+
+## Addendum 9 results (computed 2026-09-03, zero spend)
+
+`scripts/analyze_induced_sensor_actuator.py`, selftest passing, run
+against the composite-flagged subsets of Addendum 8 rung 1's few-shot
+haiku (80 debates, 36 flagged, 0.45 coverage) and few-shot nano (56
+debates, 23 flagged, 0.41 coverage) caches, actuated by cached
+single-agent `standard`-scaffold majority-of-3 verdicts (97.5% CI,
+Bonferroni over the 2 actuator vendors tried per sensor):
+
+| sensor | actuator | delta (flagged) | 97.5% CI | halves | arms | positive? |
+|---|---|---|---|---|---|---|
+| haiku (fewshot) | nano | +0.028 | [-0.194, +0.250] | +0.13 / -0.05 | +0.10 / -0.06 | no |
+| haiku (fewshot) | grok | +0.139 | [-0.027, +0.324] | +0.33 / 0.00 | +0.15 / +0.13 | no |
+| nano (fewshot) | haiku | +0.087 | [-0.333, +0.464] | +0.55 / -0.33 | +0.21 / -0.11 | no |
+| nano (fewshot) | grok | +0.261 | [+0.000, +0.520] | +0.55 / 0.00 | +0.36 / +0.11 | no |
+
+**Result: NULL, all four pairs.** Every point delta is positive --
+direction-consistent with the flag-calibration story above -- but no
+pair clears the registered bar. Three of four fail on effect size too
+(`delta_ge_0.05` false for haiku->nano); the other three clear
+`delta_ge_0.05` but every single pair fails both `ci_excludes_zero`
+(lower bound touches or crosses zero in all four) and
+`replicates_halves_and_arms` (one of the two item halves is flat or
+negative in every pair -- nano->grok's flagged delta is +0.545 in half 0
+and exactly 0.000 in half 1). This is squarely the "underpowered"
+outcome anticipated at registration, not a sign-reversal: the flagged
+populations here (36 and 23 debates) are an order of magnitude smaller
+than Addendum 4's 337-debate grok population, so a 337-debate-caliber
+bootstrap has no chance to resolve deltas of this size, and one bad item
+half can flip a family of four to null on its own.
+
+**What this settles:** the flag-calibration gain documented in the
+post-hoc check (composite flag lift +0.159 haiku, +0.153 nano) is real,
+but the specific claim "route the induced flag to a cross-vendor
+actuator and beat S2 by >=5 points with a replicating, CI-excluding-zero
+margin" is NOT demonstrated at this screen's size. The architecture is
+not falsified -- three of four point estimates are >=0.14, one as high
+as +0.26 -- but it is not yet evidenced at the standard this project has
+held every other rung to. Scaling the screen (more items, both models)
+is the only way to resolve this; that is out of scope for the zero-spend
+ladder and would require new generation spend to grow the flagged
+population, which is outside this addendum's budget. This is the honest
+stopping point for the induced-sensor line as a zero-spend
+demonstration: real, better-than-baseline signal quality (Addendum 8),
+not-yet-demonstrated actuator gain at this sample size (Addendum 9).

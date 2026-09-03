@@ -1,0 +1,258 @@
+[
+ {
+  "sensor": "haiku_fewshot",
+  "model": "claude-haiku-4-5",
+  "n_debates": 80,
+  "n_flagged": 36,
+  "flag_coverage": 0.45,
+  "actuators": {
+   "nano_std": {
+    "actuator_model": "gpt-5.4-nano",
+    "actuator_scaffold": "standard",
+    "flagged": {
+     "label": "haiku_fewshot -> nano_std",
+     "n": 36,
+     "n_items": 27,
+     "ci_level": 0.975,
+     "acc_s2": 0.75,
+     "acc_actuated": 0.7777777777777778,
+     "delta": 0.027777777777777776,
+     "lo": -0.19444444444444445,
+     "hi": 0.25,
+     "delta_by_item_half": {
+      "0": 0.13333333333333333,
+      "1": -0.047619047619047616
+     },
+     "delta_by_arm": {
+      "as_asker": 0.1,
+      "third_person": -0.0625
+     },
+     "n_verdict_changed": 11,
+     "n_fallback_to_s2": 3,
+     "criteria": {
+      "ci_excludes_zero": false,
+      "delta_ge_0.05": false,
+      "replicates_halves_and_arms": false
+     },
+     "positive": false
+    },
+    "unflagged_context": {
+     "label": "haiku_fewshot -> nano_std (unflagged, context)",
+     "n": 44,
+     "n_items": 31,
+     "ci_level": 0.975,
+     "acc_s2": 0.9090909090909091,
+     "acc_actuated": 0.8181818181818182,
+     "delta": -0.09090909090909091,
+     "lo": -0.24390243902439024,
+     "hi": 0.046511627906976744,
+     "delta_by_item_half": {
+      "0": -0.2,
+      "1": -0.034482758620689655
+     },
+     "delta_by_arm": {
+      "as_asker": -0.1,
+      "third_person": -0.08333333333333333
+     },
+     "n_verdict_changed": 8,
+     "n_fallback_to_s2": 4,
+     "criteria": {
+      "ci_excludes_zero": false,
+      "delta_ge_0.05": false,
+      "replicates_halves_and_arms": false
+     },
+     "positive": false
+    },
+    "sensor_specific_gain": 0.11868686868686869
+   },
+   "grok_std": {
+    "actuator_model": "grok-4-1-fast-reasoning",
+    "actuator_scaffold": "standard",
+    "flagged": {
+     "label": "haiku_fewshot -> grok_std",
+     "n": 36,
+     "n_items": 27,
+     "ci_level": 0.975,
+     "acc_s2": 0.75,
+     "acc_actuated": 0.8888888888888888,
+     "delta": 0.1388888888888889,
+     "lo": -0.02702702702702703,
+     "hi": 0.3235294117647059,
+     "delta_by_item_half": {
+      "0": 0.3333333333333333,
+      "1": 0.0
+     },
+     "delta_by_arm": {
+      "as_asker": 0.15,
+      "third_person": 0.125
+     },
+     "n_verdict_changed": 7,
+     "n_fallback_to_s2": 4,
+     "criteria": {
+      "ci_excludes_zero": false,
+      "delta_ge_0.05": true,
+      "replicates_halves_and_arms": false
+     },
+     "positive": false
+    },
+    "unflagged_context": {
+     "label": "haiku_fewshot -> grok_std (unflagged, context)",
+     "n": 44,
+     "n_items": 31,
+     "ci_level": 0.975,
+     "acc_s2": 0.9090909090909091,
+     "acc_actuated": 1.0,
+     "delta": 0.09090909090909091,
+     "lo": 0.0,
+     "hi": 0.21428571428571427,
+     "delta_by_item_half": {
+      "0": 0.13333333333333333,
+      "1": 0.06896551724137931
+     },
+     "delta_by_arm": {
+      "as_asker": 0.05,
+      "third_person": 0.125
+     },
+     "n_verdict_changed": 4,
+     "n_fallback_to_s2": 1,
+     "criteria": {
+      "ci_excludes_zero": false,
+      "delta_ge_0.05": true,
+      "replicates_halves_and_arms": true
+     },
+     "positive": false
+    },
+    "sensor_specific_gain": 0.04797979797979798
+   }
+  },
+  "any_positive": false
+ },
+ {
+  "sensor": "nano_fewshot",
+  "model": "gpt-5.4-nano",
+  "n_debates": 56,
+  "n_flagged": 23,
+  "flag_coverage": 0.4107142857142857,
+  "actuators": {
+   "haiku_std": {
+    "actuator_model": "claude-haiku-4-5",
+    "actuator_scaffold": "standard",
+    "flagged": {
+     "label": "nano_fewshot -> haiku_std",
+     "n": 23,
+     "n_items": 17,
+     "ci_level": 0.975,
+     "acc_s2": 0.6956521739130435,
+     "acc_actuated": 0.782608695652174,
+     "delta": 0.08695652173913043,
+     "lo": -0.3333333333333333,
+     "hi": 0.4642857142857143,
+     "delta_by_item_half": {
+      "0": 0.5454545454545454,
+      "1": -0.3333333333333333
+     },
+     "delta_by_arm": {
+      "as_asker": 0.21428571428571427,
+      "third_person": -0.1111111111111111
+     },
+     "n_verdict_changed": 12,
+     "n_fallback_to_s2": 0,
+     "criteria": {
+      "ci_excludes_zero": false,
+      "delta_ge_0.05": true,
+      "replicates_halves_and_arms": false
+     },
+     "positive": false
+    },
+    "unflagged_context": {
+     "label": "nano_fewshot -> haiku_std (unflagged, context)",
+     "n": 33,
+     "n_items": 22,
+     "ci_level": 0.975,
+     "acc_s2": 0.8484848484848485,
+     "acc_actuated": 0.9696969696969697,
+     "delta": 0.12121212121212122,
+     "lo": 0.0,
+     "hi": 0.3225806451612903,
+     "delta_by_item_half": {
+      "0": 0.2222222222222222,
+      "1": 0.08333333333333333
+     },
+     "delta_by_arm": {
+      "as_asker": 0.14285714285714285,
+      "third_person": 0.10526315789473684
+     },
+     "n_verdict_changed": 4,
+     "n_fallback_to_s2": 0,
+     "criteria": {
+      "ci_excludes_zero": false,
+      "delta_ge_0.05": true,
+      "replicates_halves_and_arms": true
+     },
+     "positive": false
+    },
+    "sensor_specific_gain": -0.03425559947299078
+   },
+   "grok_std": {
+    "actuator_model": "grok-4-1-fast-reasoning",
+    "actuator_scaffold": "standard",
+    "flagged": {
+     "label": "nano_fewshot -> grok_std",
+     "n": 23,
+     "n_items": 17,
+     "ci_level": 0.975,
+     "acc_s2": 0.6956521739130435,
+     "acc_actuated": 0.9565217391304348,
+     "delta": 0.2608695652173913,
+     "lo": 0.0,
+     "hi": 0.52,
+     "delta_by_item_half": {
+      "0": 0.5454545454545454,
+      "1": 0.0
+     },
+     "delta_by_arm": {
+      "as_asker": 0.35714285714285715,
+      "third_person": 0.1111111111111111
+     },
+     "n_verdict_changed": 8,
+     "n_fallback_to_s2": 0,
+     "criteria": {
+      "ci_excludes_zero": false,
+      "delta_ge_0.05": true,
+      "replicates_halves_and_arms": false
+     },
+     "positive": false
+    },
+    "unflagged_context": {
+     "label": "nano_fewshot -> grok_std (unflagged, context)",
+     "n": 33,
+     "n_items": 22,
+     "ci_level": 0.975,
+     "acc_s2": 0.8484848484848485,
+     "acc_actuated": 0.9696969696969697,
+     "delta": 0.12121212121212122,
+     "lo": 0.0,
+     "hi": 0.3125,
+     "delta_by_item_half": {
+      "0": 0.2222222222222222,
+      "1": 0.08333333333333333
+     },
+     "delta_by_arm": {
+      "as_asker": 0.14285714285714285,
+      "third_person": 0.10526315789473684
+     },
+     "n_verdict_changed": 4,
+     "n_fallback_to_s2": 0,
+     "criteria": {
+      "ci_excludes_zero": false,
+      "delta_ge_0.05": true,
+      "replicates_halves_and_arms": true
+     },
+     "positive": false
+    },
+    "sensor_specific_gain": 0.13965744400527008
+   }
+  },
+  "any_positive": false
+ }
+]
