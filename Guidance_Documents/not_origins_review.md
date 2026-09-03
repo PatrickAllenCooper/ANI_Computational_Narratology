@@ -510,3 +510,36 @@ wording in every model; the more it looks like binding is a
 model-specific disposition, the more the amplification question from
 section 8 points toward a training- or activation-level intervention
 rather than prompt engineering as the lever that generalises.
+
+### 8.7 Reversal: in-context distillation, not instruction, moves it (prereg Addendum 8 rung 1, 2026-09-03, $3.29)
+
+8.6's soft nudge STATED the norm. This rung DEMONSTRATED it: two real
+exemplar pairs mined verbatim from grok's own cached transcripts (same
+synthesis, two seats, opposite verdicts, explained only by which seat's
+assigned interest the outcome damaged -- `scripts/
+mine_stake_fewshot_exemplars.py`), prepended to the same R3-label/R4-vote
+prompts on the same 40-item panel, same paired-bootstrap test. **Positive
+on both models, reversing 8.6's result:**
+
+| model | G3 fewshot | G3 baseline | paired delta | 95% CI | POSITIVE |
+|---|---|---|---|---|---|
+| claude-haiku-4-5 | +0.263 | +0.050 | +0.213 | [+0.013, +0.388] | **True** |
+| gpt-5.4-nano | +0.464 | +0.054 | +0.411 | [+0.286, +0.545] | **True** |
+
+(Nano's round-level guard flagged 10.7% NOVERDICT on one cell, 3/28
+items -- a caveat on how clean this number is, not a disqualification;
+G3 is computed from the R4-vote round, which is not the round that
+failed.)
+
+The one thing that differs between 8.6 and this rung is stating the norm
+versus showing it. That both models moved, hard, in the SAME direction
+this time is evidence that stake-gating is not simply absent machinery
+in these two models -- it is machinery that a norm statement could not
+reach but a worked example could. That reopens, rather than closes, the
+inference-level amplification question 8.6 pointed away from: before
+reaching for a training- or activation-level claim, this exact family of
+levers (larger and more diverse few-shot sets; combining it with a
+narrated stake-computation requirement or extended test-time reasoning,
+both of which are now wired but unused per the registered stop rule)
+has not been exhausted -- it has barely been started, and it just
+worked once.

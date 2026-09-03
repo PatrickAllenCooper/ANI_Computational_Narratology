@@ -737,5 +737,133 @@
    "hi": 0.13392857142857145,
    "positive": false
   }
+ },
+ "claude-haiku-4-5:cg_deliberation_haiku_fewshot": {
+  "grip": {
+   "n_debates": 80,
+   "n_items": 40,
+   "n_votes": 240,
+   "G1_fire_rate": 0.45,
+   "G2_reject_share": 0.36666666666666664,
+   "G3_stake_concentration": {
+    "n_votes": 160,
+    "n_undermined": 80,
+    "reject_rate_undermined": 0.5625,
+    "reject_rate_not_undermined": 0.3,
+    "delta": 0.2625,
+    "lo": 0.08750000000000002,
+    "hi": 0.4125
+   },
+   "per_seat": {
+    "writer_advocate": {
+     "objected_r3": 0.375,
+     "reject_r4": 0.3625,
+     "undermined": 0.5625
+    },
+    "counterparty": {
+     "objected_r3": 0.4125,
+     "reject_r4": 0.5,
+     "undermined": 0.4375
+    },
+    "neutral_adjudicator": {
+     "objected_r3": 0.2875,
+     "reject_r4": 0.2375,
+     "undermined": null
+    }
+   },
+   "neutral_objected_rate": 0.2875,
+   "mislocalised_rate": 0.2625,
+   "s2_accuracy": 0.8375,
+   "criteria": {
+    "G1": true,
+    "G2": true,
+    "G3": true
+   },
+   "grip": true
+  },
+  "spend": {
+   "calls": 2800,
+   "prompt_tokens": 7081734,
+   "completion_tokens": 2174655,
+   "usd": 17.955009,
+   "prices_per_mtok": [
+    1.0,
+    5.0
+   ]
+  },
+  "nudge_vs_baseline": {
+   "n_shared_items": 40,
+   "n_boot_valid": 2000,
+   "g3_a": 0.2625,
+   "g3_b": 0.05,
+   "delta": 0.21250000000000002,
+   "lo": 0.012500000000000039,
+   "hi": 0.38750000000000007,
+   "positive": true
+  }
+ },
+ "gpt-5.4-nano:cg_deliberation_nano_fewshot": {
+  "grip": {
+   "n_debates": 56,
+   "n_items": 28,
+   "n_votes": 168,
+   "G1_fire_rate": 0.4107142857142857,
+   "G2_reject_share": 0.19642857142857142,
+   "G3_stake_concentration": {
+    "n_votes": 112,
+    "n_undermined": 56,
+    "reject_rate_undermined": 0.5178571428571429,
+    "reject_rate_not_undermined": 0.05357142857142857,
+    "delta": 0.46428571428571436,
+    "lo": 0.3214285714285714,
+    "hi": 0.6071428571428571
+   },
+   "per_seat": {
+    "writer_advocate": {
+     "objected_r3": 0.44642857142857145,
+     "reject_r4": 0.17857142857142858,
+     "undermined": 0.32142857142857145
+    },
+    "counterparty": {
+     "objected_r3": 0.6071428571428571,
+     "reject_r4": 0.39285714285714285,
+     "undermined": 0.6785714285714286
+    },
+    "neutral_adjudicator": {
+     "objected_r3": 0.26785714285714285,
+     "reject_r4": 0.017857142857142856,
+     "undermined": null
+    }
+   },
+   "neutral_objected_rate": 0.26785714285714285,
+   "mislocalised_rate": 0.25,
+   "s2_accuracy": 0.7857142857142857,
+   "criteria": {
+    "G1": true,
+    "G2": true,
+    "G3": true
+   },
+   "grip": true
+  },
+  "spend": {
+   "calls": 2576,
+   "prompt_tokens": 6346516,
+   "completion_tokens": 1940331,
+   "usd": 3.69471695,
+   "prices_per_mtok": [
+    0.2,
+    1.25
+   ]
+  },
+  "nudge_vs_baseline": {
+   "n_shared_items": 28,
+   "n_boot_valid": 2000,
+   "g3_a": 0.46428571428571436,
+   "g3_b": 0.053571428571428575,
+   "delta": 0.4107142857142858,
+   "lo": 0.2857142857142857,
+   "hi": 0.5446428571428571,
+   "positive": true
+  }
  }
 }

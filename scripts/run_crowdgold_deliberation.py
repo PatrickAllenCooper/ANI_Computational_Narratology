@@ -248,6 +248,69 @@ STAKE_GATE_NUDGE = (
     "assigned interest is not harmed by this outcome, ACCEPT it even if you "
     "would have argued the case differently yourself."
 )
+
+#: prereg Addendum 8, rung 2: the narrated stake-computation requirement.
+#: Where the Addendum 7 nudge STATED the norm, this FORCES the computation
+#: to be written down as its own step, in the paper's own idiom (narration
+#: of the causal link before the verdict) -- three short mandatory lines
+#: immediately before the verdict, naming the assigned interest, the
+#: concrete effect of THIS proposal on it, and only then the verdict. It
+#: is not a hand-coded classifier: nothing about the lines' CONTENT is
+#: scored or gates the extractor; only their presence is required, and the
+#: verdict is still self-determined and self-reported.
+STAKE_COT_REQUIREMENT = (
+    "\n\nBefore you give your verdict, write exactly these three lines:\n"
+    "STAKE: <name, in one clause, the interest you were assigned to "
+    "represent>\n"
+    "EFFECT: <state, in one clause, what this specific proposal concretely "
+    "does to that interest -- helps it, hurts it, or leaves it unchanged>\n"
+    "THEREFORE: <one clause connecting the EFFECT line to your verdict>\n"
+    "Then give the verdict itself as instructed below.\n\n"
+)
+
+#: prereg Addendum 8, rung 1: in-context distillation of grok's OWN
+#: stake-gated disposition, mined verbatim from its cached Addendum-6
+#: transcripts by scripts/mine_stake_fewshot_exemplars.py. Demonstrates the
+#: pattern the Addendum-7 nudge only INSTRUCTED: two seats, same synthesis,
+#: opposite votes, explained by which one's stake the outcome undermined --
+#: nothing else differs between the two demonstration halves.
+_STAKE_FEWSHOT_CACHE: dict = {}
+
+
+def load_stake_fewshot_block(round_name: str) -> str:
+    """Build the few-shot demonstration text for 'r3_label' or 'r4_vote'
+    from the mined artifact (scripts/mine_stake_fewshot_exemplars.py's
+    output). Loaded once per process and memoised; raises loudly if the
+    artifact is missing rather than silently degrading to no demonstration.
+    """
+    if "data" not in _STAKE_FEWSHOT_CACHE:
+        path = OUT_DIR / "stake_fewshot_exemplars.json"
+        _STAKE_FEWSHOT_CACHE["data"] = json.loads(path.read_text())
+    data = _STAKE_FEWSHOT_CACHE["data"]
+    key_u = f"{round_name}_undermined"
+    key_n = f"{round_name}_not_undermined"
+    parts = [
+        "Two participants with different assigned interests previously "
+        "responded to the SAME synthesis. Only the interest each was "
+        "assigned differs between them; read how that alone explains the "
+        "opposite verdicts:"
+    ]
+    for i, ex in enumerate(data["exemplars"], 1):
+        parts.append(
+            f"  Example {i}, participant whose assigned interest this "
+            f"outcome DAMAGED:\n    \"{ex[key_u]}\"\n"
+            f"  Example {i}, a DIFFERENT participant in the SAME debate "
+            f"whose assigned interest this outcome did NOT damage:\n"
+            f"    \"{ex[key_n]}\""
+        )
+    parts.append(
+        "Use the same logic for your own position now: the question is "
+        "whether THIS proposal damages the interest YOU were assigned, not "
+        "whether you would have written it differently yourself."
+    )
+    return "\n\n" + "\n\n".join(parts) + "\n\n"
+
+
 PROTOCOL = ("r0_statement|r1_rebuttal|r2_restate|moderator_synthesis|"
             "r3_three_way_label|moderator_integration|r4_binary_vote")
 
@@ -624,7 +687,8 @@ def synthesis_user(arm: str, item: CrowdGoldItem, r2_texts: dict[str, str],
 
 
 def r3_label_user(arm: str, item: CrowdGoldItem, role: Role, own_r2: str,
-                  synthesis: str, *, cap: int, stake_nudge: bool = False) -> str:
+                  synthesis: str, *, cap: int, stake_nudge: bool = False,
+                  stake_cot: bool = False, stake_fewshot: bool = False) -> str:
     """R3: the THREE-WAY label on the moderator's first synthesis.
 
     This is the round the earlier build dropped.  It is where a modification
@@ -648,6 +712,8 @@ def r3_label_user(arm: str, item: CrowdGoldItem, role: Role, own_r2: str,
         f"integration can absorb, in one sentence on its own line beginning "
         f"'{UNRESOLVABLE_MARKER}'.\n"
         "  If you accept it as it stands, write neither line.\n\n"
+        f"{load_stake_fewshot_block('r3_label') if stake_fewshot else ''}"
+        f"{STAKE_COT_REQUIREMENT if stake_cot else ''}"
         f"{verdict_instruction(LABEL_INSTRUMENT, allow_unresolved=False)}"
         f"{STAKE_GATE_NUDGE if stake_nudge else ''}"
     )
@@ -687,7 +753,8 @@ def integration_user(arm: str, item: CrowdGoldItem, synthesis: str,
 
 def r4_vote_user(arm: str, item: CrowdGoldItem, role: Role, synthesis: str,
                  own_label: str, own_objection: str, proposal: str, *,
-                 cap: int, stake_nudge: bool = False) -> str:
+                 cap: int, stake_nudge: bool = False, stake_cot: bool = False,
+                 stake_fewshot: bool = False) -> str:
     """R4: the binary vote on the SECOND proposal.
 
     The agent's OWN R3 label and its OWN stated request are quoted back to it.
@@ -713,6 +780,8 @@ def r4_vote_user(arm: str, item: CrowdGoldItem, role: Role, synthesis: str,
         "integrated proposal, or reject it. In two or three sentences say why, "
         "referring to what you required of the synthesis; if you reject, name "
         "the single concern it leaves unresolved.\n\n"
+        f"{load_stake_fewshot_block('r4_vote') if stake_fewshot else ''}"
+        f"{STAKE_COT_REQUIREMENT if stake_cot else ''}"
         f"{verdict_instruction(VOTE_INSTRUMENT, allow_unresolved=False)}"
         f"{STAKE_GATE_NUDGE if stake_nudge else ''}"
     )
@@ -762,8 +831,16 @@ def _parent_sha(*texts: str) -> str:
 
 def do_call(*, model: str, scaffold: str, arm: str, item: CrowdGoldItem, idx: int,
             round_name: str, role_id: str, system: str, user: str,
-            max_tokens: int, parents: Sequence[str], cap: int) -> dict:
+            max_tokens: int, parents: Sequence[str], cap: int,
+            reasoning_effort: Optional[str] = None,
+            thinking_budget: int = 0) -> dict:
     """Generate (or read cache) one call.  Returns a call record.
+
+    ``reasoning_effort``/``thinking_budget`` (prereg Addendum 8, rungs 3-4)
+    are test-time-compute knobs, not prompt text -- they do not change
+    ``user``, so they can't be caught by a parent_sha mismatch. The CALLER
+    is responsible for folding them into ``scaffold`` for any round where
+    they are set, so the cache path itself disambiguates.
 
     A cached record is rejected when its ``parent_sha`` no longer matches the
     upstream text it was conditioned on.  Without that check, deleting and
@@ -782,8 +859,13 @@ def do_call(*, model: str, scaffold: str, arm: str, item: CrowdGoldItem, idx: in
         if rec is not None and rec.get("parent_sha") != psha:
             rec = None  # stale: upstream changed
     if rec is None:
+        extra_kw: dict = {}
+        if reasoning_effort:
+            extra_kw["reasoning_effort"] = reasoning_effort
+        if thinking_budget:
+            extra_kw["thinking_budget"] = thinking_budget
         result = generate_any(model, system, user, sample_idx=idx,
-                              max_tokens=max_tokens)
+                              max_tokens=max_tokens, **extra_kw)
         rec = {
             "model": model,
             "scaffold": scaffold,
@@ -856,21 +938,40 @@ def run_deliberation(model: str, arm: str, item: CrowdGoldItem, idx: int, *,
                      max_tokens_vote: int = 512,
                      allow_unresolved: bool = True,
                      transcript_cap: int = 0,
-                     stake_nudge: bool = False) -> tuple[dict, list[dict], list[dict]]:
+                     stake_nudge: bool = False,
+                     stake_cot: bool = False,
+                     stake_fewshot: bool = False,
+                     r3r4_reasoning_effort: Optional[str] = None,
+                     r3r4_thinking_budget: int = 0
+                     ) -> tuple[dict, list[dict], list[dict]]:
     """Run one full deliberation for one cell: the paper's seven stages, 17 calls.
 
-    ``stake_nudge`` (prereg Addendum 7) appends STAKE_GATE_NUDGE to the R3
-    label and R4 vote instructions only.  Those two calls get their OWN cache
-    namespace (``scaffold`` + ``_stakenudge``) so a nudged run can never be
-    silently served an un-nudged cached response; every OTHER round is
-    untouched by the nudge and keeps the shared, cheaper cache. The
+    The five ``stake_*``/``r3r4_*`` knobs (prereg Addenda 7-8) all act ONLY
+    on the R3 label and R4 vote calls -- the two rounds whose text or
+    compute IS the dissent signal -- and never on R0-R2/synthesis/
+    integration. Every active knob is folded into a composed cache-scaffold
+    suffix (``{scaffold}_{tag1}_{tag2}...``) for those two calls only, so no
+    combination of prompt text and test-time-compute settings can ever be
+    silently served a cached response generated under a different
+    combination. Every other round keeps the shared, cheaper cache. The
     downstream integration call is additionally protected by the existing
-    parent_sha staleness check, which will fire on its own once the nudged
-    R3 labels/objections differ from the un-nudged ones.
+    parent_sha staleness check, which fires on its own once the R3
+    labels/objections it is conditioned on differ.
     """
     mod_model = moderator_model or model
     system = agent_system(scaffold)
-    nudged_scaffold = f"{scaffold}_stakenudge" if stake_nudge else scaffold
+    tags = []
+    if stake_nudge:
+        tags.append("stakenudge")
+    if stake_cot:
+        tags.append("stakecot")
+    if stake_fewshot:
+        tags.append("stakefewshot")
+    if r3r4_reasoning_effort:
+        tags.append(f"reff{r3r4_reasoning_effort}")
+    if r3r4_thinking_budget:
+        tags.append(f"think{r3r4_thinking_budget}")
+    nudged_scaffold = scaffold + ("_" + "_".join(tags) if tags else "")
     calls: list[dict] = []
 
     # ---- R0: opening statements ------------------------------------------
@@ -938,8 +1039,11 @@ def run_deliberation(model: str, arm: str, item: CrowdGoldItem, idx: int, *,
             model=model, scaffold=nudged_scaffold, arm=arm, item=item, idx=idx,
             round_name="r3_label", role_id=r.role_id, system=system,
             user=r3_label_user(arm, item, r, r2[r.role_id], synthesis,
-                               cap=transcript_cap, stake_nudge=stake_nudge),
+                               cap=transcript_cap, stake_nudge=stake_nudge,
+                               stake_cot=stake_cot, stake_fewshot=stake_fewshot),
             max_tokens=max_tokens_label, parents=syn_parents, cap=transcript_cap,
+            reasoning_effort=r3r4_reasoning_effort,
+            thinking_budget=r3r4_thinking_budget,
         )
         calls.append(rec)
         lab = extract_verdict(rec.get("output") or "", LABEL_INSTRUMENT)
@@ -975,9 +1079,12 @@ def run_deliberation(model: str, arm: str, item: CrowdGoldItem, idx: int, *,
             model=model, scaffold=nudged_scaffold, arm=arm, item=item, idx=idx,
             round_name="r4_vote", role_id=r.role_id, system=system,
             user=r4_vote_user(arm, item, r, synthesis, lab, obj, proposal,
-                              cap=transcript_cap, stake_nudge=stake_nudge),
+                              cap=transcript_cap, stake_nudge=stake_nudge,
+                              stake_cot=stake_cot, stake_fewshot=stake_fewshot),
             max_tokens=max_tokens_vote,
             parents=(synthesis, lab, obj, proposal), cap=transcript_cap,
+            reasoning_effort=r3r4_reasoning_effort,
+            thinking_budget=r3r4_thinking_budget,
         )
         calls.append(rec)
         vote = extract_verdict(rec.get("output") or "", VOTE_INSTRUMENT)
@@ -987,6 +1094,9 @@ def run_deliberation(model: str, arm: str, item: CrowdGoldItem, idx: int, *,
         vote_rows.append({
             "model": model, "scaffold": scaffold, "arm": arm,
             "stake_nudge": int(stake_nudge),
+            "stake_intervention": "+".join(
+                t for t, on in (("nudge", stake_nudge), ("cot", stake_cot),
+                                ("fewshot", stake_fewshot)) if on) or "none",
             "item_id": item.item_id, "sample_idx": idx,
             "gold_verdict": item.gold_verdict,
             "role_id": r.role_id, "paper_role": r.paper_role,
@@ -1053,6 +1163,11 @@ def run_deliberation(model: str, arm: str, item: CrowdGoldItem, idx: int, *,
             "protocol": PROTOCOL,
         "agent_scaffold": scaffold,
         "stake_nudge": int(stake_nudge),
+        "stake_intervention": "+".join(
+            t for t, on in (("nudge", stake_nudge), ("cot", stake_cot),
+                            ("fewshot", stake_fewshot)) if on) or "none",
+        "r3r4_reasoning_effort": r3r4_reasoning_effort or "",
+        "r3r4_thinking_budget": r3r4_thinking_budget,
         "n_agents": N_AGENTS,
         "moderator_model": mod_model,
         # R3, the labelled-objection cycle the earlier build did not have
@@ -1090,7 +1205,8 @@ def run_deliberation(model: str, arm: str, item: CrowdGoldItem, idx: int, *,
 
 
 ROW_FIELDS = tuple(RESULT_FIELDS) + (
-    "protocol", "agent_scaffold", "stake_nudge", "n_agents", "moderator_model",
+    "protocol", "agent_scaffold", "stake_nudge", "stake_intervention",
+    "r3r4_reasoning_effort", "r3r4_thinking_budget", "n_agents", "moderator_model",
     "synthesis_verdict", "synthesis_len", "verdict_revised", "r3_labels",
     "n_r3_accept", "n_r3_accept_with_mod", "n_r3_reject", "n_r3_unparsed",
     "n_objectors", "n_objections_stated", "n_modifications_addressed",
@@ -1103,7 +1219,8 @@ ROW_FIELDS = tuple(RESULT_FIELDS) + (
 )
 
 VOTE_FIELDS = (
-    "model", "scaffold", "arm", "stake_nudge", "item_id", "sample_idx", "gold_verdict",
+    "model", "scaffold", "arm", "stake_nudge", "stake_intervention", "item_id",
+    "sample_idx", "gold_verdict",
     "role_id", "paper_role", "role_stake", "group_verdict", "group_at_fault",
     "synthesis_verdict", "r3_label", "r3_label_parsed", "r3_objection_kind",
     "r3_objection_len", "objected_r3", "objection_unstated",
@@ -2398,6 +2515,65 @@ def _selftest() -> int:
         check("the nudge cuts both directions (mentions ACCEPT and REJECT, "
               "not just 'be quieter')",
               "ACCEPT" in STAKE_GATE_NUDGE and "REJECT" in STAKE_GATE_NUDGE)
+
+        # -- Addendum 8: the narrated-CoT and few-shot interventions --------
+        r3_cot = r3_label_user(THIRD_PERSON, one, ROLES[0], "own", "syn",
+                               cap=0, stake_cot=True)
+        check("stake_cot is additive only (removing it recovers the plain "
+              "prompt exactly) and requires all three trace lines",
+              r3_cot.replace(STAKE_COT_REQUIREMENT, "") == r3_plain
+              and all(tag in r3_cot for tag in ("STAKE:", "EFFECT:", "THEREFORE:")))
+        check("stake_cot does not itself dictate ACCEPT or REJECT -- only "
+              "that the trace exists",
+              "ACCEPT" not in STAKE_COT_REQUIREMENT
+              and "REJECT" not in STAKE_COT_REQUIREMENT)
+        r4_cot = r4_vote_user(THIRD_PERSON, one, ROLES[0], "SYNTEXT",
+                              "ACCEPT_WITH_MODIFICATION", "MYREQUEST",
+                              "PROPTEXT", cap=0, stake_cot=True)
+        check("R4 stake_cot also requires the trace and keeps own-position "
+              "quoting intact",
+              all(tag in r4_cot for tag in ("STAKE:", "EFFECT:", "THEREFORE:"))
+              and "MYREQUEST" in r4_cot and "SYNTEXT" in r4_cot)
+
+        fewshot_path = OUT_DIR / "stake_fewshot_exemplars.json"
+        if fewshot_path.exists():
+            r3_fs = r3_label_user(THIRD_PERSON, one, ROLES[0], "own", "syn",
+                                  cap=0, stake_fewshot=True)
+            r4_fs = r4_vote_user(THIRD_PERSON, one, ROLES[0], "SYNTEXT",
+                                 "ACCEPT_WITH_MODIFICATION", "MYREQUEST",
+                                 "PROPTEXT", cap=0, stake_fewshot=True)
+            check("few-shot block is additive and pulls in real mined "
+                  "exemplar text (both ACCEPT and REJECT demonstrated)",
+                  len(r3_fs) > len(r3_plain) and "ACCEPT" in r3_fs
+                  and "REJECT" in r3_fs)
+            check("few-shot text differs between r3_label and r4_vote calls "
+                  "(each round gets its OWN round's mined exemplars, not a "
+                  "copy-paste of the other round's)",
+                  load_stake_fewshot_block("r3_label")
+                  != load_stake_fewshot_block("r4_vote"))
+            check("R4 few-shot keeps own-position quoting intact",
+                  "MYREQUEST" in r4_fs and "SYNTEXT" in r4_fs)
+        else:
+            check("stake_fewshot artifact present "
+                  "(run scripts.mine_stake_fewshot_exemplars first)", False)
+
+        # -- Addendum 8: composed cache-namespace tags for rungs 2-4 --------
+        combo = call_cache_path
+        base = combo("m", "narrative_cot", "third_person", "it", 0,
+                     "r3_label", "writer_advocate", 1024)
+        cot_ns = combo("m", "narrative_cot_stakecot", "third_person", "it", 0,
+                       "r3_label", "writer_advocate", 1024)
+        fewshot_ns = combo("m", "narrative_cot_stakefewshot", "third_person",
+                          "it", 0, "r3_label", "writer_advocate", 1024)
+        reff_ns = combo("m", "narrative_cot_reffhigh", "third_person", "it", 0,
+                       "r3_label", "writer_advocate", 1024)
+        think_ns = combo("m", "narrative_cot_think2048", "third_person", "it",
+                        0, "r3_label", "writer_advocate", 1024)
+        check("cot/fewshot/reasoning-effort/thinking-budget each land in "
+              "their own cache namespace, distinct from the base scaffold "
+              "and from each other",
+              len({base, cot_ns, fewshot_ns, reff_ns, think_ns}) == 5)
+
         check("subset is a prefix of the full panel and stays a subset",
               set(i.item_id for i in subset_items(items, 10, 10))
               <= set(i.item_id for i in items))
@@ -2701,6 +2877,68 @@ def _selftest() -> int:
             gn = truncation_report([call_guard_row(c) for c in ncalls])
             check("round-level guard passes on the nudge stub too",
                   gn["pass"], str(gn["worst_truncation"]))
+
+            # -- Addendum 8: stake_cot end-to-end, own cache namespace ------
+            with tempfile.TemporaryDirectory() as td3:
+                OUT_DIR = Path(td3)
+                try:
+                    it2 = subset_items(items, 2, 2)[0]
+                    crow, cvotes, ccalls = run_deliberation(
+                        "stub-model", THIRD_PERSON, it2, 0,
+                        scaffold="narrative_cot", stake_cot=True)
+                finally:
+                    OUT_DIR = real_out
+            check("stake_cot run records stake_intervention='cot' on both "
+                  "schemas and uses its own cache namespace",
+                  crow["stake_intervention"] == "cot"
+                  and all(v["stake_intervention"] == "cot" for v in cvotes)
+                  and all(c["scaffold"] == "narrative_cot_stakecot"
+                          for c in ccalls if c["round"] in ("r3_label", "r4_vote"))
+                  and all(c["scaffold"] == "narrative_cot"
+                          for c in ccalls if c["round"] not in ("r3_label", "r4_vote")))
+
+            # -- Addendum 8: reasoning-effort/thinking-budget are forwarded
+            # to generate_any ONLY on r3_label/r4_vote, and only there -----
+            captured: list[dict] = []
+            real_stub = generate_any
+
+            def _capturing_stub(model, system, user, **kw):
+                captured.append(kw)
+                return real_stub(model, system, user, **kw)
+
+            generate_any = _capturing_stub  # type: ignore[assignment]
+            try:
+                with tempfile.TemporaryDirectory() as td4:
+                    OUT_DIR = Path(td4)
+                    try:
+                        it3 = subset_items(items, 2, 2)[0]
+                        rrow, _, rcalls = run_deliberation(
+                            "stub-model", THIRD_PERSON, it3, 0,
+                            scaffold="narrative_cot",
+                            r3r4_reasoning_effort="high",
+                            r3r4_thinking_budget=2048)
+                    finally:
+                        OUT_DIR = real_out
+            finally:
+                generate_any = real_stub  # type: ignore[assignment]
+            by_round = {c["round"]: kw for c, kw in zip(rcalls, captured)}
+            check("reasoning_effort/thinking_budget are forwarded ONLY on "
+                  "r3_label/r4_vote calls, never on r0/r1/r2/synthesis/"
+                  "integration",
+                  all(kw.get("reasoning_effort") == "high"
+                      and kw.get("thinking_budget") == 2048
+                      for rd, kw in by_round.items()
+                      if rd in ("r3_label", "r4_vote"))
+                  and all("reasoning_effort" not in kw and "thinking_budget" not in kw
+                          for rd, kw in by_round.items()
+                          if rd not in ("r3_label", "r4_vote")),
+                  str({rd: kw for rd, kw in by_round.items()}))
+            check("reasoning-effort/thinking-budget run lands in its own "
+                  "cache namespace on r3_label/r4_vote only",
+                  all(c["scaffold"] == "narrative_cot_reffhigh_think2048"
+                      for c in rcalls if c["round"] in ("r3_label", "r4_vote"))
+                  and all(c["scaffold"] == "narrative_cot"
+                          for c in rcalls if c["round"] not in ("r3_label", "r4_vote")))
         finally:
             generate_any = real  # type: ignore[assignment]
 
@@ -2830,7 +3068,8 @@ FULL_MODELS = ("claude-haiku-4-5", "gpt-5.4-nano", "grok-4-1-fast-reasoning")
 def run(models, arms, items, *, samples, scaffold, moderator_model,
         max_tokens_agent, max_tokens_moderator, max_tokens_label,
         max_tokens_vote, allow_unresolved, transcript_cap, workers,
-        stake_nudge=False):
+        stake_nudge=False, stake_cot=False, stake_fewshot=False,
+        r3r4_reasoning_effort=None, r3r4_thinking_budget=0):
     tasks = [(m, arm, it, i)
              for m in models for arm in arms for it in items
              for i in range(samples)]
@@ -2850,6 +3089,10 @@ def run(models, arms, items, *, samples, scaffold, moderator_model,
                 allow_unresolved=allow_unresolved,
                 transcript_cap=transcript_cap,
                 stake_nudge=stake_nudge,
+                stake_cot=stake_cot,
+                stake_fewshot=stake_fewshot,
+                r3r4_reasoning_effort=r3r4_reasoning_effort,
+                r3r4_thinking_budget=r3r4_thinking_budget,
             ): (m, arm, it.item_id, i)
             for (m, arm, it, i) in tasks
         }
@@ -2925,6 +3168,28 @@ def main(argv: list[str] | None = None) -> int:
                          "label and R4 vote instructions only. Own cache "
                          "namespace; every other round is untouched and shares "
                          "the un-nudged cache.")
+    ap.add_argument("--stake-cot", action="store_true",
+                    help="prereg Addendum 8 rung 2: require a narrated "
+                         "STAKE/EFFECT/THEREFORE trace before the R3 label "
+                         "and R4 vote, in place of --stake-nudge's bare norm "
+                         "statement. Own cache namespace.")
+    ap.add_argument("--stake-fewshot", action="store_true",
+                    help="prereg Addendum 8 rung 1: prepend two real, "
+                         "stake-gated exemplar pairs mined from grok's "
+                         "cached transcripts to the R3 label and R4 vote "
+                         "prompts (scripts/mine_stake_fewshot_exemplars.py "
+                         "must have been run first). Own cache namespace.")
+    ap.add_argument("--r3r4-reasoning-effort", default=None,
+                    help="prereg Addendum 8 rung 3: override reasoning_effort "
+                         "on the R3 label and R4 vote calls only (OpenAI-family "
+                         "reasoning models, e.g. gpt-5.4-nano). Own cache "
+                         "namespace; ignored for non-reasoning models.")
+    ap.add_argument("--r3r4-thinking-budget", type=int, default=0,
+                    help="prereg Addendum 8 rung 4: enable Claude manual "
+                         "extended thinking with this budget_tokens on the "
+                         "R3 label and R4 vote calls only (Anthropic models, "
+                         "e.g. claude-haiku-4-5). Own cache namespace; "
+                         "ignored for non-Anthropic models.")
     ap.add_argument("--n-boot", type=int, default=1000)
     ap.add_argument("--workers", type=int, default=4)
     ap.add_argument("--compare-rows", default=str(OUT_DIR / "cg_scaffold_combined_rows.csv"),
@@ -3084,6 +3349,10 @@ def main(argv: list[str] | None = None) -> int:
         transcript_cap=args.transcript_cap,
         workers=args.workers,
         stake_nudge=args.stake_nudge,
+        stake_cot=args.stake_cot,
+        stake_fewshot=args.stake_fewshot,
+        r3r4_reasoning_effort=args.r3r4_reasoning_effort,
+        r3r4_thinking_budget=args.r3r4_thinking_budget,
     )
     if not rows:
         print("No rows produced.")

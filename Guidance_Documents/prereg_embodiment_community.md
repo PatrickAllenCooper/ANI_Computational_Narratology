@@ -1542,3 +1542,156 @@ question -- it weakens the case that grok's grip is "sitting there
 waiting to be unlocked" by wording, and correspondingly strengthens the
 case (from the earlier steering-vector speculation) that a training- or
 activation-level intervention is what would be needed to move it.
+
+# Addendum 8: exhausting the inference-level mechanism before calling it (registered 2026-09-03, before any call)
+
+Addendum 7's soft nudge only edited the INSTRUCTION describing what a vote
+should track. It never touched HOW the model computes the answer to "did
+this actually hurt me" -- a check that may be a genuine multi-hop
+computation (assigned interest -> this proposal's concrete effect on it ->
+sign of that effect) rather than a one-hop lookup. Checked, not assumed,
+before registering this: grok (`grok-4-1-fast-reasoning`) never receives a
+`reasoning_effort` parameter in this codebase at all -- its "reasoning" is
+baked into the xAI model choice, not a request-time dial (`_call_xai` in
+`scripts/generators.py` never sets it) -- so it is NOT a fair comparator
+for a reasoning-effort manipulation; nano (`gpt-5.4-nano`) DOES receive
+`reasoning_effort` (default `"medium"`) via the OpenAI-compatible surface;
+haiku (`claude-haiku-4-5`) receives NO test-time reasoning of any kind --
+`_call_anthropic` never sent a `thinking` block before this addendum, even
+though Claude Haiku 4.5 supports manual extended thinking
+(`thinking: {type: enabled, budget_tokens}`) on this same endpoint
+(confirmed 2026-09-03 by a live smoke call: `budget_tokens=1024` returns a
+`thinking` content block and a correct final `text` block through the
+project's Anthropic passthrough). That is a real, previously-untested,
+purely inference-level asymmetry between the four community models.
+
+Four rungs, ordered by cost and mechanistic distance from a hand-coded
+classifier (cheapest and least classifier-like first):
+
+**Rung 1 ($0 marginal, `--stake-fewshot`) -- in-context distillation.**
+Two real exemplar PAIRS mined verbatim from grok's own cached Addendum-6
+R3/R4 transcripts (`scripts/mine_stake_fewshot_exemplars.py`, artifact
+`stake_fewshot_exemplars.json`, checked in): each pair is the SAME
+synthesis/proposal, two seats, opposite verdicts, explained only by which
+seat's assigned interest the outcome damaged. Selection is disclosed and
+audited by the mining script itself (1163 of 1680 grok debates with both
+stake seats show this exact pattern -- not a near-empty pool). Prepended
+to the R3-label/R4-vote prompts for haiku and nano. Tests whether the
+pattern is demonstrable-but-not-spontaneous (in-context imitation) versus
+needing the underlying computation itself strengthened (rungs 2-4).
+
+**Rung 2 ($0 marginal, `--stake-cot`) -- narrated stake computation, in
+the paper's own idiom.** Instead of stating the norm (Addendum 7) or
+showing it (rung 1), REQUIRE it to be computed and written down as three
+mandatory lines immediately before the verdict: `STAKE:` (the assigned
+interest), `EFFECT:` (this proposal's concrete effect on it), `THEREFORE:`
+(the verdict). This is Narration-of-Thought applied to the one
+sub-computation Addendum 6/7 identified as the likely bottleneck. It is
+NOT a hand-coded classifier: nothing about the three lines' CONTENT is
+scored, injected, or gates the extractor -- only their presence is
+required, and the verdict is still fully self-determined.
+
+**Rung 3 (~$2, `--r3r4-reasoning-effort high`) -- nano only.** Already-
+wired plumbing; a one-line override of the existing default. Tests
+whether "medium" reasoning effort was simply insufficient for the
+counterfactual, independent of any prompt-text change.
+
+**Rung 4 (~$3, `--r3r4-thinking-budget 4096`) -- haiku only.** Requires
+new code (added this addendum): `thinking_budget` threaded through
+`generate()` -> `_call_anthropic`, plus a parsing fix -- with thinking
+enabled, `content[0]` is a `thinking` block, not `text`; blindly indexing
+`[0]` would have silently returned the model's scratchpad as the answer.
+Now scans for the (last) `text` block and separately captures the
+`thinking` text in `GenerationResult.meta`. This is the largest single
+asymmetry closed by this addendum: haiku goes from zero test-time
+reasoning to the same class of mechanism grok and nano already have
+(nominally; grok's is architecturally different and not effort-dialable).
+
+All four rungs act ONLY on the R3-label/R4-vote calls (never R0-R2/
+synthesis/integration) and each gets its own composed cache-scaffold
+suffix (`{scaffold}_{tag1}_{tag2}...`), so no combination of prompt text
+and test-time-compute setting can ever be silently served a cached
+response generated under a different combination; rung 1's cache suffix
+composes with Addendum 7's exactly as before (`_stakenudge` alone is
+unchanged). Same 40-item panel as Addendum 7 (nano screened to its
+existing 28), so every rung is directly paired against BOTH the
+Addendum-6 baseline and Addendum-7's null nudge result on identical
+items via `paired_g3_delta`.
+
+**Positive outcome, per rung, per model:** G3 stake concentration under
+the rung exceeds that model's Addendum-6 baseline by an amount whose 95%
+item-clustered paired bootstrap CI excludes zero, AND G1 fire rate stays
+>= 0.05 (the same floor Addendum 7 used). **Stop rule:** run rungs in
+order; stop at the first rung with a positive result on either model, or
+after all four rungs if none clear the bar. Ceiling $20 across all four
+rungs combined (Addendum 7's $3.02 was excluded from this ceiling, it is
+accounted for separately).
+
+## ADDENDUM 8 RESULTS (2026-09-03; rung 1 only -- 816 new calls, $3.29 of the $20 ceiling; STOPPED per registered rule)
+
+(`analyze_stake_grip.py`'s printed "measured spend" line is cumulative
+since inception for these 40 items -- it globs every cached call for the
+model regardless of which addendum generated it, so it double-counts
+Addendum 6's and Addendum 7's spend on the same panel. The $3.29 above is
+the correct incremental figure: only the freshly-generated
+`_stakefewshot` R3-label/R4-vote calls, 480 haiku + 336 nano.)
+
+Rung 1 (`--stake-fewshot`, in-context distillation from grok's own cached
+transcripts) ran first on both models, same 40-item deterministic prefix
+as Addendum 7 (nano's content-filter screen again drops to 28). It
+cleared the registered bar on BOTH models, so rungs 2-4 (narrated
+stake-CoT, nano reasoning-effort, haiku extended thinking) were not run
+per the stop rule -- the code for all three remains wired and tested
+(selftest coverage added this addendum) for future use if this result
+needs a mechanistic follow-up.
+
+| model | items | G1 fire (floor >=0.05) | G3 fewshot | G3 baseline (same items) | paired delta | 95% CI | POSITIVE |
+|---|---|---|---|---|---|---|---|
+| claude-haiku-4-5 | 40 | 0.450, PASS | +0.263 | +0.050 | +0.213 | [+0.013, +0.388] | **True** |
+| gpt-5.4-nano | 28 | 0.411, PASS | +0.464 | +0.054 | +0.411 | [+0.286, +0.545] | **True** |
+
+Haiku's round-level truncation/parse guard passed cleanly. Nano's did
+not: one cell (writer_advocate, as_asker arm, R3 label round) hit 10.7%
+NOVERDICT against the project's 5% guard limit (3/28 items) -- the
+few-shot block lengthens the R3-label prompt enough that a handful of
+completions apparently drift off the required VERDICT format before
+finishing. This is a data-quality caveat on nano's number, not
+disqualifying: the D3 vote-independence check reports 0 excluded votes,
+G3 is computed from R4 VOTE rows (a different round than the one that
+failed), and the paired-delta CI is wide of zero by a comfortable margin
+(+0.286 at the low end) -- but it means nano's result should be read as
+suggestive-and-likely-real rather than as clean as haiku's, until the 3
+affected items are regenerated and checked for a shift.
+
+**Both models clear the criterion, in the SAME direction Addendum 7's
+soft nudge failed to move at all** (haiku -0.062, nano +0.054 n.s.).
+The two interventions differ in exactly one way: Addendum 7 STATED the
+norm ("your REJECT should track whether this outcome actually damages
+the position you were assigned"); rung 1 DEMONSTRATED it, verbatim, from
+grok's own real transcripts, with two matched exemplar pairs where only
+the assigned interest differs between otherwise-identical debates. That
+is a real, replicated, moderate-to-large effect from a zero-marginal-cost
+prompt change -- not a training- or activation-level intervention.
+
+**This reverses the working conclusion this addendum was registered to
+test.** Stake-gating is not simply absent machinery in these two models
+that no amount of inference-time engineering can reach; it is latent
+machinery that a norm STATEMENT could not activate but a norm
+DEMONSTRATION could. That is closer to an in-context-learning result
+(the pattern is present in the model's behavior repertoire and can be
+elicited by example) than to a disposition-vs-default question with a
+binary answer -- and it directly revives, rather than closes, the
+amplification-roadmap question the setup paragraph above raised: an
+inference-level lever (few-shot distillation of a stronger model's
+disposition into a weaker one) demonstrably moved the needle here,
+which argues for exhausting THIS family of interventions (larger
+few-shot sets, exemplar diversity across more debate types, combining
+rung 1 with rungs 2/4) before reaching for training- or activation-level
+claims.
+
+**Not yet done, and explicitly not authorized by this registration:**
+(1) regenerating nano's 3 NOVERDICT items to confirm the result survives
+a clean round-level guard; (2) scaling either screen past 40/28 items to
+tighten the CIs; (3) running rungs 2-4 now that rung 1 has already
+cleared the bar, which the stop rule places outside this addendum's
+scope by construction. Any of these would need its own registration.

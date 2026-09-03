@@ -269,7 +269,17 @@ def _call_anthropic(
     user: str,
     *,
     max_tokens: int,
+    thinking_budget: int = 0,
 ) -> GenerationResult:
+    """thinking_budget > 0 enables Claude's manual extended thinking
+    (Messages API `thinking: {type: enabled, budget_tokens}`), CONFIRMED
+    supported on Haiku 4.5 as of 2026-09 (Anthropic docs; Opus/Sonnet 4.7+
+    moved to adaptive-only and reject manual mode with a 400).  Anthropic
+    requires max_tokens > budget_tokens and (per the same constraint as
+    every other reasoning branch in this module) forbids setting
+    temperature/top_p while thinking is enabled -- this payload never sets
+    either, so that's satisfied by omission, not by an explicit check.
+    """
     session = _get_anthropic_session()
     endpoint = _anthropic_endpoint()
     api_key = os.environ.get("AZURE_AI_API_KEY", "")
@@ -278,11 +288,14 @@ def _call_anthropic(
         "Content-Type": "application/json",
         "anthropic-version": "2023-06-01",
     }
+    eff_tokens = max(max_tokens, thinking_budget + 1024) if thinking_budget else max_tokens
     payload = {
         "model": model,
-        "max_tokens": max_tokens,
+        "max_tokens": eff_tokens,
         "messages": [{"role": "user", "content": user}],
     }
+    if thinking_budget:
+        payload["thinking"] = {"type": "enabled", "budget_tokens": thinking_budget}
     if system and system.strip():
         payload["system"] = system
     last_err: Optional[Exception] = None
@@ -301,7 +314,16 @@ def _call_anthropic(
                     return GenerationResult(text="", finish_reason="content_filter", model=model)
                 raise RuntimeError(f"Anthropic HTTP {r.status_code}: {msg}")
             data = r.json()
-            text = data.get("content", [{}])[0].get("text", "") if data.get("content") else ""
+            # With thinking enabled, content[0] is a "thinking" block, not
+            # "text" -- blindly indexing [0] silently returned the model's
+            # scratchpad reasoning as if it were the answer. Scan for the
+            # (last) text block instead; also capture the thinking block so
+            # it's inspectable, not just discarded.
+            blocks = data.get("content") or []
+            text = next((b.get("text", "") for b in reversed(blocks)
+                        if b.get("type") == "text"), "")
+            thinking_text = "".join(b.get("thinking", "") for b in blocks
+                                    if b.get("type") == "thinking")
             usage = data.get("usage", {})
             return GenerationResult(
                 text=text,
@@ -310,6 +332,7 @@ def _call_anthropic(
                 prompt_tokens=usage.get("input_tokens", 0),
                 completion_tokens=usage.get("output_tokens", 0),
                 latency_s=latency,
+                meta={"thinking": thinking_text} if thinking_text else {},
             )
         except Exception as e:
             last_err = e
@@ -553,6 +576,7 @@ def generate(
     max_tokens: int = 4096,
     reasoning_effort: Optional[str] = "medium",
     json_mode: bool = False,
+    thinking_budget: int = 0,
 ) -> GenerationResult:
     """Single entry point for all model families.
 
@@ -565,9 +589,12 @@ def generate(
         max_tokens: maximum output tokens (completion only).
         reasoning_effort: passed to reasoning models; ignored otherwise.
         json_mode: request JSON output format (OpenAI/xAI only).
+        thinking_budget: Anthropic manual extended-thinking token budget;
+            0 disables it. Ignored for non-Anthropic models.
     """
     if _is_anthropic(model):
-        return _call_anthropic(model, system, user, max_tokens=max_tokens)
+        return _call_anthropic(model, system, user, max_tokens=max_tokens,
+                               thinking_budget=thinking_budget)
     if _is_deepseek(model):
         eff_tokens = max(max_tokens, 8192) if _is_reasoning(model) else max_tokens
         return _call_deepseek(
