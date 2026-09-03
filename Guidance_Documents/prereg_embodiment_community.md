@@ -2167,6 +2167,61 @@ be sharpened, was never the bottleneck.
 the $22-30 Phase 2 spend. Total Addendum 11 spend: $0 (Phase 0) + ~$2
 (Phase 1) = ~$2 of the $40 ceiling.
 
+## Addendum 11 Phase 1 correction (found and fixed, re-run 2026-09-03, +$0.49)
+
+Auditing 1a's collapse before accepting it turned up a real bug in
+`scripts/mine_stake_fewshot_exemplars.py`'s truth-gated mining: the R3
+round's "concern already addressed, so accept" demonstration reused
+the `accept_correct` exemplar's OWN R3-round text -- but that seat's
+concern was only resolved LATER, by `moderator_integration`. At R3
+itself the same seat had in fact rejected ("UNRESOLVABLE CONCERN ...
+VERDICT: REJECT"). The R3 prompt was therefore showing a REJECT quote
+captioned as an accept, a self-contradicting example, and a plausible
+confound in reading 1a's collapse as evidence about the truth-gating
+concept itself rather than about a broken demonstration of it.
+
+**Fix.** Mined a third, genuinely R3-coherent exemplar,
+`r3_accept_correct`: an undermined seat whose R3 VERDICT ITSELF is
+ACCEPT because the synthesis was already fine on the merits (39
+candidates in the pool; first by item_id sort order with >200 chars of
+explanatory text, since most bare ACCEPT verdicts in this pool carry no
+text at all). `load_stake_fewshot_truthgated_block` now contrasts
+`reject_correct` against `r3_accept_correct` for the R3 round
+specifically, keeping the original `reject_correct`/`accept_correct`
+R4-vote contrast unchanged (that one IS coherent -- both texts are
+post-integration). Deleted the 282 stale R3-round cache files under the
+`stakefewshottruthgated` tag (downstream `integration`/`r4_vote` calls
+auto-invalidate via `parent_sha` once R3 changes) and re-ran arm 1a
+identically otherwise (same command, same 47-item panel). Both
+mining and deliberation selftests updated and passing.
+
+**Result: the bug fix did not rescue 1a.** Stake concentration within
+stake-bearing seats moved from +0.021 (buggy exemplar) to +0.032
+(fixed exemplar) [95% CI 0.000, +0.074] -- still nowhere near plain
+few-shot's +0.464 on this panel, and R3 REJECT verdicts dropped from 4
+to 0 (ACCEPT 166, ACCEPT_WITH_MODIFICATION 107, NOVERDICT 9 of 282).
+Re-running Gate G1 (`scripts/analyze_sharpening_gate.py`) on the
+corrected data: flagged population 45 -> 3 (was 45 -> 4), paired delta
++0.133 [-0.273, +0.860], still fails. **Gate G1 overall verdict is
+unchanged: fail on both arms -> stop.**
+
+**What this shows.** The engineering bug was real and worth fixing --
+an incoherent exemplar should never have shipped -- but it was not the
+cause of 1a's dissent collapse. The collapse survives the fix, which
+means it is a property of the truth-gating INSTRUCTION itself
+("reject only if the damage to your interest is still live; if the
+proposal actually addresses it, say so and accept"): that sentence
+hands a small model an easy, sycophancy-compatible off-ramp ("decide
+it's addressed") regardless of which exemplar illustrates it. Sharpening
+a sensor by asking the model to also judge correctness, not just stake,
+reintroduces exactly the deference this whole program exists to route
+around. This is now a better-grounded null than the original: it rules
+out "bad mining" as the explanation and leaves "the instruction itself
+invites the escape hatch" as the standing account. One flaw in Phase 1
+was found and fixed; the conclusion did not change, and is not weakened
+by the fix having been necessary. Revised Addendum 11 total spend: ~$2
+(original Phase 0+1) + $0.49 (this correction) = ~$2.5 of $40.
+
 ## Addendum 11 closing summary
 
 Three addenda (9, 10, 11) tried, in order: routing on the inherited

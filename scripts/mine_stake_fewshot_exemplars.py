@@ -118,6 +118,29 @@ TRUTHGATED_REJECT_CORRECT = (
 TRUTHGATED_ACCEPT_CORRECT = (
     "0QhNF8tvIJOj1UEwwofC3B67eLqta8Xj", "as_asker", 0, "counterparty")
 
+#: BUG FOUND AND FIXED (Addendum 11 Phase 1, revised): the R3-round few-shot
+#: block used to quote TRUTHGATED_ACCEPT_CORRECT's OWN r3_label text as the
+#: "concern already addressed, so accept" demonstration for round 3. But that
+#: exemplar's stake was only resolved LATER, by moderator_integration -- at
+#: R3 itself the same seat had in fact rejected ("UNRESOLVABLE CONCERN ...
+#: VERDICT: REJECT"). So the R3 prompt showed a REJECT quote mislabelled as
+#: "already addressed", a self-contradicting example. That is a plausible
+#: cause of Phase 1a's dissent collapse: the model was shown two examples
+#: that both reject at R3, one of them captioned as an accept.
+#:
+#: This constant is a genuinely R3-coherent replacement: an undermined seat
+#: whose R3 VERDICT ITSELF is ACCEPT because the synthesis was already fine
+#: on the merits, not one that only became fine after a later revision.
+#: Selection: of the pool below, the first (by item_id sort order) whose
+#: r3_label text exceeds 200 characters -- most bare ACCEPT verdicts in this
+#: pool have no explanatory text at all ("VERDICT: ACCEPT", 15 chars), which
+#: makes a poor demonstration; this length floor is the only content-based
+#: filter applied, and is disclosed here rather than tuned after looking at
+#: results.
+TRUTHGATED_R3_ACCEPT_CORRECT = (
+    "HHxogfHsvlNLk2HQOPKztwLNRIplu7Uo", "as_asker", 2, "counterparty")
+R3_ACCEPT_MIN_CHARS = 200
+
 
 def _correct(verdict: str, gold: str) -> bool | None:
     c = code_response(verdict, "published")
@@ -125,12 +148,12 @@ def _correct(verdict: str, gold: str) -> bool | None:
 
 
 def verify_truthgated_pool(votes_path: Path = VOTES_PATH) -> dict:
-    """How many debates show each truth-gated pattern, so the two hard-coded
+    """How many debates show each truth-gated pattern, so the hard-coded
     picks above are auditable as "first of a real population", not
     cherry-picked from a near-empty set."""
     with open(votes_path) as f:
         rows = list(csv.DictReader(f))
-    n_reject_correct = n_accept_correct = 0
+    n_reject_correct = n_accept_correct = n_r3_accept_correct = 0
     for r in rows:
         if r["role_id"] not in STAKE_SEATS or r.get("stake_undermined") != "1":
             continue
@@ -141,7 +164,10 @@ def verify_truthgated_pool(votes_path: Path = VOTES_PATH) -> dict:
             n_reject_correct += 1
         if r["reject"] == "0" and syn_ok:
             n_accept_correct += 1
-    return {"n_reject_correct": n_reject_correct, "n_accept_correct": n_accept_correct}
+        if r.get("r3_label") == "ACCEPT" and syn_ok:
+            n_r3_accept_correct += 1
+    return {"n_reject_correct": n_reject_correct, "n_accept_correct": n_accept_correct,
+            "n_r3_accept_correct": n_r3_accept_correct}
 
 
 def build_truthgated_exemplars() -> dict:
@@ -151,6 +177,8 @@ def build_truthgated_exemplars() -> dict:
     item_id2, arm2, idx2, role2 = TRUTHGATED_ACCEPT_CORRECT
     r3_ac = read_output("r3_label", R3_MAX_TOKENS, arm2, item_id2, idx2, role2)
     r4_ac = read_output("r4_vote", R4_MAX_TOKENS, arm2, item_id2, idx2, role2)
+    item_id3, arm3, idx3, role3 = TRUTHGATED_R3_ACCEPT_CORRECT
+    r3_r3ac = read_output("r3_label", R3_MAX_TOKENS, arm3, item_id3, idx3, role3)
     return {
         "reject_correct": {
             "item_id": item_id, "arm": arm, "sample_idx": idx, "role": role,
@@ -159,6 +187,10 @@ def build_truthgated_exemplars() -> dict:
         "accept_correct": {
             "item_id": item_id2, "arm": arm2, "sample_idx": idx2, "role": role2,
             "r3_label": r3_ac, "r4_vote": r4_ac,
+        },
+        "r3_accept_correct": {
+            "item_id": item_id3, "arm": arm3, "sample_idx": idx3, "role": role3,
+            "r3_label": r3_r3ac,
         },
     }
 
@@ -190,8 +222,10 @@ def main(argv: Sequence[str] | None = None) -> int:
         tpool = verify_truthgated_pool()
         print(f"\ntruth-gated pool: {tpool['n_reject_correct']} undermined+"
               f"REJECT+synthesis-was-wrong, {tpool['n_accept_correct']} "
-              f"undermined+ACCEPT+synthesis-was-right -- picking the first "
-              f"of each")
+              f"undermined+ACCEPT+synthesis-was-right (R4-final basis), "
+              f"{tpool['n_r3_accept_correct']} undermined+R3-ACCEPT+"
+              f"synthesis-was-right (R3-own-verdict basis) -- picking the "
+              f"first of each")
         texemplars = build_truthgated_exemplars()
         a.truthgated_out.write_text(
             json.dumps({"pool": tpool, "exemplars": texemplars}, indent=1))
@@ -236,17 +270,30 @@ def _selftest() -> int:
         tpool = verify_truthgated_pool()
         check("truth-gated pool has a nontrivial number of each pattern "
               "(not cherry-picked from a near-empty set)",
-              tpool["n_reject_correct"] >= 10 and tpool["n_accept_correct"] >= 10)
+              tpool["n_reject_correct"] >= 10 and tpool["n_accept_correct"] >= 10
+              and tpool["n_r3_accept_correct"] >= 10)
         try:
             tex = build_truthgated_exemplars()
-            check("truth-gated exemplars built, both have r3/r4 text",
-                  all(len(tex[k]["r3_label"]) > 0 and len(tex[k]["r4_vote"]) > 0
+            check("truth-gated exemplars built, all have r3 text",
+                  all(len(tex[k]["r3_label"]) > 0
+                      for k in ("reject_correct", "accept_correct",
+                                "r3_accept_correct")))
+            check("reject_correct/accept_correct also have r4 text",
+                  all(len(tex[k]["r4_vote"]) > 0
                       for k in ("reject_correct", "accept_correct")))
             check("reject_correct exemplar's R4 vote is a REJECT, verbatim",
                   "REJECT" in tex["reject_correct"]["r4_vote"])
             check("accept_correct exemplar's R4 vote is an ACCEPT, verbatim",
                   "ACCEPT" in tex["accept_correct"]["r4_vote"]
                   and "REJECT" not in tex["accept_correct"]["r4_vote"])
+            check("r3_accept_correct exemplar's OWN R3 verdict is ACCEPT, "
+                  "verbatim -- this is the bug fix: it must not be a REJECT "
+                  "quote mislabelled as already-addressed",
+                  "ACCEPT" in tex["r3_accept_correct"]["r3_label"]
+                  and "REJECT" not in tex["r3_accept_correct"]["r3_label"])
+            check("r3_accept_correct exemplar has substantive explanatory "
+                  "text, not a bare 'VERDICT: ACCEPT'",
+                  len(tex["r3_accept_correct"]["r3_label"]) >= R3_ACCEPT_MIN_CHARS)
         except FileNotFoundError as e:
             check(f"raw cache files present for the truth-gated pair ({e})",
                   False)

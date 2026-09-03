@@ -329,29 +329,64 @@ def load_stake_fewshot_truthgated_block(round_name: str) -> str:
     'r4_vote' from scripts/mine_stake_fewshot_exemplars.py's --truthgated
     output. Loaded once per process and memoised; raises loudly if the
     artifact is missing rather than silently degrading to no demonstration.
+
+    BUG FOUND AND FIXED (Addendum 11 Phase 1, revised): this used to quote
+    'accept_correct's OWN r3_label text as the R3-round "already addressed,
+    so accept" demonstration. But that exemplar's concern was only resolved
+    LATER, by moderator_integration -- at R3 itself the same seat had in
+    fact rejected. The R3 prompt was therefore showing a REJECT quote
+    captioned as an accept, a self-contradicting example, and a plausible
+    cause of Phase 1a's dissent collapse. The R3 round now contrasts against
+    'r3_accept_correct', a seat whose OWN R3 verdict was genuinely ACCEPT
+    because the synthesis was already fine, not one that only became fine
+    on a later revision. The R4 round is unaffected: 'reject_correct' and
+    'accept_correct's R4 votes are both post-integration text, so the
+    original "still unaddressed vs since addressed" framing is coherent
+    there and is kept as-is.
     """
     if "data" not in _STAKE_FEWSHOT_TRUTHGATED_CACHE:
         path = OUT_DIR / "stake_fewshot_truthgated_exemplars.json"
         _STAKE_FEWSHOT_TRUTHGATED_CACHE["data"] = json.loads(path.read_text())
     data = _STAKE_FEWSHOT_TRUTHGATED_CACHE["data"]
     ex = data["exemplars"]
-    field = "r3_label" if round_name == "r3_label" else "r4_vote"
-    parts = [
-        "Two participants, in two DIFFERENT debates, both had their "
-        "assigned interest damaged by the outcome. Only one of them was "
-        "still right to object by the time of this response -- read what "
-        "differs between them:",
-        "  Participant whose interest was damaged AND whose concern was "
-        f"still unaddressed at this point:\n    \"{ex['reject_correct'][field]}\"",
-        "  A DIFFERENT participant whose interest was ALSO damaged, but "
-        "whose concern had by now actually been addressed:\n"
-        f"    \"{ex['accept_correct'][field]}\"",
-        "Use the same logic for your own position now: having your "
-        "assigned interest damaged is a reason to look hard at this "
-        "proposal, not a reason to reject it regardless of content. Reject "
-        "only if the damage to your interest is still live; if the "
-        "proposal actually addresses it, say so and accept.",
-    ]
+    if round_name == "r3_label":
+        parts = [
+            "Two participants, in two DIFFERENT debates, both had their "
+            "assigned interest nominally damaged by the outcome. Only one "
+            "of them was right to object -- read what differs between "
+            "them:",
+            "  Participant whose interest was damaged AND the synthesis "
+            "genuinely fails to account for it:\n"
+            f"    \"{ex['reject_correct']['r3_label']}\"",
+            "  A DIFFERENT participant whose interest was ALSO nominally "
+            "damaged, but who found on inspection that the synthesis "
+            "already handles it fairly:\n"
+            f"    \"{ex['r3_accept_correct']['r3_label']}\"",
+            "Use the same logic for your own position now: having your "
+            "assigned interest nominally damaged is a reason to look hard "
+            "at this proposal, not a reason to reject it regardless of "
+            "content. Reject only if that scrutiny turns up a real, "
+            "unaddressed problem; if the proposal already treats your side "
+            "fairly, say so and accept.",
+        ]
+    else:
+        parts = [
+            "Two participants, in two DIFFERENT debates, both had their "
+            "assigned interest damaged by the outcome. Only one of them was "
+            "still right to object by the time of this response -- read "
+            "what differs between them:",
+            "  Participant whose interest was damaged AND whose concern "
+            "was still unaddressed at this point:\n"
+            f"    \"{ex['reject_correct']['r4_vote']}\"",
+            "  A DIFFERENT participant whose interest was ALSO damaged, but "
+            "whose concern had by now actually been addressed:\n"
+            f"    \"{ex['accept_correct']['r4_vote']}\"",
+            "Use the same logic for your own position now: having your "
+            "assigned interest damaged is a reason to look hard at this "
+            "proposal, not a reason to reject it regardless of content. "
+            "Reject only if the damage to your interest is still live; if "
+            "the proposal actually addresses it, say so and accept.",
+        ]
     return "\n\n" + "\n\n".join(parts) + "\n\n"
 
 
@@ -2630,8 +2665,14 @@ def _selftest() -> int:
                   "text distinct from the plain few-shot block",
                   len(r3_tg) > len(r3_plain) and r3_tg != r3_fs)
             check("truthgated block explains dissent should be gated on "
-                  "whether the concern is still live, not stake alone",
-                  "still live" in r3_tg or "actually addresses" in r3_tg)
+                  "whether there is a real unaddressed problem, not stake "
+                  "alone",
+                  "unaddressed" in r3_tg)
+            check("R3-round truthgated exemplar's own R3 verdict is a real "
+                  "ACCEPT (not a REJECT quote mislabelled as addressed -- "
+                  "the bug this revision fixes)",
+                  "REJECT" not in _STAKE_FEWSHOT_TRUTHGATED_CACHE["data"][
+                      "exemplars"]["r3_accept_correct"]["r3_label"])
             check("stake_fewshot_set defaults to 'plain', unaffected by the "
                   "new variant unless explicitly requested",
                   r3_label_user(THIRD_PERSON, one, ROLES[0], "own", "syn",

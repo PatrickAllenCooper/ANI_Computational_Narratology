@@ -658,6 +658,22 @@ $22-30 Phase 2 confirmation spend -- the honest outcome the registered
 kill gates exist to produce, not a workaround to keep spending until
 something clears the bar.
 
+**Correction found and fixed before accepting this result.** Auditing
+1a's collapse turned up a real bug: the R3-round "concern already
+addressed" exemplar quoted a debate's OWN R3 verdict, which was in fact
+a REJECT (the concern was only resolved later, by the integration
+round) -- a self-contradicting demonstration. Mined a genuinely
+R3-coherent replacement (an undermined seat whose R3 verdict itself was
+ACCEPT because the synthesis was already fine) and re-ran arm 1a
+identically otherwise. The fix did not rescue it: concentration moved
+from +0.021 to +0.032, still far short of plain few-shot's +0.464, and
+Gate G1's paired delta on the corrected data (+0.133, CI
+[-0.273,+0.860]) still fails. This is a better-grounded null than the
+original -- it rules out "broken mining" as the explanation and leaves
+"the truth-gating instruction itself hands the model an easy,
+sycophancy-compatible off-ramp" as the standing account. +$0.49,
+Addendum 11 total ~$2.5 of $40.
+
 Net position after three addenda (9, 10, 11) aimed specifically at
 closing the induced-sensor-to-actuator gap: not closed, at three sensor
 designs (the inherited composite flag, a redesigned nonunanimous-vote
