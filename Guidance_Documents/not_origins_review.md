@@ -424,28 +424,49 @@ the first per-model metric this project has for whether embodiment took.
 Next registrations: a stake-grip screen across candidate community
 models; haiku as the community to decide whether grok is the exception.
 
-### 8.5 The stake-grip screen (prereg Addendum 6, 2026-09-02, $30.82) [CORRECTION IN PROGRESS: haiku and sonnet rows below are retracted -- their R4 vote round failed its own round-level truncation guard at 81-97% and 0-19% respectively, missed at read time by a case-sensitive grep. Re-running with raised token caps; see prereg for the live correction.]
+### 8.5 The stake-grip screen (prereg Addendum 6, 2026-09-02, $70.47 final)
 
 Grip defined and measured (`scripts/analyze_stake_grip.py`): composite
 fire rate <= 0.5, R4 reject share >= 0.05, stake-seat reject
 concentration >= +0.20 with CI excluding zero. Four community models,
-byte-identical protocol:
+byte-identical protocol.
 
-| model | fire | reject share | reject conc | objection conc | grip |
-|---|---|---|---|---|---|
-| grok-4-1-fast-reasoning | 0.20 | 0.33 | +0.63 | +0.81 | yes |
-| gpt-5.4-nano | 0.85 | 0.02 | +0.03 | +0.11 | no |
-| claude-haiku-4-5 (n=199) | 0.24 | 0.00 | 0 | +0.05 | no |
-| claude-sonnet-4-6 (n=32) | 0.06 | 0.01 | +0.03 | +0.03 | no |
+CORRECTION: the haiku and sonnet screens initially FAILED their own
+round-level truncation guard (haiku R4 vote 81-97% truncated against a
+512-token cap sized to grok's 91-token average; sonnet 0-19%), printed
+plainly in each console log but missed at read time because the live
+verification grepped `ERROR|guard` (lowercase), which matched the
+separate passing OUTCOME guard but not the failing `GUARD FAILED`
+line. Both were re-run with `--max-tokens-label/--vote 3072` and the
+downstream integration cache purged (it is keyed on an unchanged
+token cap and would otherwise silently replay output computed from the
+truncated R3 text). Both corrected runs pass the guard cleanly.
 
-Grok is the exception. Three distinct failure modes: nano objects to
-everything, haiku objects rarely and never rejects, sonnet barely
-speaks; none of the three ties dissent to the stake it was given. The
-narrative role is worn without being inhabited. For the embodiment theme
-this is the sharpest result so far: the same five-section embodiment
-that produces stake-bound behaviour in one model produces none in three
-others, and the difference is now a number that can be screened for in
-80 debates for under $10.
+Final, corrected numbers:
+
+| model | fire | reject share | reject conc | grip |
+|---|---|---|---|---|
+| grok-4-1-fast-reasoning | 0.20 | 0.33 | +0.631 [+0.587, +0.673] | yes |
+| claude-haiku-4-5 (n=192, corrected) | 0.46 | 0.07 | +0.062 [+0.016, +0.108] | no (real, weak) |
+| gpt-5.4-nano | 0.85 | 0.02 | +0.034 [+0.018, +0.051] | no (real, weak, unusable) |
+| claude-sonnet-4-6 (n=31, corrected) | 0.07 | 0.00 | 0 (no rejects) | no (none detected) |
+
+Grok clears the registered threshold; the other three do not, but not
+uniformly for the reason first reported. Nano's dissent is real but
+untethered from stake (concentration barely above zero despite firing
+on 85% of debates). Sonnet shows no measurable stake sensitivity at
+n=16 items. Haiku is the interesting middle case, corrected from an
+apparent "compliant, no signal" artifact to a REAL, CI-confirmed, but
+small stake effect (+0.062, an order of magnitude below grok's +0.63),
+and its composite flag itself replicated as a genuine (if weak) lift
+signal on 60 fresh items (+0.148 [+0.024, +0.268]) -- though routing on
+that flag did not clear a CI at this sample size (+0.060
+[-0.059, +0.174]). Grip looks graded rather than binary: grok >> haiku
+~ nano (real but too rare to use) > sonnet (none). For the embodiment
+theme, the corrected result is more encouraging than the retracted one:
+the mechanism is not confined to a single idiosyncratic model, it is
+just far stronger in grok than anywhere else measured so far, and haiku
+is the natural second candidate for a larger-item follow-up.
 
 Two smaller findings. (a) nano's rare REJECT votes (2.4% of votes) ARE
 informative -- routing on them is +0.226 to grok -- so nano has the

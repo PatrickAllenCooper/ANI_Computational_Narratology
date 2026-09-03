@@ -1260,8 +1260,64 @@ conclusion is unchanged: sonnet does not object on this panel. Same
 power caveat as before (n=16 items, S2 accuracy 1.000 -- no wrong
 synthesis exists to test precision against). GRIP: no, validly.
 
-Haiku's re-run (200 debates, ~$35 estimated) is in progress; its
-corrected verdict follows in a subsequent update.
+**Haiku, corrected (tag `cg_deliberation_haiku_fixed`, $30.63, 4,576
+calls): guard PASSED, worst truncation 3.3% (under the 5% limit).**
+192 codable debates, 100 items, 576 stake-seat votes.
+
+- G1 fire rate 0.458 -- PASS (was 0.241 on the truncated data; more
+  debates get flagged once the model can actually finish a REJECT).
+- G2 reject share 0.069 -- PASS (was 0.000; every one of the 40
+  observed rejects had been swallowed by the token cap).
+- G3 stake concentration +0.062, 95% CI [+0.016, +0.108] -- the CI
+  excludes zero, so haiku's dissent IS measurably stake-related, but
+  the effect is an order of magnitude smaller than grok's (+0.63) and
+  well under the +0.20 grip threshold. **GRIP: no, by the registered
+  threshold -- but not "no effect."** reject|undermined 0.109 vs
+  reject|not-undermined 0.047.
+
+This is a materially different finding from the retracted one. Haiku
+is not compliant/silent; it is weakly, genuinely stake-sensitive. The
+strict yes/no grip criterion, useful as a stopping rule, was hiding a
+graded picture: grok +0.63 >> haiku +0.06 (real) ~ nano +0.03 (real,
+but expressed as rejects on only 2.4% of votes, useless as a sensor)
+> sonnet 0 (none detected, n=16 items).
+
+**6a confirmation, corrected (60 new items, 112 debates):**
+- C1 flag lift: precision 0.18, recall 0.82, lift +0.148, 95% CI
+  [+0.024, +0.268] -- PASS. The flag is now a real, if weak, signal
+  (was a truncation artifact before; now confirmed genuine).
+- C2 grok routing on flagged: 0.840 -> 0.900, delta +0.060, 95% CI
+  [-0.059, +0.174] -- fail. By arm: as_asker +0.120, third_person
+  +0.000. The routing benefit does not clear its CI and is not
+  consistent across arms.
+- C3 unflagged: 0.952 -> 0.935, delta -0.016 -- pass (no harm).
+- **POSITIVE: False.** The flag is real (C1) but too weak, at this
+  sample size, to certify a routing benefit (C2).
+
+**Addendum 6, final corrected total: $70.47** ($30.82 original +
+$9.02 sonnet re-run + $30.63 haiku re-run), against the original $40
+ceiling -- overrun because the correction required regenerating most of
+the affected calls at higher token caps, not merely the truncated
+fraction. PI authorized the overrun explicitly (see checkin log).
+
+**Final corrected picture across four models:**
+
+| model | fire (G1) | reject share (G2) | stake concentration (G3) | grip (>= +0.20, CI excl. 0) |
+|---|---|---|---|---|
+| grok-4-1-fast-reasoning | 0.20 | 0.33 | +0.631 [+0.587, +0.673] | YES |
+| claude-haiku-4-5 | 0.46 | 0.07 | +0.062 [+0.016, +0.108] | no (real, weak) |
+| gpt-5.4-nano | 0.85 | 0.02 | +0.034 [+0.018, +0.051] | no (real, weak, unusable -- too rare) |
+| claude-sonnet-4-6 | 0.07 | 0.00 | 0 (no rejects, n=16 items) | no (none detected) |
+
+Grok remains the only model that clears the registered threshold and
+the only one where the flag both fires selectively AND concentrates
+strongly enough to route on with confidence. Haiku is the most
+promising SECOND candidate -- real stake sensitivity, a confirmed (if
+weak) flag lift -- but its routing benefit needs more items to resolve,
+not more token budget. That is a well-defined, cheap next step (the
+2x-item extension costs the same per-item as this run, no cap changes
+needed) and is NOT authorized as part of this addendum; it would need
+separate registration and authorization.
 
 ## ADDENDUM 6 RESULTS -- Stages 0, 1, 3 (2026-09-02; measured spend $16.64) [RETRACTED for haiku/sonnet rows, see correction above]
 
