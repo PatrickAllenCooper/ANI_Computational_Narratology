@@ -1926,3 +1926,129 @@ reappear at that scale, further zero-spend or low-spend iteration on
 this exact design is not recommended. The induced-sensor line's honest
 summary: real, reproduced signal-quality gain (Addendum 8); no
 demonstrated actuator gain despite two tries (Addendum 9, 10).
+# Addendum 11: the induced-sensor accuracy circuit, redesigned (registered 2026-09-03, ceiling $40, staged with kill gates, before any new spend)
+
+Addenda 9-10 routed the actuator on `flagged()` (`scripts/
+analyze_loop_step.py`: neutral objection OR a stake seat objecting
+though NOT undermined). That sensor was designed for grok's native
+grip and never re-examined after Addendum 8 induced the OPPOSITE event
+(the UNDERMINED seat rejecting, G3). Diagnosis before any new run,
+read directly off the existing caches: the composite flag fires on
+45-49% of induced debates (vs grok's 20%), flagged-set S2 accuracy is
+already 0.76-0.78 (vs grok's 0.58, where there was real headroom), and
+Addendum 10's own numbers show the cross-vendor actuator gaining almost
+as much on UNFLAGGED debates as flagged ones -- the sensor is not
+selecting for error, it is barely selecting at all. This addendum tests
+whether a sensor built FOR the induced signal, rather than inherited
+from the grok design, can close the gap, via a staged, kill-gated
+program rather than one more single-shot rerun.
+
+**Prior dead ends, not retested:** content-informed escalation
+(Addendum 5 S2, null), majority-of-5 actuator (S2b, no incremental
+gain over majority-of-3), the objector's own R2 verdict and neutral
+deference as actuators (A1/A2, null on this population already),
+routing back into the community's own revote (Addendum 8 post-hoc,
+negative).
+
+## Phase 0 -- sensor search (zero spend, cached data only)
+
+New `scripts/analyze_sensor_search.py`, built on the same primitives as
+`analyze_actuator_ladder.py` (`load_debates`, `evaluate`,
+`make_rule_vendor`, `load_comparator`), applied to the ALREADY-CACHED
+Addendum 10 rows/votes (`cg_deliberation_{haiku,nano}_fewshot_
+{rows,votes}.csv`, 119 and 94 debates). Fixed candidate-sensor list,
+registered before any candidate is scored:
+
+  1. composite (control, = Addendum 9/10's sensor)
+  2. composite-severe (control)
+  3. undermined-seat REJECT (the induced signal itself, G3's own event)
+  4. undermined-seat REJECT AND neutral objected (two independent seats)
+  5. R4 non-unanimous (`unanimous_accept == False`)
+  6. R4 `n_reject >= 2`
+  7. R3 any REJECT (`n_r3_reject >= 1`)
+  8. R3 `n_r3_reject >= 2`
+  9. `verdict_revised` (synthesis text changed between S1 and S2)
+
+Per candidate, per model: coverage, S2 accuracy flagged vs unflagged
+(lift), and the identical A3a evaluation used in Addenda 9/10 (cross-
+vendor cached majority-of-3 actuator, paired item-clustered bootstrap,
+sensor-specific gain = flagged delta - unflagged delta). Every
+candidate is also replayed on grok's native 1677-debate population
+(`cg_deliberation_rows.csv`/`_votes.csv`, already loaded by
+`analyze_actuator_ladder.load_debates`) as an external check that a
+candidate tracks error in general, not an artifact of the induced
+communities' small panels.
+
+**Multiple-comparisons discipline:** candidates are ranked on haiku
+(develop) and the single best candidate (by sensor-specific gain, tie-
+broken by coverage) is confirmed on nano (confirm) at Bonferroni alpha
+= 0.05 / 9 for that one held-out test. This spends the multiple-
+comparisons correction once, on the confirmation, not on every
+candidate on every model.
+
+**Gate G0** (evaluated on nano's confirmation of the haiku-selected
+candidate): pass if flagged-set lift over unflagged >= 0.10 in the
+grok replay (external validity) AND sensor-specific gain > 0 on nano's
+induced data. Three outcomes: (a) pass strongly -> skip to Phase 2;
+(b) signal present but the CI does not exclude zero or the point
+estimate is small -> Phase 1 (sharpen); (c) no candidate beats the
+composite control on both grok and the induced data -> stop and report
+that induced dissent tracks stake, not error, and the line closes here
+at zero additional spend beyond Phase 0's compute.
+
+## Phase 1 -- sharpen the sensor (<= $10, only if Gate G0 is case (b))
+
+Two arms on nano's existing 47-item panel, both paired against plain
+few-shot (Addendum 10's cache) on the SAME items:
+
+- **1a, truth-gated exemplars.** Extends `scripts/
+  mine_stake_fewshot_exemplars.py` with a second pair type: grok debates
+  where the undermined seat REJECTED and gold sided with it, contrasted
+  with debates where the undermined seat's stake was hurt but it
+  ACCEPTED because the synthesis was in fact correct. This teaches
+  "reject when your stake is hurt AND you have the case," precision
+  rather than bare stake-tracking. New `--stake-fewshot-set truthgated`
+  flag on `run_crowdgold_deliberation.py`; its own cache tag so it
+  cannot collide with or silently reuse the plain-fewshot cache.
+- **1b, narrated stake-CoT stacked on few-shot** (`--stake-cot`,
+  already wired and selftested in Addendum 8, never run because rung 1
+  cleared the bar there before it was needed).
+
+**Gate G1:** the Phase-0-selected sensor's flagged-set lift under the
+sharpened prompt beats plain few-shot on the same items, paired
+item-blocked bootstrap CI excluding zero. Pass -> Phase 2. Fail -> stop
+and report the sensor's ceiling under this induction family.
+
+## Phase 2 -- powered confirmation (<= $30)
+
+Nano only, full canonical 249-item panel (`--n-yta 99 --n-nta 150`),
+sensor and actuator FROZEN from whichever of Phase 0/1 passed its gate.
+Actuator verdicts are read from the existing `cg_scaffold_combined_
+rows_k3.csv` cache (zero additional actuator spend). Primary outcome
+and positive-outcome bar are IDENTICAL to Addendum 4's registered A3a:
+paired accuracy delta on flagged debates vs S2, item-clustered
+bootstrap, CI excludes zero, delta >= 0.05, positive in both item
+halves and both arms, AND (Addendum 5's standing requirement) beats
+routing every debate to the same actuator unconditionally. Report the
+composed system (deliberation + routed actuator) against deliberation-
+alone and actuator-alone, as Addendum 4 did. Haiku is NOT re-run in
+Phase 2 (budget); the frozen sensor is applied to haiku's existing
+60-item cache at zero spend as a directional cross-model check only.
+
+**What a positive Phase 2 result would mean:** the full embodiment
+control-loop claim -- opposed interests, a taught sensor, an external
+actuator, a real accuracy gain -- realized on a model that had to be
+taught the disposition, at a cost two orders of magnitude below grok.
+**What a null Phase 2 result would mean:** with the best sensor this
+program can find, the induced-community signal still does not clear
+the bar grok's native grip cleared; that would be the point to close
+the induced-sensor-plus-actuator line pending either a different
+induction method or a larger population than $40 can buy, and to report
+the ceiling plainly rather than keep spending against a flat trend
+(Addendum 10 already showed a larger panel weakening the effect, not
+strengthening it, which this program's Phase 0 redesign is a direct
+answer to, not a repeat of).
+
+**Budget:** Phase 0 $0. Phase 1 <= $10. Phase 2 <= $30. Total ceiling
+$40, distinct from all prior addenda's ceilings. Actual spend reported
+after each phase, before the next begins, as in every prior addendum.
