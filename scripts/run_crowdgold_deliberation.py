@@ -232,6 +232,22 @@ except ValueError:  # already registered (module re-imported)
     pass
 
 SCAFFOLD_NAME = "deliberation_ncot"
+
+#: prereg Addendum 7: the stake-gating nudge.  Appended to the R3 label and
+#: R4 vote instructions only -- the two rounds whose text IS the dissent
+#: signal.  It is written to cut BOTH directions on purpose: it should
+#: suppress reflexive objection (nano's failure mode) exactly as much as it
+#: should license a genuine one (haiku's and nano's real-but-rare REJECTs),
+#: so a fire-rate collapse to near-zero is a null result, not a positive one.
+#: It does NOT add a forced intermediate judgement -- that would build a
+#: hand-coded classifier and answer nothing about the model's own dispositon.
+STAKE_GATE_NUDGE = (
+    "\n\nOne more thing before you decide: your REJECT should track whether "
+    "this outcome actually damages the position you were assigned -- not "
+    "whether you can find something to add or phrase differently. If your "
+    "assigned interest is not harmed by this outcome, ACCEPT it even if you "
+    "would have argued the case differently yourself."
+)
 PROTOCOL = ("r0_statement|r1_rebuttal|r2_restate|moderator_synthesis|"
             "r3_three_way_label|moderator_integration|r4_binary_vote")
 
@@ -608,7 +624,7 @@ def synthesis_user(arm: str, item: CrowdGoldItem, r2_texts: dict[str, str],
 
 
 def r3_label_user(arm: str, item: CrowdGoldItem, role: Role, own_r2: str,
-                  synthesis: str, *, cap: int) -> str:
+                  synthesis: str, *, cap: int, stake_nudge: bool = False) -> str:
     """R3: the THREE-WAY label on the moderator's first synthesis.
 
     This is the round the earlier build dropped.  It is where a modification
@@ -633,6 +649,7 @@ def r3_label_user(arm: str, item: CrowdGoldItem, role: Role, own_r2: str,
         f"'{UNRESOLVABLE_MARKER}'.\n"
         "  If you accept it as it stands, write neither line.\n\n"
         f"{verdict_instruction(LABEL_INSTRUMENT, allow_unresolved=False)}"
+        f"{STAKE_GATE_NUDGE if stake_nudge else ''}"
     )
 
 
@@ -670,7 +687,7 @@ def integration_user(arm: str, item: CrowdGoldItem, synthesis: str,
 
 def r4_vote_user(arm: str, item: CrowdGoldItem, role: Role, synthesis: str,
                  own_label: str, own_objection: str, proposal: str, *,
-                 cap: int) -> str:
+                 cap: int, stake_nudge: bool = False) -> str:
     """R4: the binary vote on the SECOND proposal.
 
     The agent's OWN R3 label and its OWN stated request are quoted back to it.
@@ -697,6 +714,7 @@ def r4_vote_user(arm: str, item: CrowdGoldItem, role: Role, synthesis: str,
         "referring to what you required of the synthesis; if you reject, name "
         "the single concern it leaves unresolved.\n\n"
         f"{verdict_instruction(VOTE_INSTRUMENT, allow_unresolved=False)}"
+        f"{STAKE_GATE_NUDGE if stake_nudge else ''}"
     )
 
 
@@ -837,13 +855,22 @@ def run_deliberation(model: str, arm: str, item: CrowdGoldItem, idx: int, *,
                      max_tokens_label: int = 1024,
                      max_tokens_vote: int = 512,
                      allow_unresolved: bool = True,
-                     transcript_cap: int = 0) -> tuple[dict, list[dict], list[dict]]:
+                     transcript_cap: int = 0,
+                     stake_nudge: bool = False) -> tuple[dict, list[dict], list[dict]]:
     """Run one full deliberation for one cell: the paper's seven stages, 17 calls.
 
-    Returns (outcome_row, vote_rows, call_records).
+    ``stake_nudge`` (prereg Addendum 7) appends STAKE_GATE_NUDGE to the R3
+    label and R4 vote instructions only.  Those two calls get their OWN cache
+    namespace (``scaffold`` + ``_stakenudge``) so a nudged run can never be
+    silently served an un-nudged cached response; every OTHER round is
+    untouched by the nudge and keeps the shared, cheaper cache. The
+    downstream integration call is additionally protected by the existing
+    parent_sha staleness check, which will fire on its own once the nudged
+    R3 labels/objections differ from the un-nudged ones.
     """
     mod_model = moderator_model or model
     system = agent_system(scaffold)
+    nudged_scaffold = f"{scaffold}_stakenudge" if stake_nudge else scaffold
     calls: list[dict] = []
 
     # ---- R0: opening statements ------------------------------------------
@@ -908,10 +935,10 @@ def run_deliberation(model: str, arm: str, item: CrowdGoldItem, idx: int, *,
     syn_parents = r2_parents + (synthesis,)
     for r in ROLES:
         rec = do_call(
-            model=model, scaffold=scaffold, arm=arm, item=item, idx=idx,
+            model=model, scaffold=nudged_scaffold, arm=arm, item=item, idx=idx,
             round_name="r3_label", role_id=r.role_id, system=system,
             user=r3_label_user(arm, item, r, r2[r.role_id], synthesis,
-                               cap=transcript_cap),
+                               cap=transcript_cap, stake_nudge=stake_nudge),
             max_tokens=max_tokens_label, parents=syn_parents, cap=transcript_cap,
         )
         calls.append(rec)
@@ -945,10 +972,10 @@ def run_deliberation(model: str, arm: str, item: CrowdGoldItem, idx: int, *,
         lab = labels[r.role_id]
         obj = objections[r.role_id]
         rec = do_call(
-            model=model, scaffold=scaffold, arm=arm, item=item, idx=idx,
+            model=model, scaffold=nudged_scaffold, arm=arm, item=item, idx=idx,
             round_name="r4_vote", role_id=r.role_id, system=system,
             user=r4_vote_user(arm, item, r, synthesis, lab, obj, proposal,
-                              cap=transcript_cap),
+                              cap=transcript_cap, stake_nudge=stake_nudge),
             max_tokens=max_tokens_vote,
             parents=(synthesis, lab, obj, proposal), cap=transcript_cap,
         )
@@ -959,6 +986,7 @@ def run_deliberation(model: str, arm: str, item: CrowdGoldItem, idx: int, *,
         objected = lab in ("ACCEPT_WITH_MODIFICATION", "REJECT")
         vote_rows.append({
             "model": model, "scaffold": scaffold, "arm": arm,
+            "stake_nudge": int(stake_nudge),
             "item_id": item.item_id, "sample_idx": idx,
             "gold_verdict": item.gold_verdict,
             "role_id": r.role_id, "paper_role": r.paper_role,
@@ -1022,8 +1050,9 @@ def run_deliberation(model: str, arm: str, item: CrowdGoldItem, idx: int, *,
         "truncated": int(int_rec.get("finish_reason", "") in
                          ("max_tokens", "length", "MAX_TOKENS")),
         # --- deliberation-specific ---
-        "protocol": PROTOCOL,
+            "protocol": PROTOCOL,
         "agent_scaffold": scaffold,
+        "stake_nudge": int(stake_nudge),
         "n_agents": N_AGENTS,
         "moderator_model": mod_model,
         # R3, the labelled-objection cycle the earlier build did not have
@@ -1061,7 +1090,7 @@ def run_deliberation(model: str, arm: str, item: CrowdGoldItem, idx: int, *,
 
 
 ROW_FIELDS = tuple(RESULT_FIELDS) + (
-    "protocol", "agent_scaffold", "n_agents", "moderator_model",
+    "protocol", "agent_scaffold", "stake_nudge", "n_agents", "moderator_model",
     "synthesis_verdict", "synthesis_len", "verdict_revised", "r3_labels",
     "n_r3_accept", "n_r3_accept_with_mod", "n_r3_reject", "n_r3_unparsed",
     "n_objectors", "n_objections_stated", "n_modifications_addressed",
@@ -1074,7 +1103,7 @@ ROW_FIELDS = tuple(RESULT_FIELDS) + (
 )
 
 VOTE_FIELDS = (
-    "model", "scaffold", "arm", "item_id", "sample_idx", "gold_verdict",
+    "model", "scaffold", "arm", "stake_nudge", "item_id", "sample_idx", "gold_verdict",
     "role_id", "paper_role", "role_stake", "group_verdict", "group_at_fault",
     "synthesis_verdict", "r3_label", "r3_label_parsed", "r3_objection_kind",
     "r3_objection_len", "objected_r3", "objection_unstated",
@@ -2349,6 +2378,26 @@ def _selftest() -> int:
               "(defeasibility needs this)",
               "ACCEPT_WITH_MODIFICATION" in r4p and "MYREQUEST" in r4p
               and "PROPTEXT" in r4p and "SYNTEXT" in r4p)
+
+        # -- Addendum 7: the stake-gating nudge is opt-in and additive only --
+        r3_plain = r3_label_user(THIRD_PERSON, one, ROLES[0], "own", "syn", cap=0)
+        r3_nudged = r3_label_user(THIRD_PERSON, one, ROLES[0], "own", "syn",
+                                  cap=0, stake_nudge=True)
+        check("nudge is OFF by default and adds nothing when False",
+              STAKE_GATE_NUDGE not in r3_plain
+              and r3_nudged == r3_plain + STAKE_GATE_NUDGE)
+        r4_plain = r4_vote_user(THIRD_PERSON, one, ROLES[0], "SYNTEXT",
+                                "ACCEPT_WITH_MODIFICATION", "MYREQUEST",
+                                "PROPTEXT", cap=0)
+        r4_nudged = r4_vote_user(THIRD_PERSON, one, ROLES[0], "SYNTEXT",
+                                 "ACCEPT_WITH_MODIFICATION", "MYREQUEST",
+                                 "PROPTEXT", cap=0, stake_nudge=True)
+        check("R4 nudge is additive only, same quoted own-position content",
+              STAKE_GATE_NUDGE not in r4_plain
+              and r4_nudged == r4_plain + STAKE_GATE_NUDGE)
+        check("the nudge cuts both directions (mentions ACCEPT and REJECT, "
+              "not just 'be quieter')",
+              "ACCEPT" in STAKE_GATE_NUDGE and "REJECT" in STAKE_GATE_NUDGE)
         check("subset is a prefix of the full panel and stays a subset",
               set(i.item_id for i in subset_items(items, 10, 10))
               <= set(i.item_id for i in items))
@@ -2370,6 +2419,16 @@ def _selftest() -> int:
                         dupes.append(str(p))
                     seen.add(p)
     check("cache paths unique across arm/round/role/cap", not dupes, str(dupes[:3]))
+    check("nudged R3/R4 cache paths differ from un-nudged at the same "
+          "model/arm/item/idx/cap (own namespace, no silent collision)",
+          call_cache_path("m", "narrative_cot_stakenudge", "third_person", "it",
+                          0, "r3_label", "writer_advocate", 1024)
+          != call_cache_path("m", "narrative_cot", "third_person", "it",
+                             0, "r3_label", "writer_advocate", 1024)
+          and call_cache_path("m", "narrative_cot_stakenudge", "third_person", "it",
+                              0, "r4_vote", "writer_advocate", 512)
+          != call_cache_path("m", "narrative_cot", "third_person", "it",
+                             0, "r4_vote", "writer_advocate", 512))
     check("cache namespace is disjoint from cg_gen_*",
           call_cache_path("m", "s", "a", "i", 0, "r0", "x", 512).name.startswith("cgd_"))
 
@@ -2574,6 +2633,10 @@ def _selftest() -> int:
                   not missing_vote, str(missing_vote))
             check("scaffold label is the group arm",
                   {r["scaffold"] for r in rows} == {SCAFFOLD_NAME})
+            check("stake_nudge defaults to 0 and is declared in both schemas",
+                  all(r["stake_nudge"] == 0 for r in rows)
+                  and all(v["stake_nudge"] == 0 for v in votes)
+                  and "stake_nudge" in ROW_FIELDS and "stake_nudge" in VOTE_FIELDS)
             g = truncation_report([call_guard_row(c) for c in calls])
             check("round-level guard passes on the stub", g["pass"], str(g["worst_truncation"]))
             conc_e2e = stake_concentration(votes, n_boot=200, seed=3)
@@ -2615,6 +2678,29 @@ def _selftest() -> int:
                       None if probe is None else
                       f"width={probe['ci_width']:.3f} n={probe['n_items']}")
             check("by-arm rejection table non-empty", bool(writer_rejection_by_arm(votes)))
+
+            # -- Addendum 7: nudge run end-to-end, in its OWN cache namespace --
+            with tempfile.TemporaryDirectory() as td2:
+                OUT_DIR = Path(td2)
+                try:
+                    it = subset_items(items, 2, 2)[0]
+                    nrow, nvotes, ncalls = run_deliberation(
+                        "stub-model", THIRD_PERSON, it, 0,
+                        scaffold="narrative_cot", stake_nudge=True)
+                finally:
+                    OUT_DIR = real_out
+            check("nudge run propagates stake_nudge=1 to both schemas",
+                  nrow["stake_nudge"] == 1
+                  and all(v["stake_nudge"] == 1 for v in nvotes))
+            r3r4 = [c for c in ncalls if c["round"] in ("r3_label", "r4_vote")]
+            other = [c for c in ncalls if c["round"] not in ("r3_label", "r4_vote")]
+            check("only r3_label/r4_vote calls carry the nudged scaffold name",
+                  all(c["scaffold"] == "narrative_cot_stakenudge" for c in r3r4)
+                  and all(c["scaffold"] == "narrative_cot" for c in other),
+                  str({c["round"]: c["scaffold"] for c in ncalls}))
+            gn = truncation_report([call_guard_row(c) for c in ncalls])
+            check("round-level guard passes on the nudge stub too",
+                  gn["pass"], str(gn["worst_truncation"]))
         finally:
             generate_any = real  # type: ignore[assignment]
 
@@ -2743,7 +2829,8 @@ FULL_MODELS = ("claude-haiku-4-5", "gpt-5.4-nano", "grok-4-1-fast-reasoning")
 
 def run(models, arms, items, *, samples, scaffold, moderator_model,
         max_tokens_agent, max_tokens_moderator, max_tokens_label,
-        max_tokens_vote, allow_unresolved, transcript_cap, workers):
+        max_tokens_vote, allow_unresolved, transcript_cap, workers,
+        stake_nudge=False):
     tasks = [(m, arm, it, i)
              for m in models for arm in arms for it in items
              for i in range(samples)]
@@ -2762,6 +2849,7 @@ def run(models, arms, items, *, samples, scaffold, moderator_model,
                 max_tokens_vote=max_tokens_vote,
                 allow_unresolved=allow_unresolved,
                 transcript_cap=transcript_cap,
+                stake_nudge=stake_nudge,
             ): (m, arm, it.item_id, i)
             for (m, arm, it, i) in tasks
         }
@@ -2832,6 +2920,11 @@ def main(argv: list[str] | None = None) -> int:
                          "per-call refusal rate, and the refusals are the same "
                          "~12%% of items every time.")
     ap.add_argument("--no-unresolved", action="store_true")
+    ap.add_argument("--stake-nudge", action="store_true",
+                    help="prereg Addendum 7: append STAKE_GATE_NUDGE to the R3 "
+                         "label and R4 vote instructions only. Own cache "
+                         "namespace; every other round is untouched and shares "
+                         "the un-nudged cache.")
     ap.add_argument("--n-boot", type=int, default=1000)
     ap.add_argument("--workers", type=int, default=4)
     ap.add_argument("--compare-rows", default=str(OUT_DIR / "cg_scaffold_combined_rows.csv"),
@@ -2990,6 +3083,7 @@ def main(argv: list[str] | None = None) -> int:
         allow_unresolved=not args.no_unresolved,
         transcript_cap=args.transcript_cap,
         workers=args.workers,
+        stake_nudge=args.stake_nudge,
     )
     if not rows:
         print("No rows produced.")

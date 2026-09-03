@@ -93,6 +93,61 @@ def stake_concentration(votes: Sequence[dict], *, draws: int, seed: int) -> dict
     }
 
 
+def paired_g3_delta(votes_a: Sequence[dict], votes_b: Sequence[dict], *,
+                    draws: int, seed: int) -> dict:
+    """Blocked-bootstrap delta of G3 (stake concentration) between two
+    conditions -- e.g. nudged vs. this model's own Addendum-6 baseline --
+    RESTRICTED to the item set they share, so the comparison is paired on
+    items rather than on independent samples of each condition.
+
+    Each bootstrap draw resamples item ids ONCE (with replacement) and
+    evaluates the G3 statistic on BOTH conditions using that SAME resampled
+    item list, so item-level noise that pushes both conditions the same way
+    cancels in the difference. This is the Addendum 7 registered test.
+    """
+    sa = [v for v in votes_a if v["role"] in STAKE_SEATS]
+    sb = [v for v in votes_b if v["role"] in STAKE_SEATS]
+    ids = sorted(set(v["item"] for v in sa) & set(v["item"] for v in sb))
+    by_a: dict[str, list] = defaultdict(list)
+    by_b: dict[str, list] = defaultdict(list)
+    for v in sa:
+        if v["item"] in ids:
+            by_a[v["item"]].append(v)
+    for v in sb:
+        if v["item"] in ids:
+            by_b[v["item"]].append(v)
+
+    def stat(vs):
+        u = [v["reject"] for v in vs if v["undermined"]]
+        n = [v["reject"] for v in vs if not v["undermined"]]
+        if not u or not n:
+            return None
+        return sum(u) / len(u) - sum(n) / len(n)
+
+    def g3_of(by_item, sel):
+        return stat([x for i in sel for x in by_item[i]])
+
+    rng = random.Random(seed)
+    point_a, point_b = g3_of(by_a, ids), g3_of(by_b, ids)
+    point = None if point_a is None or point_b is None else point_a - point_b
+    diffs = []
+    for _ in range(draws):
+        sel = [ids[rng.randrange(len(ids))] for _ in ids]
+        ga, gb = g3_of(by_a, sel), g3_of(by_b, sel)
+        if ga is not None and gb is not None:
+            diffs.append(ga - gb)
+    diffs.sort()
+    lo = hi = None
+    if diffs:
+        lo = diffs[int(0.025 * len(diffs))]
+        hi = diffs[min(int(0.975 * len(diffs)), len(diffs) - 1)]
+    return {
+        "n_shared_items": len(ids), "n_boot_valid": len(diffs),
+        "g3_a": point_a, "g3_b": point_b, "delta": point, "lo": lo, "hi": hi,
+        "positive": bool(point is not None and lo is not None and lo > 0),
+    }
+
+
 def grip(debates: Sequence[dict], votes: Sequence[dict], *, draws: int = 2000,
          seed: int = 7) -> dict:
     n = len(debates)
@@ -291,6 +346,11 @@ def main(argv: Sequence[str] | None = None) -> int:
     ap.add_argument("--confirm-against", default=None,
                     help="tag of the discovery-set run whose items are excluded "
                          "from the 6a confirmation readout")
+    ap.add_argument("--nudge-against", default=None,
+                    help="Addendum 7: tag of this model's OWN un-nudged "
+                         "baseline run; reports the paired, item-blocked "
+                         "bootstrap delta of G3 between --tag (nudged) and "
+                         "this baseline, restricted to shared items")
     ap.add_argument("--json", type=Path, default=OUT_DIR / "stake_grip_analysis.json")
     ap.add_argument("--selftest", action="store_true")
     a = ap.parse_args(argv)
@@ -323,6 +383,17 @@ def main(argv: Sequence[str] | None = None) -> int:
                                price_in=pin, price_out=pout)
         print_grip(f"{a.model} / {a.tag}", g, spend)
         existing[f"{a.model}:{a.tag}"] = {"grip": g, "spend": spend}
+        if a.nudge_against:
+            base_votes = load_votes(OUT_DIR / f"{a.nudge_against}_votes.csv")
+            pd = paired_g3_delta(votes, base_votes, draws=a.draws, seed=23)
+            fmt = lambda v: "n/a" if v is None else f"{v:+.3f}"
+            print(f"\n  Addendum 7 paired test vs {a.nudge_against} "
+                  f"(same {pd['n_shared_items']} items, blocked bootstrap):")
+            print(f"    G3 nudged {fmt(pd['g3_a'])}  baseline {fmt(pd['g3_b'])}  "
+                  f"delta {fmt(pd['delta'])} 95% CI [{fmt(pd['lo'])}, {fmt(pd['hi'])}]"
+                  f"  G1 floor (>=0.05) {'PASS' if g['G1_fire_rate'] and g['G1_fire_rate'] >= 0.05 else 'fail'}"
+                  f"  POSITIVE: {pd['positive'] and g['G1_fire_rate'] is not None and g['G1_fire_rate'] >= 0.05}")
+            existing[f"{a.model}:{a.tag}"]["nudge_vs_baseline"] = pd
         if a.confirm_against:
             disc = {r["item_id"] for r in csv.DictReader(
                 open(OUT_DIR / f"{a.confirm_against}_rows.csv"))}
@@ -407,6 +478,42 @@ def _selftest() -> int:
     check("6a: discovery items excluded", c["n_new_items"] == 58)
     check("6a: oracle flag + perfect actuator is positive", c["positive"])
     check("6a: unflagged routing is neutral", c["C3_route_unflagged"]["delta"] == 0.0)
+
+    # -- Addendum 7: paired G3 delta -----------------------------------
+    def stake_votes(n_items, p_rej_und, p_rej_not, seed):
+        r = random.Random(seed)
+        out = []
+        for i in range(n_items):
+            item = f"p{i:03d}"
+            und = {"writer_advocate": r.random() < .5}
+            und["counterparty"] = not und["writer_advocate"]
+            for role in STAKE_SEATS:
+                u = und[role]
+                out.append({"item": item, "arm": "third_person", "role": role,
+                            "sample_idx": 0,
+                            "reject": int(r.random() < (p_rej_und if u else p_rej_not)),
+                            "undermined": int(u), "objected": 0, "r3_label": ""})
+        return out
+
+    base = stake_votes(40, 0.05, 0.02, seed=1)       # baseline: no grip
+    same = stake_votes(40, 0.05, 0.02, seed=2)       # nudge with NO effect
+    lifted = stake_votes(40, 0.55, 0.03, seed=3)     # nudge with a real effect
+    pd_null = paired_g3_delta(same, base, draws=500, seed=9)
+    pd_pos = paired_g3_delta(lifted, base, draws=500, seed=9)
+    check("paired delta is near zero and not positive when nudge has no effect",
+          pd_null["delta"] is not None and abs(pd_null["delta"]) < 0.15
+          and not pd_null["positive"])
+    check("paired delta is large and CI-positive when the nudge has a real effect",
+          pd_pos["positive"] and pd_pos["delta"] is not None and pd_pos["delta"] > 0.3)
+    disjoint = stake_votes(40, 0.9, 0.9, seed=4)
+    for v in disjoint:
+        v["item"] = "q" + v["item"]
+    pd_none = paired_g3_delta(disjoint, base, draws=200, seed=9)
+    check("paired delta reports zero shared items and no point estimate "
+          "when the item sets do not overlap",
+          pd_none["n_shared_items"] == 0 and pd_none["delta"] is None
+          and not pd_none["positive"])
+
     print(f"\n{'ALL OK' if not fails else str(len(fails)) + ' FAILED'}")
     return 1 if fails else 0
 

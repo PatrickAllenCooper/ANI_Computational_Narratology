@@ -485,3 +485,28 @@ others not (reasoning-mode dissent? RLHF compliance priors?), and
 whether prompt-level changes to the embodiment can induce binding in a
 model that lacks it -- which would be the first true test of embodiment
 as a control knob rather than a fixed property.
+
+### 8.6 Can prompt engineering induce stake-gating? (prereg Addendum 7, 2026-09-03, $3.02)
+
+Answered the question 8.5 closed on: one clarifying sentence appended
+to the R3-label and R4-vote instructions ("your REJECT should track
+whether this outcome actually damages the position you were assigned,
+not whether you can find something to add"), on haiku and nano only,
+same 40-item panel as their Addendum-6 baseline, paired-item blocked
+bootstrap on the G3 delta (`scripts/analyze_stake_grip.py
+--nudge-against`). **Negative on both, at this scale.** Haiku: G3
++0.050 (baseline, same 40 items) -> -0.013 (nudged), delta -0.062
+[-0.162, +0.025] -- moved the wrong way, though the CI covers zero, so
+this reads as noise rather than harm. Nano: G3 +0.054 -> +0.107, delta
++0.054 [-0.027, +0.134] -- right direction, doubled the point estimate,
+but underpowered at n=28 items (its content-filter screen dropped 12 of
+the 40).
+
+This leans the open question toward "disposition" rather than
+"default" for haiku, and leaves nano genuinely open (directionally
+positive, not yet resolved). It weakens, without closing, the
+hypothesis that grok's grip is dormant machinery waiting on the right
+wording in every model; the more it looks like binding is a
+model-specific disposition, the more the amplification question from
+section 8 points toward a training- or activation-level intervention
+rather than prompt engineering as the lever that generalises.
