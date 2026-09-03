@@ -2052,3 +2052,71 @@ answer to, not a repeat of).
 **Budget:** Phase 0 $0. Phase 1 <= $10. Phase 2 <= $30. Total ceiling
 $40, distinct from all prior addenda's ceilings. Actual spend reported
 after each phase, before the next begins, as in every prior addendum.
+
+## Addendum 11 Phase 0 results (computed 2026-09-03, zero spend)
+
+`scripts/analyze_sensor_search.py`, selftest passing. All 9 candidates
+scored on haiku (develop, 119 debates) and grok's native population
+(external check, 1677 debates); best-on-haiku confirmed on nano (94
+debates) at Bonferroni alpha=0.05/9.
+
+**A correction made mid-run, disclosed rather than hidden:** the
+initial selection rule (rank by raw sensor-specific-gain point
+estimate) picked `verdict_revised` as best on haiku (+0.313) -- but its
+apparent win on nano (sensor-specific gain +0.688, "CI excludes zero")
+was an artifact of firing on only 5 of 94 debates, and it did not
+replicate across item halves (+1.0 in one half, 0.0 in the other). A
+5-item bootstrap can look like anything. `rank()` was rewired before
+any Phase-2 decision was made: candidates are now ranked first by
+whether they clear `evaluate()`'s own full positive bar on haiku (CI
+excludes zero AND delta>=0.05 AND replicates across both halves AND
+both arms), tied by largest n, and only candidates that clear NONE of
+that bar are ranked by raw point estimate (informational only). This
+is the same discipline every other rung in this project already uses;
+it should have been the rule from the start.
+
+**Ranking on haiku (develop, n=119), by the corrected rule:**
+
+| candidate | coverage | error lift | sensor-specific gain | full bar (95% CI) |
+|---|---|---|---|---|
+| r4_nonunanimous | 0.69 | +0.192 | +0.149 | **clears** (n=82, CI[+0.035,+0.221]) |
+| r3_any_reject | 0.41 | +0.180 | +0.149 | clears (n=49) |
+| r4_reject_ge2 | 0.27 | +0.124 | +0.153 | clears (n=32) |
+| verdict_revised | 0.18 | +0.269 | +0.313 | clears (n=21, but see below) |
+| undermined_reject | 0.34 | +0.098 | +0.112 | clears (n=40) |
+| composite (control) | 0.45 | +0.148 | +0.065 | does not clear |
+| composite_severe | 0.16 | +0.123 | +0.035 | clears (n=19, small) |
+| undermined_and_neutral | 0.13 | +0.046 | -0.010 | does not clear |
+| r3_reject_ge2 | 0.08 | -0.065 | -0.083 | does not clear |
+
+`r4_nonunanimous` (any REJECT/AWM-dissent in the final vote round) wins
+on robustness: largest n behind a fully-clearing estimate, and it beats
+the Addendum 9/10 composite control by more than double the
+sensor-specific gain (+0.149 vs +0.065) at higher coverage. Selected
+for confirmation.
+
+**Confirmation on nano (n=94, alpha=0.05/9=0.0056):** coverage 0.48,
+error lift +0.083, flagged delta +0.200 [0.000, +0.408], sensor-specific
+gain +0.098. Directionally consistent with haiku but the Bonferroni-
+tightened CI touches zero (lo=0.000, not >0) -- real signal, not yet
+resolved at this n.
+
+**External check on grok's native 1677-debate population:**
+`r4_nonunanimous` fires on 85% of grok's debates (vs the composite
+control's 20%) and its error lift is -0.033 -- it does not discriminate
+error on grok at all. This is the opposite asymmetry from the composite
+flag, which was built for and works on grok (external lift +0.327 here)
+but failed on the induced communities (Addenda 9-10). The two
+populations appear to need different sensors: grok's native objections
+are rare and informative; the induced communities' final-round dissent
+is common and only mildly informative. Full grok-replay table is in
+`divergence_study_outputs/sensor_search_analysis.json`.
+
+**GATE G0 VERDICT: borderline -> Phase 1.** Criterion (a), external
+lift on grok >= 0.10, fails (-0.033). Criterion (b), sensor-specific
+gain > 0 on nano's induced data, holds (+0.098) but is not yet CI-
+resolved. Per the registered decision tree this is case (b): signal
+present, precision not yet established -> proceed to Phase 1 to try to
+sharpen `r4_nonunanimous`'s discriminative power (not to search for a
+new sensor; the search itself is closed, `r4_nonunanimous` is now
+frozen as the Phase 1/2 sensor) via truth-gated exemplars and stake-CoT.

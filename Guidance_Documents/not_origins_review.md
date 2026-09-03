@@ -615,3 +615,29 @@ it; that is not recommended without a specific reason to expect the
 effect reappears at scale. The induced-sensor-plus-actuator line is
 closed for now: real signal, no demonstrated actuator gain after two
 honest tries.
+
+### 8.10 A sensor built for the induced signal, not inherited from grok's (prereg Addendum 11 Phase 0, 2026-09-03, zero spend)
+
+Addenda 9-10 routed on `flagged()`, a sensor designed around grok's
+native grip and never re-examined after Addendum 8 induced a different
+event on purpose. `scripts/analyze_sensor_search.py` scored 9 candidate
+sensors on the same caches: the best, `r4_nonunanimous` (any dissent
+survives to the final vote), more than doubles the composite flag's
+sensor-specific gain on haiku (+0.149 vs +0.065) at higher coverage, and
+is directionally positive but not yet CI-resolved on nano (+0.098,
+CI[0.000, +0.408] at the corrected multiple-comparisons alpha). Caught
+and corrected in the same run: the naive top pick by point estimate,
+`verdict_revised`, was revealed to be a 5-debate noise artifact on nano
+once checked for item-half replication -- exactly the discipline this
+project already applies everywhere else, now also applied to sensor
+selection itself.
+
+The new sensor does NOT transfer to grok's native population (85%
+coverage there, -0.033 lift -- it fires on nearly everything grok does
+and stops discriminating). This is the mirror image of the composite
+flag's own failure on the induced communities: the two populations
+appear to need different sensors, which is itself informative about
+what few-shot induction actually built -- a different, cheaper, less
+selective dissent mechanism than grok's native one, not a smaller copy
+of it. Gate G0 verdict: borderline, proceeding to Phase 1 (sharpen via
+truth-gated exemplars and stake-CoT) before any Phase 2 spend.
