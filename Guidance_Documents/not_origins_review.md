@@ -641,3 +641,36 @@ what few-shot induction actually built -- a different, cheaper, less
 selective dissent mechanism than grok's native one, not a smaller copy
 of it. Gate G0 verdict: borderline, proceeding to Phase 1 (sharpen via
 truth-gated exemplars and stake-CoT) before any Phase 2 spend.
+
+### 8.11 Two ways to sharpen the redesigned sensor, both fail (prereg Addendum 11 Phases 1-2, closed 2026-09-03, ~$2 of $40)
+
+8.10 left Gate G0 borderline: `r4_nonunanimous` beat the composite flag
+on the induced communities but wasn't yet CI-resolved on nano. Two
+sharpening attempts, both on nano's existing 47-item panel: truth-gated
+exemplars (teach "only dissent if the concern is still live") collapsed
+dissent almost to nothing -- the model found it easy to decide every
+concern was addressed, the opposite of the intended effect. Stake-CoT
+stacked on few-shot made dissent LOUDER (coverage 45->58 of 94 debates,
+concentration +0.464->+0.521) without making it any more diagnostic of
+error (paired delta vs plain few-shot: +0.024, CI[-0.125,+0.177]).
+Gate G1 failed on both, closing the program before the registered
+$22-30 Phase 2 confirmation spend -- the honest outcome the registered
+kill gates exist to produce, not a workaround to keep spending until
+something clears the bar.
+
+Net position after three addenda (9, 10, 11) aimed specifically at
+closing the induced-sensor-to-actuator gap: not closed, at three sensor
+designs (the inherited composite flag, a redesigned nonunanimous-vote
+sensor, two attempts to sharpen that redesign) and two panel scales.
+What survives unchanged is Addendum 8's result -- stake-awareness is
+teachable, cheaply, twice-confirmed -- and Addendum 4's result -- a
+real accuracy circuit exists and has been demonstrated once, with a
+model whose grip needed no teaching. The distance between those two
+results is now well-mapped rather than merely asserted: not a sensor-
+design problem (Phase 0 found and confirmed a better sensor), not an
+under-amplified-signal problem (Phase 1's CoT arm proved more dissent
+alone doesn't help), but something Addendum 11's specific toolkit
+(prompt-level induction, cached cross-vendor actuation, <=$40) was not
+able to resolve. Closing it further needs either a different induction
+method or a population an order of magnitude larger than this line's
+combined spend has bought across four addenda.

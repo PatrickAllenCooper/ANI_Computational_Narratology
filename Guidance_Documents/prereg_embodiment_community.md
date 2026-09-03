@@ -2120,3 +2120,80 @@ present, precision not yet established -> proceed to Phase 1 to try to
 sharpen `r4_nonunanimous`'s discriminative power (not to search for a
 new sensor; the search itself is closed, `r4_nonunanimous` is now
 frozen as the Phase 1/2 sensor) via truth-gated exemplars and stake-CoT.
+
+## Addendum 11 Phase 1 results and Gate G1 (computed 2026-09-03, ~$2 of $10)
+
+Two sharpening arms run on nano's existing 47-item panel (both new cache
+namespaces, 564 fresh R3/R4 calls each, R0-R2/synthesis/integration
+served from cache unchanged; round guards passed cleanly on both):
+
+- **1a, truth-gated exemplars** (`--stake-fewshot --stake-fewshot-set
+  truthgated`, `scripts/mine_stake_fewshot_exemplars.py --truthgated`).
+  Result: dissent nearly disappeared. Stake concentration collapsed
+  from Addendum 10's plain-fewshot +0.464 (this same panel, pre-Phase-1)
+  to +0.021 within stake-bearing seats; unanimous acceptance rose to
+  95.7% (vs plain fewshot's much lower rate). Teaching "only dissent
+  when the concern is still live" gave the model an easy, sycophancy-
+  compatible excuse to decide every concern was addressed -- the
+  opposite of the intended effect.
+- **1b, narrated stake-CoT stacked on plain few-shot**
+  (`--stake-fewshot --stake-cot`). Result: dissent got LOUDER, not more
+  precise. Stake concentration rose to +0.521 (vs plain fewshot's
+  +0.464), r4_nonunanimous coverage rose from 45/94 to 58/94 debates.
+  More seats dissent when required to narrate STAKE/EFFECT/THEREFORE
+  before voting, consistent with Addendum 8's original CoT rationale --
+  but more dissent is not the bottleneck Phase 0 identified.
+
+**Gate G1** (`scripts/analyze_sharpening_gate.py`, selftest passing):
+paired, item-blocked bootstrap of the frozen sensor's (`r4_nonunanimous`)
+flagged-set actuator delta, sharpened minus plain, on the SAME 47 items,
+Bonferroni alpha=0.025 over the two arms:
+
+| arm | n items | flagged (plain -> sharp) | paired delta | 97.5% CI | Gate G1 |
+|---|---|---|---|---|---|
+| 1a truth-gated | 47 | 45 -> 4 | +0.300 | [-0.277, +0.894] | fail |
+| 1b fewshot+CoT | 47 | 45 -> 58 | +0.024 | [-0.125, +0.177] | fail |
+
+1a's CI is enormous because truth-gating nearly eliminated the flagged
+population (4 debates); its point estimate is uninterpretable at that n.
+1b has a healthy flagged population (58 debates) and a precise-looking
+near-zero delta: stacking stake-CoT makes the sensor fire more often
+without making it any more diagnostic of error -- direct confirmation
+of Phase 0's finding that volume of induced dissent, not sensitivity to
+be sharpened, was never the bottleneck.
+
+**GATE G1 VERDICT: fail on both arms -> stop, do not proceed to Phase
+2.** Per the registered decision tree this closes Addendum 11 without
+the $22-30 Phase 2 spend. Total Addendum 11 spend: $0 (Phase 0) + ~$2
+(Phase 1) = ~$2 of the $40 ceiling.
+
+## Addendum 11 closing summary
+
+Three addenda (9, 10, 11) tried, in order: routing on the inherited
+grok-shaped sensor at two panel sizes (9, 10, both null and weakening
+with scale), then redesigning the sensor specifically for the induced
+signal (11 Phase 0, found a real but nano-unresolved improvement), then
+trying to sharpen that redesigned sensor's precision two different ways
+(11 Phase 1, both failed -- one by suppressing the signal, one by
+amplifying its volume without its precision). None reached a working
+accuracy circuit on an induced sensor. Per Addendum 11's own
+registration, this is the honest stopping point for this exact family
+of levers (prompt-level induction, feeding a cached cross-vendor
+actuator) without either a fundamentally different induction method or
+a substantially larger population than $40 across three addenda has
+been able to buy. Haiku's Phase-0 develop result already stands as the
+zero-spend cross-model check the plan called for (see the Phase 0
+table: `r4_nonunanimous` cleared the full positive bar on haiku at
+n=82); Phase 2 never triggered, so no further haiku work is owed under
+this registration.
+
+**What stands, unchanged, after eleven addenda on this line:** stake-
+aware dissent can be taught to a model that lacks it, cheaply, in one
+worked example (Addendum 8, twice-confirmed at increasing scale). A
+real accuracy circuit -- taught sensor plus external actuator beating
+the group's own vote -- has been demonstrated exactly once, with a
+model whose grip was native, not taught (Addendum 4, grok, +0.193 CI
+[+0.067, +0.310]). Closing that gap for a taught sensor remains an open
+problem; three addenda of trying with prompt-level induction and a
+zero/low-spend budget did not close it, at three different sensor
+designs and three different sharpening attempts.
