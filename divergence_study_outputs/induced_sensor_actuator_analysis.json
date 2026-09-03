@@ -2,32 +2,32 @@
  {
   "sensor": "haiku_fewshot",
   "model": "claude-haiku-4-5",
-  "n_debates": 80,
-  "n_flagged": 36,
-  "flag_coverage": 0.45,
+  "n_debates": 119,
+  "n_flagged": 54,
+  "flag_coverage": 0.453781512605042,
   "actuators": {
    "nano_std": {
     "actuator_model": "gpt-5.4-nano",
     "actuator_scaffold": "standard",
     "flagged": {
      "label": "haiku_fewshot -> nano_std",
-     "n": 36,
-     "n_items": 27,
+     "n": 54,
+     "n_items": 39,
      "ci_level": 0.975,
-     "acc_s2": 0.75,
+     "acc_s2": 0.7592592592592593,
      "acc_actuated": 0.7777777777777778,
-     "delta": 0.027777777777777776,
-     "lo": -0.19444444444444445,
-     "hi": 0.25,
+     "delta": 0.018518518518518517,
+     "lo": -0.16363636363636364,
+     "hi": 0.19642857142857142,
      "delta_by_item_half": {
-      "0": 0.13333333333333333,
-      "1": -0.047619047619047616
+      "0": 0.1111111111111111,
+      "1": -0.07407407407407407
      },
      "delta_by_arm": {
-      "as_asker": 0.1,
-      "third_person": -0.0625
+      "as_asker": 0.06896551724137931,
+      "third_person": -0.04
      },
-     "n_verdict_changed": 11,
+     "n_verdict_changed": 15,
      "n_fallback_to_s2": 3,
      "criteria": {
       "ci_excludes_zero": false,
@@ -38,23 +38,23 @@
     },
     "unflagged_context": {
      "label": "haiku_fewshot -> nano_std (unflagged, context)",
-     "n": 44,
-     "n_items": 31,
+     "n": 65,
+     "n_items": 45,
      "ci_level": 0.975,
-     "acc_s2": 0.9090909090909091,
-     "acc_actuated": 0.8181818181818182,
-     "delta": -0.09090909090909091,
-     "lo": -0.24390243902439024,
-     "hi": 0.046511627906976744,
+     "acc_s2": 0.9076923076923077,
+     "acc_actuated": 0.8307692307692308,
+     "delta": -0.07692307692307693,
+     "lo": -0.1791044776119403,
+     "hi": 0.017241379310344827,
      "delta_by_item_half": {
-      "0": -0.2,
-      "1": -0.034482758620689655
+      "0": -0.125,
+      "1": -0.030303030303030304
      },
      "delta_by_arm": {
-      "as_asker": -0.1,
-      "third_person": -0.08333333333333333
+      "as_asker": -0.06451612903225806,
+      "third_person": -0.08823529411764706
      },
-     "n_verdict_changed": 8,
+     "n_verdict_changed": 11,
      "n_fallback_to_s2": 4,
      "criteria": {
       "ci_excludes_zero": false,
@@ -63,31 +63,31 @@
      },
      "positive": false
     },
-    "sensor_specific_gain": 0.11868686868686869
+    "sensor_specific_gain": 0.09544159544159544
    },
    "grok_std": {
     "actuator_model": "grok-4-1-fast-reasoning",
     "actuator_scaffold": "standard",
     "flagged": {
      "label": "haiku_fewshot -> grok_std",
-     "n": 36,
-     "n_items": 27,
+     "n": 54,
+     "n_items": 39,
      "ci_level": 0.975,
-     "acc_s2": 0.75,
-     "acc_actuated": 0.8888888888888888,
-     "delta": 0.1388888888888889,
-     "lo": -0.02702702702702703,
-     "hi": 0.3235294117647059,
+     "acc_s2": 0.7592592592592593,
+     "acc_actuated": 0.8703703703703703,
+     "delta": 0.1111111111111111,
+     "lo": -0.018867924528301886,
+     "hi": 0.2549019607843137,
      "delta_by_item_half": {
-      "0": 0.3333333333333333,
+      "0": 0.2222222222222222,
       "1": 0.0
      },
      "delta_by_arm": {
-      "as_asker": 0.15,
-      "third_person": 0.125
+      "as_asker": 0.10344827586206896,
+      "third_person": 0.12
      },
-     "n_verdict_changed": 7,
-     "n_fallback_to_s2": 4,
+     "n_verdict_changed": 10,
+     "n_fallback_to_s2": 5,
      "criteria": {
       "ci_excludes_zero": false,
       "delta_ge_0.05": true,
@@ -97,32 +97,32 @@
     },
     "unflagged_context": {
      "label": "haiku_fewshot -> grok_std (unflagged, context)",
-     "n": 44,
-     "n_items": 31,
+     "n": 65,
+     "n_items": 45,
      "ci_level": 0.975,
-     "acc_s2": 0.9090909090909091,
-     "acc_actuated": 1.0,
-     "delta": 0.09090909090909091,
-     "lo": 0.0,
-     "hi": 0.21428571428571427,
+     "acc_s2": 0.9076923076923077,
+     "acc_actuated": 0.9538461538461539,
+     "delta": 0.046153846153846156,
+     "lo": -0.05970149253731343,
+     "hi": 0.15254237288135594,
      "delta_by_item_half": {
-      "0": 0.13333333333333333,
-      "1": 0.06896551724137931
+      "0": 0.0,
+      "1": 0.09090909090909091
      },
      "delta_by_arm": {
-      "as_asker": 0.05,
-      "third_person": 0.125
+      "as_asker": 0.03225806451612903,
+      "third_person": 0.058823529411764705
      },
-     "n_verdict_changed": 4,
-     "n_fallback_to_s2": 1,
+     "n_verdict_changed": 9,
+     "n_fallback_to_s2": 2,
      "criteria": {
       "ci_excludes_zero": false,
-      "delta_ge_0.05": true,
-      "replicates_halves_and_arms": true
+      "delta_ge_0.05": false,
+      "replicates_halves_and_arms": false
      },
      "positive": false
     },
-    "sensor_specific_gain": 0.04797979797979798
+    "sensor_specific_gain": 0.06495726495726495
    }
   },
   "any_positive": false
@@ -130,59 +130,59 @@
  {
   "sensor": "nano_fewshot",
   "model": "gpt-5.4-nano",
-  "n_debates": 56,
-  "n_flagged": 23,
-  "flag_coverage": 0.4107142857142857,
+  "n_debates": 94,
+  "n_flagged": 46,
+  "flag_coverage": 0.48936170212765956,
   "actuators": {
    "haiku_std": {
     "actuator_model": "claude-haiku-4-5",
     "actuator_scaffold": "standard",
     "flagged": {
      "label": "nano_fewshot -> haiku_std",
-     "n": 23,
-     "n_items": 17,
+     "n": 46,
+     "n_items": 32,
      "ci_level": 0.975,
-     "acc_s2": 0.6956521739130435,
+     "acc_s2": 0.782608695652174,
      "acc_actuated": 0.782608695652174,
-     "delta": 0.08695652173913043,
-     "lo": -0.3333333333333333,
-     "hi": 0.4642857142857143,
+     "delta": 0.0,
+     "lo": -0.23809523809523808,
+     "hi": 0.2222222222222222,
      "delta_by_item_half": {
-      "0": 0.5454545454545454,
-      "1": -0.3333333333333333
+      "0": 0.16666666666666666,
+      "1": -0.3125
      },
      "delta_by_arm": {
-      "as_asker": 0.21428571428571427,
-      "third_person": -0.1111111111111111
+      "as_asker": 0.13043478260869565,
+      "third_person": -0.13043478260869565
      },
-     "n_verdict_changed": 12,
+     "n_verdict_changed": 16,
      "n_fallback_to_s2": 0,
      "criteria": {
       "ci_excludes_zero": false,
-      "delta_ge_0.05": true,
+      "delta_ge_0.05": false,
       "replicates_halves_and_arms": false
      },
      "positive": false
     },
     "unflagged_context": {
      "label": "nano_fewshot -> haiku_std (unflagged, context)",
-     "n": 33,
-     "n_items": 22,
+     "n": 48,
+     "n_items": 33,
      "ci_level": 0.975,
-     "acc_s2": 0.8484848484848485,
-     "acc_actuated": 0.9696969696969697,
-     "delta": 0.12121212121212122,
+     "acc_s2": 0.7708333333333334,
+     "acc_actuated": 0.8958333333333334,
+     "delta": 0.125,
      "lo": 0.0,
-     "hi": 0.3225806451612903,
+     "hi": 0.2826086956521739,
      "delta_by_item_half": {
-      "0": 0.2222222222222222,
-      "1": 0.08333333333333333
+      "0": 0.1111111111111111,
+      "1": 0.13333333333333333
      },
      "delta_by_arm": {
-      "as_asker": 0.14285714285714285,
-      "third_person": 0.10526315789473684
+      "as_asker": 0.125,
+      "third_person": 0.125
      },
-     "n_verdict_changed": 4,
+     "n_verdict_changed": 6,
      "n_fallback_to_s2": 0,
      "criteria": {
       "ci_excludes_zero": false,
@@ -191,30 +191,30 @@
      },
      "positive": false
     },
-    "sensor_specific_gain": -0.03425559947299078
+    "sensor_specific_gain": -0.125
    },
    "grok_std": {
     "actuator_model": "grok-4-1-fast-reasoning",
     "actuator_scaffold": "standard",
     "flagged": {
      "label": "nano_fewshot -> grok_std",
-     "n": 23,
-     "n_items": 17,
+     "n": 46,
+     "n_items": 32,
      "ci_level": 0.975,
-     "acc_s2": 0.6956521739130435,
-     "acc_actuated": 0.9565217391304348,
-     "delta": 0.2608695652173913,
-     "lo": 0.0,
-     "hi": 0.52,
+     "acc_s2": 0.782608695652174,
+     "acc_actuated": 0.8913043478260869,
+     "delta": 0.10869565217391304,
+     "lo": -0.06976744186046512,
+     "hi": 0.29545454545454547,
      "delta_by_item_half": {
-      "0": 0.5454545454545454,
+      "0": 0.16666666666666666,
       "1": 0.0
      },
      "delta_by_arm": {
-      "as_asker": 0.35714285714285715,
-      "third_person": 0.1111111111111111
+      "as_asker": 0.21739130434782608,
+      "third_person": 0.0
      },
-     "n_verdict_changed": 8,
+     "n_verdict_changed": 11,
      "n_fallback_to_s2": 0,
      "criteria": {
       "ci_excludes_zero": false,
@@ -225,32 +225,32 @@
     },
     "unflagged_context": {
      "label": "nano_fewshot -> grok_std (unflagged, context)",
-     "n": 33,
-     "n_items": 22,
+     "n": 48,
+     "n_items": 33,
      "ci_level": 0.975,
-     "acc_s2": 0.8484848484848485,
-     "acc_actuated": 0.9696969696969697,
-     "delta": 0.12121212121212122,
-     "lo": 0.0,
-     "hi": 0.3125,
+     "acc_s2": 0.7708333333333334,
+     "acc_actuated": 0.9583333333333334,
+     "delta": 0.1875,
+     "lo": 0.06,
+     "hi": 0.34615384615384615,
      "delta_by_item_half": {
       "0": 0.2222222222222222,
-      "1": 0.08333333333333333
+      "1": 0.16666666666666666
      },
      "delta_by_arm": {
-      "as_asker": 0.14285714285714285,
-      "third_person": 0.10526315789473684
+      "as_asker": 0.20833333333333334,
+      "third_person": 0.16666666666666666
      },
-     "n_verdict_changed": 4,
+     "n_verdict_changed": 9,
      "n_fallback_to_s2": 0,
      "criteria": {
-      "ci_excludes_zero": false,
+      "ci_excludes_zero": true,
       "delta_ge_0.05": true,
       "replicates_halves_and_arms": true
      },
-     "positive": false
+     "positive": true
     },
-    "sensor_specific_gain": 0.13965744400527008
+    "sensor_specific_gain": -0.07880434782608696
    }
   },
   "any_positive": false

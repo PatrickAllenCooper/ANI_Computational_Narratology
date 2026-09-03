@@ -1842,3 +1842,87 @@ population, which is outside this addendum's budget. This is the honest
 stopping point for the induced-sensor line as a zero-spend
 demonstration: real, better-than-baseline signal quality (Addendum 8),
 not-yet-demonstrated actuator gain at this sample size (Addendum 9).
+
+# Addendum 10: scaling the induced-sensor panel to power the Addendum 9 actuator test (registered 2026-09-03, ceiling $20, before any new generation)
+
+Addendum 9 found all four sensor/actuator point deltas positive but
+underpowered (23-36 flagged debates vs Addendum 4's 337). This addendum
+grows the flagged population the only way available: a larger item
+panel for the SAME few-shot intervention, re-using Addendum 8's exact
+command and tag (`--stake-fewshot`, `--tag cg_deliberation_{haiku,nano}
+_fewshot`, `--arms third_person,as_asker --samples 1 --max-tokens-label
+3072 --max-tokens-vote 3072`) with `--n-yta 24 --n-nta 36` in place of
+`--n-yta 16 --n-nta 24` (40 -> 60 items on the canonical panel, prefix-
+consistent so the original 40 items and their cached R0-R4 generations
+are reused unchanged; only the 20 new items pay full generation cost).
+Nano's content-filter screen independently reduces its panel to 47 raw
+items before any run.
+
+**Budget:** $20 ceiling for this addendum specifically (separate from
+Addendum 8/9's ceilings, both already closed). Dry-run cost model:
+$13.94 (haiku, worst case as if nothing were cached) + $2.66 (nano) =
+$16.60 worst case; real incremental cost will be materially lower since
+the original 40 items' R0-R4 calls are cache hits under the unchanged
+scaffold/tag, and the amount actually spent will be reported before any
+downstream analysis is trusted.
+
+**Primary outcome, positive-outcome criteria, actuator rule, and
+multiple-comparisons correction:** unchanged from Addendum 9 --
+`scripts/analyze_induced_sensor_actuator.py` re-applied unmodified to
+the grown `cg_deliberation_{haiku,nano}_fewshot_rows.csv` /
+`_votes.csv` files. **What a positive result would mean:** identical to
+Addendum 9's framing, now adequately powered. **What a null result would
+mean:** the induced-sensor actuator gain (if real) needs a population
+closer to Addendum 4's 337-debate scale than a 1.5x panel bump can
+reach, or the effect genuinely does not hold up under more data --
+either way this would be the point to stop the induced-sensor-plus-
+actuator line without a much larger budget authorization.
+
+## Addendum 10 results (computed 2026-09-03)
+
+Both models re-run at 60/47 items (`--n-yta 24 --n-nta 36`, prefix
+extension of the original 40/28-item panel; original items served from
+cache unchanged). Haiku's round guard passed cleanly. Nano's round
+guard failed on the same cell as before -- `r3_label:writer_advocate|
+as_asker` NOVERDICT 6.4% (3/47 items), a known caveat that does not
+touch the R4-vote round the actuator test reads from; the data was
+written and is used with that caveat, as in Addendum 8.
+
+Actual spend: haiku 240 of 720 cached calls were new generation
+(~$4.65 by the dry-run per-call rate); nano's new-item share was
+smaller. Both well inside the $20 ceiling; combined spend for this
+addendum is a few dollars, not the $16.60 worst-case estimate.
+
+| sensor | actuator | delta (flagged, n) | 97.5% CI | halves | positive? |
+|---|---|---|---|---|---|
+| haiku (60 items, 54 flagged) | nano | +0.019 | [-0.164, +0.196] | +0.11 / -0.07 | no |
+| haiku (60 items, 54 flagged) | grok | +0.111 | [-0.019, +0.255] | +0.22 / 0.00 | no |
+| nano (47 items, 46 flagged) | haiku | +0.000 | [-0.238, +0.222] | +0.17 / -0.31 | no |
+| nano (47 items, 46 flagged) | grok | +0.109 | [-0.070, +0.295] | +0.17 / 0.00 | no |
+
+**Still null on all four pairs, and the story got weaker, not
+stronger, with more data.** Point deltas shrank on 3 of 4 pairs relative
+to Addendum 9's smaller panel (haiku->nano +0.028 -> +0.019; haiku->grok
++0.139 -> +0.111; nano->haiku +0.087 -> +0.000, now the sensor-specific
+gain is NEGATIVE at -0.125, i.e. the rule does no better on flagged
+debates than on unflagged ones). Only nano->grok held roughly steady
+(+0.261 -> +0.109, itself a large drop). This is the signature of
+regression toward the mean from noisy small-sample point estimates, not
+a signal that was merely underpowered before. Every item-half split
+still has at least one half at or below zero.
+
+**This is the honest stopping point for the induced-sensor-plus-
+actuator line at the current architecture.** Addendum 8's core finding
+stands unchanged and re-verified independently at larger n: few-shot
+distillation induces well-calibrated stake dissent in models that lack
+it natively (the flag-quality result). But two independent tries at the
+actuator half of the story (Addendum 9 at 23-36 flagged debates,
+Addendum 10 at 46-54) both failed to clear the registered bar, and the
+second, larger try weakened rather than strengthened three of four point
+estimates. Scaling further to Addendum-4 caliber (hundreds of flagged
+debates) would cost roughly 5-10x this addendum's panel and is not
+authorized; absent a specific reason to expect the effect would
+reappear at that scale, further zero-spend or low-spend iteration on
+this exact design is not recommended. The induced-sensor line's honest
+summary: real, reproduced signal-quality gain (Addendum 8); no
+demonstrated actuator gain despite two tries (Addendum 9, 10).

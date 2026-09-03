@@ -590,3 +590,28 @@ Closing that gap needs a larger flagged population, which needs new
 generation spend on the 40/28-item panels or a larger panel -- outside
 this addendum's zero-spend scope. This is the honest stopping point for
 the induced-sensor line without a fresh budget line and registration.
+
+### 8.9 Scaled up, still null -- and weaker, not stronger (prereg Addendum 10, 2026-09-03, ~$5 of $20)
+
+Grew both panels 1.5x (40->60 haiku, 28->47 nano, prefix-consistent so
+the original items and their cached generations carried over unchanged)
+and re-ran the exact Addendum 9 test. Still null on all four
+sensor/actuator pairs, and three of the four point deltas SHRANK toward
+zero rather than tightening around a real effect (nano->haiku's
+sensor-specific gain even flipped negative, -0.125). That pattern --
+more data pulling estimates down, not just narrowing their CIs -- is the
+signature of noise regressing toward a true value near zero, not of an
+underpowered-but-real effect waiting to be resolved.
+
+This closes the loop opened in 8.8: the actuator half of the PI's
+two-part goal has now been tried twice with an induced sensor (Addendum
+9 at 23-36 flagged debates, Addendum 10 at 46-54) and failed to clear
+the registered bar both times, with the larger try weaker than the
+smaller one. The signal-quality half (Addendum 8's flag-calibration
+result) is unaffected and re-confirmed at this larger n. Scaling further
+toward Addendum 4's 337-debate grok-native population would cost
+several times this addendum's spend with no positive trend to justify
+it; that is not recommended without a specific reason to expect the
+effect reappears at scale. The induced-sensor-plus-actuator line is
+closed for now: real signal, no demonstrated actuator gain after two
+honest tries.
