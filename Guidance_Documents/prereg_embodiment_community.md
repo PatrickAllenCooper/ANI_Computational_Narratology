@@ -1245,9 +1245,23 @@ still over the 5% limit). A vote round that returns `NOVERDICT` on 92%
 of calls cannot support a reject-rate or stake-concentration estimate;
 the near-zero grip readouts for haiku and sonnet reported below measure
 truncation, not disposition. Grok and nano both passed the round-level
-guard cleanly (0% truncation) and their entries stand. Re-run with
-raised caps below; see "ADDENDUM 6 CORRECTED RESULTS" beneath the
-original (retracted) section.
+guard cleanly (0% truncation) and their entries stand. PI authorized
+the additional spend (est. +$35 haiku, +$12 sonnet) to re-run both with
+`--max-tokens-label 3072 --max-tokens-vote 3072` and the stale
+integration-round cache purged (it is keyed on `max_tokens_moderator`,
+unchanged, so it would otherwise silently replay integration output
+computed from the truncated R3 text even after R3 itself regenerated).
+
+**Sonnet, corrected (tag `cg_deliberation_sonnet_fixed`, $9.02, 735
+calls): guard PASSED, 0% truncation.** Fire rate 0.065, reject share
+0.000 (0/93 votes), stake concentration 0 (no rejects to concentrate).
+This is now a genuine measurement, not a truncation artifact, and the
+conclusion is unchanged: sonnet does not object on this panel. Same
+power caveat as before (n=16 items, S2 accuracy 1.000 -- no wrong
+synthesis exists to test precision against). GRIP: no, validly.
+
+Haiku's re-run (200 debates, ~$35 estimated) is in progress; its
+corrected verdict follows in a subsequent update.
 
 ## ADDENDUM 6 RESULTS -- Stages 0, 1, 3 (2026-09-02; measured spend $16.64) [RETRACTED for haiku/sonnet rows, see correction above]
 
