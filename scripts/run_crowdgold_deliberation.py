@@ -311,6 +311,50 @@ def load_stake_fewshot_block(round_name: str) -> str:
     return "\n\n" + "\n\n".join(parts) + "\n\n"
 
 
+#: prereg Addendum 11 Phase 1 (1a): rung 1's plain few-shot teaches STAKE
+#: alone predicts the vote. That is necessary but not sufficient for a
+#: useful sensor -- Addendum 11 Phase 0 found the induced dissent signal is
+#: common but only mildly diagnostic of error. This variant demonstrates the
+#: missing half: an undermined seat's dissent should track whether its
+#: concern is actually still live, not just whether its stake was hurt.
+#: Both examples mined verbatim from grok's own cached transcripts by
+#: scripts/mine_stake_fewshot_exemplars.py --truthgated (different debates,
+#: not a matched pair, since "same debate, both undermined, opposite
+#: correctness" is not a naturally occurring event).
+_STAKE_FEWSHOT_TRUTHGATED_CACHE: dict = {}
+
+
+def load_stake_fewshot_truthgated_block(round_name: str) -> str:
+    """Build the truth-gated few-shot demonstration text for 'r3_label' or
+    'r4_vote' from scripts/mine_stake_fewshot_exemplars.py's --truthgated
+    output. Loaded once per process and memoised; raises loudly if the
+    artifact is missing rather than silently degrading to no demonstration.
+    """
+    if "data" not in _STAKE_FEWSHOT_TRUTHGATED_CACHE:
+        path = OUT_DIR / "stake_fewshot_truthgated_exemplars.json"
+        _STAKE_FEWSHOT_TRUTHGATED_CACHE["data"] = json.loads(path.read_text())
+    data = _STAKE_FEWSHOT_TRUTHGATED_CACHE["data"]
+    ex = data["exemplars"]
+    field = "r3_label" if round_name == "r3_label" else "r4_vote"
+    parts = [
+        "Two participants, in two DIFFERENT debates, both had their "
+        "assigned interest damaged by the outcome. Only one of them was "
+        "still right to object by the time of this response -- read what "
+        "differs between them:",
+        "  Participant whose interest was damaged AND whose concern was "
+        f"still unaddressed at this point:\n    \"{ex['reject_correct'][field]}\"",
+        "  A DIFFERENT participant whose interest was ALSO damaged, but "
+        "whose concern had by now actually been addressed:\n"
+        f"    \"{ex['accept_correct'][field]}\"",
+        "Use the same logic for your own position now: having your "
+        "assigned interest damaged is a reason to look hard at this "
+        "proposal, not a reason to reject it regardless of content. Reject "
+        "only if the damage to your interest is still live; if the "
+        "proposal actually addresses it, say so and accept.",
+    ]
+    return "\n\n" + "\n\n".join(parts) + "\n\n"
+
+
 PROTOCOL = ("r0_statement|r1_rebuttal|r2_restate|moderator_synthesis|"
             "r3_three_way_label|moderator_integration|r4_binary_vote")
 
@@ -686,9 +730,19 @@ def synthesis_user(arm: str, item: CrowdGoldItem, r2_texts: dict[str, str],
     )
 
 
+def _stake_fewshot_block(round_name: str, stake_fewshot: bool,
+                         stake_fewshot_set: str) -> str:
+    if not stake_fewshot:
+        return ""
+    if stake_fewshot_set == "truthgated":
+        return load_stake_fewshot_truthgated_block(round_name)
+    return load_stake_fewshot_block(round_name)
+
+
 def r3_label_user(arm: str, item: CrowdGoldItem, role: Role, own_r2: str,
                   synthesis: str, *, cap: int, stake_nudge: bool = False,
-                  stake_cot: bool = False, stake_fewshot: bool = False) -> str:
+                  stake_cot: bool = False, stake_fewshot: bool = False,
+                  stake_fewshot_set: str = "plain") -> str:
     """R3: the THREE-WAY label on the moderator's first synthesis.
 
     This is the round the earlier build dropped.  It is where a modification
@@ -712,7 +766,7 @@ def r3_label_user(arm: str, item: CrowdGoldItem, role: Role, own_r2: str,
         f"integration can absorb, in one sentence on its own line beginning "
         f"'{UNRESOLVABLE_MARKER}'.\n"
         "  If you accept it as it stands, write neither line.\n\n"
-        f"{load_stake_fewshot_block('r3_label') if stake_fewshot else ''}"
+        f"{_stake_fewshot_block('r3_label', stake_fewshot, stake_fewshot_set)}"
         f"{STAKE_COT_REQUIREMENT if stake_cot else ''}"
         f"{verdict_instruction(LABEL_INSTRUMENT, allow_unresolved=False)}"
         f"{STAKE_GATE_NUDGE if stake_nudge else ''}"
@@ -754,7 +808,8 @@ def integration_user(arm: str, item: CrowdGoldItem, synthesis: str,
 def r4_vote_user(arm: str, item: CrowdGoldItem, role: Role, synthesis: str,
                  own_label: str, own_objection: str, proposal: str, *,
                  cap: int, stake_nudge: bool = False, stake_cot: bool = False,
-                 stake_fewshot: bool = False) -> str:
+                 stake_fewshot: bool = False,
+                 stake_fewshot_set: str = "plain") -> str:
     """R4: the binary vote on the SECOND proposal.
 
     The agent's OWN R3 label and its OWN stated request are quoted back to it.
@@ -780,7 +835,7 @@ def r4_vote_user(arm: str, item: CrowdGoldItem, role: Role, synthesis: str,
         "integrated proposal, or reject it. In two or three sentences say why, "
         "referring to what you required of the synthesis; if you reject, name "
         "the single concern it leaves unresolved.\n\n"
-        f"{load_stake_fewshot_block('r4_vote') if stake_fewshot else ''}"
+        f"{_stake_fewshot_block('r4_vote', stake_fewshot, stake_fewshot_set)}"
         f"{STAKE_COT_REQUIREMENT if stake_cot else ''}"
         f"{verdict_instruction(VOTE_INSTRUMENT, allow_unresolved=False)}"
         f"{STAKE_GATE_NUDGE if stake_nudge else ''}"
@@ -941,6 +996,7 @@ def run_deliberation(model: str, arm: str, item: CrowdGoldItem, idx: int, *,
                      stake_nudge: bool = False,
                      stake_cot: bool = False,
                      stake_fewshot: bool = False,
+                     stake_fewshot_set: str = "plain",
                      r3r4_reasoning_effort: Optional[str] = None,
                      r3r4_thinking_budget: int = 0
                      ) -> tuple[dict, list[dict], list[dict]]:
@@ -966,7 +1022,8 @@ def run_deliberation(model: str, arm: str, item: CrowdGoldItem, idx: int, *,
     if stake_cot:
         tags.append("stakecot")
     if stake_fewshot:
-        tags.append("stakefewshot")
+        tags.append("stakefewshot" if stake_fewshot_set == "plain"
+                    else f"stakefewshot{stake_fewshot_set}")
     if r3r4_reasoning_effort:
         tags.append(f"reff{r3r4_reasoning_effort}")
     if r3r4_thinking_budget:
@@ -1040,7 +1097,8 @@ def run_deliberation(model: str, arm: str, item: CrowdGoldItem, idx: int, *,
             round_name="r3_label", role_id=r.role_id, system=system,
             user=r3_label_user(arm, item, r, r2[r.role_id], synthesis,
                                cap=transcript_cap, stake_nudge=stake_nudge,
-                               stake_cot=stake_cot, stake_fewshot=stake_fewshot),
+                               stake_cot=stake_cot, stake_fewshot=stake_fewshot,
+                               stake_fewshot_set=stake_fewshot_set),
             max_tokens=max_tokens_label, parents=syn_parents, cap=transcript_cap,
             reasoning_effort=r3r4_reasoning_effort,
             thinking_budget=r3r4_thinking_budget,
@@ -1080,7 +1138,8 @@ def run_deliberation(model: str, arm: str, item: CrowdGoldItem, idx: int, *,
             round_name="r4_vote", role_id=r.role_id, system=system,
             user=r4_vote_user(arm, item, r, synthesis, lab, obj, proposal,
                               cap=transcript_cap, stake_nudge=stake_nudge,
-                              stake_cot=stake_cot, stake_fewshot=stake_fewshot),
+                              stake_cot=stake_cot, stake_fewshot=stake_fewshot,
+                              stake_fewshot_set=stake_fewshot_set),
             max_tokens=max_tokens_vote,
             parents=(synthesis, lab, obj, proposal), cap=transcript_cap,
             reasoning_effort=r3r4_reasoning_effort,
@@ -1095,8 +1154,10 @@ def run_deliberation(model: str, arm: str, item: CrowdGoldItem, idx: int, *,
             "model": model, "scaffold": scaffold, "arm": arm,
             "stake_nudge": int(stake_nudge),
             "stake_intervention": "+".join(
-                t for t, on in (("nudge", stake_nudge), ("cot", stake_cot),
-                                ("fewshot", stake_fewshot)) if on) or "none",
+                t for t, on in (
+                    ("nudge", stake_nudge), ("cot", stake_cot),
+                    (f"fewshot({stake_fewshot_set})", stake_fewshot)) if on
+            ) or "none",
             "item_id": item.item_id, "sample_idx": idx,
             "gold_verdict": item.gold_verdict,
             "role_id": r.role_id, "paper_role": r.paper_role,
@@ -1164,8 +1225,10 @@ def run_deliberation(model: str, arm: str, item: CrowdGoldItem, idx: int, *,
         "agent_scaffold": scaffold,
         "stake_nudge": int(stake_nudge),
         "stake_intervention": "+".join(
-            t for t, on in (("nudge", stake_nudge), ("cot", stake_cot),
-                            ("fewshot", stake_fewshot)) if on) or "none",
+            t for t, on in (
+                ("nudge", stake_nudge), ("cot", stake_cot),
+                (f"fewshot({stake_fewshot_set})", stake_fewshot)) if on
+        ) or "none",
         "r3r4_reasoning_effort": r3r4_reasoning_effort or "",
         "r3r4_thinking_budget": r3r4_thinking_budget,
         "n_agents": N_AGENTS,
@@ -2557,6 +2620,27 @@ def _selftest() -> int:
             check("stake_fewshot artifact present "
                   "(run scripts.mine_stake_fewshot_exemplars first)", False)
 
+        # -- Addendum 11 Phase 1: truth-gated few-shot variant --------------
+        truthgated_path = OUT_DIR / "stake_fewshot_truthgated_exemplars.json"
+        if truthgated_path.exists():
+            r3_tg = r3_label_user(THIRD_PERSON, one, ROLES[0], "own", "syn",
+                                  cap=0, stake_fewshot=True,
+                                  stake_fewshot_set="truthgated")
+            check("truthgated few-shot is additive and pulls in real mined "
+                  "text distinct from the plain few-shot block",
+                  len(r3_tg) > len(r3_plain) and r3_tg != r3_fs)
+            check("truthgated block explains dissent should be gated on "
+                  "whether the concern is still live, not stake alone",
+                  "still live" in r3_tg or "actually addresses" in r3_tg)
+            check("stake_fewshot_set defaults to 'plain', unaffected by the "
+                  "new variant unless explicitly requested",
+                  r3_label_user(THIRD_PERSON, one, ROLES[0], "own", "syn",
+                                cap=0, stake_fewshot=True) == r3_fs)
+        else:
+            check("stake_fewshot_truthgated artifact present "
+                  "(run scripts.mine_stake_fewshot_exemplars --truthgated "
+                  "first)", False)
+
         # -- Addendum 8: composed cache-namespace tags for rungs 2-4 --------
         combo = call_cache_path
         base = combo("m", "narrative_cot", "third_person", "it", 0,
@@ -2565,14 +2649,18 @@ def _selftest() -> int:
                        "r3_label", "writer_advocate", 1024)
         fewshot_ns = combo("m", "narrative_cot_stakefewshot", "third_person",
                           "it", 0, "r3_label", "writer_advocate", 1024)
+        fewshot_tg_ns = combo("m", "narrative_cot_stakefewshottruthgated",
+                             "third_person", "it", 0, "r3_label",
+                             "writer_advocate", 1024)
         reff_ns = combo("m", "narrative_cot_reffhigh", "third_person", "it", 0,
                        "r3_label", "writer_advocate", 1024)
         think_ns = combo("m", "narrative_cot_think2048", "third_person", "it",
                         0, "r3_label", "writer_advocate", 1024)
-        check("cot/fewshot/reasoning-effort/thinking-budget each land in "
-              "their own cache namespace, distinct from the base scaffold "
-              "and from each other",
-              len({base, cot_ns, fewshot_ns, reff_ns, think_ns}) == 5)
+        check("cot/fewshot/fewshot-truthgated/reasoning-effort/thinking-"
+              "budget each land in their own cache namespace, distinct from "
+              "the base scaffold and from each other",
+              len({base, cot_ns, fewshot_ns, fewshot_tg_ns, reff_ns,
+                  think_ns}) == 6)
 
         check("subset is a prefix of the full panel and stays a subset",
               set(i.item_id for i in subset_items(items, 10, 10))
@@ -3069,6 +3157,7 @@ def run(models, arms, items, *, samples, scaffold, moderator_model,
         max_tokens_agent, max_tokens_moderator, max_tokens_label,
         max_tokens_vote, allow_unresolved, transcript_cap, workers,
         stake_nudge=False, stake_cot=False, stake_fewshot=False,
+        stake_fewshot_set="plain",
         r3r4_reasoning_effort=None, r3r4_thinking_budget=0):
     tasks = [(m, arm, it, i)
              for m in models for arm in arms for it in items
@@ -3091,6 +3180,7 @@ def run(models, arms, items, *, samples, scaffold, moderator_model,
                 stake_nudge=stake_nudge,
                 stake_cot=stake_cot,
                 stake_fewshot=stake_fewshot,
+                stake_fewshot_set=stake_fewshot_set,
                 r3r4_reasoning_effort=r3r4_reasoning_effort,
                 r3r4_thinking_budget=r3r4_thinking_budget,
             ): (m, arm, it.item_id, i)
@@ -3179,6 +3269,17 @@ def main(argv: list[str] | None = None) -> int:
                          "cached transcripts to the R3 label and R4 vote "
                          "prompts (scripts/mine_stake_fewshot_exemplars.py "
                          "must have been run first). Own cache namespace.")
+    ap.add_argument("--stake-fewshot-set", choices=("plain", "truthgated"),
+                    default="plain",
+                    help="prereg Addendum 11 Phase 1 (1a): which mined "
+                         "exemplar pair to use with --stake-fewshot. 'plain' "
+                         "(default) is Addendum 8's pair, stake alone "
+                         "predicts the vote. 'truthgated' is Addendum 11's "
+                         "pair (scripts/mine_stake_fewshot_exemplars.py "
+                         "--truthgated must have been run first): dissent "
+                         "should track whether the concern is still live, "
+                         "not just whether the seat's stake was hurt. Own "
+                         "cache namespace, distinct from 'plain'.")
     ap.add_argument("--r3r4-reasoning-effort", default=None,
                     help="prereg Addendum 8 rung 3: override reasoning_effort "
                          "on the R3 label and R4 vote calls only (OpenAI-family "
@@ -3351,6 +3452,7 @@ def main(argv: list[str] | None = None) -> int:
         stake_nudge=args.stake_nudge,
         stake_cot=args.stake_cot,
         stake_fewshot=args.stake_fewshot,
+        stake_fewshot_set=args.stake_fewshot_set,
         r3r4_reasoning_effort=args.r3r4_reasoning_effort,
         r3r4_thinking_budget=args.r3r4_thinking_budget,
     )

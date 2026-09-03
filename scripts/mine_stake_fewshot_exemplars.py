@@ -32,10 +32,12 @@ import json
 from pathlib import Path
 from typing import Sequence
 
+from scripts.analyze_crowdgold_sdt import code_response
 from scripts.run_phase1_quartet import OUT_DIR
 
 VOTES_PATH = OUT_DIR / "cg_deliberation_votes.csv"
 OUT_PATH = OUT_DIR / "stake_fewshot_exemplars.json"
+TRUTHGATED_OUT_PATH = OUT_DIR / "stake_fewshot_truthgated_exemplars.json"
 STAKE_SEATS = ("writer_advocate", "counterparty")
 MODEL = "grok-4-1-fast-reasoning"
 SCAFFOLD = "narrative_cot"
@@ -104,9 +106,69 @@ def build_exemplars() -> list[dict]:
     return out
 
 
+#: (item_id, arm, sample_idx, role) for the first debate found (by item_id
+#: sort order) of each of the two TRUTH-GATED patterns (Addendum 11 Phase 1,
+#: 1a): the undermined seat's dissent tracks whether the outcome was
+#: actually right, not just whether its own stake was hurt. This is a
+#: DIFFERENT lesson from the plain pairs above (stake alone predicts the
+#: vote): here, stake predicts the vote ONLY when combined with which side
+#: gold actually favours.
+TRUTHGATED_REJECT_CORRECT = (
+    "0hqzpR3kznERjnpcZt7dPaVnujNBYLqd", "as_asker", 1, "counterparty")
+TRUTHGATED_ACCEPT_CORRECT = (
+    "0QhNF8tvIJOj1UEwwofC3B67eLqta8Xj", "as_asker", 0, "counterparty")
+
+
+def _correct(verdict: str, gold: str) -> bool | None:
+    c = code_response(verdict, "published")
+    return None if c is None else c == (1 if gold == "YTA" else 0)
+
+
+def verify_truthgated_pool(votes_path: Path = VOTES_PATH) -> dict:
+    """How many debates show each truth-gated pattern, so the two hard-coded
+    picks above are auditable as "first of a real population", not
+    cherry-picked from a near-empty set."""
+    with open(votes_path) as f:
+        rows = list(csv.DictReader(f))
+    n_reject_correct = n_accept_correct = 0
+    for r in rows:
+        if r["role_id"] not in STAKE_SEATS or r.get("stake_undermined") != "1":
+            continue
+        syn_ok = _correct(r["synthesis_verdict"], r["gold_verdict"])
+        if syn_ok is None:
+            continue
+        if r["reject"] == "1" and not syn_ok:
+            n_reject_correct += 1
+        if r["reject"] == "0" and syn_ok:
+            n_accept_correct += 1
+    return {"n_reject_correct": n_reject_correct, "n_accept_correct": n_accept_correct}
+
+
+def build_truthgated_exemplars() -> dict:
+    item_id, arm, idx, role = TRUTHGATED_REJECT_CORRECT
+    r3_rc = read_output("r3_label", R3_MAX_TOKENS, arm, item_id, idx, role)
+    r4_rc = read_output("r4_vote", R4_MAX_TOKENS, arm, item_id, idx, role)
+    item_id2, arm2, idx2, role2 = TRUTHGATED_ACCEPT_CORRECT
+    r3_ac = read_output("r3_label", R3_MAX_TOKENS, arm2, item_id2, idx2, role2)
+    r4_ac = read_output("r4_vote", R4_MAX_TOKENS, arm2, item_id2, idx2, role2)
+    return {
+        "reject_correct": {
+            "item_id": item_id, "arm": arm, "sample_idx": idx, "role": role,
+            "r3_label": r3_rc, "r4_vote": r4_rc,
+        },
+        "accept_correct": {
+            "item_id": item_id2, "arm": arm2, "sample_idx": idx2, "role": role2,
+            "r3_label": r3_ac, "r4_vote": r4_ac,
+        },
+    }
+
+
 def main(argv: Sequence[str] | None = None) -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--out", type=Path, default=OUT_PATH)
+    ap.add_argument("--truthgated-out", type=Path, default=TRUTHGATED_OUT_PATH)
+    ap.add_argument("--truthgated", action="store_true",
+                    help="also mine the Addendum 11 Phase 1 truth-gated pair")
     ap.add_argument("--selftest", action="store_true")
     a = ap.parse_args(argv)
     if a.selftest:
@@ -123,6 +185,17 @@ def main(argv: Sequence[str] | None = None) -> int:
               f"{e['not_undermined_role']} (not) ACCEPTs")
     a.out.write_text(json.dumps({"pool": pool, "exemplars": exemplars}, indent=1))
     print(f"wrote {a.out}")
+
+    if a.truthgated:
+        tpool = verify_truthgated_pool()
+        print(f"\ntruth-gated pool: {tpool['n_reject_correct']} undermined+"
+              f"REJECT+synthesis-was-wrong, {tpool['n_accept_correct']} "
+              f"undermined+ACCEPT+synthesis-was-right -- picking the first "
+              f"of each")
+        texemplars = build_truthgated_exemplars()
+        a.truthgated_out.write_text(
+            json.dumps({"pool": tpool, "exemplars": texemplars}, indent=1))
+        print(f"wrote {a.truthgated_out}")
     return 0
 
 
@@ -158,6 +231,24 @@ def _selftest() -> int:
                   {e["undermined_role"] for e in exemplars} == set(STAKE_SEATS))
         except FileNotFoundError as e:
             check(f"raw cache files present for the hard-coded pairs ({e})",
+                  False)
+
+        tpool = verify_truthgated_pool()
+        check("truth-gated pool has a nontrivial number of each pattern "
+              "(not cherry-picked from a near-empty set)",
+              tpool["n_reject_correct"] >= 10 and tpool["n_accept_correct"] >= 10)
+        try:
+            tex = build_truthgated_exemplars()
+            check("truth-gated exemplars built, both have r3/r4 text",
+                  all(len(tex[k]["r3_label"]) > 0 and len(tex[k]["r4_vote"]) > 0
+                      for k in ("reject_correct", "accept_correct")))
+            check("reject_correct exemplar's R4 vote is a REJECT, verbatim",
+                  "REJECT" in tex["reject_correct"]["r4_vote"])
+            check("accept_correct exemplar's R4 vote is an ACCEPT, verbatim",
+                  "ACCEPT" in tex["accept_correct"]["r4_vote"]
+                  and "REJECT" not in tex["accept_correct"]["r4_vote"])
+        except FileNotFoundError as e:
+            check(f"raw cache files present for the truth-gated pair ({e})",
                   False)
     print(f"\n{'ALL OK' if not fails else str(len(fails)) + ' FAILED'}")
     return 1 if fails else 0
