@@ -2480,3 +2480,84 @@ No further spend below Stage 0 is authorized by this registration.
 Stage 1's exact item count, arms, and dollar ceiling are registered
 in a follow-up entry in this document before any Stage-1 call is made,
 per house rule.
+
+---
+
+## Addendum 12 Stage 2 registration: actuator ladder on Dilemmas, exact
+## panel size and ceiling (not yet authorized)
+
+**Engineering (zero spend, complete).** Two new modules, both selftested
+offline:
+
+- `scripts/run_dilemma_singleagent.py` -- the actuator itself: a single
+  model reads both accounts COLD (no synthesis, no other seat's text, no
+  deliberation of any kind) and gives one verdict per call, k=3 samples,
+  majority vote (tie -> fall back to S2, identical convention to
+  `analyze_actuator_ladder.make_rule_vendor`). Default model
+  `claude-haiku-4-5`, cross-vendor from the grok deliberation this
+  actuates, matching Addendum 4's A3a choice exactly rather than
+  re-deciding it. No AITA vocabulary; no shared code path with the
+  deliberation runner beyond the tested `do_call`/`call_cache_path`
+  plumbing and the `DilemmaItem`/`load_items`/`subset_items` loaders, so
+  the two item sets are identical by construction at the same
+  `--n-items`.
+- `scripts/analyze_dilemma_actuator.py` -- reimplements A3a's paired,
+  item-clustered bootstrap evaluation natively for the two-way
+  ACTION_A/ACTION_B instrument (`analyze_actuator_ladder.evaluate`'s
+  internals are generic, but `correct()`/`make_rule_vendor()` both route
+  through AITA's `code_response`, so those two pieces only are
+  reimplemented; `item_half` is imported unchanged). One actuator tested
+  against 2 populations (flagged, unflagged-as-context) -> Bonferroni
+  family size 2, alpha=0.025, matching Addendum 9/10's convention.
+
+**The sizing problem, stated honestly.** Stage 1's composite flag fired
+on 3/75 codable debates (0.040) -- an order of magnitude below AITA-
+grok's 0.20. Addendum 4's A3a rung was powered by n=337 flagged debates.
+Matching that flagged-n on this instrument at the measured fire rate
+would require on the order of 8,400 total debates, which is not a
+proportionate ask for a replication step. The corpus (14,958 fully-
+joined pairs) is not the constraint; dollars and wall-clock are. This is
+a real trade-off between pilot informativeness and cost, not a
+mechanical scale-up, so it is registered as an explicit choice rather
+than picked unilaterally:
+
+| panel (total debates) | new debates beyond Stage 1's 80 | expected flagged (~4%) | incremental $ (measured $0.65/80 rate) | actuator $ (haiku k=3) | precedent for this flagged-n |
+|---|---|---|---|---|---|
+| 300 | 220 | ~12 | ~$1.8 | ~$0.12 | below every prior screen in this programme; likely uninformative |
+| 750 | 670 | ~30 | ~$5.4 | ~$0.29 | Addendum 8 rung-1 scale (36-94 flagged), itself called "screen, not confirm" |
+| 1,500 | 1,420 | ~60 | ~$11.5 | ~$0.58 | upper end of Addendum 8/9/10 screen scale |
+| 3,000 | 2,920 | ~120 | ~$23.7 | ~$1.15 | closer to (still below) A3a's own n=337 |
+
+Dollar figures use the dry-run cost model
+(`python -m scripts.run_crowdgold_dilemma --dry-run --n-items N`), which
+Stage 1 showed runs close to measured spend; the deliberation panel is a
+deterministic gold-balanced prefix, so growing it re-uses Stage 1's 80
+cached debates rather than re-paying for them. Wall-clock scales with
+new debates x 17 calls (300 -> ~3,740 new calls; 3,000 -> ~49,640 new
+calls), so the larger rows are multi-hour background runs, not another
+80-item pilot.
+
+**Design (fixed regardless of panel size):** extend the SAME deliberation
+population (`run_crowdgold_dilemma`, same seed=44, same neutral arm) to
+the chosen `--n-items`; run the actuator baseline
+(`run_dilemma_singleagent`) on the identical item set; compute the
+composite flag on the extended population (`analyze_dilemma_grip.flagged`,
+unchanged since Stage 1); evaluate with
+`scripts.analyze_dilemma_actuator.run_stage2`. Positive-outcome bar,
+unchanged from every actuator rung in this programme: 97.5% item-
+clustered bootstrap CI excludes zero, delta >= 0.05, positive in both
+item halves (sha256 parity; single arm, so no by-arm split applies).
+
+No panel size is authorized yet. This entry fixes the design and the
+cost table; the exact `--n-items` and dollar ceiling are chosen in a
+follow-up entry before any Stage-2 generation call is made, per house
+rule.
+
+**Stage 2 panel size AUTHORIZED (2026-09-04): 750 total debates** (Stage
+1's cached 80 as a deterministic prefix + 670 new), matching Addendum 8's
+screen scale (~30 expected flagged debates). Ceiling: **$8** incremental
+(deliberation extension + haiku actuator baseline combined), against a
+dry-run estimate of ~$5.7 -- buffer sized the same way Stage 1's $5
+ceiling against a lower measured spend was, not tighter. If measured
+spend threatens to exceed $8 before the panel completes, stop and report
+the partial result rather than exceed the ceiling.
