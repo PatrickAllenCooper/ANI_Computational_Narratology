@@ -2349,34 +2349,59 @@ verdict instrument: `VERDICT: A` / `VERDICT: B` in place of
 YTA/NTA/ESH/NAH/INFO, and both full accounts (not one account plus an
 inferred counterparty) are shown to every seat from R0 onward.
 
-Estimated new engineering: a new runner
-(`scripts/run_crowdgold_dilemma.py`) sharing the round-scaffolding,
-cache, and cost-model machinery of the AITA runner via import, not
-copy-paste, with its own instrument, role table, and prompts; a new
-verdict extractor (`A`/`B`, reusing the existing marker-line
-discipline); selftest mirroring the AITA runner's offline stub
-end-to-end coverage before any real call.
+Engineering completed 2026-09-03, zero API spend: `scripts/run_crowdgold_dilemma.py`
+(the runner) and `scripts/analyze_dilemma_grip.py` (the G1/G2/G3 readout)
+are both written and both pass `--selftest` offline, including a full
+17-call protocol run against a stubbed generator (no network). `do_call`,
+`call_cache_path`, `generate_any`, `count_tokens` and the truncation/parse
+guard are imported unchanged from `scripts.run_crowdgold_deliberation` /
+`scripts.run_crowdgold_aita`; the role table, glossary, verdict instrument
+(`dilemma_verdict`: `ACTION_A`/`ACTION_B`), and G1-G3 arithmetic are new
+but structurally identical to the AITA runner's and `analyze_stake_grip.py`
+respectively (a separate module rather than a patch to the AITA-specific
+ones, to avoid a regression risk to five addenda of standing AITA results
+for a ~150-line saving; see that module's docstring for the point-by-point
+correspondence).
 
-## Staged plan and gates, in order (nothing after Stage 0 is authorized yet)
+**Stage 1 registered 2026-09-03, ceiling $5 (before any call).** One
+arm only, called `neutral`: Dilemmas has no natural `as_asker` analogue
+(neither account is ever addressed to the model), so this stage measures
+grip only, no resistance/criterion-shift readout, as flagged at Stage 0.5.
+`--model grok-4-1-fast-reasoning --n-items 80` (a deterministic,
+gold-balanced prefix of the 14,958-pair panel: 40 gold-A + 40 gold-B, so
+every cell is reused by any later extension), single sample. 80 debates,
+240 R3 labels, 240 R4 votes -- the same debate/vote count as Addendum 6's
+haiku Stage 1 screen, on one arm instead of two. Token caps default to
+`--max-tokens-label 3072 --max-tokens-vote 3072` from the start (Addendum
+6's original haiku/sonnet screens failed their own truncation guard at
+1024/512 and had to be re-run at 3072/3072 after burning part of that
+ceiling; this runner does not repeat that mistake).
 
-- **Stage 1 (grip screen, mirrors Addendum 6, ceiling TBD at
-  registration, ~$10-15 estimated): does grok's native grip generalize
-  to this instrument at all?** Small panel (40-60 pairs), grok as all
-  three seats, both arms if a stance manipulation is meaningful here
-  (TBD during build -- Dilemmas has no natural "as_asker" analogue
-  since neither account is addressed to the model; if none is
-  registered this stage measures grip only, no resistance/criterion-
-  shift readout). Compute G1 (composite fire rate), G2 (reject share),
-  G3 (stake concentration) exactly as Addendum 6 defined them. Round-
-  level truncation/NOVERDICT guard enforced before any G1-G3 number is
-  trusted (Addendum 6's own retraction-and-correction is the standing
-  reason this guard is checked BEFORE reporting, not after).
-  **Gate: G3 CI must exclude zero AND clear +0.20 for "grip
-  generalizes"; real-but-weak (CI excludes zero, point estimate below
-  0.20) is reported as a graded finding, not rounded up to a yes/no.
-  G3 CI covering zero -> stop, report that the native-grip mechanism is
-  AITA-specific and does not transfer to a comparative instrument on
-  the same corpus family.**
+Dry-run cost model (`python -m scripts.run_crowdgold_dilemma --dry-run
+--n-items 80`, tiktoken BPE prompt counts, measured from real constructed
+prompts): **$0.89** (1,360 calls, 3,092,480 prompt + 546,400 assumed-
+completion tokens at grok's list rate, 0.20/0.50 USD per Mtok). The
+completion-length assumptions (500 words for R0-R2, the AITA runner's own
+assumed lengths for the four short rounds) are unmeasured for this new
+instrument and flagged as such in the tool's own output; even a
+pessimistic worst case where every capped round (R3 label, R4 vote) runs
+to its full 3,072-token ceiling on every one of the 480 such calls adds at
+most another ~$0.7. The $5 ceiling is a >5x margin over the dry-run
+estimate and covers that worst case with room to spare; the run's own
+measured spend (read back from the cache, printed by the runner) is what
+gets reported, not this estimate.
+
+**Gate: G3 CI must exclude zero AND clear +0.20 for "grip
+generalizes"; real-but-weak (CI excludes zero, point estimate below
+0.20) is reported as a graded finding, not rounded up to a yes/no.
+G3 CI covering zero -> stop, report that the native-grip mechanism is
+AITA-specific and does not transfer to a comparative instrument on
+the same corpus family.** Round-level truncation/NOVERDICT guard
+(`scripts.run_crowdgold_dilemma`'s own `print_truncation_report`, reusing
+the AITA runner's `MAX_TRUNCATION_SHARE`/`MAX_NOVERDICT_SHARE` = 5%
+thresholds) is checked and printed BEFORE any G1-G3 number is read --
+Addendum 6's own retraction-and-correction is the standing reason this is
+enforced before reporting, not after.
 - **Stage 2 (actuator ladder, conditional on Stage 1 clearing,
   budget registered separately before spend): repeat Addendum 4's A3a
   rung on this instrument** -- route flagged debates to an external
