@@ -690,3 +690,54 @@ alone doesn't help), but something Addendum 11's specific toolkit
 able to resolve. Closing it further needs either a different induction
 method or a population an order of magnitude larger than this line's
 combined spend has bought across four addenda.
+
+### 8.12 Grip generalizes to a second task family (prereg Addendum 12 Stage 1, 2026-09-03, $0.65 of $5)
+
+Addenda 6-11 all ran on one instrument: crowd-gold AITA. Every stake-grip
+finding, including grok's headline +0.63 stake concentration, was
+therefore a finding about that one task's structure -- a single
+first-person account, an asymmetric writer/silent-counterparty pair, a
+four-way verdict. Addendum 12 asks whether grip is a property of grok's
+induced-role mechanism or a property of that task, by replicating
+Addendum 6's screen on Scruples DILEMMAS: two independent first-person
+accounts (same underlying corpus family, joined back to full anecdote
+text, see Stage 0), a symmetric two-advocate pair, a forced binary
+comparative verdict (`ACTION_A`/`ACTION_B`, which of the two actions was
+more wrong). New runner `scripts/run_crowdgold_dilemma.py` and analysis
+`scripts/analyze_dilemma_grip.py`, both selftested offline before any
+spend; low-level plumbing (cache, generation router, truncation guard)
+imported unchanged from the AITA runner, the role table/instrument/G1-G3
+arithmetic rebuilt natively for the new task rather than reusing
+AITA-coupled code under borrowed names.
+
+80 items (grok-4-1-fast-reasoning, single "neutral" arm -- Dilemmas has
+no `as_asker` analogue), $0.65 measured against a $5 ceiling, guard
+PASSED cleanly (0% truncation, 0% NOVERDICT on all eight verdict-bearing
+cells) -- unlike Addendum 6's original haiku/sonnet screens, this one
+used the corrected 3072-token caps from the start. 5/80 debates (6.25%)
+resolved to a genuine `UNRESOLVED` verdict and were excluded from the
+grip statistics by the same convention as AITA's non-committal rows.
+
+Result on the 75 codable debates / 240 votes: **G1 fire rate 0.040
+(PASS), G2 reject share 0.283 (PASS), G3 stake concentration +0.755,
+95% CI [+0.659, +0.848] (PASS, CI excludes zero and clears +0.20 by a
+wide margin). GRIP: yes.** G3 is not merely positive here -- at +0.755
+it is STRONGER than the same model's own +0.63 on AITA, the highest
+stake-concentration figure measured anywhere in this programme. The
+per-seat cross-tab confirms the aggregate isn't a bootstrap artifact:
+person_a_advocate rejects 25/29 (86%) of undermined votes vs 0/46 (0%)
+not-undermined; person_b_advocate 36/46 (78%) vs 0/29 (0%); the neutral
+adjudicator, which has no stake by construction, rejects essentially
+never (1/79).
+
+This is the first direct evidence that grok's stake-tracking dissent is
+a property of the induced-role mechanism itself rather than an artifact
+of AITA's specific task shape: it replicates, and if anything sharpens,
+on a structurally different comparative task built from the same corpus
+family. It does not bear on Addendum 9-11's separate, still-open
+question -- whether an INDUCED (non-native) stake-tracking signal in a
+weaker model can drive an actuator gain -- since Stage 1 used grok, the
+one model already known to have native grip. Per Stage 1's own
+registered gate, this clears the bar to register Stage 2 (an
+actuator-ladder replication on this instrument) as a separate budgeted
+step; not yet authorized.

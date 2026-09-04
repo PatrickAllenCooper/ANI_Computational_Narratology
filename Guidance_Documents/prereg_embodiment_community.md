@@ -2402,6 +2402,57 @@ the AITA runner's `MAX_TRUNCATION_SHARE`/`MAX_NOVERDICT_SHARE` = 5%
 thresholds) is checked and printed BEFORE any G1-G3 number is read --
 Addendum 6's own retraction-and-correction is the standing reason this is
 enforced before reporting, not after.
+
+**Stage 1 RESULTS (run 2026-09-03, PI-authorized, measured spend $0.65
+of the $5 ceiling):** guard PASSED cleanly on every one of the eight
+verdict-bearing (round, role) cells -- 0.0% truncation, 0.0% NOVERDICT
+throughout, unlike Addendum 6's original haiku/sonnet screens. 80/80
+debates ran; 5 (6.25%) resolved to a genuine `UNRESOLVED` group verdict
+(the model explicitly could not decide, not a parse failure -- both
+`verdict` and `synthesis_verdict` carry the `UNRESOLVED` token on those
+rows) and are excluded from the grip statistics below by the same
+convention `analyze_stake_grip.py` uses for AITA's non-committal rows,
+leaving 75 codable debates and all 240 R3/R4 votes intact.
+
+`python -m scripts.analyze_dilemma_grip --tag cg_dilemma_stage1`:
+
+- **G1 fire rate 0.040 (<= 0.50) -- PASS.** The composite sensor (neutral
+  objection OR a mis-localised advocate objection) fires on 3/75 debates,
+  an order of magnitude below Addendum 6's grok-on-AITA figure (0.20) --
+  dissent here concentrates even more tightly on the correctly-localised
+  seat than it did on the original instrument.
+- **G2 reject share 0.283 (>= 0.05) -- PASS.** 68/240 R4 votes are REJECT,
+  roughly 4x AITA-grok's rate (nominally comparable given the different
+  instrument), driven almost entirely by the two advocate seats (see
+  per-seat table below), not the neutral adjudicator.
+- **G3 stake concentration +0.755, 95% item-clustered bootstrap CI
+  [+0.659, +0.848] (>= +0.20, CI excludes 0) -- PASS,** and materially
+  STRONGER than AITA-grok's own +0.63. `reject | stake undermined` =
+  0.813 vs `reject | stake not undermined` = 0.059 -- an advocate whose
+  side is found more-wrong rejects the integrated proposal four out of
+  five times; an advocate whose side is vindicated almost never does.
+- Per-seat cross-tab (`stake_undermined` x `reject`, from the raw votes
+  CSV, sanity-checked independently of the bootstrap arithmetic):
+  person_a_advocate rejects 25/29 (86%) of undermined votes and 0/46
+  (0%) of not-undermined votes; person_b_advocate rejects 36/46 (78%)
+  of undermined votes and 0/29 (0%) of not-undermined votes;
+  neutral_adjudicator rejects 1/79 (1.3%) of its (always
+  stake-not-undermined-by-construction) votes.
+
+**GRIP: yes.** All three criteria clear their registered thresholds, and
+G3 in particular is not a narrow pass -- it is grok's strongest measured
+stake-concentration figure across every instrument and every addendum in
+this programme to date. Read together with Addendum 6-11's AITA-only
+findings, this is the first direct evidence that "stake grip" is a
+property of grok's induced-role mechanism itself, not an artifact of the
+specific AITA task structure (one first-person account, an asymmetric
+writer/counterparty pair, a four-way verdict): it replicates, and
+sharpens, on a structurally different task (two independent first-person
+accounts, a symmetric advocate pair, a forced binary comparative
+verdict) built from the same underlying corpus family. Per Stage 1's own
+gate, this clears the bar to register Stage 2 (the actuator-ladder
+replication) as a SEPARATE registration with its own budget, not yet
+authorized.
 - **Stage 2 (actuator ladder, conditional on Stage 1 clearing,
   budget registered separately before spend): repeat Addendum 4's A3a
   rung on this instrument** -- route flagged debates to an external
