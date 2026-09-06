@@ -734,10 +734,45 @@ This is the first direct evidence that grok's stake-tracking dissent is
 a property of the induced-role mechanism itself rather than an artifact
 of AITA's specific task shape: it replicates, and if anything sharpens,
 on a structurally different comparative task built from the same corpus
-family. It does not bear on Addendum 9-11's separate, still-open
-question -- whether an INDUCED (non-native) stake-tracking signal in a
-weaker model can drive an actuator gain -- since Stage 1 used grok, the
-one model already known to have native grip. Per Stage 1's own
-registered gate, this clears the bar to register Stage 2 (an
-actuator-ladder replication on this instrument) as a separate budgeted
-step; not yet authorized.
+family. It does not bear on Addendum 9-11's closed question -- whether
+an INDUCED (non-native) stake-tracking signal in a weaker model can
+drive an actuator gain -- since Stage 1 used grok, the one model
+already known to have native grip. Stage 2 (below) asked the remaining
+question: whether that native grip, on this instrument, can still
+drive Addendum 4's actuator gain.
+
+### 8.13 Grip generalizes; the A3a circuit does not (prereg Addendum 12 Stage 2, 2026-09-04/06, ~$9.41 of $8)
+
+Stage 2 repeated Addendum 4's A3a rung on the Dilemmas instrument:
+route composite-flagged grok debates to a cold cross-vendor haiku
+majority-of-3 (`scripts/run_dilemma_singleagent.py`,
+`scripts/analyze_dilemma_actuator.py`). Authorized panel 750; realized
+700 after 50 rate-limit / connection failures that were not retried
+once the ceiling was already exceeded. 624 of 700 are committal on
+both S1 and S2.
+
+Grip at this panel (same G1/G2/G3 as Stage 1): **yes.** G3 +0.670
+[+0.627, +0.710], G2 0.275, G1 fire 0.010 (6/624). Stage 1's 0.040
+fire rate was three events and did not hold; dissent still tracks
+stake, but the composite flag almost never fires.
+
+Actuator, registered population (the six flagged debates), 97.5%
+item-clustered CI: **S2 0.667 -> 0.500, delta -0.167 [-0.500, +0.000].
+NULL** -- CI does not exclude zero, delta is the wrong side of +0.05,
+halves do not both go positive. The actuator never fixed a wrong S2
+on those six; it broke one correct S2. Unflagged context (n=618) is
+also null and slightly negative (-0.010), so routing every debate to
+haiku is not a hidden win. Sensor-specific gain -0.157.
+
+**Stage 2 result: null.** Two claims, separated: grok's native stake
+grip is a general embodiment property (Stage 1, now at n=624).
+Addendum 4's *circuit* -- that grip produces a composite flag worth
+routing to an external judge -- is AITA-shaped. On Dilemmas the flag
+fires on 1% of debates; n=6 cannot resolve a +0.05 actuator gain, and
+the point estimate is the wrong direction. The same
+signal-without-a-usable-actuator pattern Addenda 9-11 found for
+induced grip on AITA now also holds for native grip on a second task.
+The binding constraint is the sensor, not the judge. No further spend
+on this registration; a 3,000-debate panel (~$25+) to chase ~30
+flagged events, or a new sensor on these 624 debates, would be a
+separate authorization.

@@ -2561,3 +2561,93 @@ dry-run estimate of ~$5.7 -- buffer sized the same way Stage 1's $5
 ceiling against a lower measured spend was, not tighter. If measured
 spend threatens to exceed $8 before the panel completes, stop and report
 the partial result rather than exceed the ceiling.
+
+**Stage 2 RESULTS (analysis 2026-09-06; generation 2026-09-04).**
+Panel realized: 700 of 750 authorized debates. 50 cells failed after
+five retries (Grok rate-limit / connection errors) and were not
+regenerated -- the $8 ceiling was already exceeded by then, and the
+registered stop rule is to report the partial panel rather than spend
+further. Guard on the 700: PASSED (0.0% truncation; worst NOVERDICT
+1.0% on the synthesis cell). 76 of 700 rows are non-committal on S1 or
+S2 (55 both `UNRESOLVED`; the rest mixed `UNRESOLVED`/`NOVERDICT`) and
+are excluded from grip and actuator statistics by the same convention
+as Stage 1, leaving **624 codable debates**.
+
+Spend, measured from the runners' own token totals:
+
+| piece | measured | vs estimate |
+|---|---|---|
+| grok deliberation, 700 cells (includes Stage 1's cached 80) | $5.67 | dry-run at 750 was $5.53 |
+| haiku cold baseline, 750 items x k=3 | $4.39 | table said ~$0.29; 80-item dry-run scaled linearly is ~$2.9 |
+| Stage 2 incremental (deliberation net of Stage 1's $0.65 + baseline) | **~$9.41** | **over the $8 ceiling** |
+| Addendum 12 total (Stage 1 + Stage 2) | **~$10.06** | |
+
+The actuator underestimate is a real miss: the cost model assumed 60
+completion tokens on a cold single-verdict call; measured mean was
+~160 completion tokens, and the table's $0.29 cell was not even a
+correct scale-up of the 80-item dry-run. No further generation is
+authorized against this overrun.
+
+`python -m scripts.analyze_dilemma_grip --tag cg_dilemma_stage1` on the
+624 (grip at the Stage 2 panel, same definitions as Stage 1):
+
+- **G1 fire rate 0.010 (6/624) -- PASS** the registered <= 0.50 screen,
+  and an order of magnitude below Stage 1's own 0.040 (3/75). The
+  Stage 1 rate was three events; it did not hold as a rate.
+- **G2 reject share 0.275 -- PASS.**
+- **G3 stake concentration +0.670, 95% item-clustered CI [+0.627,
+  +0.710] -- PASS.** Slightly below Stage 1's +0.755, still well above
+  +0.20 and AITA-grok's +0.63. `reject | undermined` = 0.772 vs
+  `reject | not undermined` = 0.102.
+- **GRIP: yes,** at 8x Stage 1's panel. S2 accuracy on this instrument
+  is 0.644 (AITA-grok was 0.843) -- there is headroom, if a sensor
+  fired.
+
+`python -m scripts.analyze_dilemma_actuator --tag cg_dilemma_stage1
+--baseline-tag cg_dilemma_baseline_stage2` (97.5% item-clustered CI,
+alpha=0.025, 4000 draws, seed=31; artefact
+`divergence_study_outputs/dilemma_stage2_actuator_analysis.json`):
+
+| population | n | S2 -> actuated | delta [97.5% CI] | halves | criteria | result |
+|---|---|---|---|---|---|---|
+| **FLAGGED (registered)** | **6** | **0.667 -> 0.500** | **-0.167 [-0.500, +0.000]** | -0.333 / 0.000 | CI excl. 0: no; delta>=0.05: no; both halves: no | **NULL** |
+| UNFLAGGED (context) | 618 | 0.644 -> 0.634 | -0.010 [-0.053, +0.034] | -0.010 / -0.010 | all fail | null |
+| sensor-specific gain | | | **-0.157** | | | |
+
+Independently counted on the six flagged rows (all six gold
+`ACTION_A`; all six carry a neutral-adjudicator R3 objection; two of
+six also a mis-localised advocate objection): the actuator never
+corrected a wrong S2. It agreed with a wrong S2 twice, agreed with a
+correct S2 three times, and flipped one correct S2 to wrong -- that
+single break is the -0.167. Unflagged, cold haiku disagrees often
+(150 verdicts changed, 19 ties falling back to S2) and is net slightly
+worse than the deliberation, so "route everything to haiku" is not a
+hidden positive either.
+
+**STAGE 2 RESULT: NULL.** The registered positive-outcome bar is not
+met. The honest reading is two findings, not one:
+
+1. **Grip generalizes at scale.** G3 +0.670 [+0.627, +0.710] on 624
+   debates is the Stage 1 claim, now powered. Stake-tracking dissent
+   is a property of grok's induced-role mechanism, not an AITA
+   artifact.
+2. **The A3a circuit does not.** Addendum 4's gain required a
+   composite flag that fired on 20% of debates (n=337 flagged). On
+   Dilemmas the same flag fires on 1.0%. Expected flagged-n at the
+   Stage 1 rate was ~30; realized is 6. An actuator test at n=6
+   cannot resolve a +0.05 gain -- the CI upper bound is exactly zero,
+   and the point is the wrong direction -- so this is both a
+   directional null and an underpowered one. What *is* resolved is
+   that the routing sensor itself does not transfer: there is almost
+   nothing to route. That is the same signal/actuator dissociation
+   Addenda 9-11 found on the induced side, now on grok's native grip
+   for a second task, and the binding constraint is the sensor's fire
+   rate, not a failed external judge.
+
+No further spend is authorized by this registration. Growing the panel
+to recover ~30 flagged events at the measured 1% fire rate would take
+on the order of 3,000 debates (~$25+), a new registration if anyone
+wants it. Retrying the 50 failed cells would not change the fire-rate
+finding. A sensor search on this instrument (different flag, same
+native grok debates) is also a new registration, not a continuation of
+the closed Addendum 11 line.

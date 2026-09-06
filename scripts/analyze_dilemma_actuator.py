@@ -41,6 +41,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+import json
 import random
 from collections import defaultdict
 from pathlib import Path
@@ -276,6 +277,8 @@ def main(argv=None) -> int:
     ap.add_argument("--baseline-tag", default="cg_dilemma_baseline")
     ap.add_argument("--n-boot", type=int, default=DEFAULT_DRAWS)
     ap.add_argument("--seed", type=int, default=31)
+    ap.add_argument("--out", type=Path,
+                    default=OUT_DIR / "dilemma_stage2_actuator_analysis.json")
     args = ap.parse_args(argv)
 
     if args.selftest:
@@ -291,6 +294,9 @@ def main(argv=None) -> int:
     res = run_stage2(rows_path, votes_path, baseline_path,
                      draws=args.n_boot, seed=args.seed)
     print_stage2(res)
+    args.out.parent.mkdir(parents=True, exist_ok=True)
+    args.out.write_text(json.dumps(res, indent=2, default=str))
+    print(f"\nwrote {args.out}")
     return 0
 
 
