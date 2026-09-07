@@ -2651,3 +2651,6 @@ wants it. Retrying the 50 failed cells would not change the fire-rate
 finding. A sensor search on this instrument (different flag, same
 native grok debates) is also a new registration, not a continuation of
 the closed Addendum 11 line.
+
+Session record for the chat that closed Addendum 11 and ran Addendum
+12 Stages 0-2: `Guidance_Documents/HANDOFF_2026-09-07.md`.
