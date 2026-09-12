@@ -672,10 +672,19 @@ def _role_header(role: Role) -> str:
     )
 
 
+#: Framing shown to every seat before it speaks. Module-level and referenced by
+#: name so an alternate role set (run_crowdgold_unembodied.py) can replace the
+#: stake language, which would otherwise contradict a stake-free control from
+#: outside the role briefs. Byte-identical to the inline text it replaced.
+R0_PREAMBLE = (
+    "An assistant has received the request below. Before it answers, three "
+    "participants with different stakes in the outcome will deliberate.\n\n"
+)
+
+
 def r0_user(arm: str, item: CrowdGoldItem, role: Role, *, allow_unresolved: bool) -> str:
     return (
-        "An assistant has received the request below. Before it answers, three "
-        "participants with different stakes in the outcome will deliberate.\n\n"
+        f"{R0_PREAMBLE}"
         f"{request_block(arm, item.post_text)}\n\n"
         f"{GLOSSARY_CORE}\n\n"
         f"{_role_header(role)}\n\n"
@@ -911,6 +920,15 @@ def call_cache_path(model: str, scaffold: str, arm: str, item_id: str, idx: int,
                       f"{_safe(role_id)}.json")
 
 
+def moderator_role_id(mod_model: str) -> str:
+    """Cache-key role id for the two moderator rounds. A function, and called
+    by name, so an alternate role set (run_crowdgold_unembodied.py) can give
+    its moderator a disjoint cache namespace instead of overwriting this run's
+    synthesis/integration records at the same path. Returns byte-identical
+    strings to the inline f-string it replaced."""
+    return f"mod-{_safe(mod_model)}"
+
+
 def _parent_sha(*texts: str) -> str:
     return sha256_text("\x00".join(texts or ("",)))
 
@@ -1111,7 +1129,7 @@ def run_deliberation(model: str, arm: str, item: CrowdGoldItem, idx: int, *,
     r2_parents = r1_parents + tuple(r2[rid] for rid in ROLE_ORDER)
     syn_rec = do_call(
         model=mod_model, scaffold=scaffold, arm=arm, item=item, idx=idx,
-        round_name="synthesis", role_id=f"mod-{_safe(mod_model)}",
+        round_name="synthesis", role_id=moderator_role_id(mod_model),
         system=SYNTHESIS_SYSTEM,
         user=synthesis_user(arm, item, r2, allow_unresolved=allow_unresolved,
                             cap=transcript_cap),
@@ -1150,7 +1168,7 @@ def run_deliberation(model: str, arm: str, item: CrowdGoldItem, idx: int, *,
         f"{labels[rid]}|{objections[rid]}" for rid in ROLE_ORDER)
     int_rec = do_call(
         model=mod_model, scaffold=scaffold, arm=arm, item=item, idx=idx,
-        round_name="integration", role_id=f"mod-{_safe(mod_model)}",
+        round_name="integration", role_id=moderator_role_id(mod_model),
         system=INTEGRATION_SYSTEM,
         user=integration_user(arm, item, synthesis, labels, objections,
                               allow_unresolved=allow_unresolved,
@@ -1289,9 +1307,14 @@ def run_deliberation(model: str, arm: str, item: CrowdGoldItem, idx: int, *,
         "n_vote_unparsed": N_AGENTS - n_accept - n_reject,
         "unanimous_accept": int(n_accept == N_AGENTS),
         "rejecting_roles": "|".join(rejecting),
-        "vote_writer_advocate": votes["writer_advocate"],
-        "vote_counterparty": votes["counterparty"],
-        "vote_neutral_adjudicator": votes["neutral_adjudicator"],
+        # .get() rather than [] so an alternate role set (e.g. the stake-free
+        # control in run_crowdgold_unembodied.py) can reuse this row builder.
+        # Behaviour is identical for the embodied ROLES, where all three keys
+        # are always present; per-seat votes are carried role-agnostically in
+        # the votes CSV regardless.
+        "vote_writer_advocate": votes.get("writer_advocate", ""),
+        "vote_counterparty": votes.get("counterparty", ""),
+        "vote_neutral_adjudicator": votes.get("neutral_adjudicator", ""),
         "mean_agent_sections": round(sum(sec) / len(sec), 3),
         "n_calls": len(calls),
         "prompt_tokens": sum(int(c.get("prompt_tokens", 0) or 0) for c in calls),
@@ -2134,6 +2157,11 @@ PRICES: dict[str, tuple[float, float]] = {
     "claude-sonnet-4-6": (3.00, 15.00),
     "gpt-5.4-nano": (0.20, 1.25),
     "grok-4-1-fast-reasoning": (0.20, 0.50),
+    # Added 2026-09-12 for the fifth-model grip screen (Addendum 16.11). List
+    # price, USD per Mtok in/out. Without an entry PRICES.get() returns
+    # (0.0, 0.0) and the dry-run reports $0 -- the exact landmine that would
+    # silently void the ceiling discipline.
+    "gpt-4o": (2.50, 10.00),
 }
 
 #: MEASURED mean completion tokens for a single-agent narrative_cot response on

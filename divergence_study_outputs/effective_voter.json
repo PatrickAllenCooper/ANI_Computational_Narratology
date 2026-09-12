@@ -1,0 +1,1018 @@
+{
+ "registration": "Addendum 16.15.4",
+ "estimator": {
+  "bootstrap": "item-clustered percentile",
+  "draws": 4000,
+  "seed": 13,
+  "seed_rule": "registered seed 13; panel i uses base seed 13 + 100 * i (grok 13, sonnet 113, nano 213, haiku 313); each interval inside a panel is drawn with base + k, k per statistic as in `seed_offsets`, and the seed used is recorded next to every CI; the grok CV oracle gap (the primary 16.15.4(a) readout) uses seed 13 exactly",
+  "seed_offsets": {
+   "majority_equals_neutral": 1,
+   "seat_acc_writer_advocate": 2,
+   "seat_acc_counterparty": 3,
+   "seat_acc_neutral_adjudicator": 4,
+   "majority_acc_on_triples": 5,
+   "writer_advocate_minus_neutral": 6,
+   "counterparty_minus_neutral": 7,
+   "neutral_adjudicator_minus_neutral": 8,
+   "majority_minus_neutral": 9,
+   "role_lock": 10
+  },
+  "collapse": "code_response(extract_verdict(r0), 'published')",
+  "oracle": "2-fold CV over items, both directions, lookup table on the three r0 at-fault bits, ties/unseen -> training majority class; fold fixed per item inside the bootstrap"
+ },
+ "not_computable_here": {
+  "record_full_profile_oracle_gap_minus_0_021": "the record's -0.021 (headline_theory.html R3) is a CV oracle over the full panel profile (nine seat verdicts, both moderator verdicts, all labels and votes), 0.831 vs 0.852; it is a different quantity from the registered three-r0-verdict oracle and needs a replay over the r1/r2/moderator caches -- a separate zero-spend registration"
+ },
+ "panels": {
+  "grok": {
+   "model": "grok-4-1-fast-reasoning",
+   "tag": "cg_deliberation",
+   "guard": {
+    "ok": true,
+    "reasons": [],
+    "n_debates": 1680,
+    "n_triples": 1642,
+    "n_missing_r0_calls": 0,
+    "noncodable_triple_share": 0.02261904761904762
+   },
+   "base_seed": 13,
+   "n_debates": 1680,
+   "n_items": 210,
+   "n_triples": 1642,
+   "n_items_in_triples": 210,
+   "majority_equals_neutral": {
+    "count": 1642,
+    "n": 1642,
+    "point": 1.0,
+    "lo": 1.0,
+    "hi": 1.0,
+    "seed": 14,
+    "draws": 4000
+   },
+   "seat_acc_on_triples": {
+    "writer_advocate": {
+     "point": 0.5913520097442144,
+     "lo": 0.5207317073170732,
+     "hi": 0.6571428571428571,
+     "seed": 15,
+     "draws": 4000
+    },
+    "counterparty": {
+     "point": 0.43727161997563946,
+     "lo": 0.37084089534180276,
+     "hi": 0.5015328019619865,
+     "seed": 16,
+     "draws": 4000
+    },
+    "neutral_adjudicator": {
+     "point": 0.8599269183922046,
+     "lo": 0.8223039215686274,
+     "hi": 0.8964677222898904,
+     "seed": 17,
+     "draws": 4000
+    }
+   },
+   "majority_acc_on_triples": {
+    "point": 0.8599269183922046,
+    "lo": 0.8205596107055961,
+    "hi": 0.896319018404908,
+    "seed": 18,
+    "draws": 4000
+   },
+   "best_seat": "neutral_adjudicator",
+   "seat_minus_neutral": {
+    "writer_advocate": {
+     "point": -0.2685749086479903,
+     "lo": -0.3466424682395644,
+     "hi": -0.1940389294403893,
+     "seed": 19,
+     "draws": 4000
+    },
+    "counterparty": {
+     "point": -0.4226552984165652,
+     "lo": -0.49969268592501537,
+     "hi": -0.345565749235474,
+     "seed": 20,
+     "draws": 4000
+    },
+    "neutral_adjudicator": {
+     "point": 0.0,
+     "lo": 0.0,
+     "hi": 0.0,
+     "seed": 21,
+     "draws": 4000
+    }
+   },
+   "best_minus_neutral": {
+    "point": 0.0,
+    "lo": 0.0,
+    "hi": 0.0,
+    "seed": 21,
+    "draws": 4000
+   },
+   "writer_minus_neutral": {
+    "point": -0.2685749086479903,
+    "lo": -0.3466424682395644,
+    "hi": -0.1940389294403893,
+    "seed": 19,
+    "draws": 4000
+   },
+   "majority_minus_neutral": {
+    "point": 0.0,
+    "lo": 0.0,
+    "hi": 0.0,
+    "seed": 22,
+    "draws": 4000
+   },
+   "role_lock": {
+    "point": 0.9711729736939821,
+    "lo": 0.9536117185076456,
+    "hi": 0.9856262310609457,
+    "seed": 23,
+    "draws": 4000
+   },
+   "p_at_fault_r0": {
+    "writer_advocate": 0.003001200480192077,
+    "counterparty": 0.9741741741741742,
+    "neutral_adjudicator": 0.429940119760479
+   },
+   "profile_counts": {
+    "0|0|0": {
+     "n": 43,
+     "gold_at_fault": 0
+    },
+    "0|1|0": {
+     "n": 890,
+     "gold_at_fault": 98
+    },
+    "0|1|1": {
+     "n": 705,
+     "gold_at_fault": 573
+    },
+    "1|1|1": {
+     "n": 4,
+     "gold_at_fault": 4
+    }
+   },
+   "fig1_reference": {
+    "n_r0": 1666,
+    "role_lock": 0.9711729736939821,
+    "seat_acc_per_seat_codable": {
+     "writer_advocate": 0.5918367346938775,
+     "counterparty": 0.43663663663663665,
+     "neutral_adjudicator": 0.8568862275449102
+    },
+    "p_at_fault": {
+     "writer_advocate": 0.003001200480192077,
+     "counterparty": 0.9741741741741742,
+     "neutral_adjudicator": 0.429940119760479
+    }
+   },
+   "cv_oracle_bits": {
+    "n": 1642,
+    "n_items": 210,
+    "split_seed": 13,
+    "fold_sizes": [
+     105,
+     105
+    ],
+    "cv_oracle_acc": 0.8599269183922046,
+    "neutral_acc": 0.8599269183922046,
+    "gap": 0.0,
+    "lo": -0.004242424242424243,
+    "hi": 0.0,
+    "split_sensitivity": {
+     "n_splits": 200,
+     "mean_gap": -0.0005602923264311818,
+     "min_gap": -0.00243605359317905,
+     "max_gap": 0.0
+    },
+    "in_sample": {
+     "oracle": 0.8599269183922046,
+     "neutral": 0.8599269183922046,
+     "gap": 0.0,
+     "table": {
+      "0|0|0": 0,
+      "0|1|0": 0,
+      "0|1|1": 1,
+      "1|1|1": 1
+     },
+     "default": 0
+    }
+   },
+   "cv_oracle_raw_tokens_secondary": {
+    "n": 1642,
+    "n_items": 210,
+    "split_seed": 13,
+    "fold_sizes": [
+     105,
+     105
+    ],
+    "cv_oracle_acc": 0.8623629719853837,
+    "neutral_acc": 0.8599269183922046,
+    "gap": 0.00243605359317905,
+    "lo": -0.041970802919708027,
+    "hi": 0.03755299818291944,
+    "split_sensitivity": {
+     "n_splits": 200,
+     "mean_gap": -0.004908647990255785,
+     "min_gap": -0.03958587088915956,
+     "max_gap": 0.015834348355663823
+    },
+    "in_sample": {
+     "oracle": 0.8781973203410475,
+     "neutral": 0.8599269183922046,
+     "gap": 0.018270401948842885,
+     "table": {
+      "ESH|YTA|YTA": 1,
+      "NAH|ESH|ESH": 1,
+      "NAH|ESH|NAH": 1,
+      "NAH|NAH|NAH": 0,
+      "NAH|YTA|ESH": 1,
+      "NAH|YTA|NAH": 1,
+      "NAH|YTA|YTA": 1,
+      "NTA|ESH|ESH": 0,
+      "NTA|ESH|NAH": 0,
+      "NTA|ESH|NTA": 0,
+      "NTA|ESH|YTA": 1,
+      "NTA|NAH|NTA": 0,
+      "NTA|YTA|ESH": 1,
+      "NTA|YTA|NAH": 0,
+      "NTA|YTA|NTA": 0,
+      "NTA|YTA|YTA": 1
+     },
+     "default": 0
+    }
+   }
+  },
+  "sonnet": {
+   "model": "claude-sonnet-4-6",
+   "tag": "cg_deliberation_sonnet_fixed",
+   "guard": {
+    "ok": true,
+    "reasons": [],
+    "n_debates": 31,
+    "n_triples": 31,
+    "n_missing_r0_calls": 0,
+    "noncodable_triple_share": 0.0
+   },
+   "base_seed": 113,
+   "n_debates": 31,
+   "n_items": 16,
+   "n_triples": 31,
+   "n_items_in_triples": 16,
+   "majority_equals_neutral": {
+    "count": 31,
+    "n": 31,
+    "point": 1.0,
+    "lo": 1.0,
+    "hi": 1.0,
+    "seed": 114,
+    "draws": 4000
+   },
+   "seat_acc_on_triples": {
+    "writer_advocate": {
+     "point": 0.8064516129032258,
+     "lo": 0.6129032258064516,
+     "hi": 0.967741935483871,
+     "seed": 115,
+     "draws": 4000
+    },
+    "counterparty": {
+     "point": 0.5161290322580645,
+     "lo": 0.25806451612903225,
+     "hi": 0.75,
+     "seed": 116,
+     "draws": 4000
+    },
+    "neutral_adjudicator": {
+     "point": 1.0,
+     "lo": 1.0,
+     "hi": 1.0,
+     "seed": 117,
+     "draws": 4000
+    }
+   },
+   "majority_acc_on_triples": {
+    "point": 1.0,
+    "lo": 1.0,
+    "hi": 1.0,
+    "seed": 118,
+    "draws": 4000
+   },
+   "best_seat": "neutral_adjudicator",
+   "seat_minus_neutral": {
+    "writer_advocate": {
+     "point": -0.1935483870967742,
+     "lo": -0.375,
+     "hi": -0.03225806451612903,
+     "seed": 119,
+     "draws": 4000
+    },
+    "counterparty": {
+     "point": -0.4838709677419355,
+     "lo": -0.7333333333333333,
+     "hi": -0.22580645161290322,
+     "seed": 120,
+     "draws": 4000
+    },
+    "neutral_adjudicator": {
+     "point": 0.0,
+     "lo": 0.0,
+     "hi": 0.0,
+     "seed": 121,
+     "draws": 4000
+    }
+   },
+   "best_minus_neutral": {
+    "point": 0.0,
+    "lo": 0.0,
+    "hi": 0.0,
+    "seed": 121,
+    "draws": 4000
+   },
+   "writer_minus_neutral": {
+    "point": -0.1935483870967742,
+    "lo": -0.375,
+    "hi": -0.03225806451612903,
+    "seed": 119,
+    "draws": 4000
+   },
+   "majority_minus_neutral": {
+    "point": 0.0,
+    "lo": 0.0,
+    "hi": 0.0,
+    "seed": 122,
+    "draws": 4000
+   },
+   "role_lock": {
+    "point": 0.6774193548387096,
+    "lo": 0.4666666666666667,
+    "hi": 0.875,
+    "seed": 123,
+    "draws": 4000
+   },
+   "p_at_fault_r0": {
+    "writer_advocate": 0.25806451612903225,
+    "counterparty": 0.9354838709677419,
+    "neutral_adjudicator": 0.45161290322580644
+   },
+   "profile_counts": {
+    "0|0|0": {
+     "n": 2,
+     "gold_at_fault": 0
+    },
+    "0|1|0": {
+     "n": 15,
+     "gold_at_fault": 0
+    },
+    "0|1|1": {
+     "n": 6,
+     "gold_at_fault": 6
+    },
+    "1|1|1": {
+     "n": 8,
+     "gold_at_fault": 8
+    }
+   },
+   "fig1_reference": {
+    "n_r0": 31,
+    "role_lock": 0.6774193548387096,
+    "seat_acc_per_seat_codable": {
+     "writer_advocate": 0.8064516129032258,
+     "counterparty": 0.5161290322580645,
+     "neutral_adjudicator": 1.0
+    },
+    "p_at_fault": {
+     "writer_advocate": 0.25806451612903225,
+     "counterparty": 0.9354838709677419,
+     "neutral_adjudicator": 0.45161290322580644
+    }
+   },
+   "cv_oracle_bits": {
+    "n": 31,
+    "n_items": 16,
+    "split_seed": 113,
+    "fold_sizes": [
+     8,
+     8
+    ],
+    "cv_oracle_acc": 0.9354838709677419,
+    "neutral_acc": 1.0,
+    "gap": -0.06451612903225806,
+    "lo": -0.4666666666666667,
+    "hi": 0.0,
+    "split_sensitivity": {
+     "n_splits": 200,
+     "mean_gap": -0.04887096774193545,
+     "min_gap": -0.9354838709677419,
+     "max_gap": 0.0
+    },
+    "in_sample": {
+     "oracle": 1.0,
+     "neutral": 1.0,
+     "gap": 0.0,
+     "table": {
+      "0|0|0": 0,
+      "0|1|0": 0,
+      "0|1|1": 1,
+      "1|1|1": 1
+     },
+     "default": 0
+    }
+   },
+   "cv_oracle_raw_tokens_secondary": {
+    "n": 31,
+    "n_items": 16,
+    "split_seed": 113,
+    "fold_sizes": [
+     8,
+     8
+    ],
+    "cv_oracle_acc": 0.9354838709677419,
+    "neutral_acc": 1.0,
+    "gap": -0.06451612903225806,
+    "lo": -0.5161290322580645,
+    "hi": 0.0,
+    "split_sensitivity": {
+     "n_splits": 200,
+     "mean_gap": -0.1401612903225809,
+     "min_gap": -0.9354838709677419,
+     "max_gap": 0.0
+    },
+    "in_sample": {
+     "oracle": 1.0,
+     "neutral": 1.0,
+     "gap": 0.0,
+     "table": {
+      "ESH|YTA|YTA": 1,
+      "NAH|YTA|YTA": 1,
+      "NTA|ESH|NTA": 0,
+      "NTA|NTA|NTA": 0,
+      "NTA|YTA|NTA": 0,
+      "NTA|YTA|YTA": 1,
+      "YTA|YTA|YTA": 1
+     },
+     "default": 0
+    }
+   }
+  },
+  "nano": {
+   "model": "gpt-5.4-nano",
+   "tag": "cg_deliberation_nano",
+   "guard": {
+    "ok": true,
+    "reasons": [],
+    "n_debates": 836,
+    "n_triples": 781,
+    "n_missing_r0_calls": 0,
+    "noncodable_triple_share": 0.06578947368421052
+   },
+   "base_seed": 213,
+   "n_debates": 836,
+   "n_items": 209,
+   "n_triples": 781,
+   "n_items_in_triples": 209,
+   "majority_equals_neutral": {
+    "count": 777,
+    "n": 781,
+    "point": 0.9948783610755442,
+    "lo": 0.9896238651102465,
+    "hi": 0.9987373737373737,
+    "seed": 214,
+    "draws": 4000
+   },
+   "seat_acc_on_triples": {
+    "writer_advocate": {
+     "point": 0.7144686299615877,
+     "lo": 0.655483870967742,
+     "hi": 0.7695214105793451,
+     "seed": 215,
+     "draws": 4000
+    },
+    "counterparty": {
+     "point": 0.6017925736235595,
+     "lo": 0.5459249676584734,
+     "hi": 0.6577608142493638,
+     "seed": 216,
+     "draws": 4000
+    },
+    "neutral_adjudicator": {
+     "point": 0.8245838668373879,
+     "lo": 0.7770780856423174,
+     "hi": 0.8673469387755102,
+     "seed": 217,
+     "draws": 4000
+    }
+   },
+   "majority_acc_on_triples": {
+    "point": 0.8220230473751601,
+    "lo": 0.7756653992395437,
+    "hi": 0.8645833333333334,
+    "seed": 218,
+    "draws": 4000
+   },
+   "best_seat": "neutral_adjudicator",
+   "seat_minus_neutral": {
+    "writer_advocate": {
+     "point": -0.11011523687580026,
+     "lo": -0.16276041666666666,
+     "hi": -0.05958549222797927,
+     "seed": 219,
+     "draws": 4000
+    },
+    "counterparty": {
+     "point": -0.22279129321382843,
+     "lo": -0.2894393741851369,
+     "hi": -0.15336658354114713,
+     "seed": 220,
+     "draws": 4000
+    },
+    "neutral_adjudicator": {
+     "point": 0.0,
+     "lo": 0.0,
+     "hi": 0.0,
+     "seed": 221,
+     "draws": 4000
+    }
+   },
+   "best_minus_neutral": {
+    "point": 0.0,
+    "lo": 0.0,
+    "hi": 0.0,
+    "seed": 221,
+    "draws": 4000
+   },
+   "writer_minus_neutral": {
+    "point": -0.11011523687580026,
+    "lo": -0.16276041666666666,
+    "hi": -0.05958549222797927,
+    "seed": 219,
+    "draws": 4000
+   },
+   "majority_minus_neutral": {
+    "point": -0.002560819462227913,
+    "lo": -0.007722007722007722,
+    "hi": 0.0025348542458808617,
+    "seed": 222,
+    "draws": 4000
+   },
+   "role_lock": {
+    "point": 0.6203541117939713,
+    "lo": 0.5734089649670862,
+    "hi": 0.6682020824832631,
+    "seed": 223,
+    "draws": 4000
+   },
+   "p_at_fault_r0": {
+    "writer_advocate": 0.14705882352941177,
+    "counterparty": 0.7674129353233831,
+    "neutral_adjudicator": 0.36253041362530414
+   },
+   "profile_counts": {
+    "0|0|0": {
+     "n": 180,
+     "gold_at_fault": 13
+    },
+    "0|0|1": {
+     "n": 3,
+     "gold_at_fault": 2
+    },
+    "0|1|0": {
+     "n": 315,
+     "gold_at_fault": 72
+    },
+    "0|1|1": {
+     "n": 164,
+     "gold_at_fault": 124
+    },
+    "1|0|1": {
+     "n": 1,
+     "gold_at_fault": 1
+    },
+    "1|1|0": {
+     "n": 1,
+     "gold_at_fault": 0
+    },
+    "1|1|1": {
+     "n": 117,
+     "gold_at_fault": 106
+    }
+   },
+   "fig1_reference": {
+    "n_r0": 816,
+    "role_lock": 0.6203541117939713,
+    "seat_acc_per_seat_codable": {
+     "writer_advocate": 0.7181372549019608,
+     "counterparty": 0.6119402985074627,
+     "neutral_adjudicator": 0.829683698296837
+    },
+    "p_at_fault": {
+     "writer_advocate": 0.14705882352941177,
+     "counterparty": 0.7674129353233831,
+     "neutral_adjudicator": 0.36253041362530414
+    }
+   },
+   "cv_oracle_bits": {
+    "n": 781,
+    "n_items": 209,
+    "split_seed": 213,
+    "fold_sizes": [
+     104,
+     105
+    ],
+    "cv_oracle_acc": 0.8207426376440461,
+    "neutral_acc": 0.8245838668373879,
+    "gap": -0.0038412291933418692,
+    "lo": -0.009009009009009009,
+    "hi": 0.00129366106080207,
+    "split_sensitivity": {
+     "n_splits": 200,
+     "mean_gap": -0.0028297055057618366,
+     "min_gap": -0.0038412291933418692,
+     "max_gap": -0.002560819462227913
+    },
+    "in_sample": {
+     "oracle": 0.8245838668373879,
+     "neutral": 0.8245838668373879,
+     "gap": 0.0,
+     "table": {
+      "0|0|0": 0,
+      "0|0|1": 1,
+      "0|1|0": 0,
+      "0|1|1": 1,
+      "1|0|1": 1,
+      "1|1|0": 0,
+      "1|1|1": 1
+     },
+     "default": 0
+    }
+   },
+   "cv_oracle_raw_tokens_secondary": {
+    "n": 781,
+    "n_items": 209,
+    "split_seed": 213,
+    "fold_sizes": [
+     104,
+     105
+    ],
+    "cv_oracle_acc": 0.8066581306017926,
+    "neutral_acc": 0.8245838668373879,
+    "gap": -0.01792573623559539,
+    "lo": -0.056921086675291076,
+    "hi": 0.026888604353393086,
+    "split_sensitivity": {
+     "n_splits": 200,
+     "mean_gap": -0.008092189500640206,
+     "min_gap": -0.03969270166453265,
+     "max_gap": 0.012804097311139564
+    },
+    "in_sample": {
+     "oracle": 0.8450704225352113,
+     "neutral": 0.8245838668373879,
+     "gap": 0.020486555697823317,
+     "table": {
+      "ESH|ESH|ESH": 0,
+      "ESH|ESH|YTA": 1,
+      "ESH|YTA|ESH": 1,
+      "ESH|YTA|NTA": 0,
+      "ESH|YTA|YTA": 1,
+      "NAH|ESH|NTA": 0,
+      "NAH|NAH|NAH": 0,
+      "NAH|NAH|NTA": 0,
+      "NAH|NTA|NAH": 0,
+      "NAH|NTA|NTA": 0,
+      "NAH|YTA|ESH": 1,
+      "NAH|YTA|NAH": 1,
+      "NAH|YTA|NTA": 0,
+      "NAH|YTA|YTA": 1,
+      "NTA|ESH|ESH": 0,
+      "NTA|ESH|NAH": 0,
+      "NTA|ESH|NTA": 0,
+      "NTA|NAH|NAH": 0,
+      "NTA|NAH|NTA": 0,
+      "NTA|NTA|ESH": 0,
+      "NTA|NTA|NTA": 0,
+      "NTA|NTA|YTA": 1,
+      "NTA|YTA|ESH": 1,
+      "NTA|YTA|NAH": 1,
+      "NTA|YTA|NTA": 0,
+      "NTA|YTA|YTA": 1,
+      "YTA|ESH|YTA": 1,
+      "YTA|NTA|YTA": 1,
+      "YTA|YTA|ESH": 1,
+      "YTA|YTA|YTA": 1
+     },
+     "default": 0
+    }
+   }
+  },
+  "haiku": {
+   "model": "claude-haiku-4-5",
+   "tag": "cg_deliberation_haiku_fixed",
+   "guard": {
+    "ok": true,
+    "reasons": [],
+    "n_debates": 192,
+    "n_triples": 187,
+    "n_missing_r0_calls": 0,
+    "noncodable_triple_share": 0.026041666666666668
+   },
+   "base_seed": 313,
+   "n_debates": 192,
+   "n_items": 100,
+   "n_triples": 187,
+   "n_items_in_triples": 100,
+   "majority_equals_neutral": {
+    "count": 180,
+    "n": 187,
+    "point": 0.9625668449197861,
+    "lo": 0.9297297297297298,
+    "hi": 0.9893048128342246,
+    "seed": 314,
+    "draws": 4000
+   },
+   "seat_acc_on_triples": {
+    "writer_advocate": {
+     "point": 0.8181818181818182,
+     "lo": 0.7473118279569892,
+     "hi": 0.8802083333333334,
+     "seed": 315,
+     "draws": 4000
+    },
+    "counterparty": {
+     "point": 0.44385026737967914,
+     "lo": 0.3492063492063492,
+     "hi": 0.5421052631578948,
+     "seed": 316,
+     "draws": 4000
+    },
+    "neutral_adjudicator": {
+     "point": 0.7165775401069518,
+     "lo": 0.6307692307692307,
+     "hi": 0.7978142076502732,
+     "seed": 317,
+     "draws": 4000
+    }
+   },
+   "majority_acc_on_triples": {
+    "point": 0.7005347593582888,
+    "lo": 0.6197916666666666,
+    "hi": 0.7801047120418848,
+    "seed": 318,
+    "draws": 4000
+   },
+   "best_seat": "writer_advocate",
+   "seat_minus_neutral": {
+    "writer_advocate": {
+     "point": 0.10160427807486631,
+     "lo": 0.027624309392265192,
+     "hi": 0.18181818181818182,
+     "seed": 319,
+     "draws": 4000
+    },
+    "counterparty": {
+     "point": -0.2727272727272727,
+     "lo": -0.3582887700534759,
+     "hi": -0.18617021276595744,
+     "seed": 320,
+     "draws": 4000
+    },
+    "neutral_adjudicator": {
+     "point": 0.0,
+     "lo": 0.0,
+     "hi": 0.0,
+     "seed": 321,
+     "draws": 4000
+    }
+   },
+   "best_minus_neutral": {
+    "point": 0.10160427807486631,
+    "lo": 0.027624309392265192,
+    "hi": 0.18181818181818182,
+    "seed": 319,
+    "draws": 4000
+   },
+   "writer_minus_neutral": {
+    "point": 0.10160427807486631,
+    "lo": 0.027624309392265192,
+    "hi": 0.18181818181818182,
+    "seed": 319,
+    "draws": 4000
+   },
+   "majority_minus_neutral": {
+    "point": -0.016042780748663103,
+    "lo": -0.04891304347826087,
+    "hi": 0.01092896174863388,
+    "seed": 322,
+    "draws": 4000
+   },
+   "role_lock": {
+    "point": 0.4416597048175996,
+    "lo": 0.3522828014184397,
+    "hi": 0.5337834114081014,
+    "seed": 323,
+    "draws": 4000
+   },
+   "p_at_fault_r0": {
+    "writer_advocate": 0.47368421052631576,
+    "counterparty": 0.9153439153439153,
+    "neutral_adjudicator": 0.65625
+   },
+   "profile_counts": {
+    "0|0|0": {
+     "n": 11,
+     "gold_at_fault": 0
+    },
+    "0|0|1": {
+     "n": 3,
+     "gold_at_fault": 1
+    },
+    "0|1|0": {
+     "n": 50,
+     "gold_at_fault": 2
+    },
+    "0|1|1": {
+     "n": 34,
+     "gold_at_fault": 6
+    },
+    "1|0|1": {
+     "n": 2,
+     "gold_at_fault": 2
+    },
+    "1|1|0": {
+     "n": 4,
+     "gold_at_fault": 0
+    },
+    "1|1|1": {
+     "n": 83,
+     "gold_at_fault": 62
+    }
+   },
+   "fig1_reference": {
+    "n_r0": 190,
+    "role_lock": 0.4416597048175996,
+    "seat_acc_per_seat_codable": {
+     "writer_advocate": 0.8157894736842105,
+     "counterparty": 0.4444444444444444,
+     "neutral_adjudicator": 0.7083333333333334
+    },
+    "p_at_fault": {
+     "writer_advocate": 0.47368421052631576,
+     "counterparty": 0.9153439153439153,
+     "neutral_adjudicator": 0.65625
+    }
+   },
+   "cv_oracle_bits": {
+    "n": 187,
+    "n_items": 100,
+    "split_seed": 313,
+    "fold_sizes": [
+     50,
+     50
+    ],
+    "cv_oracle_acc": 0.8288770053475936,
+    "neutral_acc": 0.7165775401069518,
+    "gap": 0.11229946524064172,
+    "lo": -0.01675977653631285,
+    "hi": 0.18229166666666666,
+    "split_sensitivity": {
+     "n_splits": 200,
+     "mean_gap": 0.11532085561497325,
+     "min_gap": 0.10160427807486631,
+     "max_gap": 0.12299465240641712
+    },
+    "in_sample": {
+     "oracle": 0.839572192513369,
+     "neutral": 0.7165775401069518,
+     "gap": 0.12299465240641716,
+     "table": {
+      "0|0|0": 0,
+      "0|0|1": 0,
+      "0|1|0": 0,
+      "0|1|1": 0,
+      "1|0|1": 1,
+      "1|1|0": 0,
+      "1|1|1": 1
+     },
+     "default": 0
+    }
+   },
+   "cv_oracle_raw_tokens_secondary": {
+    "n": 187,
+    "n_items": 100,
+    "split_seed": 313,
+    "fold_sizes": [
+     50,
+     50
+    ],
+    "cv_oracle_acc": 0.9144385026737968,
+    "neutral_acc": 0.7165775401069518,
+    "gap": 0.19786096256684493,
+    "lo": 0.06417112299465241,
+    "hi": 0.28421052631578947,
+    "split_sensitivity": {
+     "n_splits": 200,
+     "mean_gap": 0.19564171122994664,
+     "min_gap": 0.13903743315508021,
+     "max_gap": 0.2192513368983957
+    },
+    "in_sample": {
+     "oracle": 0.9518716577540107,
+     "neutral": 0.7165775401069518,
+     "gap": 0.23529411764705888,
+     "table": {
+      "ESH|ESH|ESH": 0,
+      "ESH|ESH|NTA": 0,
+      "ESH|ESH|YTA": 1,
+      "ESH|NTA|ESH": 1,
+      "ESH|YTA|ESH": 0,
+      "ESH|YTA|YTA": 1,
+      "NAH|ESH|ESH": 0,
+      "NTA|ESH|ESH": 0,
+      "NTA|ESH|NTA": 0,
+      "NTA|NTA|ESH": 0,
+      "NTA|NTA|NAH": 0,
+      "NTA|NTA|NTA": 0,
+      "NTA|YTA|ESH": 1,
+      "NTA|YTA|NTA": 0,
+      "NTA|YTA|YTA": 1,
+      "YTA|ESH|ESH": 1,
+      "YTA|ESH|YTA": 1,
+      "YTA|NTA|YTA": 1,
+      "YTA|YTA|YTA": 1
+     },
+     "default": 0
+    }
+   }
+  }
+ },
+ "guard_ok": true,
+ "guard_failures": [],
+ "population_alternatives_grok": {
+  "all_three_r0_codable": {
+   "n": 1642,
+   "majority_equals_neutral": 1642,
+   "neutral_acc": 0.8599269183922046
+  },
+  "majority_defined_and_neutral_codable": {
+   "n": 1654,
+   "majority_equals_neutral": 1654,
+   "neutral_acc": 0.8585247883917775
+  },
+  "all_three_r0_codable_and_debate_codable": {
+   "n": 1639,
+   "majority_equals_neutral": 1639,
+   "neutral_acc": 0.8596705308114704
+  },
+  "neutral_codable_and_debate_codable": {
+   "n": 1667,
+   "majority_equals_neutral": 1651,
+   "neutral_acc": 0.856628674265147
+  }
+ },
+ "replay_agreement": {
+  "grok_oracle_gap": {
+   "replay": -0.021,
+   "computed": 0.0,
+   "lo": -0.004242424242424243,
+   "hi": 0.0,
+   "agrees": false,
+   "same_quantity": false,
+   "note": "the record's -0.021 was a 2-fold CV oracle over a much richer profile (nine seat verdicts, both moderator verdicts, all labels and votes; headline_theory.html R3); the registered readout is over the three r0 verdicts only, where the in-sample oracle is exactly the neutral seat, so the gap is 0 by construction and can only go negative through unseen profiles under CV",
+   "paper_must_pick_one": "cite the registered readout (+0.000 [-0.004, +0.000], n 1642, 210 items: the best fixed function of the three opening verdicts IS the neutral seat), OR keep -0.021 explicitly without an interval and with its full-profile definition; this artefact does not attach an interval to -0.021"
+  },
+  "grok_majority_equals_neutral": {
+   "replay": 1.0,
+   "replay_n": 1663,
+   "computed": 1.0,
+   "computed_n": 1642,
+   "agrees": true,
+   "replay_n_reproduced": false,
+   "note": "share agrees (100%); the record's n of 1,663 is not reproduced by any r0-cache population (see population_alternatives_grok)",
+   "paper_wording": "majority equals the neutral seat on 1,642 of 1,642 debates with three codable opening verdicts (210 items); drop 1,663"
+  },
+  "haiku_majority_equals_neutral": {
+   "replay": 0.963,
+   "replay_n": 187,
+   "computed": 0.9625668449197861,
+   "computed_n": 187,
+   "agrees": true
+  },
+  "haiku_writer_acc": {
+   "replay": 0.818,
+   "computed": 0.8181818181818182,
+   "agrees": true
+  },
+  "haiku_neutral_acc": {
+   "replay": 0.701,
+   "computed_neutral_on_triples": 0.7165775401069518,
+   "computed_neutral_per_seat_codable": 0.7083333333333334,
+   "computed_majority_on_triples": 0.7005347593582888,
+   "agrees": false,
+   "replay_is_majority_acc": true,
+   "note": "the replay's 0.701 is the MAJORITY's accuracy on the 187 triples, not the neutral seat's; the neutral seat scores 0.717 on the triples (0.708 on its 192 codable rows)",
+   "paper_wording": "writer's advocate 0.818 vs neutral 0.717 (paired +0.102 [+0.028, +0.182], n 187); the majority (0.701) tracks the neutral and is below the best seat; cite the paired seat difference, not the extension CV oracle gap"
+  }
+ }
+}

@@ -1,0 +1,297 @@
+% methods.tex -- \section{Method} for the ICLR 2027 main file, after related_work.tex.
+% Drafted 2026-09-12 against the corrected record; revised 2026-09-12 (evening) after
+% the 16.10, 16.14b and 16.15 RESULTS blocks were appended to the prereg and the
+% AUDIT_16_15_consequences.md replacements were applied. Every number carries a
+% LaTeX comment naming its source: prereg = Guidance_Documents/prereg_embodiment_community.md,
+% code = scripts/*.py, artefact = divergence_study_outputs/*.
+% Prereg sources: L3-4, L34-37, L42-56, L75-76, L105-107, L139, L227-238, L296-303,
+%   L396-397, L528-542, L594-595, L755-770, L1169-1181, L1240-1252, L1297-1301, L1307-1310,
+%   L2285-2340, L2366-2373, L2492-2497, L2566-2589, L3251-3277, L3292, L3300-3318,
+%   L3335-3340, L3504-3570 (16.10 registration), L3584-3594 (16.11a registration),
+%   L3608-3612 (16.11a RESULTS), L3639-3651, L3704-3786 (16.14 registration),
+%   L3817-3833 (16.14 RESULTS, guard facts only), L3871-3886 (16.14b registration),
+%   L3888-3999 (16.15 registration), L4091-4097
+%   (16.14b RESULTS, guard facts only), L4136-4142 (16.10 RESULTS, guard facts only),
+%   L4212-4259 (16.15 RESULTS, estimator and frame), L4263-4268, L4285-4326, L4462-4470,
+%   L4515-4529 (16.15.1 and 16.15.4 RESULTS, definitions only); L4034-4048 (16.13 instrument),
+%   L4719-4791 (16.13 RESULTS, Stage A and B1, guard and leak-gate facts only; readouts in
+%   results.tex), L4793-4870 (Addendum 16.13c registration), L5018-5058 (16.13 RESULTS,
+%   Stage B2), L5060-5106 (16.13c RESULTS, Stage C1), L5108-5145 (16.13d registration),
+%   L5147-5192 (16.13d RESULTS), L5114-5117 and L5129-5131 (coordination scoring rule).
+% Code sources: run_phase1_quartet.py:77-116; run_stance_factorial.py:189-199,362-396,438-441;
+%   run_bm_embodiment.py:60-67,83-104,138-155; run_bm_cross_sig.py:72-86;
+%   run_crowdgold_aita.py:197-230,417-427,972-999; run_crowdgold_deliberation.py:14-28,
+%     400-402,459-511,522-540,559-597,889-904,1180-1205,2092-2129,3297-3317,3532-3538,3620-3623;
+%   run_crowdgold_topology.py:45-61,86-127; run_crowdgold_unembodied.py:179-182;
+%   run_crowdgold_dilemma.py:121-136,229-312; run_bm_cycle.py:78-136,228-258;
+%   load_scruples.py:10-13,128-132,356-359,771-786; load_scruples_dilemmas.py:16-27;
+%   load_brokenmath.py:4-5; verdict_format.py:32-34,100-101,263-280; generators.py:624;
+%   analyze_bm_embodiment.py:27-31,70-97; analyze_crowdgold_sdt.py:113-131;
+%   analyze_loop_step.py:88-111,205-214; analyze_claim_audit.py:60-107;
+%   analyze_stake_grip.py:39,57-68,151-179; analyze_unembodied_ablation.py:68-70,144-215;
+%   analyze_topology_2x2.py:18-19,141-156,184-204,339; analyze_actuator_ladder.py:53-64,152-175;
+%   analyze_dilemma_grip.py:62-66; analyze_dilemma_sensor_search.py:111-116;
+%   analyze_router_decomposition.py:97-101,139-168,183-247,251-263,322-347,374-448;
+%   analyze_effective_voter.py:21-31,106,177-247; analyze_bm_notes.py; analyze_length_matched_elephant.py;
+%   elephant_scorers.py:20-48,165-193; rescore_elephant_untruncated.py:1-30,65,112,122-164;
+%   run_elephant.py:376; tmg_games.py; run_game_singleagent.py.
+% Artefacts: crowdgold_aita_summary.json:6-11 (+wrapper_match); cg_delib_pilot_console.log:2,40;
+%   length_matched_elephant_oeq_validation_corrected.json; router_decomposition.json;
+%   effective_voter.json; transfer_readouts.json; topology_2x2_analysis.json; bm_cycleb_analysis.json;
+%   game_solo_analysis.json; game_solo_masked_analysis.json; game_B1_analysis.json;
+%   game_B2_analysis.json; game_C1_analysis.json; game_solo_nb_analysis.json;
+%   game_coordination_analysis.json.
+% Style matches introduction.tex: no em dashes, no colons or semicolons in running prose,
+% no lists in prose, past tense for what was done, present tense for what holds.
+% Terminology as introduction.tex: embodiment = a perspective and at full dose an interest;
+% narration = the light dose; advocacy = the full dose; the collective = the three-seat graph;
+% "the sensor" = the flag that fires when the second advocate objects (the stake-blind counter);
+% "one effective voter" always carries its scope clause (where the roles lock).
+% Cites only petrov2025brokenmath, cheng25elephant, openai_gpt54nano, anthropic_haiku45,
+% anthropic_sonnet46, xai_grok41, all present in references.bib. Scruples (Lourie, Le Bras
+% & Choi, AAAI 2021) has NO bib key; a \todo marks the spot and no key is invented.
+% \todo requires the todonotes package or the fallback macro below.
+% The main file needs \usepackage{booktabs} for the instrument table.
+% Prose budget 1,100-1,300 words; this revision counts 1,299 with \todo text and
+% citation tokens included (comments and the table excluded), by the same rule
+% as before (non-comment tokens outside the table, section and label commands
+% dropped; the 2026-09-12 evening revision counted 1,303 by that script).
+% Effective-voter note for results.tex: this file defines the REGISTERED oracle
+% (best fixed function of the three opening verdicts, 16.15.4). If results.tex keeps
+% the record's -0.021 full-profile oracle as well, add here that it ranged over every
+% seat verdict, moderator verdict, label and vote and carries no interval
+% (prereg L4477-4486).
+
+\providecommand{\todo}[1]{\textbf{[TODO: #1]}}
+
+\section{Method}
+\label{sec-method}
+
+\subsection{Two interventions and a collective}
+\label{sec-method-interventions}
+
+Both interventions change only the system prompt or the head of the user
+turn. % code run_stance_factorial.py:362-396; verdict_format.py:263-280 (item text and verdict instruction byte-identical across arms)
+The untreated baseline asks for step-by-step reasoning and an answer. % code run_phase1_quartet.py:77-79
+Narration replaces it with a five-part first-person narrative, the
+decision-maker, the stakeholders and their stakes, the consequences two
+steps forward, what is uncertain, and only then a decision. % code run_phase1_quartet.py:102-116
+Advocacy assigns an interest. On the false-premise instrument a
+one-sentence head makes the model the statement's author, the
+author's colleague, a stranger or the author's rival over a shared tail,
+none claiming to know whether it is true. % prereg L50-56 (heads token-matched within a ratio of 1.10, not rank-aligned with the predicted order); code run_bm_embodiment.py:83-104, 138-155
+Three further arms cross the heads with narration. % prereg L227-238; code run_bm_cross_sig.py:72-86
+
+The collective seats three copies of one model at one dispute, one for
+the writer, whose stake is a finding of not at fault, one for the other
+party, with the opposite stake, and a neutral adjudicator, all under
+narration and forbidden to invent facts. % code run_crowdgold_deliberation.py:459-511, 559-573 (shared verdict glossary); run_crowdgold_aita.py:417-427
+A debate is seven rounds and seventeen calls. The seats open, rebut and
+restate, a moderator, the same model with no stake, writes a synthesis
+with a verdict, each seat labels it accept, accept with one stated
+modification or reject, the moderator writes an integrated proposal, and
+each seat votes accept or reject. % code run_crowdgold_deliberation.py:14-28, 889-904, 3297-3299 (moderator in a separate role); labels and requests parsed from line-anchored markers, not by a judge model (400-402, 576-597)
+% Token caps: 2,560 seat, 1,024 moderator, 512 vote, raised to 3,072 for the two
+% Anthropic models after the guard failure (prereg L3292, L1240-1252; code
+% run_crowdgold_deliberation.py:3306-3317); gpt-5.4-nano ran at a floor of 8,192
+% on every call (generators.py:624, eff_tokens = max(max_tokens, 8192) for reasoning models).
+Each dispute is shown under two framings, as someone else's account and
+as the asker's own. % code run_crowdgold_aita.py:197-230 (identical post text); artefact crowdgold_aita_summary.json wrapper_match
+
+\subsection{Designs that isolate the structure}
+\label{sec-method-designs}
+
+A stake-free control removed the first-person alignment and the stake
+clause from every prompt but kept the instruction to argue as strongly as
+the account allows. % prereg L3300-3310; code run_crowdgold_unembodied.py:179-182
+A two-by-two factorial crossed roles, the embodied briefs against three
+copies of the neutral brief, with edges, seats reading one another at the
+rebuttal rounds against no seat reading any other. % prereg L3508-3516 (16.10 registration)
+Since a seat cannot rebut text it cannot see, no-edge rounds asked it to
+develop and restate its own opening statement. % prereg L3525-3532 (persuasion clause and verdict instruction byte-identical); code run_crowdgold_topology.py:50-61, 116-127
+Three new cells ran 420 debates each on grok over the same 210 items and
+both framings beside the existing 1,680-debate embodied, edges-on
+panel. % prereg L3515 (16.10 registration table, "EXISTS: cg_deliberation, 1,680 debates", four samples per item and framing), L3508-3523 (new cells one sample per item and framing, each in its own cache namespace so that no cell replays another's rounds), L4136 (16.10 RESULTS heading, "three new cells run 2026-09-12, 420 debates each"); code run_crowdgold_topology.py:86-100; artefact topology_2x2_analysis.json cells.*.n_debates (1680 / 420 / 420 / 420); guard facts at prereg L4136-4142
+% Pre-declared readings (prereg L3560-3570): structure present with edges cut and absent
+% under identical roles is H-ROLE, the reverse H-EDGE; stated in results.tex, not here.
+
+A cycling design asked whether repeated narration deepens the
+perspective. Each false-premise unit with a first-pass response of at
+least 200 characters received one child that re-read it under a shared
+bridge and answered again under the same forced verdict,
+the narrated arm feeding back its narrated response and a control arm its
+untreated one. % prereg L3724-3742 (16.14 registration, one agent, gpt-5.4-nano, prior fed back in full, bridge byte-identical across arms); code run_bm_cycle.py:78-136
+The primary readout was the difference in differences of within-unit
+changes in affirmation. % prereg L3769-3779; code run_bm_cycle.py:228-258
+A first run at the 8,192-token floor exhausted completions and was
+flagged, so the registered 16,384-token re-run is read. % prereg L3871-3886 (16.14b registration, before any call, new scaffold names), L3817-3833 (16.14 GUARD FLAGGED, children exhausted the budget with no visible output, primary not tabulated), L4091-4097 (16.14b GUARD OK, primary READ); code run_bm_cycle.py:95-100; artefact bm_cycleb_analysis.json
+
+\subsection{Instruments}
+\label{sec-method-instruments}
+
+The dispute instrument (Table~\ref{tab-instruments}) draws on Scruples
+Anecdotes, first-person accounts of interpersonal conflict with crowd
+verdicts.
+\todo{references.bib Scruples entry, Lourie, Le Bras and Choi 2021, PI to add} % code load_scruples.py:10-13 (five verdict classes, the table's verdict set)
+An item enters when at least 90 percent of at least 50 votes fell on one
+class, which is gold, giving 249 items. % code load_scruples.py:131-132, 356-359, 771-786 (the plurality class); artefact crowdgold_aita_summary.json:7-11 (99 at fault, 150 not)
+Scoring collapses the five tokens to at fault (YTA, ESH) or not (NTA, NAH)
+and drops UNRESOLVED. % code verdict_format.py:101; load_scruples.py:128-129; analyze_crowdgold_sdt.py:113-131
+% Content-filter screen: items a model's cached single-agent call refused were dropped for
+% that model, leaving 220 for the pilot and 210 for the main run (code
+% run_crowdgold_deliberation.py:2092-2129; 220 at prereg L396-397, E4 RESULTS, "full
+% 220-item screened panel", and cg_delib_pilot_console.log:40, "using 220 (87 gold-YTA +
+% 133 gold-NTA)"; 210 at prereg L528-531, L534-536, E5 RESULTS). NOTE for the PI: E5
+% RESULTS L534-536 says the panel moved 219 -> 210, against 220 in E4 and the console
+% log; reconcile the record. results.tex L68 states the screen.
+
+The false-premise instrument is 100 problems sampled from the 451 of
+BrokenMath \citep{petrov2025brokenmath} whose statement is false, every
+gold FALSE. % code load_brokenmath.py:4-5; run_stance_factorial.py:438-441 (seed 44); run_bm_embodiment.py:60-67
+A fixed prefix asks whether the presupposed statement is true or false,
+and UNRESOLVED is never correct and never dropped from the
+denominator. % code run_stance_factorial.py:189-199; verdict_format.py:32-34, 100 (UNRESOLVED is non-commitment)
+Each arm ran six samples per item on gpt-5.4-nano \citep{openai_gpt54nano},
+all 600 planned units staying in the denominator, an empty response
+counting as no verdict. % prereg L34-37, L42-48 (2,048 tokens); code analyze_bm_embodiment.py:27-31, 70-97
+
+The comparative instrument, Scruples Dilemmas, pairs two anecdotes and a
+fresh crowd says whose action was more wrong. % prereg L2285-2302, L2294-2296, L2314-2319 (same annotation pipeline; both texts recovered by joining each action to its anecdote); code load_scruples_dilemmas.py:16-27. The corpus size (14,958 fully joined pairs with at least four annotators) sits only under the Stage 0 design heading at L2279 and L3226, not a RESULTS block or artefact, so it is not stated in prose; the table gives the 80 then 700, 624 codable panel.
+The verdict names the worse action or declines, the seats are an advocate
+for each person and a neutral adjudicator, under one framing. % prereg L2331-2340, L2366-2369 (neither account is addressed to the model); code run_crowdgold_dilemma.py:121-136, 229-312
+
+The open-ended instrument is 150 personal questions from ELEPHANT
+\citep{cheng25elephant}, answered under the untreated prompt and under
+narration and judged with the benchmark's own prompt for validation of the
+asker. % code run_elephant.py:376 (n 150), rescore_elephant_untruncated.py:112 (the two arms, four generators); elephant_scorers.py:20-48, 174-193 (judge claude-haiku-4-5, binary score; statistic is the validation rate per arm); artefact length_matched_elephant_oeq_validation_corrected.json (cot_n 150 per generator)
+% Truncation artefact: the judge pipeline cut answers at 4,000 characters, most narrated
+% answers affected, every affected answer re-scored on its full text (elephant_scorers.py:193;
+% rescore_elephant_untruncated.py:1-30, 65, 122-164); results.tex states the correction.
+A fifth instrument, 144 ordinal two-by-two games with a first-principles
+gold plan, ran in three regimes, a binding joint plan, non-binding action
+beside a solo comparator, and non-binding coordination on nine
+two-equilibrium games. % prereg L4034-4048 (16.13 registration, instrument built with a masked leak gate, zero calls at registration), L4719-4725 (16.13 RESULTS, Stage A leak gate PASSED, masked 432 of 432 NO_UNIQUE_PLAN at the 0.215 floor, guards PASSED), L4734-4736 (Stage B1 guards), L5018 (16.13 RESULTS Stage B2 heading, guards PASSED), L4793-4870 (16.13c registration, non-binding regime), L5060 (16.13c RESULTS Stage C1 heading, guards PASSED), L5108-5145 (16.13d registration, nine CONFLICT_OF_EQUILIBRIA games), L5147 (16.13d RESULTS heading, guards PASSED); readouts in results.tex sec-results-extent; code tmg_games.py, run_game_singleagent.py, run_crowdgold_game.py, run_crowdgold_game_nb.py; artefacts game_solo_masked_analysis.json, game_solo_analysis.json, game_B1_analysis.json, game_B2_analysis.json, game_C1_analysis.json, game_solo_nb_analysis.json, game_coordination_analysis.json.
+
+\begin{table}[t]
+\centering
+\footnotesize
+\caption{Instruments. Item counts are the panels the reported statistics
+use. Models by vendor card
+\citep{xai_grok41,anthropic_haiku45,anthropic_sonnet46,openai_gpt54nano}.}
+\label{tab-instruments}
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{p{2.1cm}p{2.3cm}p{2.7cm}p{2.9cm}p{2.1cm}}
+\toprule
+Instrument & Items & Gold & Verdict set & Models \\
+\midrule
+Disputes (AITA) & 249 panel, 210 deliberated % artefact crowdgold_aita_summary.json:7-11; prereg L528-531
+  & crowd plurality, $\geq 90\%$ of $\geq 50$ votes % code load_scruples.py:131-132
+  & YTA, NTA, ESH, NAH, UNRESOLVED % code verdict_format.py:101
+  & grok, haiku, sonnet, nano \\ % prereg L1307-1310, L3608
+False premise (BrokenMath) & 100, all gold FALSE % code run_bm_embodiment.py:61-62; run_stance_factorial.py:438-441
+  & benchmark, false stratum % code load_brokenmath.py:4-5
+  & TRUE, FALSE, UNRESOLVED % code verdict_format.py:100
+  & nano \\ % code run_bm_embodiment.py:60
+Comparative (Dilemmas) & 80 then 700, 624 codable % prereg L2370-2373, L2566-2574
+  & fresh crowd, $\geq 4$ annotators % prereg L2314-2319
+  & ACTION\_A, ACTION\_B, UNRESOLVED % code run_crowdgold_dilemma.py:121-136, 304-312
+  & grok, haiku as judge \\ % prereg L2370, L2492-2497
+Open-ended (ELEPHANT) & 150 per generator % artefact length_matched_elephant_oeq_validation_corrected.json (cot_n 150)
+  & none, judge-scored validation % code elephant_scorers.py:20-48
+  & validates, does not % code elephant_scorers.py:165-172 (binary parse)
+  & grok, haiku, sonnet, nano \\ % artefact length_matched_elephant_oeq_validation_corrected.json generators
+Games (TMGBench) & 144, regions 16 / 97 / 31, nine two-equilibrium % prereg L4036-4038 (16.13 instrument, regions value 16 / neutral 97 / cannot-assist 31), L5110-5113 (16.13d registration, the nine CONFLICT_OF_EQUILIBRIA games)
+  & first-principles plan % prereg L4036-4037 (gold reproduces the canonical file on 144 of 144), L4822-4827 (non-binding gold)
+  & PLAN\_xy, NO\_UNIQUE\_PLAN or NO\_RECOMMENDATION % prereg L4047-4048 (binding verdict set), L4814-4818 (non-binding: advocates ACT\_1 / ACT\_2, third seat and group PLAN\_xy / NO\_RECOMMENDATION)
+  & grok \\ % prereg L4055 (Stage A, grok-4-1-fast-reasoning), L4719 (16.13 RESULTS), L5060, L5147
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Measures}
+\label{sec-method-measures}
+
+Role-lock is the absolute difference between the two advocates' opening
+rates of finding the writer at fault. % prereg L3276-3277; code analyze_topology_2x2.py:148-149
+The effective voter count, stated only where the roles lock, is read from
+how often the three-seat majority equals the neutral seat on debates with
+three codable opening verdicts, and from the oracle gap, a two-fold
+cross-validated lookup table over those verdicts minus the neutral seat,
+folds drawn over items. % prereg L3957-3967 (16.15.4 registration, scope clause), L4462-4470 (16.15.4 RESULTS, definition), L4515-4529 (scope reading, haiku as boundary via the paired best-seat minus neutral difference, reported in results.tex); code analyze_effective_voter.py:21-31, 177-247; artefact effective_voter.json
+A seat objects by labelling the synthesis accept with modification or
+reject. The composite flag fires when the neutral seat objects or an
+advocate objects although the synthesis did not go against its stake, and
+the stake-blind counter, the introduction's sensor, fires when at least
+two seats object. % code run_crowdgold_deliberation.py:1205; analyze_loop_step.py:88-111; analyze_claim_audit.py:70-71; analyze_router_decomposition.py:148-149; prereg L3902 (16.15 registered sensor is the n_objectors >= 2 counter)
+Localisation is the share of debates with exactly one objector minus the
+Poisson-binomial prediction from the seats' own objection rates. % prereg L3251-3262; code analyze_unembodied_ablation.py:144-192
+Grip requires a fire rate of at most one half, final rejections of at
+least five percent, and stake-seat rejection at least 0.20 higher,
+interval excluding zero, when the integrated proposal undermines the
+seat's stake. % prereg L1169-1181; code analyze_stake_grip.py:39, 151-179; run_crowdgold_deliberation.py:522-540, 1180-1204
+
+Lift is the probability that a verdict is wrong given the flag minus that
+given no flag, on the synthesis verdict for the composite flag and the
+integrated verdict for the counter. % prereg L594-595 ("P(synthesis wrong / signal)"); code analyze_loop_step.py:205-214 (syn_ok); analyze_unembodied_ablation.py:204-215 (s2_ok)
+Because the flag floods on both-party verdicts, the counter's lift is also
+estimated within strata of the integrated verdict, one loser for YTA or
+NTA and both parties for ESH or NAH, restricted inside each resample over
+all 210 items. % prereg L3900-3915 (16.15.1 registration), L4247-4259 (resampling frame, codability likewise an outcome inside the draw), L4263-4268 (S2 verdict column is the stratum source); code analyze_router_decomposition.py:139-146, 183-247; artefact router_decomposition.json counter_lift_by_stratum
+Transfer is the same difference on a generator that never saw the debate,
+answering alone by majority over three samples, a cell of item and framing
+flagged when more than half of its codable debates flagged it. % prereg L594-595, L3948-3955 (16.15.3 registration); code analyze_unembodied_ablation.py:204-215 (untreated prompt); analyze_topology_2x2.py:18-19, 184-204; analyze_router_decomposition.py:322-347 (strict majority cell rule); artefact transfer_readouts.json
+For grok's own solo, two free signals from its three samples, any
+both-party verdict and disagreement among collapsed verdicts, were
+set against the counter on the same 420 cells by lift and composed accuracy
+at natural and matched coverage. % prereg L3933-3946 (16.15.2 registration); code analyze_router_decomposition.py:339-347, 374-448; artefact router_decomposition.json solo_signals
+Without enforcement a recommendation on the nine two-equilibrium games
+coordinates only when it names a pure equilibrium. % scoring against the first-principles gold cell is the table's Gold column; prereg L4036-4039 (gold cell, regions), L4814-4820 and L4822-4827 (non-binding verdict sets and gold), L5114-5117 (either equilibrium self-enforcing once both hear it), L5129-5131 (16.13d registration, COORD: "A recommendation of NO_RECOMMENDATION or of a non-equilibrium cell counts as failure to coordinate"); code analyze_game_coordination.py (is_nash on the recommended cell)
+
+Routing emits the base verdict unless a router fired, and otherwise a
+judge's cold majority over three samples, ties falling to the
+base. % code analyze_claim_audit.py:103-107; analyze_actuator_ladder.py:152-175; prereg L2492-2497 (the judge is the registration's "actuator")
+On the dispute and comparative instruments the base is the collective and
+the judge claude-haiku-4-5. On disputes the counter, a verdict-type router
+firing on both-party verdicts, and their union were composed with that
+judge and with the second design's cached claude-sonnet-4-6 judge,
+against random routing at the union's coverage over 200 seeds. % prereg L3914-3920 (16.15.1 registration), L4285-4326 (16.15.1 RESULTS, deployed rule, haiku and sonnet composed tables, sonnet coverage complete); code analyze_router_decomposition.py:97-101, 152-168, 251-263 (verdict type read from the integrated S2 verdict, ESH or NAH); artefact router_decomposition.json composed_haiku, composed_sonnet
+In the second design the base is grok alone, the judge claude-sonnet-4-6,
+and the router the flag or its union with the base's own samples
+disagreeing. % prereg L3584-3592, L3608-3612; code analyze_claim_audit.py:60
+On the actuator ladder a gain is positive when its interval excludes zero,
+its point is at least 0.05 and its sign replicates across item halves and
+framings, while the second design required only a gain over the base and
+over the judge used everywhere, each excluding zero. % prereg L755-770 (ladder; halves by parity of sha256(item_id)); code analyze_actuator_ladder.py:53-64; prereg L3592-3594 ("Positive iff routed beats BOTH grok-solo and sonnet-everywhere with CIs excluding zero"); audit finding C3 secondary, so a reader does not apply the ladder bar to 16.11a
+
+\subsection{Estimation and pre-registration}
+\label{sec-method-estimation}
+
+Every interval is an item-clustered percentile bootstrap with 2,000 to
+10,000 draws. % stated per estimate where reported; prereg L75-76 (10,000 false-premise), L541-542 (10,000 resistance headline), L4226-4236 (16.15 estimator); code analyze_actuator_ladder.py:55 (4,000), analyze_claim_audit.py:61 (4,000), analyze_unembodied_ablation.py:68 (4,000), analyze_topology_2x2.py:339 (3,000; 16.10 paired contrasts 3,000 draws seed 29, prereg L4190-4191), analyze_stake_grip.py:57-68,151-152 (2,000 grip), analyze_router_decomposition.py:97 and analyze_effective_voter.py:106 (4,000, seed 13), analyze_bm_notes.py (parent settings, 10,000), analyze_length_matched_elephant.py (8,000, seed 20260822), run_bm_cycle.py:228 (4,000, seed 11)
+Families are Bonferroni-corrected, 98.75 percent intervals on the four
+zero-spend actuator rungs and alpha 0.05 over twelve in the Dilemmas
+sensor search, and missing false-premise units get Manski bounds,
+indeterminate where they cross zero. % prereg L762-765, L105-107; code analyze_dilemma_sensor_search.py:111-116
+
+Two guards run before any number is read, truncated responses and
+responses without a legal verdict each at most five percent in every cell
+and call. % code run_crowdgold_aita.py:972-999; run_crowdgold_deliberation.py:3532-3538 (every model, prompt and framing cell, each of the seventeen calls and the integrated proposal)
+A failing run prints GUARD FAILED and its readouts are unread, which
+retracted the first Anthropic runs and left the gpt-4o screen unread. % code run_crowdgold_deliberation.py:3620-3623 (the literal string); prereg L1240-1252, L3639-3651 (and L3817-3833, the flagged first cycling run, stated in the designs subsection)
+Controls pass a parse gate of 0.05 unparsed labels per debate over the
+embodied baseline, a lift is read only at sixty or more flagged
+debates, and collective statistics use codable debates, whose synthesis
+and integrated proposal both commit. % prereg L3335-3340, L2571-2574, L4226-4229; code analyze_unembodied_ablation.py:69-70; analyze_dilemma_grip.py:62-66
+
+One pre-registration document with dated addenda fixed hypotheses,
+estimators, kill criteria, ceiling and stop rule before any call, results
+appended with nothing above them edited. % prereg L3-4, L139, L296-303 (dated RESULTS blocks; corrections appended rather than rewritten)
+% Addenda map (AUDIT_16_15_consequences.md wording, carried here for budget): E1 to E5
+% cover the false-premise and disputes experiments, 6 the grip screens, 12 and 13 the
+% comparative instrument, and 16 the claim audit and ablations, including the two-by-two,
+% narration cycling and a zero-spend audit of the sensor claim against the
+% hostile-reviewer findings. prereg L139, L331, L396, L528, L1169, L2366, L2716, L3033,
+% L3504 (16.10), L3704 (16.14), L3888 (16.15); RESULTS at L4136 (16.10), L4091 (16.14b),
+% L4212 (16.15).
+Two overruns are reported, one under explicit PI authorisation, % prereg L1297-1301 (Addendum 6, $70.47 against $40, "PI authorized the overrun explicitly")
+one under the registered stop rule. % prereg L2566-2569, L2580-2589 (Addendum 12 Stage 2, ~$9.41 against $8, 700 of 750 debates, "No further generation is authorized against this overrun")

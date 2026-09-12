@@ -1,0 +1,141 @@
+% introduction.tex -- replaces \section{Introduction} in the ICLR 2027 main file.
+% Synthesised 2026-09-12 from three judged drafts against the corrected record
+% (the scaffold REVERSES under forced commitment: 0.157 -> 0.223). Every number here
+% is in Guidance_Documents/prereg_embodiment_community.md or papers/embodied_sensor/.
+% Style: no em dashes, no colons or semicolons in running prose, no lists.
+% Cites only sharma23, cheng25elephant, golub2010naive, mercier2011argumentative,
+% longino1990science, aumann1974subjectivity, all resolved by references.bib here.
+% Paragraphs 3-7 rewritten 2026-09-12 to the PI's brief: one argument, embodiment
+% (a control) -> the collective as a graph (hypothesis stated in paragraph 4) ->
+% objectivity as a property of structure -> extent and the joint-action frontier.
+% Embodiment is defined once (a perspective, at full dose an interest); narration
+% is the light dose, advocacy the full dose, the collective is the graph built
+% from advocates. Only seven numbers, each with its context; null results are
+% one-clause boundary conditions, the Results section carries them.
+% Addenda 16.10 (roles x edges) and 16.13 (strategic games) are in flight and
+% appear only as "we build/vary", marked by the % pending comment below.
+% If ~100 more words must go: compress the four contribution sentences and drop
+% the 22-to-41-point clause.
+
+\section{Introduction}
+\label{sec-intro}
+
+Ask a language model whether you were in the wrong and it answers more gently
+than it would answer a stranger holding the same account. Tell it something
+false as if you already believed it, and the false thing survives into the
+answer. Give it a side to argue, and it argues that side. These look like
+three problems. They are one. In each case the conclusion has been pulled
+away from what the evidence supports by something else in the room, the
+feelings of the person asking, a premise already accepted, an interest
+already assigned. Sycophancy is the sharpest of the three, because the pull
+comes from the person who most needs an honest answer
+\citep{sharma23,cheng25elephant}, and preference training plausibly builds it
+in. But the subject of this paper is the general case. Which interventions
+can return the conclusion to the evidence, and which cannot.
+
+The pull is not noise. It has a direction, and that is why the standard
+remedies fail. Poll ten people who share one reason to be wrong, and the vote
+cancels their private quirks and keeps the shared reason. A model's samples
+share one reason to defer, so a majority of its samples defers too. A panel
+drawn from three vendors gains about five times more accuracy from voting
+than one model sampled three times, because errors from different vendors
+point in different directions and cancel.
+% artefact divergence_study_outputs/aggregation_passthrough.json diversity: same-model x3 gain
+% 0.014 / -0.002 / 0.013 (haiku / nano / grok); cross-vendor x3 gain 0.033 / 0.053 / 0.039;
+% error rho 0.59-0.70 same-model vs 0.32-0.35 cross-vendor. Ratio of mean gains ~5.
+The deference points the same way for every vendor, and it passes through both votes essentially untouched.
+Debate among copies of one model converges on whatever was already in the
+room. A bias that enters while the answer is written has to be corrected
+while the answer is written.
+
+If the correction must happen there, the first question is whether the pull
+can be controlled. It can. To embody a model is to assign it a perspective,
+and at full dose an interest as well. Narration is the light dose, a
+perspective with no side, in which the model thinks the asker's situation
+through before it commits. Advocacy is the full dose, a perspective with a
+side to argue. Told it speaks for the person who wrote the account, a model
+takes that side on 99.7 percent of its opening statements, and for the other
+party on 97.4 percent, before any exchange. Narration changes how the model
+speaks and not what it will sign. Across four models from three vendors,
+validation of the asker's own account falls by 22 to 41 points, yet on one of
+those models, on problems with a provably false premise where a bare true or
+false leaves nothing to soften, affirmation of the falsehood rises from 15.7
+to 22.3 percent. So the pull can be set on purpose, in a chosen direction, on
+a chosen agent. That is a lever, not a remedy. Pointed at one agent it
+manufactures bias on demand.
+
+Once the pull can be placed, the question is how to arrange it across several
+agents, and an arrangement of agents is a graph. Embodied agents are the
+nodes, the relations between them are the edges, which seat is set against
+which and who reads whom, and one node decides. Our hypothesis is
+that objectivity is a property of the graph and not of any node, obtained by
+placing opposed interests so that their agreement is informative and by
+separating who argues from who decides. A network converges to the truth only
+when no single node dominates it \citep{golub2010naive}. An embodied node's
+verdict is fixed by its role, so it carries no information about the case.
+Seat three copies of a model at one case, one for each party and one with no
+interest. Where the roles lock, and on our strongest model they do, the two
+advocates cancel and the uninterested seat dominates, so the collective has
+one effective voter, meaning its majority equals that seat on every case, and
+no vote over the three can beat it. This is the theory's first result. The
+information is not in the nodes. It is in the edges.
+
+The edge between the two advocates carries that information. An ordinary
+verdict has one loser, so exactly one advocate objects, and that objection is
+what its role produces on any case. When the other advocate objects too, the
+two opposed interests agree, and that agreement cannot come from a role. It
+comes from the case. We call the flag that fires when the second advocate
+objects the sensor. On verdicts with one loser, the collective is wrong
+nearly ten times as often on the cases it flags, and the same flag
+concentrates the errors of the model itself answering alone, stronger than
+the collective and never shown the debate, four times over, though that
+model's own disagreement with itself does as much. The edge that carries
+the signal is the opposed pairing, not the conversation. Cut every line of
+communication between the seats and the flag still fires and still finds
+the errors, only a third less often. Route the flagged cases, and only
+those, to a strong enough uninterested judge, and accuracy rises above
+that solo model.
+% 16.10 RESULTS: embodied/off keeps role-lock 0.969, localisation +0.318, G3 +0.630,
+% transfer +0.111 [+0.016, +0.217]; fire rate 0.196 -> 0.129. 16.15.2: solo's own
+% disagreement 6.35x, own both-party emission 8.20x vs the counter 4.40x.
+Objectivity, where we obtained it, came from the structure, opposed interests
+whose agreement was informative and a deciding node with no interest. This is
+the argumentative theory of reasoning \citep{mercier2011argumentative} and the
+social account of objectivity \citep{longino1990science}, measured in a
+machine collective.
+
+The theory says where the structure ends. The flag reads an advocate objecting
+after its own side won, so it needs a verdict with exactly one loser and
+advocates that sometimes do so. Where they never do, as on a second corpus, it
+has nothing to read and goes silent. Where the verdict finds everyone at
+fault, both advocates lose and it floods, firing on 60 percent of cases
+instead of 7, and there the verdict type itself is the cheaper error
+signal. Where there is no real opposed party, as on the false-premise
+problems, opposed roles move a vote only modestly. The same theory marks a
+frontier. Joint-action problems such as the prisoner's dilemma have no
+verdict with one loser. Under a binding agreement the model solves them
+alone and the advocates have nothing to argue, so the sensor is silent
+there too. With no enforcement, the private action is each advocate's
+case, every seat recommends the equilibrium, and a third node with no
+side, the mediator of correlated equilibrium
+\citep{aumann1974subjectivity}, cannot make the better outcome
+self-enforcing and does not try. What the collective adds on these
+problems is an answer where the model alone declines to give one, a
+plan where none is unique, or a choice between two equilibria.
+% 16.13 RESULTS (binding, B1/B2): advocates lock 0.09-0.12 in the value region, 0.39-0.41
+% elsewhere, then concede; both arms 48/48; mediator +0.151 [+0.043, +0.280] over solo on
+% cannot-assist games. 16.13c RESULTS (non-binding C1): tempted advocates 1.000 private
+% action; solo, neutral reader and mediator all Nash in every dilemma game; P3' fails.
+% 16.13d RESULTS: coordination +0.185 / +0.222 over a solo that declines on 27/27; D1 fails.
+
+We make four contributions, and they follow the story. Embodiment is a
+strong control, a lever that places bias where one chooses, and cycling it
+on one agent does not deepen it. Where the roles lock, an embodied
+collective has one effective voter, its majority being its uninterested
+seat, which is the theory's first result, and the dissent structure that
+survives is a property of the opposed pairing rather than of the exchange.
+The flag that fires when the second advocate objects is an error sensor on
+one-loser verdicts, and routing on it to a strong enough judge certifies a
+gain over the model answering alone, which is objectivity obtained as a
+property of structure. And the method's extent is mapped, three failure
+modes and a joint-action frontier.

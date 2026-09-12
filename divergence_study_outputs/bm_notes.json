@@ -1,0 +1,1068 @@
+{
+  "registration": "Guidance_Documents/prereg_embodiment_community.md, Addendum 16.15, items 16.15.5, 16.15.6, 16.15.7",
+  "spend_usd": 0.0,
+  "interval_estimator_note": "the registered readouts of 16.15.5-16.15.7 are point values read from the named JSON fields and the elephant artefact; the intervals ADDED here are NOT on the 16.15.1 settings (4,000 draws, seed 13) but on each parent artefact's own estimator, draws and seeds (bm_embody_analysis: 10,000 draws, seeds 7+k; bm_cross_sig: 10,000 draws, seeds 17+k; elephant: 8,000 draws, seed 20260822), so that they sit on the very resamples the parent intervals were drawn from; when quoted, say 'same estimator, draws and seeds as the parent artefact'",
+  "sources": {
+    "bm_embody_analysis": {
+      "path": "divergence_study_outputs/bm_embody_analysis.json",
+      "mtime": 1788217023.5276368
+    },
+    "bm_cross_sig_analysis": {
+      "path": "divergence_study_outputs/bm_cross_sig_analysis.json",
+      "mtime": 1788235762.787803
+    }
+  },
+  "16.15.5": {
+    "orientation": "narrative_cot - standard_cot (the S0 contrast)",
+    "registered_contrast_S0": {
+      "point": 0.06666666666666665,
+      "lo95": 0.033333333333333326,
+      "hi95": 0.10333333333333336,
+      "draws": 10000
+    },
+    "arms": {
+      "standard_cot": {
+        "p_S0": 0.15666666666666668,
+        "n": 600,
+        "missing_rate": 0.345,
+        "hits": 94,
+        "missing": 207,
+        "n_committed": 393,
+        "committed_only": 0.23918575063613232,
+        "committed_only_from_counts": 0.23918575063613232,
+        "formulas_agree": true,
+        "counts_integral": true
+      },
+      "narrative_cot": {
+        "p_S0": 0.22333333333333333,
+        "n": 600,
+        "missing_rate": 0.2783333333333333,
+        "hits": 134,
+        "missing": 167,
+        "n_committed": 433,
+        "committed_only": 0.30946882217090066,
+        "committed_only_from_counts": 0.3094688221709007,
+        "formulas_agree": true,
+        "counts_integral": true
+      }
+    },
+    "committed_only_contrast": {
+      "point": 0.07028307153476834,
+      "n_committed": {
+        "standard_cot": 393,
+        "narrative_cot": 433
+      }
+    },
+    "manski_S0_contrast": {
+      "lo": -0.2783333333333334,
+      "hi": 0.34500000000000003,
+      "missing_a": 0.2783333333333333,
+      "missing_b": 0.345,
+      "crosses_zero": true,
+      "width": 0.6233333333333334,
+      "note": "every missing unit pushed to TRUE in one arm and FALSE in the other; lo = p_nar - (p_std + miss_std), hi = (p_nar + miss_nar) - p_std"
+    },
+    "replay": {
+      "committed_standard": {
+        "replay": 0.239,
+        "agrees": true
+      },
+      "committed_narrative": {
+        "replay": 0.309,
+        "agrees": true
+      },
+      "manski_crosses_zero": {
+        "replay": true,
+        "agrees": true
+      }
+    },
+    "snapshot": {
+      "cutoff_mtime": 1788217023.5276368,
+      "n_cache_files_after_cutoff": 16,
+      "arms_reproduced": {
+        "standard_cot": {
+          "snapshot": {
+            "p": 0.15666666666666668,
+            "n": 600,
+            "missing_rate": 0.345
+          },
+          "recorded": {
+            "p": 0.15666666666666668,
+            "n": 600,
+            "missing_rate": 0.345
+          },
+          "agrees": true
+        },
+        "narrative_cot": {
+          "snapshot": {
+            "p": 0.22333333333333333,
+            "n": 600,
+            "missing_rate": 0.2783333333333333
+          },
+          "recorded": {
+            "p": 0.22333333333333333,
+            "n": 600,
+            "missing_rate": 0.2783333333333333
+          },
+          "agrees": true
+        },
+        "one_line_baseline": {
+          "snapshot": {
+            "p": 0.14666666666666667,
+            "n": 600,
+            "missing_rate": 0.365
+          },
+          "recorded": {
+            "p": 0.14666666666666667,
+            "n": 600,
+            "missing_rate": 0.365
+          },
+          "agrees": true
+        },
+        "all_agree": true
+      },
+      "usable": true,
+      "estimator": {
+        "kind": "item-clustered percentile bootstrap (analyze_bm_embodiment.bootstrap_ci)",
+        "draws": 10000,
+        "seed": 13,
+        "seed_note": "the S0 field's own seed, so every interval below sits on the registered resamples"
+      },
+      "S0_contrast_reproduced": {
+        "snapshot": {
+          "point": 0.06666666666666665,
+          "lo95": 0.033333333333333326,
+          "hi95": 0.10333333333333336,
+          "draws": 10000
+        },
+        "recorded": {
+          "point": 0.06666666666666665,
+          "lo95": 0.033333333333333326,
+          "hi95": 0.10333333333333336,
+          "draws": 10000
+        },
+        "bit_identical": true
+      },
+      "committed_only": {
+        "standard_cot": {
+          "point": 0.23918575063613232,
+          "lo95": 0.15267175572519084,
+          "hi95": 0.3287292817679558,
+          "draws": 10000
+        },
+        "narrative_cot": {
+          "point": 0.3094688221709007,
+          "lo95": 0.22249388753056235,
+          "hi95": 0.39823008849557523,
+          "draws": 10000
+        },
+        "contrast": {
+          "point": 0.0702830715347684,
+          "lo95": 0.03015301530153014,
+          "hi95": 0.1151441978862475,
+          "draws": 10000
+        }
+      },
+      "manski_on_item_structure": {
+        "lo": -0.2783333333333334,
+        "hi": 0.34500000000000003,
+        "missing_a": 0.2783333333333333,
+        "missing_b": 0.345,
+        "agrees_with_counts_call": true
+      }
+    }
+  },
+  "16.15.6": {
+    "plain": {
+      "panels": {
+        "mixed_author_neutral_rival": {
+          "p_true": {
+            "point": 0.16194444444444442,
+            "lo95": 0.10342592592592592,
+            "hi95": 0.2262037037037037,
+            "draws": 10000
+          },
+          "p_false": {
+            "point": 0.5517592592592593
+          },
+          "p_abstain": {
+            "point": 0.28629629629629627
+          },
+          "sums_to_one": true
+        },
+        "author_x3": {
+          "p_true": {
+            "point": 0.18796296296296297,
+            "lo95": 0.12462962962962963,
+            "hi95": 0.257037037037037,
+            "draws": 10000
+          },
+          "p_false": {
+            "point": 0.5524074074074075
+          },
+          "p_abstain": {
+            "point": 0.2596296296296296
+          },
+          "sums_to_one": true
+        },
+        "neutral_x3": {
+          "p_true": {
+            "point": 0.17222222222222222,
+            "lo95": 0.11351851851851852,
+            "hi95": 0.2364814814814815,
+            "draws": 10000
+          },
+          "p_false": {
+            "point": 0.5377777777777777
+          },
+          "p_abstain": {
+            "point": 0.29
+          },
+          "sums_to_one": true
+        },
+        "rival_x3": {
+          "p_true": {
+            "point": 0.15481481481481482,
+            "lo95": 0.09574074074074074,
+            "hi95": 0.22018518518518518,
+            "draws": 10000
+          },
+          "p_false": {
+            "point": 0.567037037037037
+          },
+          "p_abstain": {
+            "point": 0.27814814814814814
+          },
+          "sums_to_one": true
+        }
+      },
+      "deltas": {
+        "mixed_minus_author_x3": {
+          "p_true": {
+            "point": -0.026018518518518552,
+            "lo95": -0.0474074074074074,
+            "hi95": -0.0065740740740740655,
+            "draws": 10000
+          },
+          "p_false": {
+            "point": -0.0006481481481481755
+          },
+          "p_abstain": {
+            "point": 0.026666666666666672
+          },
+          "delta_point_check": true
+        },
+        "mixed_minus_neutral_x3": {
+          "p_true": {
+            "point": -0.010277777777777802,
+            "lo95": -0.03148148148148147,
+            "hi95": 0.008333333333333331,
+            "draws": 10000
+          },
+          "p_false": {
+            "point": 0.013981481481481595
+          },
+          "p_abstain": {
+            "point": -0.003703703703703709
+          },
+          "delta_point_check": true
+        }
+      }
+    },
+    "replay": {
+      "p_false_mixed": {
+        "replay": 0.552,
+        "agrees": true
+      },
+      "p_false_author_x3": {
+        "replay": 0.552,
+        "agrees": true
+      },
+      "delta_p_true": {
+        "replay": -0.026,
+        "agrees": true
+      },
+      "delta_abstain": {
+        "replay": 0.027,
+        "agrees": true
+      }
+    },
+    "narration": {
+      "panels": {
+        "mixed_nar": {
+          "p_true": {
+            "point": 0.2198148148148148,
+            "lo95": 0.15009259259259258,
+            "hi95": 0.2928703703703704,
+            "draws": 10000
+          },
+          "p_false": {
+            "point": 0.5565740740740741
+          },
+          "p_abstain": {
+            "point": 0.2236111111111111
+          },
+          "sums_to_one": true
+        },
+        "author_nar_x3": {
+          "p_true": {
+            "point": 0.22425925925925927,
+            "lo95": 0.1537037037037037,
+            "hi95": 0.29833333333333334,
+            "draws": 10000
+          },
+          "p_false": {
+            "point": 0.5472222222222223
+          },
+          "p_abstain": {
+            "point": 0.2285185185185185
+          },
+          "sums_to_one": true
+        },
+        "mixed_plain": {
+          "p_true": {
+            "point": 0.1758333333333333,
+            "lo95": 0.11657407407407408,
+            "hi95": 0.24083333333333332,
+            "draws": 10000
+          },
+          "p_false": {
+            "point": 0.5639814814814815
+          },
+          "p_abstain": {
+            "point": 0.2601851851851852
+          },
+          "sums_to_one": true
+        }
+      },
+      "deltas": {
+        "mixed_nar_minus_author_nar_x3": {
+          "p_true": {
+            "point": -0.004444444444444473,
+            "lo95": -0.0251851851851852,
+            "hi95": 0.015555555555555545,
+            "draws": 10000
+          },
+          "p_false": {
+            "point": 0.009351851851851833
+          },
+          "p_abstain": {
+            "point": -0.004907407407407416
+          },
+          "delta_point_check": true
+        },
+        "mixed_nar_minus_mixed_plain": {
+          "p_true": {
+            "point": 0.04398148148148148,
+            "lo95": 0.01166666666666663,
+            "hi95": 0.07861111111111113,
+            "draws": 10000
+          },
+          "p_false": {
+            "point": -0.007407407407407418
+          },
+          "p_abstain": {
+            "point": -0.03657407407407409
+          },
+          "delta_point_check": true
+        }
+      },
+      "source": "divergence_study_outputs/bm_cross_sig_analysis.json"
+    },
+    "snapshot_plain": {
+      "cutoff_mtime": 1788217023.5276368,
+      "n_cache_files_after_cutoff": 39,
+      "arms_reproduced": {
+        "embody_author": {
+          "snapshot": {
+            "p": 0.19166666666666668,
+            "n": 600,
+            "missing_rate": 0.25166666666666665
+          },
+          "recorded": {
+            "p": 0.19166666666666668,
+            "n": 600,
+            "missing_rate": 0.25166666666666665
+          },
+          "agrees": true
+        },
+        "embody_ally": {
+          "snapshot": {
+            "p": 0.15666666666666668,
+            "n": 600,
+            "missing_rate": 0.275
+          },
+          "recorded": {
+            "p": 0.15666666666666668,
+            "n": 600,
+            "missing_rate": 0.275
+          },
+          "agrees": true
+        },
+        "embody_neutral": {
+          "snapshot": {
+            "p": 0.18,
+            "n": 600,
+            "missing_rate": 0.275
+          },
+          "recorded": {
+            "p": 0.18,
+            "n": 600,
+            "missing_rate": 0.275
+          },
+          "agrees": true
+        },
+        "embody_rival": {
+          "snapshot": {
+            "p": 0.16333333333333333,
+            "n": 600,
+            "missing_rate": 0.2683333333333333
+          },
+          "recorded": {
+            "p": 0.16333333333333333,
+            "n": 600,
+            "missing_rate": 0.2683333333333333
+          },
+          "agrees": true
+        },
+        "all_agree": true
+      },
+      "usable": true,
+      "n_items": 100,
+      "estimator": {
+        "kind": "item-clustered percentile bootstrap (analyze_bm_embodiment.bootstrap_ci)",
+        "draws": 10000,
+        "seed_levels": 9,
+        "seed_contrast": {
+          "mixed_minus_author_x3": 10,
+          "mixed_minus_neutral_x3": 11
+        },
+        "seed_note": "the H_PANEL fields' own seeds"
+      },
+      "panels": {
+        "mixed_author_neutral_rival": {
+          "p_true_reproduced": {
+            "snapshot": {
+              "point": 0.16194444444444442,
+              "lo95": 0.10342592592592592,
+              "hi95": 0.2262037037037037,
+              "draws": 10000
+            },
+            "bit_identical": true
+          },
+          "p_false": {
+            "point": 0.5517592592592593,
+            "lo95": 0.46194444444444444,
+            "hi95": 0.6415740740740741,
+            "draws": 10000
+          },
+          "p_abstain": {
+            "point": 0.28629629629629627,
+            "lo95": 0.215,
+            "hi95": 0.3617592592592592,
+            "draws": 10000
+          },
+          "panel_stat_direct": {
+            "TRUE": 0.16194444444444442,
+            "FALSE": 0.5517592592592593,
+            "NOPANEL": 0.28629629629629627
+          }
+        },
+        "author_x3": {
+          "p_true_reproduced": {
+            "snapshot": {
+              "point": 0.18796296296296297,
+              "lo95": 0.12462962962962963,
+              "hi95": 0.257037037037037,
+              "draws": 10000
+            },
+            "bit_identical": true
+          },
+          "p_false": {
+            "point": 0.5524074074074075,
+            "lo95": 0.4624074074074074,
+            "hi95": 0.6418518518518519,
+            "draws": 10000
+          },
+          "p_abstain": {
+            "point": 0.2596296296296296,
+            "lo95": 0.19203703703703703,
+            "hi95": 0.33444444444444443,
+            "draws": 10000
+          },
+          "panel_stat_direct": {
+            "TRUE": 0.18796296296296297,
+            "FALSE": 0.5524074074074075,
+            "NOPANEL": 0.2596296296296296
+          }
+        },
+        "neutral_x3": {
+          "p_true_reproduced": {
+            "snapshot": {
+              "point": 0.17222222222222222,
+              "lo95": 0.11351851851851852,
+              "hi95": 0.2364814814814815,
+              "draws": 10000
+            },
+            "bit_identical": true
+          },
+          "p_false": {
+            "point": 0.5377777777777778,
+            "lo95": 0.45,
+            "hi95": 0.6262962962962964,
+            "draws": 10000
+          },
+          "p_abstain": {
+            "point": 0.29,
+            "lo95": 0.21944444444444444,
+            "hi95": 0.3642592592592592,
+            "draws": 10000
+          },
+          "panel_stat_direct": {
+            "TRUE": 0.17222222222222222,
+            "FALSE": 0.5377777777777778,
+            "NOPANEL": 0.29
+          }
+        },
+        "rival_x3": {
+          "p_true_reproduced": {
+            "snapshot": {
+              "point": 0.15481481481481482,
+              "lo95": 0.09574074074074074,
+              "hi95": 0.22018518518518518,
+              "draws": 10000
+            },
+            "bit_identical": true
+          },
+          "p_false": {
+            "point": 0.567037037037037,
+            "lo95": 0.47574074074074074,
+            "hi95": 0.6553703703703704,
+            "draws": 10000
+          },
+          "p_abstain": {
+            "point": 0.27814814814814814,
+            "lo95": 0.2048148148148148,
+            "hi95": 0.35629629629629633,
+            "draws": 10000
+          },
+          "panel_stat_direct": {
+            "TRUE": 0.15481481481481482,
+            "FALSE": 0.567037037037037,
+            "NOPANEL": 0.27814814814814814
+          }
+        }
+      },
+      "deltas": {
+        "mixed_minus_author_x3": {
+          "seed": 10,
+          "p_true_reproduced": {
+            "snapshot": {
+              "point": -0.026018518518518552,
+              "lo95": -0.0474074074074074,
+              "hi95": -0.0065740740740740655,
+              "draws": 10000
+            },
+            "bit_identical": true
+          },
+          "p_false": {
+            "point": -0.0006481481481481755,
+            "lo95": -0.025370370370370432,
+            "hi95": 0.022314814814814787,
+            "draws": 10000
+          },
+          "p_abstain": {
+            "point": 0.026666666666666672,
+            "lo95": 0.0004629629629629428,
+            "hi95": 0.054351851851851846,
+            "draws": 10000
+          }
+        },
+        "mixed_minus_neutral_x3": {
+          "seed": 11,
+          "p_true_reproduced": {
+            "snapshot": {
+              "point": -0.010277777777777802,
+              "lo95": -0.03148148148148147,
+              "hi95": 0.008333333333333331,
+              "draws": 10000
+            },
+            "bit_identical": true
+          },
+          "p_false": {
+            "point": 0.013981481481481484,
+            "lo95": -0.0034259259259259434,
+            "hi95": 0.032777777777777795,
+            "draws": 10000
+          },
+          "p_abstain": {
+            "point": -0.003703703703703709,
+            "lo95": -0.02611111111111114,
+            "hi95": 0.01916666666666672,
+            "draws": 10000
+          }
+        }
+      },
+      "all_recorded_intervals_bit_identical": true
+    },
+    "snapshot_narration": {
+      "cutoff_mtime": 1788235762.787803,
+      "n_cache_files_after_cutoff": 0,
+      "arms_reproduced": {
+        "embody_author_nar": {
+          "snapshot": {
+            "p": 0.22833333333333333,
+            "n": 600,
+            "missing_rate": 0.22666666666666666
+          },
+          "recorded": {
+            "p": 0.22833333333333333,
+            "n": 600,
+            "missing_rate": 0.22666666666666666
+          },
+          "agrees": true
+        },
+        "embody_neutral_nar": {
+          "snapshot": {
+            "p": 0.24,
+            "n": 600,
+            "missing_rate": 0.21
+          },
+          "recorded": {
+            "p": 0.24,
+            "n": 600,
+            "missing_rate": 0.21
+          },
+          "agrees": true
+        },
+        "embody_rival_nar": {
+          "snapshot": {
+            "p": 0.22833333333333333,
+            "n": 600,
+            "missing_rate": 0.205
+          },
+          "recorded": {
+            "p": 0.22833333333333333,
+            "n": 600,
+            "missing_rate": 0.205
+          },
+          "agrees": true
+        },
+        "embody_author": {
+          "snapshot": {
+            "p": 0.205,
+            "n": 600,
+            "missing_rate": 0.21833333333333332
+          },
+          "recorded": {
+            "p": 0.205,
+            "n": 600,
+            "missing_rate": 0.21833333333333332
+          },
+          "agrees": true
+        },
+        "embody_neutral": {
+          "snapshot": {
+            "p": 0.18,
+            "n": 600,
+            "missing_rate": 0.275
+          },
+          "recorded": {
+            "p": 0.18,
+            "n": 600,
+            "missing_rate": 0.275
+          },
+          "agrees": true
+        },
+        "embody_rival": {
+          "snapshot": {
+            "p": 0.18,
+            "n": 600,
+            "missing_rate": 0.23833333333333334
+          },
+          "recorded": {
+            "p": 0.18,
+            "n": 600,
+            "missing_rate": 0.23833333333333334
+          },
+          "agrees": true
+        },
+        "all_agree": true
+      },
+      "usable": true,
+      "n_items": 100,
+      "estimator": {
+        "kind": "item-clustered percentile bootstrap (analyze_bm_embodiment.bootstrap_ci, as analyze_bm_cross_sig calls it)",
+        "draws": 10000,
+        "seed_levels": 22,
+        "seed_contrast": {
+          "mixed_nar_minus_author_nar_x3": 23,
+          "mixed_nar_minus_mixed_plain": 24
+        },
+        "seed_note": "the H_PANEL_NAR fields' own seeds"
+      },
+      "panels": {
+        "mixed_nar": {
+          "p_true_reproduced": {
+            "snapshot": {
+              "point": 0.2198148148148148,
+              "lo95": 0.15009259259259258,
+              "hi95": 0.2928703703703704,
+              "draws": 10000
+            },
+            "bit_identical": true
+          },
+          "p_false": {
+            "point": 0.5565740740740741,
+            "lo95": 0.46842592592592597,
+            "hi95": 0.642962962962963,
+            "draws": 10000
+          },
+          "p_abstain": {
+            "point": 0.2236111111111111,
+            "lo95": 0.15935185185185186,
+            "hi95": 0.2913888888888889,
+            "draws": 10000
+          },
+          "panel_stat_direct": {
+            "TRUE": 0.2198148148148148,
+            "FALSE": 0.5565740740740741,
+            "NOPANEL": 0.2236111111111111
+          }
+        },
+        "author_nar_x3": {
+          "p_true_reproduced": {
+            "snapshot": {
+              "point": 0.22425925925925927,
+              "lo95": 0.1537037037037037,
+              "hi95": 0.29833333333333334,
+              "draws": 10000
+            },
+            "bit_identical": true
+          },
+          "p_false": {
+            "point": 0.5472222222222222,
+            "lo95": 0.46,
+            "hi95": 0.6346296296296297,
+            "draws": 10000
+          },
+          "p_abstain": {
+            "point": 0.2285185185185185,
+            "lo95": 0.1627777777777778,
+            "hi95": 0.2974074074074074,
+            "draws": 10000
+          },
+          "panel_stat_direct": {
+            "TRUE": 0.22425925925925927,
+            "FALSE": 0.5472222222222222,
+            "NOPANEL": 0.2285185185185185
+          }
+        },
+        "mixed_plain": {
+          "p_true_reproduced": {
+            "snapshot": {
+              "point": 0.1758333333333333,
+              "lo95": 0.11657407407407408,
+              "hi95": 0.24083333333333332,
+              "draws": 10000
+            },
+            "bit_identical": true
+          },
+          "p_false": {
+            "point": 0.5639814814814814,
+            "lo95": 0.4746296296296296,
+            "hi95": 0.6514814814814816,
+            "draws": 10000
+          },
+          "p_abstain": {
+            "point": 0.2601851851851852,
+            "lo95": 0.19185185185185186,
+            "hi95": 0.33111111111111113,
+            "draws": 10000
+          },
+          "panel_stat_direct": {
+            "TRUE": 0.1758333333333333,
+            "FALSE": 0.5639814814814814,
+            "NOPANEL": 0.2601851851851852
+          }
+        }
+      },
+      "deltas": {
+        "mixed_nar_minus_author_nar_x3": {
+          "seed": 23,
+          "p_true_reproduced": {
+            "snapshot": {
+              "point": -0.004444444444444473,
+              "lo95": -0.0251851851851852,
+              "hi95": 0.015555555555555545,
+              "draws": 10000
+            },
+            "bit_identical": true
+          },
+          "p_false": {
+            "point": 0.009351851851851944,
+            "lo95": -0.01157407407407407,
+            "hi95": 0.032314814814814796,
+            "draws": 10000
+          },
+          "p_abstain": {
+            "point": -0.004907407407407416,
+            "lo95": -0.028518518518518526,
+            "hi95": 0.017314814814814783,
+            "draws": 10000
+          }
+        },
+        "mixed_nar_minus_mixed_plain": {
+          "p_false": {
+            "point": -0.007407407407407307,
+            "lo95": -0.035370370370370385,
+            "hi95": 0.02212962962962961,
+            "draws": 10000
+          },
+          "p_abstain": {
+            "point": -0.03657407407407409,
+            "lo95": -0.07287037037037036,
+            "hi95": -0.002962962962962973,
+            "draws": 10000
+          },
+          "seed": 24,
+          "p_true_reproduced": {
+            "snapshot": {
+              "point": 0.04398148148148148,
+              "lo95": 0.01166666666666663,
+              "hi95": 0.07861111111111113,
+              "draws": 10000
+            },
+            "bit_identical": true
+          }
+        }
+      },
+      "all_recorded_intervals_bit_identical": true
+    }
+  },
+  "16.15.7": {
+    "dataset": "oeq",
+    "metric": "validation",
+    "command": [
+      "/Users/pat/code/ANI_Examination/.venv/bin/python",
+      "-m",
+      "scripts.analyze_length_matched_elephant",
+      "--corrected",
+      "--bounds",
+      "--bootstrap",
+      "8000",
+      "--seed",
+      "20260822",
+      "--json",
+      "divergence_study_outputs/length_matched_elephant_oeq_validation_corrected_16_15_7.json"
+    ],
+    "returncode": 0,
+    "artefact": "divergence_study_outputs/length_matched_elephant_oeq_validation_corrected_16_15_7.json",
+    "console_log": "divergence_study_outputs/length_matched_elephant_oeq_validation_corrected_16_15_7.log",
+    "env_blanked": [
+      "ANTHROPIC_API_KEY",
+      "OPENAI_API_KEY",
+      "XAI_API_KEY",
+      "DEEPSEEK_API_KEY",
+      "AZURE_AI_API_KEY",
+      "AZURE_AI_PROJECT_ENDPOINT",
+      "ANTHROPIC_ENDPOINT"
+    ],
+    "mode_note": "--corrected reads only elephant_rescore_* cache files (apply_corrected_scores); the subprocess has no API path in this mode",
+    "corrected_line": {
+      "replaced": 936,
+      "not_cached": 1129,
+      "line": "[corrected] replaced 936 truncated scores from the re-score cache; 1129 not cached (left as published)"
+    },
+    "rescore_coverage_two_arms": {
+      "claude-haiku-4-5": {
+        "rows": 300,
+        "untruncated": 179,
+        "truncated": 121,
+        "truncated_rescored": 121
+      },
+      "gpt-5.4-nano": {
+        "rows": 300,
+        "truncated": 200,
+        "truncated_rescored": 200,
+        "untruncated": 100
+      },
+      "grok-4-1-fast-reasoning": {
+        "rows": 300,
+        "untruncated": 108,
+        "truncated": 192,
+        "truncated_rescored": 192
+      },
+      "claude-sonnet-4-6": {
+        "rows": 300,
+        "truncated": 145,
+        "truncated_rescored": 144,
+        "untruncated": 155,
+        "truncated_uncached": 1
+      }
+    },
+    "drops": {
+      "claude-haiku-4-5": {
+        "cot_n": 150,
+        "cot_rate": 0.6266666666666667,
+        "not_n": 150,
+        "not_rate": 0.36,
+        "delta_pp": -26.66666666666667,
+        "ci_pp": {
+          "lo": -36.66666666666667,
+          "hi": -16.666666666666668,
+          "se": 5.089227921370786,
+          "b": 8000,
+          "items": 150,
+          "degenerate": 0,
+          "seed": 20260822
+        },
+        "nonresponse_not": {
+          "n": 150,
+          "missing": 0,
+          "rate": 0.0
+        },
+        "nonresponse_cot": {
+          "n": 150,
+          "missing": 0,
+          "rate": 0.0
+        },
+        "manski_bracket_pp": [
+          -26.66666666666667,
+          -26.66666666666667
+        ],
+        "untruncated_lt4000_delta_pp": -31.63218390804598,
+        "length_matched_delta_pp": -50.352244246981094
+      },
+      "claude-sonnet-4-6": {
+        "cot_n": 150,
+        "cot_rate": 0.7266666666666667,
+        "not_n": 149,
+        "not_rate": 0.5033557046979866,
+        "delta_pp": -22.331096196868007,
+        "ci_pp": {
+          "lo": -31.333333333333336,
+          "hi": -13.333333333333341,
+          "se": 4.522021815119089,
+          "b": 8000,
+          "items": 150,
+          "degenerate": 0,
+          "seed": 20260822
+        },
+        "nonresponse_not": {
+          "n": 150,
+          "missing": 1,
+          "rate": 0.006666666666666667
+        },
+        "nonresponse_cot": {
+          "n": 150,
+          "missing": 0,
+          "rate": 0.0
+        },
+        "manski_bracket_pp": [
+          -22.666666666666668,
+          -21.999999999999996
+        ],
+        "untruncated_lt4000_delta_pp": -12.413793103448278,
+        "length_matched_delta_pp": -50.0
+      },
+      "gpt-5.4-nano": {
+        "cot_n": 145,
+        "cot_rate": 0.7586206896551724,
+        "not_n": 116,
+        "not_rate": 0.3448275862068966,
+        "delta_pp": -41.37931034482758,
+        "ci_pp": {
+          "lo": -51.12799532437171,
+          "hi": -31.417624521072796,
+          "se": 5.04986885175665,
+          "b": 8000,
+          "items": 145,
+          "degenerate": 0,
+          "seed": 20260822
+        },
+        "nonresponse_not": {
+          "n": 150,
+          "missing": 34,
+          "rate": 0.22666666666666666
+        },
+        "nonresponse_cot": {
+          "n": 150,
+          "missing": 5,
+          "rate": 0.03333333333333333
+        },
+        "manski_bracket_pp": [
+          -50.0,
+          -23.999999999999993
+        ],
+        "untruncated_lt4000_delta_pp": null,
+        "length_matched_delta_pp": -35.550810068068905
+      },
+      "grok-4-1-fast-reasoning": {
+        "cot_n": 146,
+        "cot_rate": 0.815068493150685,
+        "not_n": 145,
+        "not_rate": 0.45517241379310347,
+        "delta_pp": -35.98960793575815,
+        "ci_pp": {
+          "lo": -44.91261218705715,
+          "hi": -27.06660368445914,
+          "se": 4.488264933479106,
+          "b": 8000,
+          "items": 146,
+          "degenerate": 0,
+          "seed": 20260822
+        },
+        "nonresponse_not": {
+          "n": 150,
+          "missing": 5,
+          "rate": 0.03333333333333333
+        },
+        "nonresponse_cot": {
+          "n": 150,
+          "missing": 4,
+          "rate": 0.02666666666666667
+        },
+        "manski_bracket_pp": [
+          -37.99999999999999,
+          -32.0
+        ],
+        "untruncated_lt4000_delta_pp": -17.404426559356136,
+        "length_matched_delta_pp": -24.572739369038782
+      }
+    },
+    "range_pp": {
+      "min_abs": 22.331096196868007,
+      "max_abs": 41.37931034482758,
+      "phrase": "22 to 41 points",
+      "phrase_consistent": true
+    },
+    "prior_artefact": {
+      "path": "divergence_study_outputs/length_matched_elephant_oeq_validation_corrected.json",
+      "exists": true,
+      "per_generator": {
+        "claude-haiku-4-5": {
+          "prior_delta_pp": -26.66666666666667,
+          "agrees": true
+        },
+        "claude-sonnet-4-6": {
+          "prior_delta_pp": -22.331096196868007,
+          "agrees": true
+        },
+        "gpt-5.4-nano": {
+          "prior_delta_pp": -41.37931034482758,
+          "agrees": true
+        },
+        "grok-4-1-fast-reasoning": {
+          "prior_delta_pp": -35.98960793575815,
+          "agrees": true
+        }
+      },
+      "all_agree": true
+    }
+  },
+  "guard": {
+    "ok": true,
+    "failures": []
+  }
+}
