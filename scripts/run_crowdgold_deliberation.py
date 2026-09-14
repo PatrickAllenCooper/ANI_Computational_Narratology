@@ -138,6 +138,12 @@ Usage:
   python -m scripts.run_crowdgold_deliberation --dry-run --full
   python -m scripts.run_crowdgold_deliberation --pilot       # SPENDS MONEY
 
+There is no --run flag: the live path is the default whenever none of
+--selftest / --smoke / --dry-run is passed. Both the dry-run and the live
+path refuse (exit 2) a model or --moderator-model with no entry in PRICES,
+before any item is loaded or any call is made, so a deployment that has not
+been priced (and therefore never had a dry-run ceiling) cannot spend.
+
 Exit codes: 0 ok, 1 no rows, 2 bad config / data unavailable, 4 guard failed.
 """
 from __future__ import annotations
@@ -2162,7 +2168,69 @@ PRICES: dict[str, tuple[float, float]] = {
     # (0.0, 0.0) and the dry-run reports $0 -- the exact landmine that would
     # silently void the ceiling discipline.
     "gpt-4o": (2.50, 10.00),
+    # Added 2026-09-14 for the fourth-vendor arrival (Foundry v1 route in
+    # scripts/generators.py). LIST prices, USD per Mtok (input, output),
+    # fetched on 2026-09-14 from the Azure Retail Prices API -- the public,
+    # machine-readable source behind the Foundry Models pricing page
+    # (https://azure.microsoft.com/en-us/pricing/details/ai-foundry-models/llama/
+    # and its Mistral / DeepSeek tabs populate their tables from it; fetched
+    # as HTML they show "$-"). The API quotes USD per 1K tokens; x1000 below.
+    #
+    #   Llama-3.3-70B-Instruct
+    #     https://prices.azure.com/api/retail/prices?$filter=contains(meterName,'Llama 3.3 70B') and currencyCode eq 'USD'
+    #     product "Azure Llama Models", SKU "Llama 3.3 70B Inp glbl" / "Outp glbl"
+    #     (Global Standard): $0.00071 / 1K in, $0.00071 / 1K out -> 0.71 / 0.71.
+    #     (Datazone 0.781/0.781, Regional 0.859/0.859 -- global is the list rate.)
+    #   Mistral-Large-3-2
+    #     https://prices.azure.com/api/retail/prices?$filter=contains(productName,'Mistral') and contains(meterName,'Large') and contains(skuName,'glbl') and currencyCode eq 'USD'
+    #     product "Azure Mistral Models", meters "Large 3 Inp glbl Tokens"
+    #     $0.0005 / 1K and "Large 3 Outp glbl Tokens" $0.0015 / 1K -> 0.50 / 1.50.
+    #     NOTE: the API has NO meter naming 3.2 (or "3 2"); "Large 3" is the
+    #     family meter (84 rows, all "Large 3"). Recorded as the family price;
+    #     if the 3.2 deployment bills on a different meter this is wrong.
+    #   DeepSeek-V4-Pro
+    #     https://prices.azure.com/api/retail/prices?$filter=contains(meterName,'DeepSeek-V4-Pro') and currencyCode eq 'USD'
+    #     product "Azure Fireworks Models" (served via Fireworks), the ONLY
+    #     SKU is Data Zone: "FW DeepSeek-V4-Pro Inp DZ Tokens" $0.001925 / 1K,
+    #     "FW DeepSeek-V4-Pro Outp DZ Tokens" $0.003828 / 1K -> 1.925 / 3.828
+    #     (eastus and 20 other regions; northeurope 1.93 / 3.83). No global SKU.
+    #
+    # A model whose price could not be fetched is LEFT OUT of this dict --
+    # never written as None: every other consumer (filter screen, games,
+    # dilemma, stake grip, multivendor) tuple-unpacks PRICES.get(m, (0, 0))
+    # and its `m not in PRICES` refusal would let a None entry through to a
+    # TypeError instead of a refusal. The selftest asserts every entry is a
+    # positive (in, out) pair. An ABSENT model is what unpriced_models()
+    # makes the dry-run and the live path refuse (exit 2) rather than
+    # price at $0 -- see the (0, 0) landmine note above. price_of() still
+    # treats a None value as unpriced, defensively.
+    "Llama-3.3-70B-Instruct": (0.71, 0.71),
+    "Mistral-Large-3-2": (0.50, 1.50),
+    "DeepSeek-V4-Pro": (1.925, 3.828),
 }
+
+
+def price_of(model: str) -> Optional[tuple[float, float]]:
+    """(in, out) USD per Mtok for a model, or None when it is absent from
+    PRICES (or, defensively, listed with a None value -- which the PRICES
+    contract forbids and the selftest asserts never happens)."""
+    v = PRICES.get(model)
+    if v is None:
+        return None
+    return (float(v[0]), float(v[1]))
+
+
+def unpriced_models(models: Sequence[str],
+                    moderator_model: Optional[str] = None) -> list[str]:
+    """Names among the models on the command line (and the moderator, if
+    any) that have no usable list price. The dry-run refuses these instead
+    of pricing them at $0."""
+    names = list(models) + ([moderator_model] if moderator_model else [])
+    seen: list[str] = []
+    for n in names:
+        if price_of(n) is None and n not in seen:
+            seen.append(n)
+    return seen
 
 #: MEASURED mean completion tokens for a single-agent narrative_cot response on
 #: THIS instrument, from the cached cg_gen_*narrative_cot* records
@@ -2180,6 +2248,31 @@ MEASURED_NCOT_COMPLETION: dict[str, int] = {
 #: replacing them with measured values is one of the things the pilot buys.
 ASSUMED_COMPLETION = {"synthesis": 450, "r3_label": 320,
                       "integration": 500, "r4_vote": 140}
+
+#: EMBEDDED regression baseline for the gpt-4o dry-run cost model (the
+#: Addendum 16.11 grip-screen ceiling): `--dry-run --models gpt-4o` on the
+#: full 249-item panel, transcript cap 0, samples 1, REGEX tokenizer. The
+#: on-disk artefact divergence_study_outputs/cg_deliberation_gpt4o_dryrun.json
+#: is untracked, so the selftest compares against THIS copy (and, when the
+#: artefact is on disk, requires the artefact to equal it too) -- a clean
+#: checkout can no longer pass the regression by having nothing to compare.
+GPT4O_DRYRUN_BASELINE: dict = {
+    "cells": 498, "calls_per_cell": 17, "total_calls": 8466,
+    "total_usd": 136.53, "moderator_model": "(agent model)",
+    "tokenizer": "regex approximation ONLY -- tiktoken not installed, so prompt tokens are UNDERCOUNTED by roughly 20-35% and so is the cost",
+    "per_model": {"gpt-4o": {
+        "priced": True, "completion_measured": False, "price_in_per_mtok": 2.5, "price_out_per_mtok": 10.0, "moderator_model": "gpt-4o", "moderator_price_in_per_mtok": 2.5, "moderator_price_out_per_mtok": 10.0, "cells": 498, "calls": 8466, "input_tokens": 26468700, "output_tokens": 7036242, "usd": 136.53, "moderator_usd": 12.08,
+        "rounds": {
+            "r0": {"calls": 1494, "billed_to": "gpt-4o", "prompt_tokens_each": 724, "prompt_tokens_each_regex": 724, "completion_tokens_each": 1311, "input_tokens": 1081656, "output_tokens": 1958634, "price_in_per_mtok": 2.5, "price_out_per_mtok": 10.0, "usd": 22.29},
+            "r1": {"calls": 1494, "billed_to": "gpt-4o", "prompt_tokens_each": 4694, "prompt_tokens_each_regex": 4694, "completion_tokens_each": 1311, "input_tokens": 7012836, "output_tokens": 1958634, "price_in_per_mtok": 2.5, "price_out_per_mtok": 10.0, "usd": 37.12},
+            "r2": {"calls": 1494, "billed_to": "gpt-4o", "prompt_tokens_each": 6006, "prompt_tokens_each_regex": 6006, "completion_tokens_each": 1311, "input_tokens": 8972964, "output_tokens": 1958634, "price_in_per_mtok": 2.5, "price_out_per_mtok": 10.0, "usd": 42.02},
+            "synthesis": {"calls": 498, "billed_to": "gpt-4o", "prompt_tokens_each": 4594, "prompt_tokens_each_regex": 4594, "completion_tokens_each": 450, "input_tokens": 2287812, "output_tokens": 224100, "price_in_per_mtok": 2.5, "price_out_per_mtok": 10.0, "usd": 7.96},
+            "r3_label": {"calls": 1494, "billed_to": "gpt-4o", "prompt_tokens_each": 2558, "prompt_tokens_each_regex": 2558, "completion_tokens_each": 320, "input_tokens": 3821652, "output_tokens": 478080, "price_in_per_mtok": 2.5, "price_out_per_mtok": 10.0, "usd": 14.33},
+            "integration": {"calls": 498, "billed_to": "gpt-4o", "prompt_tokens_each": 1306, "prompt_tokens_each_regex": 1306, "completion_tokens_each": 500, "input_tokens": 650388, "output_tokens": 249000, "price_in_per_mtok": 2.5, "price_out_per_mtok": 10.0, "usd": 4.12},
+            "r4_vote": {"calls": 1494, "billed_to": "gpt-4o", "prompt_tokens_each": 1768, "prompt_tokens_each_regex": 1768, "completion_tokens_each": 140, "input_tokens": 2641392, "output_tokens": 209160, "price_in_per_mtok": 2.5, "price_out_per_mtok": 10.0, "usd": 8.7},
+        },
+    }},
+}
 
 
 def cost_model(models: Sequence[str], arms: Sequence[str],
@@ -2267,8 +2360,8 @@ def cost_model(models: Sequence[str], arms: Sequence[str],
                  "integration": ASSUMED_COMPLETION["integration"],
                  "r4_vote": ASSUMED_COMPLETION["r4_vote"]}
         cells_m = len(arms) * len(items) * samples
-        pin, pout = PRICES.get(m, (0.0, 0.0))
-        min_, mout_ = PRICES.get(mod_m, (0.0, 0.0))
+        pin, pout = price_of(m) or (0.0, 0.0)
+        min_, mout_ = price_of(mod_m) or (0.0, 0.0)
         rounds: dict = {}
         tot_in = tot_out = 0
         tot_usd = 0.0
@@ -2297,7 +2390,7 @@ def cost_model(models: Sequence[str], arms: Sequence[str],
                 "usd": round(usd, 2),
             }
         out["per_model"][m] = {
-            "priced": m in PRICES and mod_m in PRICES,
+            "priced": price_of(m) is not None and price_of(mod_m) is not None,
             "completion_measured": measured,
             "price_in_per_mtok": pin,
             "price_out_per_mtok": pout,
@@ -3162,6 +3255,149 @@ def _selftest() -> int:
                   transcript_cap=0)["total_usd"],
               f"${cm2['total_usd']:.2f} with sonnet moderating")
 
+    # -- 13. fourth-vendor prices and the unpriced-model refusal -----------
+    check("the three Foundry v1 deployments carry fetched list prices",
+          PRICES.get("Llama-3.3-70B-Instruct") == (0.71, 0.71)
+          and PRICES.get("Mistral-Large-3-2") == (0.50, 1.50)
+          and PRICES.get("DeepSeek-V4-Pro") == (1.925, 3.828),
+          str({k: PRICES.get(k) for k in ("Llama-3.3-70B-Instruct",
+                                            "Mistral-Large-3-2", "DeepSeek-V4-Pro")}))
+    check("every PRICES entry is a positive (in, out) pair -- None is FORBIDDEN (the other "
+          "consumers tuple-unpack PRICES.get(); an unfetchable price is left out, not written as None)",
+          all(v is not None and isinstance(v, tuple) and len(v) == 2
+              and all(isinstance(x, (int, float)) and x > 0 for x in v)
+              for v in PRICES.values()))
+    check("price_of returns the pair for a priced model and None otherwise",
+          price_of("gpt-4o") == (2.5, 10.0) and price_of("no-such-model") is None)
+    PRICES["_selftest_unpriced"] = None  # type: ignore[assignment]  (defensive path only; the contract forbids None)
+    try:
+        check("unpriced_models names absent AND (defensively) None-priced models, once each, "
+              "moderator included",
+              unpriced_models(["gpt-4o", "no-such-model", "_selftest_unpriced",
+                               "no-such-model"], "no-such-model")
+              == ["no-such-model", "_selftest_unpriced"]
+              and unpriced_models(list(FULL_MODELS), "claude-sonnet-4-6") == [])
+        check("price_of treats a None entry as unpriced",
+              price_of("_selftest_unpriced") is None)
+    finally:
+        PRICES.pop("_selftest_unpriced", None)
+    import contextlib
+    import io
+    dry_path = OUT_DIR / "cg_deliberation_dryrun.json"   # the default tag's artefact
+    dry_stat = dry_path.stat().st_mtime_ns if dry_path.exists() else None
+    buf = io.StringIO()
+    with contextlib.redirect_stdout(buf):
+        rc_unpriced = main(["--dry-run", "--models", "no-such-model",
+                            "--n-yta", "2", "--n-nta", "2"])
+    check("--dry-run REFUSES an unpriced model (exit 2, no $0 line, no artefact written)",
+          rc_unpriced == 2 and "no list price on file" in buf.getvalue()
+          and "TOTAL ESTIMATED COST" not in buf.getvalue()
+          and (dry_path.stat().st_mtime_ns if dry_path.exists() else None) == dry_stat,
+          f"rc={rc_unpriced}")
+    buf2 = io.StringIO()
+    with contextlib.redirect_stdout(buf2):
+        rc_unpriced_mod = main(["--dry-run", "--models", "gpt-4o",
+                                "--moderator-model", "no-such-moderator",
+                                "--n-yta", "2", "--n-nta", "2"])
+    check("--dry-run REFUSES an unpriced --moderator-model too",
+          rc_unpriced_mod == 2 and "no-such-moderator" in buf2.getvalue()
+          and "TOTAL ESTIMATED COST" not in buf2.getvalue(), f"rc={rc_unpriced_mod}")
+    # The LIVE path (no --dry-run, no --smoke: this runner has no --run flag,
+    # so the bare invocation spends) must refuse an unpriced model BEFORE
+    # anything else happens: no items loaded, no rows/votes/cache written,
+    # exit 2. The selftest only ever reaches this refusal with an unpriced
+    # name; no priced model is ever passed to the live path here.
+    rows_live = OUT_DIR / "cg_deliberation_rows.csv"
+    rows_stat = rows_live.stat().st_mtime_ns if rows_live.exists() else None
+    n_cache_before = sum(1 for _ in OUT_DIR.glob("cgd_no-such-model_*"))
+    buf3 = io.StringIO()
+    with contextlib.redirect_stdout(buf3):
+        rc_live = main(["--models", "no-such-model", "--n-yta", "2", "--n-nta", "2"])
+    check("the LIVE path (no --dry-run) REFUSES an unpriced model (exit 2, before load_items / run(); "
+          "no rows, no cache record, no dry-run artefact)",
+          rc_live == 2 and "refuses to spend" in buf3.getvalue()
+          and "panel" not in buf3.getvalue()
+          and (rows_live.stat().st_mtime_ns if rows_live.exists() else None) == rows_stat
+          and sum(1 for _ in OUT_DIR.glob("cgd_no-such-model_*")) == n_cache_before
+          and (dry_path.stat().st_mtime_ns if dry_path.exists() else None) == dry_stat,
+          f"rc={rc_live}")
+    buf4 = io.StringIO()
+    with contextlib.redirect_stdout(buf4):
+        rc_live_mod = main(["--models", "gpt-4o", "--moderator-model", "no-such-moderator",
+                            "--n-yta", "2", "--n-nta", "2"])
+    check("the LIVE path REFUSES an unpriced --moderator-model too (exit 2, nothing loaded)",
+          rc_live_mod == 2 and "no-such-moderator" in buf4.getvalue()
+          and "panel" not in buf4.getvalue(), f"rc={rc_live_mod}")
+    import inspect
+    check("the live refusal sits BEFORE load_items and run() in main() (source order)",
+          inspect.getsource(main).index("unpriced_models(models, args.moderator_model)")
+          < inspect.getsource(main).index("items = load_items(")
+          < inspect.getsource(main).index("rows, votes, calls = run("))
+
+    # -- 14. REGRESSION: the gpt-4o dry-run cost model reproduces its baseline
+    # GPT4O_DRYRUN_BASELINE is the EMBEDDED copy of what `--dry-run --models
+    # gpt-4o` wrote on the full 249-item panel (transcript cap 0, samples 1,
+    # regex tokenizer): cells 498, 8,466 calls, 7,036,242 output tokens,
+    # $136.53. The on-disk artefact is untracked, so the comparison never
+    # depends on it being present: a missing panel is a FAIL, not a skip, and
+    # the exact-USD comparison is run with the BPE counter stubbed out so it
+    # holds whether or not tiktoken is installed. When the artefact IS on
+    # disk it must equal the embedded baseline as well.
+    check("REGRESSION baseline: the 249-item panel is loadable (a missing panel fails, never skips)",
+          bool(items), f"{len(items)} items")
+    if items:
+        g = globals()
+        saved_bpe = g["_optional_bpe_counter"]
+        g["_optional_bpe_counter"] = lambda: None          # force the regex tokenizer
+        try:
+            cm_reg = cost_model(["gpt-4o"], [THIRD_PERSON, AS_ASKER], items, 1,
+                                scaffold="narrative_cot", transcript_cap=0)
+        finally:
+            g["_optional_bpe_counter"] = saved_bpe
+        B = GPT4O_DRYRUN_BASELINE
+        check("REGRESSION gpt-4o dry-run (regex tokenizer, forced): cells 498, 8,466 calls, "
+              "7,036,242 output tokens, $136.53, every per-round field and the tokenizer note "
+              "IDENTICAL to the embedded baseline",
+              cm_reg["cells"] == B["cells"] == 498
+              and cm_reg["calls_per_cell"] == B["calls_per_cell"]
+              and cm_reg["total_calls"] == B["total_calls"] == 8466
+              and cm_reg["moderator_model"] == B["moderator_model"]
+              and cm_reg["assumptions"]["tokenizer"] == B["tokenizer"]
+              and cm_reg["per_model"] == B["per_model"]
+              and cm_reg["per_model"]["gpt-4o"]["output_tokens"] == 7036242
+              and cm_reg["total_usd"] == B["total_usd"] == 136.53,
+              f"cells {cm_reg['cells']} calls {cm_reg['total_calls']} "
+              f"out_tok {cm_reg['per_model']['gpt-4o']['output_tokens']} ${cm_reg['total_usd']:.2f}")
+        # with whatever tokenizer is actually installed, the tokenizer-
+        # independent fields must still agree (prompt tokens may legitimately
+        # move under tiktoken; completions are the API's own counters)
+        cm_now = cost_model(["gpt-4o"], [THIRD_PERSON, AS_ASKER], items, 1,
+                            scaffold="narrative_cot", transcript_cap=0)
+        v_now, v_b = cm_now["per_model"]["gpt-4o"], B["per_model"]["gpt-4o"]
+        indep = ("calls", "billed_to", "prompt_tokens_each_regex",
+                 "completion_tokens_each", "output_tokens",
+                 "price_in_per_mtok", "price_out_per_mtok")
+        check("REGRESSION gpt-4o dry-run (installed tokenizer): cells, calls, prices, regex prompt "
+              "tokens, completions and output tokens reproduced exactly",
+              cm_now["cells"] == 498 and cm_now["total_calls"] == 8466
+              and v_now["priced"] is True
+              and (v_now["price_in_per_mtok"], v_now["price_out_per_mtok"])
+              == (v_b["price_in_per_mtok"], v_b["price_out_per_mtok"])
+              and v_now["output_tokens"] == v_b["output_tokens"]
+              and all(v_now["rounds"][rd][k] == v_b["rounds"][rd][k]
+                      for rd in ROUNDS for k in indep))
+        art_path = OUT_DIR / "cg_deliberation_gpt4o_dryrun.json"
+        if art_path.exists():
+            art = json.loads(art_path.read_text())
+            check("REGRESSION cg_deliberation_gpt4o_dryrun.json on disk equals the embedded baseline "
+                  "(per_model, total_usd, cells, calls, tokenizer note)",
+                  art["per_model"] == B["per_model"] and art["total_usd"] == B["total_usd"]
+                  and art["cells"] == B["cells"] and art["total_calls"] == B["total_calls"]
+                  and art["assumptions"]["tokenizer"] == B["tokenizer"])
+        else:
+            print("  [ok] (cg_deliberation_gpt4o_dryrun.json not on disk; the regression above ran "
+                  "against the embedded baseline, nothing was skipped)")
+
     print("\nSELFTEST " + ("PASSED" if ok else f"FAILED: {failures}"))
     return 0 if ok else 1
 
@@ -3384,6 +3620,30 @@ def main(argv: list[str] | None = None) -> int:
     if bad:
         print(f"\nERROR: unknown arm(s) {bad}; available {list(ARM_ORDER)}\n")
         return 2
+    if args.dry_run or not args.smoke:
+        # A dry-run exists to put a ceiling on a spend. PRICES.get(m, (0, 0))
+        # used to price an unknown model at $0 and print it; now a model
+        # named on the command line (or as moderator) without a usable list
+        # price is refused outright -- by the dry-run AND by the live path
+        # (this runner has no --run flag: the live path is the default when
+        # none of --selftest/--smoke/--dry-run is passed, so an unpriced
+        # deployment must be refused here, before load_items and before
+        # run(), or it would spend with no ceiling on file). --smoke is
+        # stubbed offline and exempt.
+        unpriced = unpriced_models(models, args.moderator_model)
+        if unpriced:
+            if args.dry_run:
+                print(f"\nERROR: no list price on file for {unpriced}; the dry-run "
+                      "refuses to print $0 for an unpriced model. Add (in, out) "
+                      "USD per Mtok to run_crowdgold_deliberation.PRICES (with "
+                      "the source URL in the comment) before budgeting.\n")
+            else:
+                print(f"\nERROR: no list price on file for {unpriced}; the live run "
+                      "refuses to spend on an unpriced model (no ceiling could have "
+                      "been set by a dry-run). Add (in, out) USD per Mtok to "
+                      "run_crowdgold_deliberation.PRICES (with the source URL in "
+                      "the comment), dry-run, then run.\n")
+            return 2
 
     try:
         items = load_items(source="scruples", n_yta=99, n_nta=150,

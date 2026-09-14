@@ -6658,3 +6658,255 @@ degrades gracefully (lift positive at k = 1, weaker than n = 2's +0.348
 on one-loser verdicts) and the verdict layer pays for the extra seat
 (-0.045), as it did for the coalition seat. Nothing above this line is
 edited.
+
+# Registration batch 16.22 to 16.25: closing the three ARR/ACL gaps (appended 2026-09-14 BEFORE any call under any new namespace; plan approved by the PI the same day)
+
+The PI's assessment request (2026-09-14) found three gaps: the headline sensor
+result rests on one model and one panel; routing versus the SOLO model is
+certified only on the composite flag (16.11a, console-only) and never on the
+registered counter with a paired interval; three invariance readouts are
+under-gated (54, 55, 31 fired against the 60 minimum). The PI authorised the
+core tier and instructed "don't argue a stronger case than what we can
+directly justify". Budget note: core tier estimates from measured $/debate
+(grok 0.0083, haiku 0.1266): haiku 249-panel extension ~$39 (ceiling $45);
+grok second samples ~$25 (ceiling $36); Llama-3.3-70B community ~$21-37
+(ceiling $60) plus screen and comparator ~$5 (ceiling $20) and a gated k=4
+extension (ceiling $45); zero-spend 16.22. Optional tier (gpt-4o, sonnet
+community, haiku k=2, Mistral-Large-3-2, DeepSeek-V4-Pro communities) is
+decided after the core readouts.
+
+# Addendum 16.22: routing versus the solo model on the REGISTERED counter, with cost per decision (zero spend; registered before the analysis is run)
+
+Population: the 420 (arm, item) cells of the grok panel; a cell fires when
+strictly more than half of its codable debate samples fire (the
+`build_cells` convention of 16.15.2). Base: grok standard majority-of-3
+(`cg_scaffold_combined_rows_k3.csv`). Judges: haiku standard majority-of-3
+(same file) and sonnet standard majority-of-3 (`cg_sonnet_actuator_rows.csv`,
+covers all 420 cells). Deployed rule: base unless the signal fires, judge
+if it fires, base if the judge is non-codable. Signals: counter (the
+registered sensor, n_objectors >= 2), composite, any ESH/NAH among the
+solo's samples, disagreement among the solo's samples (collapsed and raw),
+and union = counter OR disagreement (16.11a's union). Estimator:
+item-clustered percentile bootstrap, 4,000 draws, seed 13.
+
+Readouts, with record brackets: routed accuracy per signal and judge; paired
+delta routed minus base [16.11a composite -> sonnet +0.0239 [+0.0024,
++0.0452] on 418 cells; union -> sonnet +0.0383 [+0.0121, +0.0646]]; paired
+delta routed minus judge-everywhere [composite -> sonnet -0.0407 [-0.0692,
+-0.0120]; sonnet everywhere 0.9761]; coverage and n fired [composite 53,
+counter 51 of 420]; pairwise deltas disagreement minus counter, union minus
+counter, union minus disagreement, composite minus counter [16.15.2 with the
+haiku judge: disagreement minus counter +0.002 [-0.014, +0.019]]; random
+routing at each coverage (200 seeds); cost per decision in dollars from the
+cached token counts and PRICES for base alone (3 calls), collective k=1
+sensor plus judge on fired cells (17 + coverage x 3), each solo-signal
+router (3 + coverage x 3), judge everywhere (3), and the k=4 sensor as run
+(68 + coverage x 3).
+
+Gate: the composite -> sonnet routed accuracy and its delta over base must
+reproduce 16.11a (0.9354; +0.0239) within 0.005 on the point, on the 418-
+or the 420-cell population, before any new number is read; otherwise GUARD
+FAILED and the block is UNREAD. Existing guards (codable share, r3
+unparsed, judge emission on fired cells) apply.
+
+Pre-declared readings.
+- R1 (primary). counter -> sonnet minus base with the CI excluding 0 above:
+  the routing gain over the solo model is certified on the registered
+  counter and results.tex says so with that interval. CI including 0 or
+  below: the certification stands on the composite flag only (16.11a) and
+  the paper says so explicitly; the counter's routing claim remains scoped
+  to the collective's own verdicts (16.15.1).
+- R2. counter -> sonnet minus sonnet-everywhere: below 0 with CI excluding 0
+  is expected (16.11a) and keeps the cost-efficiency framing; at or above 0
+  strengthens the abstract's routing sentence.
+- R3 (the demotion test). disagreement -> sonnet minus counter -> sonnet:
+  in favour of disagreement, or including 0, means the solo's own
+  disagreement routes the solo's errors at least as well as the collective's
+  counter at 3 calls against 17, and the paper says the collective sensor is
+  scoped to the collective's own errors and is dominated on cost for solo
+  errors; in favour of the counter means the counter carries information the
+  samples do not.
+- R4. union minus disagreement excluding 0 above: the counter adds to
+  disagreement.
+- R5 (descriptive). The accuracy-cost frontier from measured means, named.
+- The haiku-judge replicate of R1-R4 is reported; expected non-positive
+  against base (a 0.851 judge cannot repair a 0.912 base).
+
+# Addendum 16.23: haiku extended to the full 249-item panel at k = 1 (ceiling $45, dry-run 8,466 calls of which ~5,200 new; BEFORE any call under the new tag)
+
+`run_crowdgold_deliberation.py --models claude-haiku-4-5 --arms
+third_person,as_asker --n-yta 99 --n-nta 150 --samples 1 --seed 44
+--max-tokens-agent 2560 --max-tokens-moderator 1024 --max-tokens-label 3072
+--max-tokens-vote 3072 --transcript-cap 0 --tag cg_deliberation_haiku_249`.
+Haiku's own content-filter screen drops 0 of 249 items (checked), so the
+panel is 249; matched-210 readouts come from the intersection with grok's
+items at analysis time. The 192 `haiku_fixed` debates (100 items) replay
+byte-identically from cache (same caps, parent_sha verified); the 8 missing
+third_person debates complete; ~298 debates are new. ~306 x $0.1266 ~ $39.
+The `haiku_fixed` CSVs are untouched (new tag).
+
+Readouts (per-model modes of 16.22's tooling; on the 249 own items and on
+the grok-210 intersection; grok baselines in brackets, haiku_fixed values in
+parentheses): role-lock [0.971] (0.442); per-seat P(at_fault) and r0
+accuracy; objection marginals [0.430 / 0.690 / 0.073]; localisation excess
+vs the Poisson-binomial null [+0.291]; counter fire rate [0.196] (0.161);
+G1/G2/G3 [G3 +0.631] (0.458 / 0.069 / +0.062); all-strata counter lift at
+>= 60 fired [+0.320]; within-one-loser lift at >= 60 fired [+0.348, 9.83x]
+(+0.089 [-0.048, +0.251] at 25 fired); advocate phi within one-loser
+[-0.901]; S2 accuracy vs haiku solo [0.843 vs 0.911 for grok]; transfer of
+haiku's counter onto haiku's own solo and onto grok/nano solos; the 16.22
+routed-vs-own-solo block with the sonnet judge; measured spend.
+
+Pre-declared readings. REPLICATES iff role-lock > 0.9, all-strata fire rate
+in [0.08, 0.35], all-strata lift and within-one-loser lift positive with
+CIs excluding 0 at >= 60 fired, and the advocate phi within one-loser
+negative with CI excluding 0. REPLICATES THE SENSOR, NOT THE LOCK iff the
+lift conditions hold while lock < 0.9 (haiku's 0.44 is the expected case)
+and G3 < +0.20; this is the 16.4 transfer-function point (a weak-grip model
+whose counter still concentrates its own errors). FLOODS iff fire > 0.5 with
+lock < 0.7 or phi including 0. SILENT iff fire < 0.05 or G2 = 0. Under-gated
+strata are reported as such; the registered powering step is `--samples 2`
+(Tier 3). Gates: round-level and outcome guards (literal GUARD FAILED, exit
+4, CSVs renamed `<tag>_GUARD_FAILED_*`), completeness (498 rows expected),
+minimum-fired 60.
+
+# Addendum 16.25: second and further samples on the three under-gated cells (ceilings $15 / $15 / $6; BEFORE any call)
+
+Sample 0 replays from cache in every cell (`call_cache_path` embeds the
+sample index); new calls are exactly the added samples. The k = 1 CSVs are
+backed up as `<tag>_k1_rows.csv`, `<tag>_k1_votes.csv`,
+`<tag>_k1_summary.json` (done 2026-09-14) because the base runner rewrites
+the CSVs before its guard verdict.
+
+- `cg_deliberation_noedge` (16.10 embodied/off): `run_crowdgold_topology
+  --roles embodied --edges off --resume --n-yta 99 --n-nta 150 --samples 4`
+  (+1,260 debates, ~$10.5). Expected one-loser fired ~76 on 1,680 debates.
+- `cg_deliberation_stdcot` (16.16): the base runner with the 16.16 flags plus
+  `--samples 4` (+1,260 debates, ~$10.5).
+- `cg_deliberation_nperspective` (16.21): `run_crowdgold_nperspective --run
+  --resume --samples 2` (+314 debates, ~$3.8; completeness expects 628 rows).
+  Expected k = 2 against-interest fired ~62.
+
+Readouts: the same analyzers re-run on the pooled samples
+(`analyze_topology_2x2`, `analyze_emergent_graphs`, `analyze_nperspective`,
+`analyze_flooding`); the previously under-gated lifts [noedge +0.241 at 54
+fired; stdcot +0.404 [+0.253, +0.552] at 55; nperspective k = 2 against-
+interest at 31] are READ if >= 60 fired; a k = 1 versus pooled stability
+line restates the MDEs (fire +/-0.045, lift +/-0.141) on the pooled n.
+Pre-declared: the 16.10, 16.16 and 16.21 branch readings stand as written
+and are applied to the pooled intervals; a sign flip against k = 1 is
+reported as such. Gates: base guards, completeness (1,680 / 1,680 / 628
+rows), quarantine by hand for the base-runner cell.
+
+(16.24, the Llama-3.3-70B-Instruct community and the single-agent runs for
+the three new Foundry deployments, is registered separately once the
+deployment prices are fetched and the routing probe has run.)
+Nothing above this line is edited.
+
+## 16.22 RESULTS (zero spend, run 2026-09-14; artefact `routing_certification.json`, also `router_decomposition.json["routed_vs_solo"]` and `["cost_per_decision"]`; every pre-existing key of both artefacts byte-identical after the change; GATE PASSED, block READ)
+
+Replay gate: on the 418 judge-codable cells the composite -> sonnet system
+reproduces 16.11a exactly (routed 0.9354, +0.0239 over base 0.9115,
+coverage 0.1268, sonnet everywhere 0.9761, union 0.9498 / +0.0383); on 420
+cells 0.9357 / +0.0238. The artefact's interval on the composite delta is
+[+0.0048, +0.0452] against 16.11a's console [+0.0024, +0.0452] (different
+resampling stream; the point reproduces). One clarification to the
+registration text: 16.11a's union was composite OR disagreement; 16.22's
+union is counter OR disagreement; the two differ by the two extra
+composite cells, which route to the same outcome (composite minus counter
++0.0000 on every readout).
+
+Sonnet judge, 420 cells, routed accuracy and paired delta over base 0.9119
+(4,000 draws, seed 13):
+
+    counter        51 fired (0.121)   0.9357   +0.0238 [+0.0048, +0.0452]   vs sonnet everywhere -0.0405 [-0.0690, -0.0143]
+    composite      53 (0.126)         0.9357   +0.0238 [+0.0048, +0.0452]
+    disagreement   33 (0.079)         0.9381   +0.0262 [+0.0095, +0.0452]   vs sonnet everywhere -0.0381 [-0.0714, -0.0071]
+    any ESH/NAH    94 (0.224)         0.9595   +0.0476 [+0.0190, +0.0786]   vs sonnet everywhere -0.0167 [-0.0405, +0.0048]
+    union          71 (0.169)         0.9500   +0.0381 [+0.0143, +0.0643]   vs sonnet everywhere -0.0262 [-0.0500, -0.0024]
+    random routing at the counter's coverage: mean 0.9205, best 0.9333
+    pairwise: disagreement - counter +0.0024 [-0.0190, +0.0238]; union - counter +0.0143 [+0.0024, +0.0286]; union - disagreement +0.0119 [-0.0024, +0.0286]
+
+Haiku judge, 420 cells: no routed system's delta over base excludes 0
+(counter +0.0024 [-0.0143, +0.0190]; disagreement +0.0048; any ESH/NAH
++0.0071; union +0.0048); haiku everywhere 0.8500 is -0.0619 below base.
+
+Cost per decision (USD, measured tokens x list prices, means over 420
+cells): base alone 0.912 at $0.00049; disagreement -> sonnet 0.938 at
+$0.0014; any ESH/NAH -> sonnet 0.960 at $0.0031; counter (k = 1 sensor, 17
+calls) -> sonnet 0.936 at $0.0098; the k = 4 sensor as run 68 calls at
+$0.0333 plus the judge; sonnet everywhere 0.976 at $0.0115.
+
+Pre-declared readings, applied mechanically. R1 HOLDS: counter -> sonnet
+beats the solo model, +0.0238 [+0.0048, +0.0452], so the routing gain over
+the solo model is certified on the registered counter and not only on the
+composite. R2 as expected: below sonnet everywhere. R3: disagreement minus
+counter +0.0024 [-0.0190, +0.0238] includes 0, so the solo's own three-
+sample disagreement routes the solo's errors at least as well as the
+collective's counter at 3 calls against 17, and the collective sensor is
+dominated on cost for solo errors (0.938 at $0.0014 against 0.936 at
+$0.0098). R4: union minus disagreement includes 0; no claim that the
+counter adds to disagreement (union minus counter does exclude 0, +0.0143,
+reported as such). R5: the accuracy-cost frontier is base alone, then
+disagreement -> sonnet, then any ESH/NAH -> sonnet, then sonnet
+everywhere; every collective-sensor system lies inside it.
+
+Consequence for the paper, per the PI's instruction to argue no stronger
+case than the record justifies: the paper may say that routing the
+flagged fifth of the collective's cases to a stronger uninterested judge
+raises accuracy over the collective (16.15.1) and, on the registered
+counter, over the solo model by +0.024 [+0.005, +0.045]; it must say in the
+same breath that the solo model's own sample disagreement achieves the
+same at a tenth of the cost, so the collective's value is as an audit of
+its OWN verdicts and as the structure in which the information sits, not
+as a cheap error detector for a solo model. results.tex L541-559 is
+rewritten accordingly. Nothing above this line is edited.
+
+## 16.24 probe line (registered BEFORE any call; ceiling $0.10 per deployment)
+
+`scripts/probe_foundry.py --run --model <deployment> --surface both`: one
+fixed 30-token prompt at max_tokens 64 to each of Llama-3.3-70B-Instruct,
+Mistral-Large-3-2 and DeepSeek-V4-Pro through the new Foundry v1 route,
+recording surface, finish_reason and usage. Prices fetched from the Azure
+Retail Prices API and entered in PRICES: Llama 0.71 / 0.71, Mistral Large 3
+family 0.50 / 1.50 (no meter names 3.2; recorded as the family price),
+DeepSeek-V4-Pro 1.925 / 3.828 (Data Zone SKU only). The community and
+single-agent registrations for 16.24 follow the probe.
+
+## 16.24 probe RESULTS and the staged registration of the three new-vendor deployments (registered 2026-09-14 BEFORE any call under the new namespaces)
+
+Probe (3 calls, < $0.01): all three deployments answer on the Foundry
+`openai/v1` surface and on `models`, finish_reason stop, sensible text at
+64 tokens (Llama 56/16 tokens, Mistral 24/15, DeepSeek-V4-Pro 25/14); none
+shows the empty-completion reasoning pattern, so FOUNDRY_V1_REASONING stays
+empty. Default surface openai/v1. No seed is sent; sample independence is
+temperature 0.7 as for grok.
+
+Stage 1, single-agent screen and comparator, ALL THREE deployments (each
+under its own cache namespace `cg_gen_<deployment>_*`, all empty at
+registration): (a) the content-filter screen, `run_crowdgold_filter_screen
+--step screen --models <deployment>` (narrative_cot, 249 items x 2 arms x 3
+samples = 1,494 calls); (b) the transfer comparator, `run_crowdgold_aita
+--models <deployment> --scaffolds standard --n 99 --n-nta 150 --samples 3
+--arms third_person,as_asker,as_asker_stance --seed 44 --no-memorization
+--tag cg_<short>_standard_k3` (2,241 calls), whose rows CSV is passed to the
+analyzers as an extra comparator and never appended to the registered k3
+file. Estimated at ~2k tokens per call: Llama ~$4, Mistral ~$4, DeepSeek
+~$13; ceiling $30 for the stage. Readout: each deployment enters the
+16.15.3 transfer table as a target (P(solo wrong | counter fired) vs not,
+item-clustered) and its own solo accuracy on the panel is recorded.
+
+Stage 2, the Llama-3.3-70B-Instruct community, k = 2: `run_crowdgold_filter_
+screen --step deliberate --models Llama-3.3-70B-Instruct --samples 2`
+(self-moderated, caps 2560/1024/3072/3072, transcript cap 0, tag
+`cg_deliberation_llama3370binstruct`, survivors of its own screen x 2 arms x
+2 samples, ~840 debates, all new). Estimate $21 to $37 by token profile,
+ceiling $60. Readouts and pre-declared readings exactly as 16.23
+(REPLICATES / REPLICATES THE SENSOR NOT THE LOCK / FLOODS / SILENT), on own
+items and on the grok-210 intersection, plus the 16.22 routed-vs-own-solo
+block with the sonnet judge. Gated extension: if the all-strata lift
+replicates and the one-loser stratum has fewer than 60 fired, `--samples 4
+--resume` is pre-authorised up to a further $45; no extension if the k = 2
+reading is FLOODS or SILENT. Mistral-Large-3-2 and DeepSeek-V4-Pro
+communities are optional tier, decided after the Llama readout.
+Nothing above this line is edited.

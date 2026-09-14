@@ -96,6 +96,12 @@ corrected r3/r4 caps:
     --tag cg_deliberation_<model>     (gpt-4o: cg_deliberation_gpt4o)
     --compare-rows <step 1 rows CSV>
 
+`--samples 1` there is this module's own --samples (default 1, the
+registered value; added 2026-09-14 so a k>1 deliberation can be launched
+through the same screen). It is forwarded verbatim to the runner and sets
+the sample_idx 0..N-1 the completeness guard expects rows for; the step-2
+footprint and new-call cost model stay defined on sample_idx 0.
+
 The runner applies its screen itself at launch ("content-filter screen:
 dropped N of 249 items (union over {...})"); this module refuses to launch
 step 2 until every one of the step-1 records (1,494 at k=3) exists, so the
@@ -891,11 +897,15 @@ def delib_cost(model: str, survivors: Sequence[CrowdGoldItem], footprint: dict, 
             "measured_rounds": sorted(measured)}
 
 
-def print_delib_cost(model: str, dc: dict) -> None:
+def print_delib_cost(model: str, dc: dict, samples: int = 1) -> None:
+    """``samples`` (this module's --samples, default 1) only labels the
+    print-out: the footprint and the new-call cost are defined on sample_idx
+    0 (as registered), so with N > 1 the total is PER SAMPLE and the run's
+    upper bound is N times it (the delegated runner's dry-run prices all N)."""
     plan = dc["plan"]
     print("\n" + "=" * 78)
     print(f"NEW-CALL COST MODEL -- {model} -- counts only calls not already cached at an "
-          "expected path")
+          "expected path" + ("" if samples == 1 else f" -- PER SAMPLE (sample_idx 0 of {samples})"))
     print("=" * 78)
     print(f"  survivors {plan['survivor_items']} items x {len(ARMS)} arms = {plan['cells']} cells; "
           f"{plan['total_calls']} calls on the panel, {plan['replay_calls']} replay "
@@ -911,6 +921,8 @@ def print_delib_cost(model: str, dc: dict) -> None:
               f"{r['prompt_tokens_each']:8.0f} {r['completion_tokens_each']:7.0f}  "
               f"{r['usd']:7.2f}  {r['source']}")
     print(f"  TOTAL NEW-CALL COST  ${dc['usd_new_calls']:.2f}"
+          + ("" if samples == 1 else f"  PER SAMPLE; x {samples} samples ~= "
+                                     f"${dc['usd_new_calls'] * samples:.2f} upper bound (sample_idx 0 footprint)")
           + ("" if dc["priced"] else "   *** WARNING: model not in PRICES; $0 is a placeholder ***"))
     print(f"  measured rounds: {dc['measured_rounds'] or 'none (all rounds from the runner cost model)'}")
 
@@ -967,6 +979,15 @@ def preflight_deliberate(model: str, items: Sequence[CrowdGoldItem], status: dic
 # ---------------------------------------------------------------------------
 # Completeness guard: every launched debate must be a row
 # ---------------------------------------------------------------------------
+
+def expected_debate_keys(survivors: Sequence[CrowdGoldItem], samples: int = 1) -> set:
+    """The (arm, item, sample_idx) keys a launch at ``samples`` per (arm, item)
+    must produce as rows: sample_idx 0..samples-1. samples=1 is the set the
+    guard has always expected."""
+    if samples < 1:
+        raise ValueError(f"samples must be >= 1, got {samples}")
+    return {(arm, it.item_id, s) for arm in ARMS for it in survivors for s in range(samples)}
+
 
 def completeness_check(tag: str, model: str, expected: set, *,
                        out_dir: Optional[Path] = None,
@@ -1050,9 +1071,12 @@ def screen_argv(model: str, tag: str, *, workers: int, dry_run: bool,
 
 def deliberate_argv(model: str, tag: str, *, n_yta: int, n_nta: int, workers: int,
                     n_boot: int, compare_rows: Path, moderator_model: Optional[str],
-                    dry_run: bool) -> list[str]:
+                    dry_run: bool, samples: int = 1) -> list[str]:
+    """The deliberation runner's argv. ``samples`` (this module's --samples,
+    default 1) is forwarded as the runner's --samples; every other token is
+    fixed by the registration."""
     return (["--models", model, "--arms", ",".join(ARMS), "--n-yta", str(n_yta),
-             "--n-nta", str(n_nta), "--samples", "1", "--seed", str(SEED),
+             "--n-nta", str(n_nta), "--samples", str(samples), "--seed", str(SEED),
              "--min-votes", str(MIN_VOTES), "--min-consensus", str(MIN_CONSENSUS),
              "--agent-scaffold", SCREEN_SCAFFOLD,
              "--max-tokens-agent", str(CAPS["agent"]),
@@ -1162,12 +1186,24 @@ def run_screen(model: str, tag: str, items: Sequence[CrowdGoldItem], *, workers:
 def run_deliberate(model: str, tag: str, screen_tag: str, items: Sequence[CrowdGoldItem], *,
                    n_yta: int, n_nta: int, workers: int, n_boot: int, screen: str,
                    samples: int, moderator_model: Optional[str], run: bool, dry_run: bool,
-                   resume: bool) -> int:
+                   resume: bool, delib_samples: int = 1) -> int:
+    """``samples`` is the step-1 screen's k; ``delib_samples`` (this module's
+    --samples, default 1) is the deliberation runner's --samples and the
+    sample count the completeness guard expects rows for."""
+    if delib_samples < 1:
+        print(f"ERROR: --samples must be >= 1, got {delib_samples}"); return 2
     status = screen_status(model, items, samples)
     chain = chain_filtered_items(model)
     fp = delib_footprint(model, items, moderator_model=moderator_model)
     print(f"\n[filter-screen] STEP 2 -- screened deliberation for {model}   tag {tag}   "
-          f"(screen at k={samples})")
+          f"(screen at k={samples}"
+          f"{'' if delib_samples == 1 else f'; deliberation --samples {delib_samples}'})")
+    if delib_samples > 1:
+        print(f"  NOTE: --samples {delib_samples}: the footprint / new-call cost model below "
+              "are defined on sample_idx 0 only (as registered); the delegated runner's own "
+              f"dry-run prices all {delib_samples} samples, and the completeness guard expects "
+              f"rows for sample_idx 0..{delib_samples - 1}. Records at sample_idx > 0 will "
+              "show as foreign files on --resume.")
     rep = print_screen_report(model, items, status, chain)
     if status["complete"] and rep["chain"]:
         # the screen is on disk: its catch rate on the items the 16.11b chain
@@ -1203,13 +1239,13 @@ def run_deliberate(model: str, tag: str, screen_tag: str, items: Sequence[CrowdG
     compare_rows = rca.OUT_DIR / f"{screen_tag}_rows.csv"
     argv = deliberate_argv(model, tag, n_yta=n_yta, n_nta=n_nta, workers=workers, n_boot=n_boot,
                            compare_rows=compare_rows, moderator_model=moderator_model,
-                           dry_run=(dry_run or not run))
+                           dry_run=(dry_run or not run), samples=delib_samples)
     print(f"  delegates to: python -m scripts.run_crowdgold_deliberation " + " ".join(argv))
     if not compare_rows.exists():
         print(f"  NOTE: {compare_rows.name} not on disk yet (step 1 writes it); the "
               "criterion/resistance read-out will have no same-model comparator")
     dc = delib_cost(model, survivors, fp, moderator_model=moderator_model)
-    print_delib_cost(model, dc)
+    print_delib_cost(model, dc, samples=delib_samples)
     if not status["complete"]:
         # The screen is not on disk yet, so the count above is the UNSCREENED
         # panel. Project what step 2 will cost once step 1 has landed at k.
@@ -1240,7 +1276,16 @@ def run_deliberate(model: str, tag: str, screen_tag: str, items: Sequence[CrowdG
             "survivors": len(survivors),
             "footprint": {k: v for k, v in fp.items() if k not in ("present_by_cell", "refused_by_cell")},
             "refused_calls_by_cell": {f"{arm}|{iid}": n for (arm, iid), n in fp["refused_by_cell"].items()},
-            "new_call_cost": dc}, indent=2, default=str))
+            "new_call_cost": dc,
+            # the deliberation --samples this plan was made for (the k of the
+            # run; the footprint / new_call_cost above are per sample,
+            # sample_idx 0), so a k=2 plan is distinguishable from k=1 on disk
+            "samples": delib_samples,
+            "new_call_cost_scope": ("sample_idx 0 only (registered k=1)" if delib_samples == 1 else
+                                    f"PER SAMPLE (sample_idx 0 footprint); x {delib_samples} samples "
+                                    f"~= ${dc['usd_new_calls'] * delib_samples:.2f} upper bound"),
+            "usd_new_calls_all_samples_upper_bound": round(dc["usd_new_calls"] * delib_samples, 2),
+        }, indent=2, default=str))
         if not run and not dry_run:
             print("\n*** NOT RUNNING: pass --run to generate (this spends money). "
                   "Nothing was generated. ***\n")
@@ -1266,7 +1311,7 @@ def run_deliberate(model: str, tag: str, screen_tag: str, items: Sequence[CrowdG
                 sn = json.loads(summ_p.read_text()).get("n_items")
             except json.JSONDecodeError:
                 sn = None
-        comp = completeness_check(tag, model, {(arm, it.item_id, 0) for arm in ARMS for it in survivors},
+        comp = completeness_check(tag, model, expected_debate_keys(survivors, delib_samples),
                                   summary_n_items=sn)
         print_completeness(comp)
         (rcd.OUT_DIR / f"{tag}_completeness.json").write_text(json.dumps(comp, indent=2))
@@ -1621,6 +1666,55 @@ def _selftest() -> int:
           "--keep-filtered" not in deliberate_argv("m", "t", n_yta=1, n_nta=1, workers=1, n_boot=1,
                                                    compare_rows=Path("x"), moderator_model=None,
                                                    dry_run=True))
+    # --- --samples forwarding (2026-09-14): default byte-identical, N forwarded ---
+    _dargs = dict(n_yta=1, n_nta=1, workers=1, n_boot=1, compare_rows=Path("x"),
+                  moderator_model=None, dry_run=True)
+    argv_default = deliberate_argv("m", "t", **_dargs)
+    argv_1 = deliberate_argv("m", "t", samples=1, **_dargs)
+    argv_2 = deliberate_argv("m", "t", samples=2, **_dargs)
+    check("REGRESSION deliberate_argv: the default argv is byte-identical to samples=1 and "
+          "carries '--samples 1' (existing behaviour)",
+          argv_default == argv_1 and argv_1[argv_1.index("--samples") + 1] == "1"
+          and argv_1.count("--samples") == 1)
+    check("deliberate_argv(samples=2) differs from samples=1 ONLY in the --samples value",
+          argv_2[argv_2.index("--samples") + 1] == "2" and len(argv_2) == len(argv_1)
+          and [i for i, (a, b) in enumerate(zip(argv_1, argv_2)) if a != b]
+          == [argv_1.index("--samples") + 1])
+    _its = load_panel(3, 3)[:2]
+    check("expected_debate_keys: samples=1 is {(arm, item, 0)} (the guard's historical set); "
+          "samples=2 adds sample_idx 1 for every (arm, item) and nothing else",
+          expected_debate_keys(_its, 1) == {(a, it.item_id, 0) for a in ARMS for it in _its}
+          and expected_debate_keys(_its, 2)
+          == {(a, it.item_id, s) for a in ARMS for it in _its for s in (0, 1)}
+          and len(expected_debate_keys(_its, 2)) == 2 * 2 * 2)
+    try:
+        expected_debate_keys([], 0)
+        check("expected_debate_keys refuses samples < 1", False)
+    except ValueError:
+        check("expected_debate_keys refuses samples < 1", True)
+    check("run_deliberate defaults delib_samples to 1 and forwards it to deliberate_argv and "
+          "the completeness guard",
+          inspect.signature(run_deliberate).parameters["delib_samples"].default == 1
+          and "samples=delib_samples" in inspect.getsource(run_deliberate)
+          and "expected_debate_keys(survivors, delib_samples)" in inspect.getsource(run_deliberate))
+    with tempfile.TemporaryDirectory() as _td:
+        _tdp = Path(_td)
+        (_tdp / "t_rows.csv").write_text(
+            "model,arm,item_id,sample_idx\n"
+            + "".join(f"m,{a},{it.item_id},{sidx}\n" for a in ARMS for it in _its for sidx in (0, 1)))
+        c1 = completeness_check("t", "m", expected_debate_keys(_its, 1), out_dir=_tdp)
+        c2 = completeness_check("t", "m", expected_debate_keys(_its, 2), out_dir=_tdp)
+        check("completeness guard with --samples 2 keys PASSES on rows at sample_idx 0 and 1 "
+              "(8 expected, 8 rows); the samples=1 keys flag those same rows as 4 unexpected",
+              c2["pass"] and c2["n_expected"] == 8 and c2["n_rows"] == 8 and c2["n_missing"] == 0
+              and not c1["pass"] and c1["n_expected"] == 4 and c1["n_unexpected"] == 4)
+        (_tdp / "t_rows.csv").write_text(
+            "model,arm,item_id,sample_idx\n"
+            + "".join(f"m,{a},{it.item_id},0\n" for a in ARMS for it in _its))
+        c3 = completeness_check("t", "m", expected_debate_keys(_its, 2), out_dir=_tdp)
+        check("completeness guard with --samples 2 keys FAILS when only sample_idx 0 rows exist "
+              "(4 missing, all at sample_idx 1)",
+              not c3["pass"] and c3["n_missing"] == 4 and all(k[2] == 1 for k in c3["missing"]))
     check("GUARD FAILED literal is printed by the step-1 guard and on a step-2 rc 4",
           "GUARD FAILED" in inspect.getsource(step1_guard) and "GUARD FAILED" in inspect.getsource(run_deliberate))
     check("GUARD FAILED literal is printed by the completeness guard and by the step-3 readout",
@@ -1855,6 +1949,30 @@ def _selftest() -> int:
                       "and records the screen's k",
                       plan_json["refused_calls_by_cell"] == {f"{THIRD_PERSON}|{filt_item.item_id}": 1}
                       and plan_json["screen_samples"] == K and plan_json["footprint"]["n_present"] == 1)
+                check("dry-run plan JSON records the deliberation --samples (1) and the cost scope, so a "
+                      "k=2 plan is distinguishable from k=1 on disk",
+                      plan_json["samples"] == 1 and "sample_idx 0 only" in plan_json["new_call_cost_scope"]
+                      and plan_json["usd_new_calls_all_samples_upper_bound"]
+                      == plan_json["new_call_cost"]["usd_new_calls"])
+                buf_s2 = io.StringIO()
+                with redirect_stdout(buf_s2):
+                    rc_s2 = main(["--step", "deliberate", "--models", stub, "--n-yta", "6", "--n-nta", "6",
+                                  "--dry-run", "--samples", "2"])
+                plan_s2 = json.loads((tdp / f"{dtag}_step2_plan.json").read_text())
+                check("--samples 2 dry-run: plan JSON records samples 2, the per-sample cost scope and the "
+                      "x2 upper bound; the print-out labels the new-call total PER SAMPLE",
+                      rc_s2 == 0 and plan_s2["samples"] == 2 and "PER SAMPLE" in plan_s2["new_call_cost_scope"]
+                      and plan_s2["usd_new_calls_all_samples_upper_bound"]
+                      == round(plan_s2["new_call_cost"]["usd_new_calls"] * 2, 2)
+                      and plan_s2["new_call_cost"] == plan_json["new_call_cost"]
+                      and "PER SAMPLE (sample_idx 0 of 2)" in buf_s2.getvalue()
+                      and "x 2 samples ~=" in buf_s2.getvalue())
+                # restore the k=1 plan on disk for the checks below
+                buf = io.StringIO()
+                with redirect_stdout(buf):
+                    rc = main(["--step", "deliberate", "--models", stub, "--n-yta", "6", "--n-nta", "6",
+                               "--dry-run"])
+                out = buf.getvalue()
                 planted.unlink()
                 check("main(--step deliberate --dry-run) exits 0, the runner drops the refused item "
                       "('content-filter screen: dropped 1 of 12 items'), and the new-call model prints",
@@ -2133,6 +2251,11 @@ def main(argv: Optional[list[str]] = None) -> int:
                          "the filter is stochastic per call, so k=1 sees ~2/3 of the prone items and "
                          "k=3 ~19/20 (measured; the dry-run prints the projection). Step 2 requires "
                          "the screen complete at this k.")
+    ap.add_argument("--samples", type=int, default=1,
+                    help="step 2 only: deliberation samples per (arm, item), forwarded to the "
+                         "runner's --samples (default 1, the registered value); the completeness "
+                         "guard then expects rows for sample_idx 0..N-1. Distinct from "
+                         "--screen-samples (step 1's k).")
     ap.add_argument("--screen", choices=("registered", "chain-aware"), default="registered",
                     help="registered = the runner's own screen (single-agent refusals); "
                          "chain-aware = union with refusals in this model's cached chain records")
@@ -2162,6 +2285,8 @@ def main(argv: Optional[list[str]] = None) -> int:
         print("ERROR: --models is empty"); return 2
     if args.screen_samples < 1:
         print("ERROR: --screen-samples must be >= 1"); return 2
+    if args.samples < 1:
+        print("ERROR: --samples must be >= 1"); return 2
     if (args.tag or args.screen_tag) and len(models) != 1:
         print("ERROR: --tag / --screen-tag apply to a single model"); return 2
     for m in models:
@@ -2197,7 +2322,8 @@ def main(argv: Optional[list[str]] = None) -> int:
                                 workers=args.workers, n_boot=args.n_boot, screen=args.screen,
                                 samples=args.screen_samples,
                                 moderator_model=args.moderator_model, run=args.run,
-                                dry_run=args.dry_run, resume=args.resume)
+                                dry_run=args.dry_run, resume=args.resume,
+                                delib_samples=args.samples)
         else:
             rc = run_readout(m, dtag, stag, draws=args.draws)
         worst = max(worst, rc)

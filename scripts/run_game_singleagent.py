@@ -976,6 +976,12 @@ def _selftest() -> int:
         print_cost_model(cm_np)
     check("dry-run flags an unpriced model loudly instead of reporting $0 quietly",
           not cm_np["priced"] and "NOT in PRICES" in buf.getvalue())
+    # PRICES is the deliberation runner's dict (imported, not copied), so the
+    # fourth-vendor Foundry v1 deployments priced there on 2026-09-14 are
+    # priced here with no second table to keep in step.
+    check("the Foundry v1 deployments are priced here through the shared PRICES import",
+          all(cost_model(m, full[:5], max_tokens=1024)["priced"]
+              for m in ("Llama-3.3-70B-Instruct", "Mistral-Large-3-2", "DeepSeek-V4-Pro")))
     cm_v = cost_model("claude-haiku-4-5",
                       render_views(select_games(games, REGION_VALUE), 2, masked=True),
                       max_tokens=512)
