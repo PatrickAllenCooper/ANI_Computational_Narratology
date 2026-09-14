@@ -329,7 +329,12 @@ def _selftest() -> int:
           MODERATOR_PREFIX in k_mod.name and "_mod-grok" not in k_mod.name)
 
     clean, counts = cache_is_clean()
-    check(f"no pre-existing cache for any control namespace {counts}", clean)
+    # Addendum 16.8 has been RUN (2026-09-09, 377 of 420 debates after
+    # connection failures): the control namespaces hold that partial panel.
+    # The standing check is that no namespace is populated from elsewhere:
+    # either all empty (unrun) or every namespace populated (the run).
+    check(f"control namespaces are empty or hold the 16.8 run {counts}",
+          clean or all(v > 0 for v in counts.values()))
 
     print(f"\n{'ALL OK' if not fails else str(len(fails)) + ' FAILED'}")
     return 1 if fails else 0

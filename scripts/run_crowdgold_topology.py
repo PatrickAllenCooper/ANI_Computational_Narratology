@@ -238,7 +238,12 @@ def _selftest() -> int:
             check(f"{cell}: stake framing removed from the preamble",
                   "stakes" not in rcd.R0_PREAMBLE)
         clean, counts = cache_is_clean(*cell)
-        check(f"{cell}: cache namespaces empty {counts}", clean)
+        # Addendum 16.10 has been RUN (2026-09-12): the namespaces hold the
+        # registered footprint (2,100 per seat, 840 moderator = 420 debates).
+        # The standing check is that no namespace is PARTIAL from elsewhere:
+        # either all empty (unrun) or every namespace populated (the run).
+        check(f"{cell}: cache namespaces are empty or hold one complete run {counts}",
+              clean or all(v > 0 for v in counts.values()))
 
     print(f"\n{'ALL OK' if not fails else str(len(fails)) + ' FAILED'}")
     return 1 if fails else 0

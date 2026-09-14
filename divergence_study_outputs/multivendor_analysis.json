@@ -1,0 +1,1748 @@
+{
+  "registration": "Task 16.18, cross-vendor decider layer",
+  "draws": 4000,
+  "seed": 31,
+  "n_debates": 394,
+  "n_items": 197,
+  "n_codable": 393,
+  "seats": [
+    "reader_1_noedge",
+    "reader_2_noedge",
+    "reader_3_noedge"
+  ],
+  "seat_models": {
+    "reader_1_noedge": "claude-haiku-4-5",
+    "reader_2_noedge": "gpt-5.4-nano",
+    "reader_3_noedge": "grok-4-1-fast-reasoning"
+  },
+  "moderator_model": "grok-4-1-fast-reasoning",
+  "s2_accuracy": {
+    "value": 0.8625954198473282,
+    "lo": 0.8197969543147208,
+    "hi": 0.9035532994923858,
+    "n": 393
+  },
+  "ladha": {
+    "r0": {
+      "round": "r0",
+      "applicable": true,
+      "n": 380,
+      "n_dropped_non_codable": 14,
+      "group_verdict_s2_on_this_population": {
+        "value": 0.862796833773087,
+        "lo": 0.8201058201058201,
+        "hi": 0.9031413612565445,
+        "n": 379
+      },
+      "seat_models": {
+        "reader_1_noedge": "claude-haiku-4-5",
+        "reader_2_noedge": "gpt-5.4-nano",
+        "reader_3_noedge": "grok-4-1-fast-reasoning"
+      },
+      "seat_accuracy": {
+        "reader_1_noedge": {
+          "value": 0.6973684210526315,
+          "lo": 0.636604774535809,
+          "hi": 0.7566137566137566,
+          "n": 380
+        },
+        "reader_2_noedge": {
+          "value": 0.8210526315789474,
+          "lo": 0.7718832891246684,
+          "hi": 0.8668407310704961,
+          "n": 380
+        },
+        "reader_3_noedge": {
+          "value": 0.8421052631578947,
+          "lo": 0.7936507936507936,
+          "hi": 0.8877284595300261,
+          "n": 380
+        }
+      },
+      "best_seat": "reader_3_noedge",
+      "best_seat_model": "grok-4-1-fast-reasoning",
+      "majority_accuracy": {
+        "value": 0.8526315789473684,
+        "lo": 0.806282722513089,
+        "hi": 0.8955613577023499,
+        "n": 380
+      },
+      "majority_minus_best_seat": {
+        "acc_a": 0.8526315789473684,
+        "acc_b": 0.8421052631578947,
+        "delta": 0.010526315789473684,
+        "lo": -0.013054830287206266,
+        "hi": 0.034031413612565446,
+        "n": 380,
+        "ci_excludes_zero": false
+      },
+      "majority_minus_each_seat": {
+        "reader_1_noedge": {
+          "acc_a": 0.8526315789473684,
+          "acc_b": 0.6973684210526315,
+          "delta": 0.15526315789473685,
+          "lo": 0.1015625,
+          "hi": 0.21010638297872342,
+          "n": 380,
+          "ci_excludes_zero": true
+        },
+        "reader_2_noedge": {
+          "acc_a": 0.8526315789473684,
+          "acc_b": 0.8210526315789474,
+          "delta": 0.031578947368421054,
+          "lo": -0.010554089709762533,
+          "hi": 0.07611548556430446,
+          "n": 380,
+          "ci_excludes_zero": false
+        },
+        "reader_3_noedge": {
+          "acc_a": 0.8526315789473684,
+          "acc_b": 0.8421052631578947,
+          "delta": 0.010526315789473684,
+          "lo": -0.010582010582010581,
+          "hi": 0.034031413612565446,
+          "n": 380,
+          "ci_excludes_zero": false
+        }
+      },
+      "majority_equals_best_seat_rate": 0.9526315789473684,
+      "independence_prediction": {
+        "majority_if_independent": 0.8869077124945325,
+        "observed_majority": 0.8526315789473684,
+        "observed_minus_predicted": -0.03427613354716408
+      },
+      "pairwise_error": {
+        "reader_1_noedge|reader_2_noedge": {
+          "p_both_wrong": 0.06842105263157895,
+          "p_both_wrong_if_independent": 0.05415512465373961,
+          "phi": 0.08101465928283906
+        },
+        "reader_1_noedge|reader_3_noedge": {
+          "p_both_wrong": 0.09736842105263158,
+          "p_both_wrong_if_independent": 0.047783933518005535,
+          "phi": 0.2959992092163646
+        },
+        "reader_2_noedge|reader_3_noedge": {
+          "p_both_wrong": 0.08157894736842106,
+          "p_both_wrong_if_independent": 0.028254847645429362,
+          "phi": 0.3815121359364172
+        }
+      },
+      "mean_pairwise_phi": 0.25284200147854025
+    },
+    "r2": {
+      "round": "r2",
+      "applicable": true,
+      "n": 385,
+      "n_dropped_non_codable": 9,
+      "group_verdict_s2_on_this_population": {
+        "value": 0.8645833333333334,
+        "lo": 0.821522309711286,
+        "hi": 0.9057591623036649,
+        "n": 384
+      },
+      "seat_models": {
+        "reader_1_noedge": "claude-haiku-4-5",
+        "reader_2_noedge": "gpt-5.4-nano",
+        "reader_3_noedge": "grok-4-1-fast-reasoning"
+      },
+      "seat_accuracy": {
+        "reader_1_noedge": {
+          "value": 0.7896103896103897,
+          "lo": 0.7390180878552972,
+          "hi": 0.8385416666666666,
+          "n": 385
+        },
+        "reader_2_noedge": {
+          "value": 0.812987012987013,
+          "lo": 0.7631578947368421,
+          "hi": 0.8597402597402597,
+          "n": 385
+        },
+        "reader_3_noedge": {
+          "value": 0.8389610389610389,
+          "lo": 0.7922077922077922,
+          "hi": 0.883419689119171,
+          "n": 385
+        }
+      },
+      "best_seat": "reader_3_noedge",
+      "best_seat_model": "grok-4-1-fast-reasoning",
+      "majority_accuracy": {
+        "value": 0.8701298701298701,
+        "lo": 0.8267716535433071,
+        "hi": 0.9104859335038363,
+        "n": 385
+      },
+      "majority_minus_best_seat": {
+        "acc_a": 0.8701298701298701,
+        "acc_b": 0.8389610389610389,
+        "delta": 0.03116883116883117,
+        "lo": 0.005263157894736842,
+        "hi": 0.057441253263707574,
+        "n": 385,
+        "ci_excludes_zero": true
+      },
+      "majority_minus_each_seat": {
+        "reader_1_noedge": {
+          "acc_a": 0.8701298701298701,
+          "acc_b": 0.7896103896103897,
+          "delta": 0.08051948051948052,
+          "lo": 0.03412073490813648,
+          "hi": 0.12919896640826872,
+          "n": 385,
+          "ci_excludes_zero": true
+        },
+        "reader_2_noedge": {
+          "acc_a": 0.8701298701298701,
+          "acc_b": 0.812987012987013,
+          "delta": 0.05714285714285714,
+          "lo": 0.020618556701030927,
+          "hi": 0.09635416666666667,
+          "n": 385,
+          "ci_excludes_zero": true
+        },
+        "reader_3_noedge": {
+          "acc_a": 0.8701298701298701,
+          "acc_b": 0.8389610389610389,
+          "delta": 0.03116883116883117,
+          "lo": 0.005208333333333333,
+          "hi": 0.05759162303664921,
+          "n": 385,
+          "ci_excludes_zero": true
+        }
+      },
+      "majority_equals_best_seat_rate": 0.9428571428571428,
+      "independence_prediction": {
+        "majority_if_independent": 0.9093294548258286,
+        "observed_majority": 0.8701298701298701,
+        "observed_minus_predicted": -0.03919958469595852
+      },
+      "pairwise_error": {
+        "reader_1_noedge|reader_2_noedge": {
+          "p_both_wrong": 0.05714285714285714,
+          "p_both_wrong_if_independent": 0.0393455894754596,
+          "phi": 0.11198428281536442
+        },
+        "reader_1_noedge|reader_3_noedge": {
+          "p_both_wrong": 0.07272727272727272,
+          "p_both_wrong_if_independent": 0.03388092427053466,
+          "phi": 0.259295663356932
+        },
+        "reader_2_noedge|reader_3_noedge": {
+          "p_both_wrong": 0.08831168831168831,
+          "p_both_wrong_if_independent": 0.030116377129364144,
+          "phi": 0.4060447792657983
+        }
+      },
+      "mean_pairwise_phi": 0.25910824181269826
+    }
+  },
+  "comparison": {
+    "s2_vs_identical_off": {
+      "acc_a": 0.8622448979591837,
+      "acc_b": 0.8724489795918368,
+      "delta": -0.01020408163265306,
+      "lo": -0.03316326530612245,
+      "hi": 0.012755102040816327,
+      "n": 392,
+      "ci_excludes_zero": false,
+      "n_items": 196
+    },
+    "s2_vs_grok_solo": {
+      "acc_a": 0.8625954198473282,
+      "acc_b": 0.905852417302799,
+      "delta": -0.043256997455470736,
+      "lo": -0.07161125319693094,
+      "hi": -0.015267175572519083,
+      "n": 393,
+      "ci_excludes_zero": true,
+      "n_items": 197
+    },
+    "majority_vs_identical_off": {
+      "acc_a": 0.8522427440633246,
+      "acc_b": 0.8707124010554089,
+      "delta": -0.018469656992084433,
+      "lo": -0.04736842105263158,
+      "hi": 0.007936507936507936,
+      "n": 379,
+      "ci_excludes_zero": false,
+      "n_items": 196
+    },
+    "majority_vs_grok_solo": {
+      "acc_a": 0.8526315789473684,
+      "acc_b": 0.9078947368421053,
+      "delta": -0.05526315789473684,
+      "lo": -0.0868421052631579,
+      "hi": -0.023936170212765957,
+      "n": 380,
+      "ci_excludes_zero": true,
+      "n_items": 196
+    },
+    "majority_vs_own_s2": {
+      "acc_a": 0.8522427440633246,
+      "acc_b": 0.862796833773087,
+      "delta": -0.010554089709762533,
+      "lo": -0.03412073490813648,
+      "hi": 0.010554089709762533,
+      "n": 379,
+      "ci_excludes_zero": false,
+      "n_items": 196
+    }
+  },
+  "structure": {
+    "objection": {
+      "per_seat": {
+        "reader_1_noedge": 0.48223350253807107,
+        "reader_2_noedge": 0.6700507614213198,
+        "reader_3_noedge": 0.09390862944162437
+      },
+      "pooled": 0.41539763113367173,
+      "localisation_excess": -0.05832004533984153,
+      "fire_rate": 0.4010152284263959,
+      "fire_independence": 0.37064267498786524
+    },
+    "g3": {
+      "applicable": false,
+      "reason": "no seat carries a stake"
+    },
+    "lift": {
+      "n_fired": 158,
+      "powered": true,
+      "codable": {
+        "n_fired": 157,
+        "err_fired": 0.21019108280254772,
+        "err_unfired": 0.08898305084745761
+      },
+      "delta": 0.12120803195509011,
+      "lo": 0.04449786324786331,
+      "hi": 0.20117688341836049
+    },
+    "transfer_grok_solo": {
+      "n_cells": 394,
+      "n_flagged_cells": 158,
+      "p_wrong_flagged": 0.15822784810126583,
+      "p_wrong_unflagged": 0.05084745762711865,
+      "lift": 0.10738039047414719,
+      "lo": 0.03380202474690664,
+      "hi": 0.18689520966065096
+    }
+  },
+  "references": {
+    "identical_off_s2": 0.875,
+    "identical_off_s2_codable": 0.871,
+    "grok_solo_standard_maj3": 0.911,
+    "identical_off_majority_minus_best": {
+      "delta": -0.002,
+      "lo": -0.02,
+      "hi": 0.015
+    },
+    "haiku_judge_counter": 0.88,
+    "sonnet_judge_counter": 0.913,
+    "collective_alone": 0.843,
+    "identical_off_s2_full_panel_live": 0.8711217183770883,
+    "identical_off_n_cells": 419
+  },
+  "composed": {
+    "n_debates_full": 1677,
+    "n_debates_covered": 1573,
+    "n_items_full": 210,
+    "n_items_covered": 197,
+    "populations": {
+      "full": {
+        "n": 1677,
+        "actuators": {
+          "crossvendor_r0_majority": {
+            "collective_alone": {
+              "n_fire": 0,
+              "coverage": 0.0,
+              "composed": {
+                "value": 0.8425760286225402,
+                "lo": 0.8039332538736591,
+                "hi": 0.8790226460071514,
+                "n": 1677
+              },
+              "actuator_emitted_on_fired": null,
+              "n_fallback_to_s2": 0,
+              "by_stratum": {
+                "one_loser": {
+                  "n": 1287,
+                  "n_fired": 0,
+                  "acc_s2": 0.9355089355089355,
+                  "acc_composed": 0.9355089355089355
+                },
+                "both_party": {
+                  "n": 390,
+                  "n_fired": 0,
+                  "acc_s2": 0.5358974358974359,
+                  "acc_composed": 0.5358974358974359
+                }
+              }
+            },
+            "counter": {
+              "n_fire": 328,
+              "coverage": 0.19558735837805605,
+              "composed": {
+                "value": 0.8670244484197973,
+                "lo": 0.8281622911694511,
+                "hi": 0.9039379474940334,
+                "n": 1677
+              },
+              "actuator_emitted_on_fired": 0.9207317073170732,
+              "n_fallback_to_s2": 26,
+              "by_stratum": {
+                "one_loser": {
+                  "n": 1287,
+                  "n_fired": 93,
+                  "acc_s2": 0.9355089355089355,
+                  "acc_composed": 0.9456099456099456
+                },
+                "both_party": {
+                  "n": 390,
+                  "n_fired": 235,
+                  "acc_s2": 0.5358974358974359,
+                  "acc_composed": 0.6076923076923076
+                }
+              }
+            },
+            "verdict_type": {
+              "n_fire": 390,
+              "coverage": 0.23255813953488372,
+              "composed": {
+                "value": 0.8807394156231365,
+                "lo": 0.8459701492537314,
+                "hi": 0.9145758661887694,
+                "n": 1677
+              },
+              "actuator_emitted_on_fired": 0.9230769230769231,
+              "n_fallback_to_s2": 30,
+              "by_stratum": {
+                "one_loser": {
+                  "n": 1287,
+                  "n_fired": 0,
+                  "acc_s2": 0.9355089355089355,
+                  "acc_composed": 0.9355089355089355
+                },
+                "both_party": {
+                  "n": 390,
+                  "n_fired": 390,
+                  "acc_s2": 0.5358974358974359,
+                  "acc_composed": 0.7
+                }
+              }
+            },
+            "union": {
+              "n_fire": 483,
+              "coverage": 0.2880143112701252,
+              "composed": {
+                "value": 0.8884913536076327,
+                "lo": 0.8514319809069213,
+                "hi": 0.9224806201550387,
+                "n": 1677
+              },
+              "actuator_emitted_on_fired": 0.9192546583850931,
+              "n_fallback_to_s2": 39,
+              "by_stratum": {
+                "one_loser": {
+                  "n": 1287,
+                  "n_fired": 93,
+                  "acc_s2": 0.9355089355089355,
+                  "acc_composed": 0.9456099456099456
+                },
+                "both_party": {
+                  "n": 390,
+                  "n_fired": 390,
+                  "acc_s2": 0.5358974358974359,
+                  "acc_composed": 0.7
+                }
+              }
+            }
+          },
+          "crossvendor_r2_majority": {
+            "collective_alone": {
+              "n_fire": 0,
+              "coverage": 0.0,
+              "composed": {
+                "value": 0.8425760286225402,
+                "lo": 0.8039332538736591,
+                "hi": 0.8801431127012522,
+                "n": 1677
+              },
+              "actuator_emitted_on_fired": null,
+              "n_fallback_to_s2": 0,
+              "by_stratum": {
+                "one_loser": {
+                  "n": 1287,
+                  "n_fired": 0,
+                  "acc_s2": 0.9355089355089355,
+                  "acc_composed": 0.9355089355089355
+                },
+                "both_party": {
+                  "n": 390,
+                  "n_fired": 0,
+                  "acc_s2": 0.5358974358974359,
+                  "acc_composed": 0.5358974358974359
+                }
+              }
+            },
+            "counter": {
+              "n_fire": 328,
+              "coverage": 0.19558735837805605,
+              "composed": {
+                "value": 0.8717948717948718,
+                "lo": 0.8360166964818128,
+                "hi": 0.9058402860548271,
+                "n": 1677
+              },
+              "actuator_emitted_on_fired": 0.9237804878048781,
+              "n_fallback_to_s2": 25,
+              "by_stratum": {
+                "one_loser": {
+                  "n": 1287,
+                  "n_fired": 93,
+                  "acc_s2": 0.9355089355089355,
+                  "acc_composed": 0.9463869463869464
+                },
+                "both_party": {
+                  "n": 390,
+                  "n_fired": 235,
+                  "acc_s2": 0.5358974358974359,
+                  "acc_composed": 0.6256410256410256
+                }
+              }
+            },
+            "verdict_type": {
+              "n_fire": 390,
+              "coverage": 0.23255813953488372,
+              "composed": {
+                "value": 0.8878950506857484,
+                "lo": 0.8519402985074627,
+                "hi": 0.9219308700834327,
+                "n": 1677
+              },
+              "actuator_emitted_on_fired": 0.9282051282051282,
+              "n_fallback_to_s2": 28,
+              "by_stratum": {
+                "one_loser": {
+                  "n": 1287,
+                  "n_fired": 0,
+                  "acc_s2": 0.9355089355089355,
+                  "acc_composed": 0.9355089355089355
+                },
+                "both_party": {
+                  "n": 390,
+                  "n_fired": 390,
+                  "acc_s2": 0.5358974358974359,
+                  "acc_composed": 0.7307692307692307
+                }
+              }
+            },
+            "union": {
+              "n_fire": 483,
+              "coverage": 0.2880143112701252,
+              "composed": {
+                "value": 0.8962432915921288,
+                "lo": 0.8611442193087009,
+                "hi": 0.9295522388059702,
+                "n": 1677
+              },
+              "actuator_emitted_on_fired": 0.9213250517598344,
+              "n_fallback_to_s2": 38,
+              "by_stratum": {
+                "one_loser": {
+                  "n": 1287,
+                  "n_fired": 93,
+                  "acc_s2": 0.9355089355089355,
+                  "acc_composed": 0.9463869463869464
+                },
+                "both_party": {
+                  "n": 390,
+                  "n_fired": 390,
+                  "acc_s2": 0.5358974358974359,
+                  "acc_composed": 0.7307692307692307
+                }
+              }
+            }
+          },
+          "crossvendor_s2": {
+            "collective_alone": {
+              "n_fire": 0,
+              "coverage": 0.0,
+              "composed": {
+                "value": 0.8425760286225402,
+                "lo": 0.8042959427207638,
+                "hi": 0.8811940298507462,
+                "n": 1677
+              },
+              "actuator_emitted_on_fired": null,
+              "n_fallback_to_s2": 0,
+              "by_stratum": {
+                "one_loser": {
+                  "n": 1287,
+                  "n_fired": 0,
+                  "acc_s2": 0.9355089355089355,
+                  "acc_composed": 0.9355089355089355
+                },
+                "both_party": {
+                  "n": 390,
+                  "n_fired": 0,
+                  "acc_s2": 0.5358974358974359,
+                  "acc_composed": 0.5358974358974359
+                }
+              }
+            },
+            "counter": {
+              "n_fire": 328,
+              "coverage": 0.19558735837805605,
+              "composed": {
+                "value": 0.86463923673226,
+                "lo": 0.8233890214797136,
+                "hi": 0.9021479713603818,
+                "n": 1677
+              },
+              "actuator_emitted_on_fired": 0.926829268292683,
+              "n_fallback_to_s2": 24,
+              "by_stratum": {
+                "one_loser": {
+                  "n": 1287,
+                  "n_fired": 93,
+                  "acc_s2": 0.9355089355089355,
+                  "acc_composed": 0.9425019425019425
+                },
+                "both_party": {
+                  "n": 390,
+                  "n_fired": 235,
+                  "acc_s2": 0.5358974358974359,
+                  "acc_composed": 0.6076923076923076
+                }
+              }
+            },
+            "verdict_type": {
+              "n_fire": 390,
+              "coverage": 0.23255813953488372,
+              "composed": {
+                "value": 0.8807394156231365,
+                "lo": 0.8443649373881932,
+                "hi": 0.9153754469606674,
+                "n": 1677
+              },
+              "actuator_emitted_on_fired": 0.9256410256410257,
+              "n_fallback_to_s2": 29,
+              "by_stratum": {
+                "one_loser": {
+                  "n": 1287,
+                  "n_fired": 0,
+                  "acc_s2": 0.9355089355089355,
+                  "acc_composed": 0.9355089355089355
+                },
+                "both_party": {
+                  "n": 390,
+                  "n_fired": 390,
+                  "acc_s2": 0.5358974358974359,
+                  "acc_composed": 0.7
+                }
+              }
+            },
+            "union": {
+              "n_fire": 483,
+              "coverage": 0.2880143112701252,
+              "composed": {
+                "value": 0.8861061419200954,
+                "lo": 0.8488649940262843,
+                "hi": 0.9212410501193318,
+                "n": 1677
+              },
+              "actuator_emitted_on_fired": 0.9233954451345756,
+              "n_fallback_to_s2": 37,
+              "by_stratum": {
+                "one_loser": {
+                  "n": 1287,
+                  "n_fired": 93,
+                  "acc_s2": 0.9355089355089355,
+                  "acc_composed": 0.9425019425019425
+                },
+                "both_party": {
+                  "n": 390,
+                  "n_fired": 390,
+                  "acc_s2": 0.5358974358974359,
+                  "acc_composed": 0.7
+                }
+              }
+            }
+          },
+          "haiku_judge": {
+            "collective_alone": {
+              "n_fire": 0,
+              "coverage": 0.0,
+              "composed": {
+                "value": 0.8425760286225402,
+                "lo": 0.8040500297796307,
+                "hi": 0.8796902918403812,
+                "n": 1677
+              },
+              "actuator_emitted_on_fired": null,
+              "n_fallback_to_s2": 0,
+              "by_stratum": {
+                "one_loser": {
+                  "n": 1287,
+                  "n_fired": 0,
+                  "acc_s2": 0.9355089355089355,
+                  "acc_composed": 0.9355089355089355
+                },
+                "both_party": {
+                  "n": 390,
+                  "n_fired": 0,
+                  "acc_s2": 0.5358974358974359,
+                  "acc_composed": 0.5358974358974359
+                }
+              }
+            },
+            "counter": {
+              "n_fire": 328,
+              "coverage": 0.19558735837805605,
+              "composed": {
+                "value": 0.8801431127012522,
+                "lo": 0.8439547349612865,
+                "hi": 0.9134328358208955,
+                "n": 1677
+              },
+              "actuator_emitted_on_fired": 1.0,
+              "n_fallback_to_s2": 0,
+              "by_stratum": {
+                "one_loser": {
+                  "n": 1287,
+                  "n_fired": 93,
+                  "acc_s2": 0.9355089355089355,
+                  "acc_composed": 0.9494949494949495
+                },
+                "both_party": {
+                  "n": 390,
+                  "n_fired": 235,
+                  "acc_s2": 0.5358974358974359,
+                  "acc_composed": 0.6512820512820513
+                }
+              }
+            },
+            "verdict_type": {
+              "n_fire": 390,
+              "coverage": 0.23255813953488372,
+              "composed": {
+                "value": 0.8938580799045915,
+                "lo": 0.8606313281715307,
+                "hi": 0.9247761194029851,
+                "n": 1677
+              },
+              "actuator_emitted_on_fired": 1.0,
+              "n_fallback_to_s2": 0,
+              "by_stratum": {
+                "one_loser": {
+                  "n": 1287,
+                  "n_fired": 0,
+                  "acc_s2": 0.9355089355089355,
+                  "acc_composed": 0.9355089355089355
+                },
+                "both_party": {
+                  "n": 390,
+                  "n_fired": 390,
+                  "acc_s2": 0.5358974358974359,
+                  "acc_composed": 0.7564102564102564
+                }
+              }
+            },
+            "union": {
+              "n_fire": 483,
+              "coverage": 0.2880143112701252,
+              "composed": {
+                "value": 0.9045915324985092,
+                "lo": 0.8693317422434368,
+                "hi": 0.935080405002978,
+                "n": 1677
+              },
+              "actuator_emitted_on_fired": 1.0,
+              "n_fallback_to_s2": 0,
+              "by_stratum": {
+                "one_loser": {
+                  "n": 1287,
+                  "n_fired": 93,
+                  "acc_s2": 0.9355089355089355,
+                  "acc_composed": 0.9494949494949495
+                },
+                "both_party": {
+                  "n": 390,
+                  "n_fired": 390,
+                  "acc_s2": 0.5358974358974359,
+                  "acc_composed": 0.7564102564102564
+                }
+              }
+            }
+          },
+          "sonnet_judge": {
+            "collective_alone": {
+              "n_fire": 0,
+              "coverage": 0.0,
+              "composed": {
+                "value": 0.8425760286225402,
+                "lo": 0.8039332538736591,
+                "hi": 0.8803571428571428,
+                "n": 1677
+              },
+              "actuator_emitted_on_fired": null,
+              "n_fallback_to_s2": 0,
+              "by_stratum": {
+                "one_loser": {
+                  "n": 1287,
+                  "n_fired": 0,
+                  "acc_s2": 0.9355089355089355,
+                  "acc_composed": 0.9355089355089355
+                },
+                "both_party": {
+                  "n": 390,
+                  "n_fired": 0,
+                  "acc_s2": 0.5358974358974359,
+                  "acc_composed": 0.5358974358974359
+                }
+              }
+            },
+            "counter": {
+              "n_fire": 328,
+              "coverage": 0.19558735837805605,
+              "composed": {
+                "value": 0.9129397734048896,
+                "lo": 0.8843861740166865,
+                "hi": 0.9392133492252682,
+                "n": 1677
+              },
+              "actuator_emitted_on_fired": 1.0,
+              "n_fallback_to_s2": 0,
+              "by_stratum": {
+                "one_loser": {
+                  "n": 1287,
+                  "n_fired": 93,
+                  "acc_s2": 0.9355089355089355,
+                  "acc_composed": 0.9627039627039627
+                },
+                "both_party": {
+                  "n": 390,
+                  "n_fired": 235,
+                  "acc_s2": 0.5358974358974359,
+                  "acc_composed": 0.7487179487179487
+                }
+              }
+            },
+            "verdict_type": {
+              "n_fire": 390,
+              "coverage": 0.23255813953488372,
+              "composed": {
+                "value": 0.9355992844364938,
+                "lo": 0.9075178997613366,
+                "hi": 0.9612403100775194,
+                "n": 1677
+              },
+              "actuator_emitted_on_fired": 1.0,
+              "n_fallback_to_s2": 0,
+              "by_stratum": {
+                "one_loser": {
+                  "n": 1287,
+                  "n_fired": 0,
+                  "acc_s2": 0.9355089355089355,
+                  "acc_composed": 0.9355089355089355
+                },
+                "both_party": {
+                  "n": 390,
+                  "n_fired": 390,
+                  "acc_s2": 0.5358974358974359,
+                  "acc_composed": 0.9358974358974359
+                }
+              }
+            },
+            "union": {
+              "n_fire": 483,
+              "coverage": 0.2880143112701252,
+              "composed": {
+                "value": 0.9564698867024448,
+                "lo": 0.9319402985074627,
+                "hi": 0.977340488968396,
+                "n": 1677
+              },
+              "actuator_emitted_on_fired": 1.0,
+              "n_fallback_to_s2": 0,
+              "by_stratum": {
+                "one_loser": {
+                  "n": 1287,
+                  "n_fired": 93,
+                  "acc_s2": 0.9355089355089355,
+                  "acc_composed": 0.9627039627039627
+                },
+                "both_party": {
+                  "n": 390,
+                  "n_fired": 390,
+                  "acc_s2": 0.5358974358974359,
+                  "acc_composed": 0.9358974358974359
+                }
+              }
+            }
+          }
+        },
+        "paired_deltas": {
+          "crossvendor_r0_majority_minus_collective_alone|counter": {
+            "acc_a": 0.8670244484197973,
+            "acc_b": 0.8425760286225402,
+            "delta": 0.024448419797257006,
+            "lo": 0.008955223880597015,
+            "hi": 0.041766109785202864,
+            "n": 1677,
+            "ci_excludes_zero": true
+          },
+          "crossvendor_r0_majority_minus_haiku_judge|counter": {
+            "acc_a": 0.8670244484197973,
+            "acc_b": 0.8801431127012522,
+            "delta": -0.01311866428145498,
+            "lo": -0.029832935560859187,
+            "hi": 0.0029815146094215863,
+            "n": 1677,
+            "ci_excludes_zero": false
+          },
+          "crossvendor_r0_majority_minus_sonnet_judge|counter": {
+            "acc_a": 0.8670244484197973,
+            "acc_b": 0.9129397734048896,
+            "delta": -0.045915324985092425,
+            "lo": -0.06785714285714285,
+            "hi": -0.02501488981536629,
+            "n": 1677,
+            "ci_excludes_zero": true
+          },
+          "crossvendor_r0_majority_minus_collective_alone|union": {
+            "acc_a": 0.8884913536076327,
+            "acc_b": 0.8425760286225402,
+            "delta": 0.045915324985092425,
+            "lo": 0.0273972602739726,
+            "hi": 0.06615017878426699,
+            "n": 1677,
+            "ci_excludes_zero": true
+          },
+          "crossvendor_r0_majority_minus_haiku_judge|union": {
+            "acc_a": 0.8884913536076327,
+            "acc_b": 0.9045915324985092,
+            "delta": -0.016100178890876567,
+            "lo": -0.03697078115682767,
+            "hi": 0.003579952267303103,
+            "n": 1677,
+            "ci_excludes_zero": false
+          },
+          "crossvendor_r0_majority_minus_sonnet_judge|union": {
+            "acc_a": 0.8884913536076327,
+            "acc_b": 0.9564698867024448,
+            "delta": -0.06797853309481217,
+            "lo": -0.09892729439809297,
+            "hi": -0.03880597014925373,
+            "n": 1677,
+            "ci_excludes_zero": true
+          }
+        }
+      },
+      "covered": {
+        "n": 1573,
+        "actuators": {
+          "crossvendor_r0_majority": {
+            "collective_alone": {
+              "n_fire": 0,
+              "coverage": 0.0,
+              "composed": {
+                "value": 0.8378893833439288,
+                "lo": 0.7972027972027972,
+                "hi": 0.8778625954198473,
+                "n": 1573
+              },
+              "actuator_emitted_on_fired": null,
+              "n_fallback_to_s2": 0,
+              "by_stratum": {
+                "one_loser": {
+                  "n": 1210,
+                  "n_fired": 0,
+                  "acc_s2": 0.9322314049586777,
+                  "acc_composed": 0.9322314049586777
+                },
+                "both_party": {
+                  "n": 363,
+                  "n_fired": 0,
+                  "acc_s2": 0.5234159779614325,
+                  "acc_composed": 0.5234159779614325
+                }
+              }
+            },
+            "counter": {
+              "n_fire": 306,
+              "coverage": 0.19453273998728543,
+              "composed": {
+                "value": 0.8639542275905913,
+                "lo": 0.8226319135410044,
+                "hi": 0.9012738853503185,
+                "n": 1573
+              },
+              "actuator_emitted_on_fired": 0.9869281045751634,
+              "n_fallback_to_s2": 4,
+              "by_stratum": {
+                "one_loser": {
+                  "n": 1210,
+                  "n_fired": 85,
+                  "acc_s2": 0.9322314049586777,
+                  "acc_composed": 0.9429752066115702
+                },
+                "both_party": {
+                  "n": 363,
+                  "n_fired": 221,
+                  "acc_s2": 0.5234159779614325,
+                  "acc_composed": 0.6005509641873278
+                }
+              }
+            },
+            "verdict_type": {
+              "n_fire": 363,
+              "coverage": 0.23076923076923078,
+              "composed": {
+                "value": 0.8785759694850604,
+                "lo": 0.841502227880331,
+                "hi": 0.9142857142857143,
+                "n": 1573
+              },
+              "actuator_emitted_on_fired": 0.9917355371900827,
+              "n_fallback_to_s2": 3,
+              "by_stratum": {
+                "one_loser": {
+                  "n": 1210,
+                  "n_fired": 0,
+                  "acc_s2": 0.9322314049586777,
+                  "acc_composed": 0.9322314049586777
+                },
+                "both_party": {
+                  "n": 363,
+                  "n_fired": 363,
+                  "acc_s2": 0.5234159779614325,
+                  "acc_composed": 0.699724517906336
+                }
+              }
+            },
+            "union": {
+              "n_fire": 448,
+              "coverage": 0.2848061029879212,
+              "composed": {
+                "value": 0.8868404322949778,
+                "lo": 0.8475222363405337,
+                "hi": 0.9236641221374046,
+                "n": 1573
+              },
+              "actuator_emitted_on_fired": 0.9910714285714286,
+              "n_fallback_to_s2": 4,
+              "by_stratum": {
+                "one_loser": {
+                  "n": 1210,
+                  "n_fired": 85,
+                  "acc_s2": 0.9322314049586777,
+                  "acc_composed": 0.9429752066115702
+                },
+                "both_party": {
+                  "n": 363,
+                  "n_fired": 363,
+                  "acc_s2": 0.5234159779614325,
+                  "acc_composed": 0.699724517906336
+                }
+              }
+            }
+          },
+          "crossvendor_r2_majority": {
+            "collective_alone": {
+              "n_fire": 0,
+              "coverage": 0.0,
+              "composed": {
+                "value": 0.8378893833439288,
+                "lo": 0.7970737913486005,
+                "hi": 0.8755555555555555,
+                "n": 1573
+              },
+              "actuator_emitted_on_fired": null,
+              "n_fallback_to_s2": 0,
+              "by_stratum": {
+                "one_loser": {
+                  "n": 1210,
+                  "n_fired": 0,
+                  "acc_s2": 0.9322314049586777,
+                  "acc_composed": 0.9322314049586777
+                },
+                "both_party": {
+                  "n": 363,
+                  "n_fired": 0,
+                  "acc_s2": 0.5234159779614325,
+                  "acc_composed": 0.5234159779614325
+                }
+              }
+            },
+            "counter": {
+              "n_fire": 306,
+              "coverage": 0.19453273998728543,
+              "composed": {
+                "value": 0.8690400508582327,
+                "lo": 0.8291905672402804,
+                "hi": 0.9059122695486331,
+                "n": 1573
+              },
+              "actuator_emitted_on_fired": 0.9901960784313726,
+              "n_fallback_to_s2": 3,
+              "by_stratum": {
+                "one_loser": {
+                  "n": 1210,
+                  "n_fired": 85,
+                  "acc_s2": 0.9322314049586777,
+                  "acc_composed": 0.943801652892562
+                },
+                "both_party": {
+                  "n": 363,
+                  "n_fired": 221,
+                  "acc_s2": 0.5234159779614325,
+                  "acc_composed": 0.6198347107438017
+                }
+              }
+            },
+            "verdict_type": {
+              "n_fire": 363,
+              "coverage": 0.23076923076923078,
+              "composed": {
+                "value": 0.8862047043865225,
+                "lo": 0.8488888888888889,
+                "hi": 0.9204328453214513,
+                "n": 1573
+              },
+              "actuator_emitted_on_fired": 0.9972451790633609,
+              "n_fallback_to_s2": 1,
+              "by_stratum": {
+                "one_loser": {
+                  "n": 1210,
+                  "n_fired": 0,
+                  "acc_s2": 0.9322314049586777,
+                  "acc_composed": 0.9322314049586777
+                },
+                "both_party": {
+                  "n": 363,
+                  "n_fired": 363,
+                  "acc_s2": 0.5234159779614325,
+                  "acc_composed": 0.7327823691460055
+                }
+              }
+            },
+            "union": {
+              "n_fire": 448,
+              "coverage": 0.2848061029879212,
+              "composed": {
+                "value": 0.8951048951048951,
+                "lo": 0.8565051020408163,
+                "hi": 0.9295685279187818,
+                "n": 1573
+              },
+              "actuator_emitted_on_fired": 0.9933035714285714,
+              "n_fallback_to_s2": 3,
+              "by_stratum": {
+                "one_loser": {
+                  "n": 1210,
+                  "n_fired": 85,
+                  "acc_s2": 0.9322314049586777,
+                  "acc_composed": 0.943801652892562
+                },
+                "both_party": {
+                  "n": 363,
+                  "n_fired": 363,
+                  "acc_s2": 0.5234159779614325,
+                  "acc_composed": 0.7327823691460055
+                }
+              }
+            }
+          },
+          "crossvendor_s2": {
+            "collective_alone": {
+              "n_fire": 0,
+              "coverage": 0.0,
+              "composed": {
+                "value": 0.8378893833439288,
+                "lo": 0.7958015267175572,
+                "hi": 0.8774728781110402,
+                "n": 1573
+              },
+              "actuator_emitted_on_fired": null,
+              "n_fallback_to_s2": 0,
+              "by_stratum": {
+                "one_loser": {
+                  "n": 1210,
+                  "n_fired": 0,
+                  "acc_s2": 0.9322314049586777,
+                  "acc_composed": 0.9322314049586777
+                },
+                "both_party": {
+                  "n": 363,
+                  "n_fired": 0,
+                  "acc_s2": 0.5234159779614325,
+                  "acc_composed": 0.5234159779614325
+                }
+              }
+            },
+            "counter": {
+              "n_fire": 306,
+              "coverage": 0.19453273998728543,
+              "composed": {
+                "value": 0.8614113159567705,
+                "lo": 0.818297331639136,
+                "hi": 0.8994271164863145,
+                "n": 1573
+              },
+              "actuator_emitted_on_fired": 0.9934640522875817,
+              "n_fallback_to_s2": 2,
+              "by_stratum": {
+                "one_loser": {
+                  "n": 1210,
+                  "n_fired": 85,
+                  "acc_s2": 0.9322314049586777,
+                  "acc_composed": 0.9396694214876034
+                },
+                "both_party": {
+                  "n": 363,
+                  "n_fired": 221,
+                  "acc_s2": 0.5234159779614325,
+                  "acc_composed": 0.6005509641873278
+                }
+              }
+            },
+            "verdict_type": {
+              "n_fire": 363,
+              "coverage": 0.23076923076923078,
+              "composed": {
+                "value": 0.8785759694850604,
+                "lo": 0.8398983481575604,
+                "hi": 0.9142312579415502,
+                "n": 1573
+              },
+              "actuator_emitted_on_fired": 0.9944903581267218,
+              "n_fallback_to_s2": 2,
+              "by_stratum": {
+                "one_loser": {
+                  "n": 1210,
+                  "n_fired": 0,
+                  "acc_s2": 0.9322314049586777,
+                  "acc_composed": 0.9322314049586777
+                },
+                "both_party": {
+                  "n": 363,
+                  "n_fired": 363,
+                  "acc_s2": 0.5234159779614325,
+                  "acc_composed": 0.699724517906336
+                }
+              }
+            },
+            "union": {
+              "n_fire": 448,
+              "coverage": 0.2848061029879212,
+              "composed": {
+                "value": 0.8842975206611571,
+                "lo": 0.8446849140674729,
+                "hi": 0.9206349206349206,
+                "n": 1573
+              },
+              "actuator_emitted_on_fired": 0.9955357142857143,
+              "n_fallback_to_s2": 2,
+              "by_stratum": {
+                "one_loser": {
+                  "n": 1210,
+                  "n_fired": 85,
+                  "acc_s2": 0.9322314049586777,
+                  "acc_composed": 0.9396694214876034
+                },
+                "both_party": {
+                  "n": 363,
+                  "n_fired": 363,
+                  "acc_s2": 0.5234159779614325,
+                  "acc_composed": 0.699724517906336
+                }
+              }
+            }
+          },
+          "haiku_judge": {
+            "collective_alone": {
+              "n_fire": 0,
+              "coverage": 0.0,
+              "composed": {
+                "value": 0.8378893833439288,
+                "lo": 0.7963197969543148,
+                "hi": 0.8777848504137492,
+                "n": 1573
+              },
+              "actuator_emitted_on_fired": null,
+              "n_fallback_to_s2": 0,
+              "by_stratum": {
+                "one_loser": {
+                  "n": 1210,
+                  "n_fired": 0,
+                  "acc_s2": 0.9322314049586777,
+                  "acc_composed": 0.9322314049586777
+                },
+                "both_party": {
+                  "n": 363,
+                  "n_fired": 0,
+                  "acc_s2": 0.5234159779614325,
+                  "acc_composed": 0.5234159779614325
+                }
+              }
+            },
+            "counter": {
+              "n_fire": 306,
+              "coverage": 0.19453273998728543,
+              "composed": {
+                "value": 0.8779402415766052,
+                "lo": 0.8405336721728082,
+                "hi": 0.9130710659898477,
+                "n": 1573
+              },
+              "actuator_emitted_on_fired": 1.0,
+              "n_fallback_to_s2": 0,
+              "by_stratum": {
+                "one_loser": {
+                  "n": 1210,
+                  "n_fired": 85,
+                  "acc_s2": 0.9322314049586777,
+                  "acc_composed": 0.9487603305785124
+                },
+                "both_party": {
+                  "n": 363,
+                  "n_fired": 221,
+                  "acc_s2": 0.5234159779614325,
+                  "acc_composed": 0.6418732782369146
+                }
+              }
+            },
+            "verdict_type": {
+              "n_fire": 363,
+              "coverage": 0.23076923076923078,
+              "composed": {
+                "value": 0.891290527654164,
+                "lo": 0.8546031746031746,
+                "hi": 0.9249363867684478,
+                "n": 1573
+              },
+              "actuator_emitted_on_fired": 1.0,
+              "n_fallback_to_s2": 0,
+              "by_stratum": {
+                "one_loser": {
+                  "n": 1210,
+                  "n_fired": 0,
+                  "acc_s2": 0.9322314049586777,
+                  "acc_composed": 0.9322314049586777
+                },
+                "both_party": {
+                  "n": 363,
+                  "n_fired": 363,
+                  "acc_s2": 0.5234159779614325,
+                  "acc_composed": 0.7548209366391184
+                }
+              }
+            },
+            "union": {
+              "n_fire": 448,
+              "coverage": 0.2848061029879212,
+              "composed": {
+                "value": 0.9040050858232677,
+                "lo": 0.8692063492063492,
+                "hi": 0.9359137055837563,
+                "n": 1573
+              },
+              "actuator_emitted_on_fired": 1.0,
+              "n_fallback_to_s2": 0,
+              "by_stratum": {
+                "one_loser": {
+                  "n": 1210,
+                  "n_fired": 85,
+                  "acc_s2": 0.9322314049586777,
+                  "acc_composed": 0.9487603305785124
+                },
+                "both_party": {
+                  "n": 363,
+                  "n_fired": 363,
+                  "acc_s2": 0.5234159779614325,
+                  "acc_composed": 0.7548209366391184
+                }
+              }
+            }
+          },
+          "sonnet_judge": {
+            "collective_alone": {
+              "n_fire": 0,
+              "coverage": 0.0,
+              "composed": {
+                "value": 0.8378893833439288,
+                "lo": 0.7955555555555556,
+                "hi": 0.8771483131763208,
+                "n": 1573
+              },
+              "actuator_emitted_on_fired": null,
+              "n_fallback_to_s2": 0,
+              "by_stratum": {
+                "one_loser": {
+                  "n": 1210,
+                  "n_fired": 0,
+                  "acc_s2": 0.9322314049586777,
+                  "acc_composed": 0.9322314049586777
+                },
+                "both_party": {
+                  "n": 363,
+                  "n_fired": 0,
+                  "acc_s2": 0.5234159779614325,
+                  "acc_composed": 0.5234159779614325
+                }
+              }
+            },
+            "counter": {
+              "n_fire": 306,
+              "coverage": 0.19453273998728543,
+              "composed": {
+                "value": 0.9097266369993643,
+                "lo": 0.8792116973935156,
+                "hi": 0.9376590330788804,
+                "n": 1573
+              },
+              "actuator_emitted_on_fired": 1.0,
+              "n_fallback_to_s2": 0,
+              "by_stratum": {
+                "one_loser": {
+                  "n": 1210,
+                  "n_fired": 85,
+                  "acc_s2": 0.9322314049586777,
+                  "acc_composed": 0.9611570247933884
+                },
+                "both_party": {
+                  "n": 363,
+                  "n_fired": 221,
+                  "acc_s2": 0.5234159779614325,
+                  "acc_composed": 0.7382920110192838
+                }
+              }
+            },
+            "verdict_type": {
+              "n_fire": 363,
+              "coverage": 0.23076923076923078,
+              "composed": {
+                "value": 0.9319771137952956,
+                "lo": 0.9008894536213469,
+                "hi": 0.958041958041958,
+                "n": 1573
+              },
+              "actuator_emitted_on_fired": 1.0,
+              "n_fallback_to_s2": 0,
+              "by_stratum": {
+                "one_loser": {
+                  "n": 1210,
+                  "n_fired": 0,
+                  "acc_s2": 0.9322314049586777,
+                  "acc_composed": 0.9322314049586777
+                },
+                "both_party": {
+                  "n": 363,
+                  "n_fired": 363,
+                  "acc_s2": 0.5234159779614325,
+                  "acc_composed": 0.931129476584022
+                }
+              }
+            },
+            "union": {
+              "n_fire": 448,
+              "coverage": 0.2848061029879212,
+              "composed": {
+                "value": 0.954227590591227,
+                "lo": 0.9289340101522843,
+                "hi": 0.9764930114358322,
+                "n": 1573
+              },
+              "actuator_emitted_on_fired": 1.0,
+              "n_fallback_to_s2": 0,
+              "by_stratum": {
+                "one_loser": {
+                  "n": 1210,
+                  "n_fired": 85,
+                  "acc_s2": 0.9322314049586777,
+                  "acc_composed": 0.9611570247933884
+                },
+                "both_party": {
+                  "n": 363,
+                  "n_fired": 363,
+                  "acc_s2": 0.5234159779614325,
+                  "acc_composed": 0.931129476584022
+                }
+              }
+            }
+          }
+        },
+        "paired_deltas": {
+          "crossvendor_r0_majority_minus_collective_alone|counter": {
+            "acc_a": 0.8639542275905913,
+            "acc_b": 0.8378893833439288,
+            "delta": 0.026064844246662427,
+            "lo": 0.008894536213468869,
+            "hi": 0.044444444444444446,
+            "n": 1573,
+            "ci_excludes_zero": true
+          },
+          "crossvendor_r0_majority_minus_haiku_judge|counter": {
+            "acc_a": 0.8639542275905913,
+            "acc_b": 0.8779402415766052,
+            "delta": -0.013986013986013986,
+            "lo": -0.032401524777636595,
+            "hi": 0.0031766200762388818,
+            "n": 1573,
+            "ci_excludes_zero": false
+          },
+          "crossvendor_r0_majority_minus_sonnet_judge|counter": {
+            "acc_a": 0.8639542275905913,
+            "acc_b": 0.9097266369993643,
+            "delta": -0.04577240940877304,
+            "lo": -0.06865861411315957,
+            "hi": -0.02356687898089172,
+            "n": 1573,
+            "ci_excludes_zero": true
+          },
+          "crossvendor_r0_majority_minus_collective_alone|union": {
+            "acc_a": 0.8868404322949778,
+            "acc_b": 0.8378893833439288,
+            "delta": 0.04895104895104895,
+            "lo": 0.029262086513994912,
+            "hi": 0.07061068702290077,
+            "n": 1573,
+            "ci_excludes_zero": true
+          },
+          "crossvendor_r0_majority_minus_haiku_judge|union": {
+            "acc_a": 0.8868404322949778,
+            "acc_b": 0.9040050858232677,
+            "delta": -0.017164653528289893,
+            "lo": -0.038853503184713374,
+            "hi": 0.0044472681067344345,
+            "n": 1573,
+            "ci_excludes_zero": false
+          },
+          "crossvendor_r0_majority_minus_sonnet_judge|union": {
+            "acc_a": 0.8868404322949778,
+            "acc_b": 0.954227590591227,
+            "delta": -0.06738715829624921,
+            "lo": -0.10006373486297004,
+            "hi": -0.03816793893129771,
+            "n": 1573,
+            "ci_excludes_zero": true
+          }
+        }
+      }
+    },
+    "router_json_agreement": {
+      "available": true,
+      "fields": {
+        "haiku_judge|collective_alone": {
+          "got": 0.8425760286225402,
+          "json": 0.8425760286225402,
+          "agrees": true
+        },
+        "haiku_judge|counter": {
+          "got": 0.8801431127012522,
+          "json": 0.8801431127012522,
+          "agrees": true
+        },
+        "haiku_judge|verdict_type": {
+          "got": 0.8938580799045915,
+          "json": 0.8938580799045915,
+          "agrees": true
+        },
+        "haiku_judge|union": {
+          "got": 0.9045915324985092,
+          "json": 0.9045915324985092,
+          "agrees": true
+        },
+        "sonnet_judge|collective_alone": {
+          "got": 0.8425760286225402,
+          "json": 0.8425760286225402,
+          "agrees": true
+        },
+        "sonnet_judge|counter": {
+          "got": 0.9129397734048896,
+          "json": 0.9129397734048896,
+          "agrees": true
+        },
+        "sonnet_judge|verdict_type": {
+          "got": 0.9355992844364938,
+          "json": 0.9355992844364938,
+          "agrees": true
+        },
+        "sonnet_judge|union": {
+          "got": 0.9564698867024448,
+          "json": 0.9564698867024448,
+          "agrees": true
+        }
+      },
+      "agrees": true
+    },
+    "note": "sensor = embodied cell's stake-blind counter n_objectors >= 2 (and the other 16.15.1 routers); actuator = this cell's cross-vendor majority keyed by (arm, item); a debate the actuator cannot decide falls back to S2; zero spend"
+  },
+  "guards": {
+    "n_raw": 394,
+    "n_codable": 393,
+    "checks": {
+      "n_debates": {
+        "value": 394,
+        "limit": 1,
+        "ok": true
+      },
+      "codable_share": {
+        "value": 0.9974619289340102,
+        "limit": 0.95,
+        "ok": true
+      },
+      "mean_n_r3_unparsed": {
+        "value": 0.0025380710659898475,
+        "limit": 0.05,
+        "ok": true
+      },
+      "seat_r0_codable_share|reader_1_noedge": {
+        "value": 0.9898477157360406,
+        "limit": 0.95,
+        "ok": true
+      },
+      "seat_vote_parsed_share|reader_1_noedge": {
+        "value": 1.0,
+        "limit": 0.95,
+        "ok": true
+      },
+      "seat_r4_truncated_share|reader_1_noedge": {
+        "value": 0.0,
+        "limit": 0.05,
+        "ok": true
+      },
+      "seat_r0_codable_share|reader_2_noedge": {
+        "value": 0.9822335025380711,
+        "limit": 0.95,
+        "ok": true
+      },
+      "seat_vote_parsed_share|reader_2_noedge": {
+        "value": 1.0,
+        "limit": 0.95,
+        "ok": true
+      },
+      "seat_r4_truncated_share|reader_2_noedge": {
+        "value": 0.0,
+        "limit": 0.05,
+        "ok": true
+      },
+      "seat_r0_codable_share|reader_3_noedge": {
+        "value": 0.9923857868020305,
+        "limit": 0.95,
+        "ok": true
+      },
+      "seat_vote_parsed_share|reader_3_noedge": {
+        "value": 1.0,
+        "limit": 0.95,
+        "ok": true
+      },
+      "seat_r4_truncated_share|reader_3_noedge": {
+        "value": 0.0,
+        "limit": 0.05,
+        "ok": true
+      },
+      "three_seats_present": {
+        "value": 3,
+        "limit": 3,
+        "ok": true
+      }
+    },
+    "passed": true
+  },
+  "pre_declared_readings": {
+    "16.18_ladha": {
+      "claim": "the majority of three different-vendor seats beats its best single seat",
+      "delta": 0.010526315789473684,
+      "lo": -0.013054830287206266,
+      "hi": 0.034031413612565446,
+      "reading": "interval includes zero",
+      "holds": false,
+      "single_vendor_reference": {
+        "delta": -0.002,
+        "lo": -0.02,
+        "hi": 0.015
+      }
+    },
+    "16.18_collective_vs_single_vendor": {
+      "claim": "the cross-vendor collective's S2 beats the single-vendor (identical, off) S2",
+      "acc_a": 0.8622448979591837,
+      "acc_b": 0.8724489795918368,
+      "delta": -0.01020408163265306,
+      "lo": -0.03316326530612245,
+      "hi": 0.012755102040816327,
+      "n": 392,
+      "reading": "interval includes zero",
+      "registered_reference": 0.875
+    },
+    "16.18_collective_vs_grok_solo": {
+      "claim": "the cross-vendor collective's S2 beats grok answering alone",
+      "acc_a": 0.8625954198473282,
+      "acc_b": 0.905852417302799,
+      "delta": -0.043256997455470736,
+      "lo": -0.07161125319693094,
+      "hi": -0.015267175572519083,
+      "n": 393,
+      "reading": "below zero",
+      "registered_reference": 0.911
+    },
+    "16.18_majority_vs_grok_solo": {
+      "claim": "the cross-vendor R0 majority alone beats grok answering alone",
+      "acc_a": 0.8526315789473684,
+      "acc_b": 0.9078947368421053,
+      "delta": -0.05526315789473684,
+      "lo": -0.0868421052631579,
+      "hi": -0.023936170212765957,
+      "n": 380,
+      "reading": "below zero"
+    },
+    "16.18_composed_vs_haiku_judge": {
+      "claim": "routing the embodied cell's flagged debates to the cross-vendor majority beats routing them to the haiku judge (counter router, full population)",
+      "acc_a": 0.8670244484197973,
+      "acc_b": 0.8801431127012522,
+      "delta": -0.01311866428145498,
+      "lo": -0.029832935560859187,
+      "hi": 0.0029815146094215863,
+      "n": 1677,
+      "reading": "interval includes zero",
+      "registered_reference": 0.88
+    },
+    "16.18_composed_vs_sonnet_judge": {
+      "claim": "... beats routing them to the sonnet judge",
+      "acc_a": 0.8670244484197973,
+      "acc_b": 0.9129397734048896,
+      "delta": -0.045915324985092425,
+      "lo": -0.06785714285714285,
+      "hi": -0.02501488981536629,
+      "n": 1677,
+      "reading": "below zero",
+      "registered_reference": 0.913
+    },
+    "16.18_composed_vs_collective_alone": {
+      "claim": "the composed graph beats the embodied collective unrouted",
+      "acc_a": 0.8670244484197973,
+      "acc_b": 0.8425760286225402,
+      "delta": 0.024448419797257006,
+      "lo": 0.008955223880597015,
+      "hi": 0.041766109785202864,
+      "n": 1677,
+      "reading": "above zero",
+      "registered_reference": 0.843
+    }
+  },
+  "inputs": {
+    "rows": "divergence_study_outputs/cg_deliberation_multivendor_rows.csv",
+    "votes": "divergence_study_outputs/cg_deliberation_multivendor_votes.csv",
+    "identical_off_rows": "divergence_study_outputs/cg_deliberation_identical_noedge_rows.csv",
+    "embodied_rows": "divergence_study_outputs/cg_deliberation_rows.csv",
+    "comparator": "divergence_study_outputs/cg_scaffold_combined_rows_k3.csv",
+    "sonnet_rows": "divergence_study_outputs/cg_sonnet_actuator_rows.csv",
+    "router_json": "divergence_study_outputs/router_decomposition.json"
+  },
+  "runner_record_guard": {
+    "pass": true,
+    "reasons": []
+  }
+}

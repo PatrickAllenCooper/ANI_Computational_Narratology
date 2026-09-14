@@ -1,0 +1,437 @@
+{
+  "model": "grok-4-1-fast-reasoning",
+  "tag": "cg_deliberation_nperspective",
+  "seats": [
+    "writer_advocate_np",
+    "counterparty_np",
+    "third_party_advocate_np",
+    "neutral_adjudicator_np"
+  ],
+  "n_debates": 314,
+  "n_items": 157,
+  "n_codable": 312,
+  "k_distribution": {
+    "0": 0,
+    "1": 241,
+    "2": 72,
+    "3": 0,
+    "non_codable": 1
+  },
+  "stake_distribution": {
+    "YTA": 96,
+    "NTA": 210,
+    "none": 8
+  },
+  "stake_source": {
+    "llm": 314
+  },
+  "guards": {
+    "n_debates": 314,
+    "n_codable": 312,
+    "s2_codable_share": 0.9936305732484076,
+    "mean_n_r3_unparsed": 0.006369426751592357,
+    "vote_parsed_share": 0.9992038216560509,
+    "k_agrees_share": 1.0,
+    "against_interest_agrees_share": 1.0,
+    "all_seats_voted_share": 1.0,
+    "pass": true
+  },
+  "objection": {
+    "per_seat": {
+      "writer_advocate_np": 0.42038216560509556,
+      "counterparty_np": 0.7515923566878981,
+      "third_party_advocate_np": 0.33121019108280253,
+      "neutral_adjudicator_np": 0.10828025477707007
+    },
+    "pooled": 0.4028662420382166,
+    "per_seat_marginals": {
+      "writer_advocate_np": 0.42038216560509556,
+      "counterparty_np": 0.7515923566878981,
+      "third_party_advocate_np": 0.33121019108280253,
+      "neutral_adjudicator_np": 0.10828025477707007
+    },
+    "observed": {
+      "0": 0.009554140127388535,
+      "1": 0.5222929936305732,
+      "2": 0.32802547770700635,
+      "3": 0.12738853503184713,
+      "4": 0.012738853503184714
+    },
+    "independence_poisson_binomial": {
+      "0": 0.08586669048953,
+      "1": 0.3750298476380627,
+      "2": 0.3922065614608964,
+      "3": 0.13556560405303328,
+      "4": 0.011331296358477799
+    },
+    "fire_observed": 0.4681528662420382,
+    "fire_independence": 0.5391034618724075,
+    "localisation_excess": 0.14726314599251056
+  },
+  "role_lock": {
+    "p_at_fault": {
+      "writer_advocate_np": 0.0,
+      "counterparty_np": 0.9585987261146497,
+      "third_party_advocate_np": 0.5112540192926045,
+      "neutral_adjudicator_np": 0.42628205128205127
+    },
+    "seat_r0_accuracy": {
+      "writer_advocate_np": 0.6205787781350482,
+      "counterparty_np": 0.42356687898089174,
+      "third_party_advocate_np": 0.6559485530546624,
+      "neutral_adjudicator_np": 0.8653846153846154
+    },
+    "n_r0_read": {
+      "writer_advocate_np": 311,
+      "counterparty_np": 314,
+      "third_party_advocate_np": 311,
+      "neutral_adjudicator_np": 312
+    },
+    "role_lock_pair": 0.9585987261146497,
+    "third_party": {
+      "p_at_fault_by_stake": {
+        "YTA": 0.9895833333333334,
+        "NTA": 0.28708133971291866,
+        "none": 0.6666666666666666
+      },
+      "role_lock_by_stake": 0.7025019936204147,
+      "p_r0_serves_own_stake": 0.8,
+      "n_with_stake": 305
+    }
+  },
+  "sensor": {
+    "pooled": {
+      "against_interest": {
+        "n": 314,
+        "n_codable": 312,
+        "n_fired": 100,
+        "fire_rate": 0.3184713375796178,
+        "powered": true,
+        "err_fired": 0.33999999999999997,
+        "err_unfired": 0.089622641509434,
+        "delta": 0.25037735849056597,
+        "lo": 0.1433779965363231,
+        "hi": 0.3705373573794626,
+        "ratio": 3.793684210526314
+      },
+      "plain_ge2": {
+        "n": 314,
+        "n_codable": 312,
+        "n_fired": 147,
+        "fire_rate": 0.4681528662420382,
+        "powered": true,
+        "err_fired": 0.2925170068027211,
+        "err_unfired": 0.06060606060606055,
+        "delta": 0.23191094619666053,
+        "lo": 0.1418676561533705,
+        "hi": 0.3244534112899906,
+        "ratio": 4.826530612244902
+      }
+    },
+    "k=0": {
+      "n": 0,
+      "against_interest": null,
+      "plain_ge2": null
+    },
+    "k=1": {
+      "n": 241,
+      "against_interest": {
+        "n": 241,
+        "n_codable": 240,
+        "n_fired": 69,
+        "fire_rate": 0.2863070539419087,
+        "powered": true,
+        "err_fired": 0.23188405797101452,
+        "err_unfired": 0.07017543859649122,
+        "delta": 0.1617086193745233,
+        "lo": 0.05126050420168071,
+        "hi": 0.2888559426735854,
+        "ratio": 3.304347826086957
+      },
+      "plain_ge2": {
+        "n": 241,
+        "n_codable": 240,
+        "n_fired": 85,
+        "fire_rate": 0.35269709543568467,
+        "powered": true,
+        "err_fired": 0.23529411764705888,
+        "err_unfired": 0.05161290322580647,
+        "delta": 0.1836812144212524,
+        "lo": 0.07636928289102196,
+        "hi": 0.29802215189873427,
+        "ratio": 4.558823529411764
+      }
+    },
+    "k=2": {
+      "n": 72,
+      "against_interest": {
+        "n": 72,
+        "n_codable": 72,
+        "n_fired": 31,
+        "fire_rate": 0.4305555555555556,
+        "powered": false,
+        "err_fired": 0.5806451612903225,
+        "err_unfired": 0.1707317073170732,
+        "delta": 0.4099134539732493,
+        "lo": 0.18627450980392157,
+        "hi": 0.6208708708708709,
+        "ratio": 3.400921658986174
+      },
+      "plain_ge2": {
+        "n": 72,
+        "n_codable": 72,
+        "n_fired": 62,
+        "fire_rate": 0.8611111111111112,
+        "powered": true,
+        "err_fired": 0.3709677419354839,
+        "err_unfired": 0.19999999999999996,
+        "delta": 0.17096774193548392,
+        "lo": -0.24615384615384617,
+        "hi": 0.4193548387096774,
+        "ratio": 1.8548387096774197
+      }
+    },
+    "k=3": {
+      "n": 0,
+      "against_interest": null,
+      "plain_ge2": null
+    },
+    "one_loser": {
+      "n": 239,
+      "against_interest": {
+        "n": 239,
+        "n_codable": 238,
+        "n_fired": 37,
+        "fire_rate": 0.15481171548117154,
+        "powered": false,
+        "err_fired": 0.16216216216216217,
+        "err_unfired": 0.06965174129353235,
+        "delta": 0.09251042086862982,
+        "lo": -0.034947643979057585,
+        "hi": 0.24578947368421056,
+        "ratio": 2.3281853281853278
+      },
+      "plain_ge2": {
+        "n": 239,
+        "n_codable": 238,
+        "n_fired": 83,
+        "fire_rate": 0.3472803347280335,
+        "powered": true,
+        "err_fired": 0.19277108433734935,
+        "err_unfired": 0.02580645161290318,
+        "delta": 0.16696463272444617,
+        "lo": 0.07404951370468615,
+        "hi": 0.2658247343292778,
+        "ratio": 7.4698795180723
+      },
+      "p_objectors_ge2": 0.3472803347280335
+    },
+    "both_party": {
+      "n": 74,
+      "against_interest": {
+        "n": 74,
+        "n_codable": 74,
+        "n_fired": 63,
+        "fire_rate": 0.8513513513513513,
+        "powered": true,
+        "err_fired": 0.4444444444444444,
+        "err_unfired": 0.4545454545454546,
+        "delta": -0.010101010101010166,
+        "lo": -0.40476190476190477,
+        "hi": 0.4444444444444444,
+        "ratio": 0.9777777777777776
+      },
+      "plain_ge2": {
+        "n": 74,
+        "n_codable": 74,
+        "n_fired": 64,
+        "fire_rate": 0.8648648648648649,
+        "powered": true,
+        "err_fired": 0.421875,
+        "err_unfired": 0.6,
+        "delta": -0.17812499999999998,
+        "lo": -0.5824372759856631,
+        "hi": 0.2946428571428571,
+        "ratio": 0.703125
+      },
+      "p_objectors_ge2": 0.8648648648648649
+    },
+    "stake=YTA": {
+      "n": 96,
+      "n_k2": 27,
+      "against_interest": {
+        "n": 96,
+        "n_codable": 95,
+        "n_fired": 21,
+        "fire_rate": 0.21875,
+        "powered": false,
+        "err_fired": 0.2857142857142857,
+        "err_unfired": 0.06756756756756754,
+        "delta": 0.21814671814671815,
+        "lo": 0.033333333333333326,
+        "hi": 0.44857594936708856,
+        "ratio": 4.2285714285714295
+      }
+    },
+    "stake=NTA": {
+      "n": 210,
+      "n_k2": 45,
+      "against_interest": {
+        "n": 210,
+        "n_codable": 209,
+        "n_fired": 76,
+        "fire_rate": 0.3619047619047619,
+        "powered": true,
+        "err_fired": 0.35526315789473684,
+        "err_unfired": 0.09774436090225569,
+        "delta": 0.25751879699248115,
+        "lo": 0.13473684210526315,
+        "hi": 0.39377119950662964,
+        "ratio": 3.634615384615383
+      }
+    },
+    "stake=none": {
+      "n": 8,
+      "n_k2": 0,
+      "against_interest": {
+        "n": 8,
+        "n_codable": 8,
+        "n_fired": 3,
+        "fire_rate": 0.375,
+        "powered": false,
+        "err_fired": 0.33333333333333337,
+        "err_unfired": 0.19999999999999996,
+        "delta": 0.13333333333333341,
+        "lo": -0.6666666666666666,
+        "hi": 0.8571428571428571,
+        "ratio": 1.6666666666666672
+      }
+    }
+  },
+  "g3": {
+    "applicable": true,
+    "n_stake_votes": 927,
+    "delta": 0.6334985086115654,
+    "lo": 0.5714943710182591,
+    "hi": 0.6915606446140797,
+    "per_role": {
+      "writer_advocate_np": {
+        "n": 311,
+        "delta": 0.7720496894409938
+      },
+      "counterparty_np": {
+        "n": 312,
+        "delta": 0.538881069669247
+      },
+      "third_party_advocate_np": {
+        "n": 304,
+        "delta": 0.45550416281221096
+      }
+    }
+  },
+  "s2": {
+    "n_codable": 312,
+    "accuracy": 0.8301282051282052,
+    "lo": 0.7792207792207793,
+    "hi": 0.8753993610223643,
+    "by_k": {
+      "1": {
+        "n": 240,
+        "accuracy": 0.8833333333333333
+      },
+      "2": {
+        "n": 72,
+        "accuracy": 0.6527777777777778
+      }
+    },
+    "paired_vs_embodied": {
+      "n_pairs": 312,
+      "delta": -0.04487179487179487,
+      "lo": -0.08681672025723473,
+      "hi": -0.006369426751592357,
+      "embodied_accuracy_on_pairs": 0.875
+    }
+  },
+  "transfer_grok_solo": {
+    "against_interest": {
+      "available": true,
+      "n_cells": 314,
+      "n_flagged_cells": 100,
+      "p_wrong_flagged": 0.12,
+      "p_wrong_unflagged": 0.04205607476635514,
+      "lift": 0.07794392523364485,
+      "lo": 0.0005723594417294045,
+      "hi": 0.16029800528719057
+    },
+    "plain_ge2": {
+      "available": true,
+      "n_cells": 314,
+      "n_flagged_cells": 147,
+      "p_wrong_flagged": 0.09523809523809523,
+      "p_wrong_unflagged": 0.041916167664670656,
+      "lift": 0.05332192757342458,
+      "lo": -0.012357723577235774,
+      "hi": 0.12475649350649351
+    }
+  },
+  "prediction_table": [
+    {
+      "k": 0,
+      "favoured": "n (all)",
+      "mode": "SILENCE",
+      "prediction": "nothing deviates; plain objections ~0; against-interest count ~0",
+      "reachable": false,
+      "why": "every codable verdict undermines exactly one of writer / counterparty",
+      "measured": {
+        "n": 0
+      }
+    },
+    {
+      "k": 1,
+      "favoured": "n-1",
+      "mode": "SENSOR",
+      "prediction": "against-interest count rare (fire << 0.5) with positive error lift",
+      "reachable": true,
+      "why": "one party loses; the third party is served or has no stake",
+      "measured": {
+        "n": 241,
+        "fire_rate_against_interest": 0.2863070539419087,
+        "p_plain_ge2": 0.35269709543568467,
+        "err_fired": 0.23188405797101452,
+        "err_unfired": 0.07017543859649122,
+        "n_fired": 69
+      }
+    },
+    {
+      "k": 2,
+      "favoured": "n-2 = 1",
+      "mode": "SENSOR (less coverage)",
+      "prediction": "count comes from one favoured seat; same-sign lift, lower fire rate; the stake-blind n_objectors >= 2 counter fires by construction (two losers) and carries no information here",
+      "reachable": true,
+      "why": "one party AND the third party lose",
+      "measured": {
+        "n": 72,
+        "fire_rate_against_interest": 0.4305555555555556,
+        "p_plain_ge2": 0.8611111111111112,
+        "err_fired": 0.5806451612903225,
+        "err_unfired": 0.1707317073170732,
+        "n_fired": 31
+      }
+    },
+    {
+      "k": 3,
+      "favoured": "0",
+      "mode": "FLOODING",
+      "prediction": "plain objections flood (P(>=2) > 0.5); against-interest count structurally 0 (no favoured seat)",
+      "reachable": false,
+      "why": "writer and counterparty cannot both be undermined under the published collapse; the both-party verdict type (ESH/NAH) is the flooding stratum, reported separately",
+      "measured": {
+        "n": 0
+      }
+    }
+  ],
+  "runner_record_guard": {
+    "pass": true,
+    "reasons": []
+  }
+}

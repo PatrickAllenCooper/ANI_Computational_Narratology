@@ -5282,3 +5282,1379 @@ structure is a property of the opposed pairing" now rests on two
 independent removals (edges, 16.10; narration, 16.16) that each leave
 lock, localisation and grip intact and each cut the fire rate by about a
 third. Nothing above this line is edited.
+
+# Registration batch 16.17 to 16.21 (appended 2026-09-13 BEFORE any call under any of their namespaces; budget note first)
+
+Budget against the PI's approval of ~$60 for 16.16 to 16.21 (2026-09-12).
+16.16 spent $2.64 measured. Dry-run totals below: 16.17 $10.69 (sonnet
+moderator) + $4.10 (haiku moderator); 16.18 $18.03; 16.19 $6.48; 16.21
+$4.47 + $0.07; sum $43.84, run inside the approval in the order 16.17
+cell 1, 16.19, 16.21, 16.18, 16.17 cell 2. 16.20 (gpt-4o: screen $9.99,
+deliberation projected ~$36.50, ceiling $50) is registered here but NOT
+launched under this approval; it is its own authorisation, as the 16.11b
+RESULTS block already required, and the PI decides. tiktoken is not
+installed, so every dry-run except 16.17's four new rounds undercounts
+prompt tokens by 20-35%; the ceilings carry that margin. The fourth
+vendor the PI is deploying enters each cell through PRICES and the model
+flags; a deployment whose name carries a new prefix needs one routing
+branch in scripts/generators.py before any --run, flagged for the PI.
+Two disclosures the build's review asked to be recorded here: 16.17 reads
+"moderator VENDOR at its own default decoding", since no common sampler
+exists across vendors; 16.19's ally-writer objection phi is measured after
+the seats have read each other (edges ON), so a positive phi is
+consistent with either a like-biased prior or communication, and the
+registered reading treats it as the former only if the r0 verdicts
+already agree.
+
+# Addendum 16.17: the cross-vendor moderator -- does the decider's model matter where the seats are locked? (registered 2026-09-13, ceilings $20 sonnet cell / $8 haiku cell, dry-run $10.69 / $4.10, BEFORE any call)
+
+Closes the gap named in the design document (section 2(d), 2(g)): the
+moderator has been the same model as the seats in every collective run,
+and the one hint that the moderator's model matters is an unregistered
+artefact (`aggregation_rules.json`, haiku self-moderated: S2 beats the
+neutral dictator by +0.176 [+0.106, +0.254] on 187 debates over 100 items,
+where grok self-moderated reads -0.016 [-0.031, -0.002]). That artefact
+cannot separate "the haiku moderator reads the arguments" from "haiku's
+advocates are not locked (0.442) and so carry verdict information for any
+moderator to read". This cell separates them by putting a different
+vendor's moderator over the SAME grok seats, with the seats' text held
+byte-identical by cache replay.
+
+**Design.** `scripts/run_crowdgold_modvendor.py` (selftest 65 checks, ALL
+OK; audited against the base runner's `do_call` / `run_deliberation`).
+The registered AITA deliberation exactly (grok-4-1-fast-reasoning seats
+with the registered briefs and stakes verbatim, `--n-yta 99 --n-nta 150`,
+seed 44, the content-filter screen to 210 items, arms third_person and
+as_asker, `--samples 1`, narrative_cot, caps 2560/1024/1024/512, seven
+rounds, 17 calls per debate, transcript cap 0), with the moderator model
+swapped per cell:
+
+| cell | moderator | tag | dry-run | ceiling |
+|---|---|---|---|---|
+| 1 | claude-sonnet-4-6 | `cg_deliberation_modsonnet` | $10.69 (moderator $9.89, grok r3/r4 $0.80) | $20 |
+| 2 | claude-haiku-4-5 | `cg_deliberation_modhaiku` | $4.10 (moderator $3.30, grok $0.80) | $8 |
+| 3 | fourth vendor, when named | `cg_deliberation_mod<short>` | priced by `--price` until PRICES carries it | to set |
+
+Cell 2 launches only after cell 1 is read; this block registers both,
+and nothing changes between them but the moderator string.
+
+**Which calls replay and which are new (per debate, 17 calls).** r0, r1,
+r2 for the three seats (9 calls) REPLAY from the registered
+`cg_deliberation` cache: same model, scaffold, seat ids, arm, item, token
+cap, byte-identical prompts, and the same parent_sha chain (r0 over the
+post text, r1 over the three r0s, r2 over r0s + r1s). The wrapper's
+install() patches nothing upstream of the moderator (ROLES, ROLE_ORDER,
+R0 preamble, r1/r2 builders asserted identical by identity), and its
+selftest reads 3 panel items x 2 arms x 3 seats x 3 rounds from the REAL
+cache read-only and checks path, parent_sha, prompt length and post sha.
+The dry-run probed all 420 debates on the real cache: 420 full r0-r2
+chains, 0 incomplete, 0 stale. Synthesis and integration (2 calls, the
+other vendor) and r3_label x3 and r4_vote x3 (6 calls, grok, whose prompts
+quote the other vendor's synthesis / integration text) are NEW. Per cell:
+3,780 replays and 3,360 new generations; the dry-run counts only the new
+ones, and prices the four new rounds on the API-billed prompt_tokens of the
+registered run's own records for the same debates (the synthesis prompt is
+byte-identical; the other three differ only by the other vendor's text), so
+those figures are not tokenizer-dependent. Moderator COMPLETION lengths are
+the base runner's assumed 450/500 tokens with no other-vendor measurement;
+if sonnet writes twice that, cell 1 is ~$16.4, inside the $20 ceiling.
+
+**Cache namespaces (the landmine, and a deviation from the task's assumed
+naming, disclosed).** The base runner's `--moderator-model` alone is NOT
+safe, proven by constructing both collisions in a tempdir: (a) r3/r4 with
+the bare runner land at the registered grok run's OWN paths
+(`..._r3_label_writer_advocate.json`); their parent_sha differs (sonnet
+synthesis in place of grok's) so they are correctly not replayed, but
+`do_call` treats a mismatch as "stale, regenerate" and WRITES the new
+record to the same path -- 2,520 registered r3/r4 records per cell would
+have been overwritten, and a later `--resume` of `cg_deliberation` would
+have re-spent them. (b) `mod-claude-sonnet-4-6` is not free either: it
+already holds the sonnet SELF-moderated pilot (56 path collisions on this
+panel) and `mod-claude-haiku-4-5` the haiku self-moderated runs (318).
+The parent_sha check is a replay guard, not a write guard. The wrapper
+therefore installs: moderator id `modvendor-grok-4-1-fast-reasoning`
+inside a `cgd_<moderator model>_*` path (naming the (moderator, agents)
+pair uniquely), and r3/r4 role ids `<seat>_xmod-<moderator model>`, r0-r2
+keeping the bare seat id (which is what makes them replay). Both
+namespaces verified EMPTY in the real cache by the selftest's no-foreign-
+file idiom and by `--verify-cache-clean`; `cache_is_clean()` is enforced on
+`--run`, `--resume` the only override. `modvendor` is asserted distinct
+from every sibling prefix and `_xmod-` appears in no sibling source. Record
+contents are unchanged (role_id inside a r3/r4 record is still the seat
+id); the moderator is named by the path and by the rows CSV's
+moderator_model column. Banned flags: `--transcript-cap` other than 0,
+`--no-unresolved`, `--arms`, the stake knobs (each changes r0-r2 prompt
+text without changing the cache key, so registered records would be
+served for a different prompt). The wrapper refuses the tag
+`cg_deliberation` and every sibling tag, refuses a tag whose rows CSV
+already holds a different moderator, and renames the CSVs
+`*_GUARD_FAILED_*` on a guard exit.
+
+**Disclosed, not controlled.** The swap changes the moderator model AND
+its request-side sampling: generators.py's Anthropic path sends no
+temperature and no seed, the xAI path sends none either, and the
+registered grok moderator ran under xAI defaults. The cell reads
+"moderator VENDOR at its own default decoding", not "moderator model at
+matched sampling"; the vendors expose no common sampler.
+
+**Launch.**
+
+    cd /Users/pat/code/ANI_Examination
+    .venv/bin/python -m scripts.run_crowdgold_modvendor --selftest
+    .venv/bin/python -m scripts.run_crowdgold_modvendor --moderator-model claude-sonnet-4-6 --verify-cache-clean
+    .venv/bin/python -m scripts.run_crowdgold_modvendor --moderator-model claude-sonnet-4-6 --dry-run
+    # cell 1 (SPENDS, dry-run $10.69, ceiling $20)
+    .venv/bin/python -m scripts.run_crowdgold_modvendor --run --models grok-4-1-fast-reasoning \
+        --moderator-model claude-sonnet-4-6 --n-yta 99 --n-nta 150 --samples 1 --seed 44 \
+        --tag cg_deliberation_modsonnet
+    .venv/bin/python -m scripts.run_crowdgold_modvendor --moderator-model claude-sonnet-4-6 --readout
+    # cell 2, after cell 1 is read (SPENDS, dry-run $4.10, ceiling $8)
+    .venv/bin/python -m scripts.run_crowdgold_modvendor --run --models grok-4-1-fast-reasoning \
+        --moderator-model claude-haiku-4-5 --n-yta 99 --n-nta 150 --samples 1 --seed 44 \
+        --tag cg_deliberation_modhaiku
+    .venv/bin/python -m scripts.run_crowdgold_modvendor --moderator-model claude-haiku-4-5 --readout
+    # fourth vendor, once named: add "<name>": (in, out) to run_crowdgold_deliberation.PRICES
+    # (or pass --price <name>=IN,OUT), optionally a MODERATOR_CELLS entry for a short tag:
+    #   ... --moderator-model <name> --price <name>=IN,OUT --tag cg_deliberation_mod<short>
+
+`--workers` (base default 4) is forwarded; pass `--workers 2` if Anthropic
+rate limits bite, it touches neither the cache nor the readout.
+
+**The theory, and the prediction stated before the data.**
+[milgrom1986relying]: an unsophisticated decider can rely on competition
+among interested parties; the information is produced by the competition,
+not by the decider. [dewatripont1999advocates]: advocacy is separated from
+decision-making by design, and the decision maker's own competence is not
+what elicits the advocates' information. Both say the decider's identity
+should not move the verdict when the advocates' messages are fixed, which
+is the case by construction here (the seats' r0-r2 texts are the same
+bytes in all three cells). The record adds the lock-conditional reading
+(design document 2(d), an observation from one model in an unregistered
+artefact): the moderator can only read the arguments where lock is soft,
+and grok's advocates are locked (0.971), so their arguments carry no
+verdict information for ANY moderator. Against that stands the
+competence hypothesis: the moderator's synthesis prompt carries the post
+text itself (`request_block`), so a stronger model can decide
+inquisitorially from the post; sonnet answering alone scores 0.976 on
+these items and haiku 0.850, against grok solo 0.911 and the grok neutral
+dictator 0.860 (0.853 on sample 0).
+
+Registered prediction (lock-conditional, Milgrom-Roberts / Dewatripont-
+Tirole): NEITHER moderator moves the collective's verdict accuracy off
+the grok dictator. Paired against embodied sample 0 on the same 420
+debates (the moderator is the only difference), S2 delta includes 0 for
+both cells; and since the neutral dictator (its r0 accuracy, 0.853 on
+sample 0 over 416 codable) is REPLAYED and so identical across the three
+cells, "above the dictator" is the same paired statistic read against the
+constant gap of +0.005 that the dictator holds over the embodied sample-0
+S2 (0.848): a cell is read as beating the dictator only when its paired
+S2 delta's interval lies wholly above +0.005. The sensor readouts that
+are the seats' own behaviour (role-lock, per-seat objection marginals
+within verdict type, G3, localisation) hold within their MDEs, because an
+objection is a function of which stake the synthesis verdict undermines,
+not of who wrote the synthesis. The pooled fire rate may move only through
+the moderator's both-party (ESH/NAH) share, since both-party verdicts
+flood (16.12: 0.614 / 0.576 against 0.072 within one-loser).
+
+**Pre-declared readouts.** Two views, both produced by `--readout`
+(offline; `<tag>_analysis.json`), embodied/on baselines in brackets on the
+same 210 items; sample-0 figures are the paired baselines and were
+computed read-only from the cached rows and r0 records for this
+registration.
+
+| readout | embodied/on baseline |
+|---|---|
+| PAIRED vs embodied sample 0 (420 matched debates, 210 items, item-clustered CIs): S2 delta | [embodied sample-0 S2 0.848, 420 codable] |
+| paired fire-rate delta P(>=2) | [0.198 on sample 0, 83 fired] |
+| paired error-lift delta of the >=2 counter | [+0.291 on sample 0; 0.386 fired vs 0.095 unfired] |
+| the neutral dictator's r0 accuracy, i.e. the readout's best-single-seat figure (replayed, identical across cells), and the paired S2 delta read against the dictator's +0.005 gap over embodied sample 0 | [dictator 0.853 on sample 0 / 0.860 pooled; grok self-moderated S2 minus dictator -0.016 [-0.031, -0.002], unregistered artefact] |
+| pooled 16.10 table: role-lock | [0.971; identical by construction, r0 replays] |
+| per-seat objection marginals | [0.430 / 0.690 / 0.073] |
+| localisation excess vs the Poisson-binomial null | [+0.291] |
+| fire rate P(>=2) | [0.196] |
+| G3 stake concentration | [+0.631] |
+| error lift of >=2 at >= 60 fired | [+0.320 [+0.241, +0.406]] |
+| S2 accuracy, codable | [0.843] |
+| transfer lift on grok solo | [+0.212 [+0.081, +0.358]] |
+| moderator's verdict-type share (ESH or NAH) at S1 and S2, from the rows CSV | [S2: 390 of 1,677 = 0.233; S1: 352 of 1,677] |
+| within-one-loser counter lift, via a one-line Community entry (tag, `AITA_SEATS`, model grok) in `analyze_emergent_graphs.COMMUNITIES` -- config, zero spend, existing communities untouched | [+0.348 [+0.201, +0.493], 9.83x; fire 0.072] |
+| codable share of group verdicts (the wrapper's own guard; UNRESOLVED / NOVERDICT is invisible to the base guards) | [>= 0.95 required] |
+
+The transfer target list for cell 3 (fourth vendor) is the same grok solo
+comparator; the readout registers the cell in `analyze_topology_2x2.
+CELL_SPECS` at runtime and needs no code change for a new moderator name.
+
+**Pre-declared readings.**
+- Paired S2 delta includes 0 in BOTH cells (so neither clears the
+  dictator's +0.005): the decider's model does not matter where the seats
+  are locked. The haiku self-moderated +0.176 is then the seats' softer lock
+  (haiku advocates carry verdict information), not the moderator's
+  reading, and Milgrom-Roberts' naive decider is the right description of
+  the verdict node on this instrument.
+- Sonnet cell's paired S2 delta lies wholly above +0.005 (S2 above the
+  dictator, toward sonnet solo 0.976): the moderator decides inquisitorially from
+  the post, the arguments are not load-bearing for the verdict, and
+  "moderator competence" replaces "arguments read where lock is soft" as
+  the account of the haiku artefact. The haiku cell is then predicted to
+  FALL (paired S2 delta wholly below 0, toward 0.850); if it does, the
+  moderator is the verdict node's competence and the sensor should be read with the decider chosen for
+  accuracy and the seats for dissent, which is the design document's
+  bipartite recommendation arrived at from the other side.
+- Haiku cell's paired S2 delta lies wholly above +0.005 over grok's
+  locked seats: refutes the lock-conditional reading; the
+  haiku moderator lifts a collective whose advocates carry no verdict
+  information, so the moderator's model and not the seats' lock is the
+  source of the +0.176. Reported as such.
+- Fire rate or lift move beyond MDE while role-lock, G3 and the within-
+  one-loser objection rates hold: the movement is the moderator's verdict-
+  type share (read the ESH/NAH row first). A both-party share that doubles
+  is a moderator that floods the sensor; the within-one-loser lift is then
+  the readout that carries, and the pooled lift is not compared.
+- Codable share below 0.95 in either cell: GUARD FAILED, the cell is
+  quarantined and not read; a moderator that emits UNRESOLVED on more than
+  5% of debates is a different protocol, and the registered remedy is a
+  re-run under `--resume` only after the PI has seen the failing outputs.
+
+**Gates.** The base runner's round-level and outcome guards over all 17
+calls (worst-round NOVERDICT <= 5%, truncation <= 5%, the literal `GUARD
+FAILED` string, r3 unparsed mean <= 0.05 above the embodied 0.005), the
+wrapper's completeness guard (every launched (arm, item, sample) is a row;
+`<tag>_completeness.json`), the codable-share guard (>= 0.95), minimum-
+fired 60 before any lift is read, five-token `code_response` collapse
+asserted by selftest, MDEs as 16.10 item-paired on 210 items: fire
++/-0.045, lift +/-0.141, S2 paired delta ~+/-0.02 (the 16.10 paired S2
+intervals were +/-0.018 wide). Connection failures: report the partial
+panel, restrict every comparison to the surviving items, never retry.
+
+**Stop rule.** $20 for cell 1, $8 for cell 2; report the partial panel
+rather than exceed either. Cell 2 does not launch until cell 1 is read.
+The dry-run artefacts `cg_deliberation_modsonnet_dryrun.json` and
+`cg_deliberation_modhaiku_dryrun.json` are on disk (base-runner convention,
+not cache records); `cg_deliberation_modvendor4-deploy_dryrun.json` is a
+placeholder probe of the fourth-vendor slot and can be deleted. Nothing
+above this line is edited.
+
+---
+
+# Addendum 16.18: the cross-vendor decider layer, and the bipartite sensor-decider composition (registered 2026-09-13, ceiling $25, dry-run $18.03, BEFORE any call)
+
+16.10's (identical, off) cell showed that three independent draws of one
+grok brief do not aggregate to more than one reader (majority minus best
+seat -0.002 [-0.020, +0.015]; S2 0.875, still below grok alone at 0.911).
+Its three voters shared one model, so their errors were never independent
+in the Condorcet sense; the same-model x3 passthrough panels realise a
+majority gain of +0.008 at mean pairwise error correlation 0.652 and the
+cross-vendor x3 panels +0.042 at 0.336 (`aggregation_passthrough.json`,
+an unregistered zero-spend artefact quoted here only for the prediction's
+magnitude). This cell is the registered test: the (identical, off) cell
+with each seat served by a different vendor.
+
+**Design.** `scripts/run_crowdgold_multivendor.py` (selftest 76 checks,
+ALL OK) holds everything in the (identical, off) cell fixed -- the neutral
+brief x3, the seat labels Reader Alpha/Beta/Gamma, the no-edge r1/r2
+wording, the stake-free R0 preamble and moderator prompts of 16.8, caps,
+arms, panel rule, protocol, external moderator (grok, as in every 16.10
+cell) -- and changes one thing: the three seats are `--seat-models
+claude-haiku-4-5,gpt-5.4-nano,grok-4-1-fast-reasoning` (positions 1, 2, 3;
+no vendor name reaches any prompt). A seat's r0-r4 prompt is byte-
+identical to the (identical, off) prompt for the same seat position; the
+two moderator prompts differ from that cell's by the three role-id tokens
+only (asserted by selftest). Per-model R3/R4 caps reproduce what the base
+runner did for Anthropic seats after the Addendum 6 retraction: haiku gets
+3072 on r3_label and r4_vote (the registered 512 truncated 552 of 600
+haiku R4 votes), grok and nano keep 1024/512 (`--seat-r3r4-caps
+model=cap` sets a new deployment's without a code change). The test-time-
+compute and stake knobs are refused. Panel: the content-filter screen is
+the UNION over the seat models and the moderator (measured on the cache:
+grok refuses 39 items, nano 40, haiku 0; union 52), leaving **197 items
+(83 YTA, 114 NTA), 394 debates, 6,698 calls** -- a strict subset of the
+16.10 cells' 210. Screening on grok alone would keep 210 but give the nano
+seat 13 refusal-prone items (6.2% per arm), over the 5% NOVERDICT guard by
+construction. Every comparison is paired on the 197, and the references
+are restated on them: identical/off S2 0.870 and grok solo 0.906 on the
+197 (0.875 / 0.911 registered on 210).
+
+**Which calls replay and which are new.** NONE replay; all 17 calls per
+debate (6,698) are new and the dry-run counts all of them (replayed_calls
+= 0). Reason: `call_cache_path` keys on (model, scaffold, cap, arm, item,
+sample, round, role id). Reusing the (identical, off) cell's
+`reader_gamma_noedge` for the grok seat would legitimately replay its r0
+(byte-identical prompt), but that seat's r1 parent_sha covers all three r0
+texts (now haiku's and nano's), so r1..r4 would be regenerated AND WRITTEN
+OVER the 16.10 cell's records at the same paths. Every seat therefore has
+its own id (`reader_1_noedge`, `reader_2_noedge`, `reader_3_noedge`; the
+seat's model is in every cache filename, in every vote row as seat_model
+and in the rows as seat_models) and the moderator its own prefix
+(`modmultivendor-<model>`, disjoint from mod-, modnoedge, modidentical,
+modidentnoedge, modunembodied and 16.17's modvendor-). Tag
+`cg_deliberation_multivendor` (rows / votes / summary plus a
+`<tag>_panel.json` provenance sidecar: seat-model map, caps, screen, argv,
+exit code, completeness). All namespaces verified EMPTY by
+`--verify-cache-clean` and the selftest; `cache_is_clean()` resolves
+`rcd.OUT_DIR` at call time and is enforced on `--run`, `--resume` the only
+override (selftest: a second `--run` is refused with exit 3; `--run
+--resume` replays with zero new generations). A second panel (e.g. haiku,
+nano, fourth vendor) takes `--namespace <x>` for its own ids
+`reader_N_noedge_<x>` / `modmultivendor<x>` and must carry its own `--tag`.
+
+**Dry-run (regex tokenizer, 20-35% prompt undercount; completions MEASURED
+per model from the cache).** reader_1 haiku 1,970 calls $13.66; reader_2
+nano 1,970 calls $3.02; reader_3 grok 1,970 calls $0.91; moderator grok
+788 calls $0.44; total $18.03. Budget $22-25; ceiling **$25**. PRICES list
+rates, unverified against vendor pages.
+
+**Launch.**
+
+    cd /Users/pat/code/ANI_Examination
+    .venv/bin/python -m scripts.run_crowdgold_multivendor --selftest
+    .venv/bin/python -m scripts.run_crowdgold_multivendor --verify-cache-clean
+    .venv/bin/python -m scripts.run_crowdgold_multivendor --dry-run
+    .venv/bin/python -m scripts.run_crowdgold_multivendor --run --workers 4     # SPENDS, dry-run $18.03, ceiling $25
+    .venv/bin/python -m scripts.analyze_multivendor                              # readout, zero spend -> multivendor_analysis.json
+    # fourth vendor as a seat: PRICES entry, then e.g.
+    #   ... --run --seat-models claude-haiku-4-5,gpt-5.4-nano,<name> --namespace b --tag cg_deliberation_multivendor_b
+    #   ... and .venv/bin/python -m scripts.analyze_multivendor --tag cg_deliberation_multivendor_b
+
+**The theory, and the prediction stated before the data.**
+[ladha1992condorcet] (with [boland1989majority]): the Condorcet jury
+theorem survives correlated votes; a majority beats its best member when
+the average pairwise error correlation is low enough, and the gain
+vanishes as correlation rises. [dietrich2013independent] and
+[austensmith1996information]: the aggregation needs conditionally
+independent, non-strategic voters, which uninterested readers of
+different vendors are and three draws of one model are not
+([kim2025correlated]: LLM errors are correlated even across providers,
+so independence is partial). The module's bound gain <= p(1-p)(1-rho)
+gives, at seat accuracy 0.86, a ceiling of about +0.04 at the same-model
+rho 0.65 (realised +0.008) and about +0.08 at the cross-vendor rho 0.34
+(realised +0.04 on the passthrough panels).
+
+Registered predictions. (P1, Ladha) majority minus best seat at r0 is
+POSITIVE with an item-clustered interval excluding 0 (the best seat is
+picked on the same data, so a positive interval is conservative), with
+mean pairwise error phi below 0.45 (the midpoint between the measured
+same-model 0.59-0.70 and cross-vendor 0.32-0.35 correlations, fixed here
+as the cutoff the readings below key on) and the observed majority between
+the mean seat and the independence prediction p1p2 + p1p3 + p2p3 - 2p1p2p3.
+(P2) the cross-vendor majority exceeds the single-vendor (identical, off)
+majority on the matched 197 (0.880 registered on 210) and the paired S2
+difference against identical/off (0.870 on the 197) is positive.
+(P3, left open and named as the falsifier of "a decider layer beats the
+best solo") whether the majority reaches grok solo (0.906 on the 197): the
+passthrough cross-vendor majorities (0.882 to 0.914) make either outcome
+live; the claim "a cross-vendor decider layer is a better answerer than
+the best single model" fails if majority minus grok solo includes 0 or is
+below. (P4, the composed bipartite graph) the embodied sensor of
+`cg_deliberation` (the stake-blind counter, 1,677 codable debates)
+routed to this cell's cross-vendor r0 majority as actuator composes
+between the haiku-judge counter router (0.880 [0.844, 0.913]) and the
+sonnet-judge counter router (0.913), because the actuator's accuracy sits
+between haiku solo (0.850) and sonnet solo (0.976); the paired difference
+cross-vendor minus haiku judge is positive.
+
+**Pre-declared readouts** (`scripts/analyze_multivendor.py`, selftest 34
+checks; item-clustered percentile bootstrap, 4,000 draws, seed 31;
+identical/off and embodied/on baselines in brackets, restated live on the
+matched 197 by the analyzer).
+
+| readout | baseline |
+|---|---|
+| per-seat r0 accuracy, each seat named by its model | [identical/off grok seats: best 0.883, majority 0.880] |
+| majority accuracy; majority minus best seat, paired | [-0.002 [-0.020, +0.015]] |
+| majority minus each seat; independence prediction vs observed; pairwise error phi, mean phi | [same-model rho 0.615-0.678 on the identical cells; cross-vendor passthrough 0.32-0.35, unregistered] |
+| r2 (final position, still unread by the others) as the sensitivity of the above | -- |
+| S2 accuracy vs identical/off, paired on the 197 | [0.870 on the 197; 0.875 on 210] |
+| S2 and majority vs grok solo (standard majority-of-3), paired | [0.906 on the 197; 0.911 on 420 cells] |
+| structure: per-seat objection rates, localisation excess, fire rate P(>=2), lift at >= 60 fired, transfer to grok solo; G3 n/a | [identical/off: lock 0.018, localisation +0.001, fire 0.007, 3 fired; embodied/on for reference: 0.196, +0.291] |
+| composed bipartite graph, zero spend: embodied counter / verdict type / union routers, actuator = this cell's r0 majority, r2 majority and S2; vs the haiku-judge and sonnet-judge routers recomputed through the same code (agreement to 1e-9 checked) | [collective alone 0.843; counter -> haiku judge 0.880, counter minus collective +0.038 [+0.016, +0.060]; counter -> sonnet judge 0.913, +0.070 [+0.048, +0.094]] |
+
+Structure readouts are expected uninformative here (no seat carries a
+stake; the identical cells fired on 2 and 3 debates) and are reported so
+the cell sits in the 16.10 table. The rows CSV's `model` column is the
+panel label `multivendor`; rcd.main's own SDT printout finds no single-
+agent comparator for it and the registered readouts are the analyzer's.
+
+**Pre-declared readings.**
+- P1 holds and P2 holds: the decider layer aggregates once the voters are
+  different models; the "one effective voter" result of 16.15.4 is scoped
+  to same-model panels and locked advocates, and the paper's
+  recommendation that the verdict node be m cross-vendor seats is
+  supported. Whether it beats the solo (P3) decides the wording: "a better
+  decider than one reader of the same panel" (P3 fails) or "a better
+  decider than the best solo model" (P3 holds).
+- P1 fails (interval includes 0) with mean phi at or above 0.45: the
+  vendors' errors are too correlated on this task for Ladha's condition,
+  and same-model vs cross-vendor is not the axis that matters; the
+  passthrough artefact's +0.042 was sample noise on 220 items. Reported as
+  the Condorcet null on this instrument.
+- P1 fails with mean phi below 0.45: correlation is low enough and the
+  majority still does not beat its best member; the weakest seat drags
+  the majority (majority minus each seat says which), and the reading is
+  that a weighted or dictatorial rule over cross-vendor seats, not a
+  simple majority, is the decider to test next (not registered here).
+- P4 fails (composed accuracy at or below the haiku-judge router, or
+  cross-vendor minus haiku judge includes 0): a cross-vendor majority is
+  no better an actuator than one cheap judge; the cost case for a decider
+  panel on the flagged debates is not made.
+- A seat's R0 codable share below 0.95 or its R4 vote_parsed below 0.95:
+  GUARD FAILED; that seat's abstention turns the majority into a different
+  object and nothing is read.
+
+**Gates.** `<tag>_panel.json` exit code 0 with completeness pass;
+`<tag>_summary.json` round and outcome guards pass (truncation / empty
+output / parse over all 17 calls; a haiku seat truncating at the 3072
+floor fails it); codable share >= 0.95; mean n_r3_unparsed <= 0.05; every
+seat's R0 codable share >= 0.95, R4 vote_parsed >= 0.95, truncated <= 0.05;
+the literal `GUARD FAILED` printed and NO analysis JSON written on any
+failure (analyzer exit 3, its documented code; the other analyzers use 4);
+minimum-fired 60; MDEs as 16.10 scaled to 197 items (fire +/-0.046, lift
++/-0.146; paired S2 ~+/-0.02); five-token `code_response` collapse.
+Connection failures: partial panel, matched items only, never retry.
+
+**Stop rule.** $25; report the partial panel rather than exceed it. The
+dry-run wrote `cg_deliberation_multivendor_dryrun.json` (expected, excluded
+from the clean check). Nothing above this line is edited.
+
+---
+
+# Addendum 16.19: coalition advocates -- a like-biased ally on the writer's side (registered 2026-09-13, ceiling $10, dry-run $6.48, BEFORE any call)
+
+Every embodied cell seats one advocate per side. The record's own reading
+of 16.10, "the dissent structure comes from directional role assignment",
+does not yet contain the word "opposed": nothing has tested whether a
+second seat on the SAME side adds dissent information or merely repeats
+its principal. This cell adds one.
+
+**Design.** `scripts/run_crowdgold_coalition.py` (selftest 92 checks,
+ALL OK; audited line by line against the base runner) seats FOUR
+participants, edges ON, everyone reads everyone, on the registered AITA
+panel (grok-4-1-fast-reasoning, `--n-yta 99 --n-nta 150`, seed 44, the
+content-filter screen to 210 items, third_person + as_asker, `--samples
+1`, narrative_cot, caps 2560/1024/1024/512): `writer_advocate_co` (the
+registered writer brief VERBATIM, stake not_at_fault), `writer_ally_co`
+(NEW: speaks for a close friend of the writer whose interest is the same,
+"a finding that the writer is in the wrong is a finding against the party
+you speak for", puts the case as strongly as the account allows, may not
+invent facts, mirrors the writer brief sentence for sentence, stake
+not_at_fault), `counterparty_co` (registered brief VERBATIM, at_fault),
+`neutral_adjudicator_co` (registered brief VERBATIM, none). Moderator
+prefix `modcoalition`, tag `cg_deliberation_coalition`, 22 calls per
+debate (4+4+4+1+4+1+4), 420 debates, 9,240 calls. The seven prompt
+builders and both moderator system prompts are re-issued with ONLY the
+participant-count words changed ("one of three" -> "one of four", "The
+other two" -> "The other three", ...; the selftest proves each equals the
+base prompt with those substitutions and nothing else), and the R0
+preamble reads "four participants with different stakes" (one word). The
+outcome row gains vote_writer_ally and n_against_interest_r3.
+
+**Which calls replay and which are new.** NOTHING replays: all 22 calls
+per debate are new. The three verbatim briefs sit under `_co` role ids
+(so no path can coincide with an embodied, unembodied, topology or game
+record), and no replay could be legitimate anyway: every four-seat prompt
+says "one of four participants" and quotes three neighbours, so not even
+the writer's advocate's r0 is byte-identical to the embodied
+writer_advocate r0. Namespaces `{writer_advocate_co, writer_ally_co,
+counterparty_co, neutral_adjudicator_co, modcoalition}` all verified
+EMPTY on the real output directory (counts 0) by the selftest's namespace-
+count and no-foreign-file checks and by `--verify-cache-clean`;
+`cache_is_clean()` enforced per listed model on `--run` (exit 3 when
+dirty), `--resume` the only override and valid only with the briefs known
+unchanged. Banned flags: `--no-unresolved`, `--transcript-cap`, the stake
+knobs (prompt text changes invisible to the cache key). `--models` /
+`--moderator-model` are comma-separated with a PRICES lookup; an unpriced
+deployment gets a dry-run WARNING and is refused on `--run`.
+
+**Dry-run.** 420 debates x 22 = 9,240 calls, 21,475,860 prompt tokens
+(regex, a 20-35% undercount) / 4,367,160 completion tokens (measured
+per-round means), **$6.48**; ceiling **$10**.
+
+**Disclosed.** (1) The four-seat r1/r2 prompts quote three neighbours, so
+every seat reads about 30% more prior-round text than in the embodied
+cell; any S2 shift is confounded with context length, not only with the
+ally's presence. The analyzer's three-seat reconstruction (the ally's
+labels ignored) against the embodied cell is the check on the other three
+seats. (2) The headline Krishna-Morgan statistic, the objection phi
+between writer_advocate_co and writer_ally_co at R3, is a POST-
+COMMUNICATION statistic: with edges on, the advocate and the ally have
+each read the other's r0 and r1 before either labels the synthesis, so a
+phi near +1 mixes shared stake with two rounds of mutual persuasion, and
+the opposed-pair contrast under the same regime controls that only
+partly. The PRE-communication reading is the like pair's r0 verdict
+concordance (r0 is written before any seat reads any other). Both are
+reported side by side; if they diverge, the clean test is an edges-off
+coalition cell under `_co_noedge` ids, a separate registration not built
+here. (3) The against-interest count ranges 0-2, not 0-3: the writer side
+can be against interest only on a not-at-fault synthesis and the
+counterparty only on an at-fault one, so they never co-occur. (4)
+`stake_undermined` in the votes CSV is scored against the GROUP
+(integration) verdict as in the base runner; the against-interest sensor
+scores each R3 objection against the SYNTHESIS verdict, which is what R3
+objects to; G3 keeps the 16.10 convention. (5) `analyze_unembodied_
+ablation.localisation` hard-codes three seats; the coalition localisation
+excess uses the analyzer's own n-seat Poisson-binomial null, comparable
+in construction to the 16.10 figure but not produced by byte-identical
+code.
+
+**Launch.**
+
+    cd /Users/pat/code/ANI_Examination
+    .venv/bin/python -m scripts.run_crowdgold_coalition --selftest
+    .venv/bin/python -m scripts.run_crowdgold_coalition --verify-cache-clean
+    .venv/bin/python -m scripts.run_crowdgold_coalition --dry-run
+    .venv/bin/python -m scripts.run_crowdgold_coalition --run          # SPENDS, dry-run $6.48, ceiling $10
+    .venv/bin/python -m scripts.analyze_coalition                      # readout, zero spend
+    # fourth vendor: PRICES entry, then --models grok-4-1-fast-reasoning,<name> and
+    #   .venv/bin/python -m scripts.analyze_coalition --model <name>
+
+**The theory, and the prediction stated before the data.**
+[krishna2001model]: consulting two experts with LIKE biases is no better
+than consulting one, the second adds no information; experts with OPPOSED
+biases are informative. [chwe1994farsighted] is the pointer to farsighted
+coalition formation, and the design document's own hypothesis (not the
+paper's) is that co-losers can object together at no cost to either. The
+n = 2 record is the null for that hypothesis: within ESH the two co-losers'
+objections are anti-correlated at phi -0.191 and within NAH at -0.275
+[-0.564, +0.009], so at n = 2 co-losers do not object together.
+
+Registered predictions (Krishna-Morgan). (K1) the ally's r0 verdict equals
+its principal's on more than 0.95 of debates (like-pair r0 concordance >
+0.95) and both carry role-lock at the embodied value against the
+counterparty (0.971). (K2) the ally objects when its principal objects:
+P(ally objects at R3 | writer's advocate objects) > 0.9, the like-pair
+objection phi above +0.8, and the ally's AGAINST-interest objection rate
+(objecting to a not-at-fault synthesis) below 0.10, at the writer's own
+rate (0.049 on NTA at n = 2). (K3) pooling the ally into the flag adds no
+information: the pooled >= 3-of-4 counter's lift equals the three-seat
+reconstruction's within MDE, the pooled >= 2-of-4 counter FLOODS on at-
+fault syntheses (both writer-side seats object with interest, so it fires
+by construction on ~0.99 of them) with a lift below the three-seat lift,
+and the information test (the ally's objection separating error
+CONDITIONAL on the writer's) has an interval including 0. (K4) the
+against-interest count's lift equals the same sensor's lift on the
+embodied cell's own votes (the analyzer computes that baseline from the
+cached votes; the nearest existing figure is the 49 both-advocate
+firings within 1,287 one-loser debates, 0.038, whose lift has not been
+read separately). (K5) the collective's verdict is unmoved: paired S2
+delta against embodied sample 0 includes 0, and P(at_fault | S2), read
+as a count from the rows CSV's at_fault column (not in the analyzer's
+printout), is unchanged within MDE, so a second seat on one side is not
+a persuasion channel.
+
+**Pre-declared readouts** (`scripts/analyze_coalition.py`, selftest 51
+checks; 16.10 conventions throughout; embodied/on baselines in brackets on
+the same 210 items).
+
+| readout | embodied/on baseline |
+|---|---|
+| role-lock for the writer's advocate AND for the ally; like-pair r0 gap and concordance | [0.971; concordance n/a at n = 2] |
+| like-pair objection phi at R3 (2x2 table; P(ally objects given writer objects / does not)); the two opposed pairs' phi for contrast | [writer x counterparty phi -0.719 pooled, -0.901 within one-loser] |
+| three-seat flag reconstructed (ally ignored): fire rate, lift | [0.196; +0.320 [+0.241, +0.406]] |
+| pooled >= 2 of 4: fire rate, lift; pooled >= 3 of 4: fire rate, lift; paired deltas vs the three-seat flag | -- |
+| information test: ally's objection vs error conditional on the writer's objection | -- |
+| against-interest count (0-2): fire rate P(>= 1), lift, per-seat against-interest rates, transfer to grok solo; the SAME sensor on the embodied cell's votes | [against-interest rates at n = 2: writer 0.049 on NTA, counterparty 0.028 [0.010, 0.051] on YTA] |
+| per-seat objection marginals (four seats); localisation excess vs the 4-seat Poisson-binomial null; G3 over the three stake seats | [0.430 / 0.690 / 0.073; +0.291; +0.631] |
+| S2 accuracy paired vs embodied sample 0 and vs the embodied per-debate mean | [0.848 sample 0 (selftest reproduces 0.843 on the mean, 0.8427 on 1,678 codable)] |
+| P(at_fault) of the S2 verdict vs embodied sample 0, a count from the rows CSV's at_fault column (not in the analyzer) | [read at readout time from cg_deliberation_rows.csv, sample 0] |
+| transfer lift on grok solo | [+0.212 [+0.081, +0.358]] |
+| runner's n_against_interest_r3 agreeing with the recomputation on every codable debate (guard) | -- |
+
+**Pre-declared readings.**
+- K1-K5 hold: a like-biased ally adds nothing; the sensor scales with
+  SIDES, not seats; the 16.10 reading gains the word "opposed" ("the
+  dissent structure comes from OPPOSED directional role assignment"), and
+  the k-loser rule "one advocate per party whose fault is judged, never a
+  seat along an axis already spanned" is supported on the instrument.
+- K2 fails with the like-pair phi well below +0.8 AND the information
+  test's interval above 0: the ally's objections carry independent
+  information; the sensor scales with seats, Krishna-Morgan is refuted on
+  this instrument, and the paper must say so.
+- K2 holds at R3 but K1 fails (r0 concordance well below 0.95 while the
+  R3 phi is near +1): the like pair converges THROUGH the exchange, the
+  Krishna-Morgan statistic is confounded by communication, and the edges-
+  off coalition cell is the test that separates them (separate
+  registration).
+- K5 fails with P(at_fault | S2) falling beyond MDE and S2 falling: the
+  second seat is a persuasion channel that tilts the verdict toward the
+  side with more seats -- sycophancy by seat count -- and the collective's
+  verdict is compromised by unequal representation even though the
+  advocates are locked. Reported as the coalition-pull branch; the sensor
+  readouts are still read.
+- The three-seat reconstruction differs from the embodied cell beyond
+  MDE on fire rate or lift: the context-length confound is real, and every
+  comparison to 16.10 is downgraded to within-cell contrasts (pooled vs
+  three-seat) only.
+- Against-interest fire below 60: its lift is not read; fire rates and
+  per-seat rates are reported, and the counter is carried to 16.21.
+
+**Gates.** Base round-level and outcome guards over all 22 calls, the
+literal `GUARD FAILED`, completeness sidecar (every launched debate a
+row), quarantine of the CSVs as `*_GUARD_FAILED_*` on exit 4, S2-codable
+share >= 0.95, mean n_r3_unparsed <= 0.05, R4 vote_parsed >= 0.95, all four
+seats present on >= 0.99 of debates, n_against_interest_r3 agreement,
+minimum-fired 60 for every lift, MDEs as 16.10 (fire +/-0.045, lift
++/-0.141, paired S2 ~+/-0.02), five-token collapse. Connection failures:
+partial panel, matched items, never retry.
+
+**Stop rule.** $10; report the partial panel rather than exceed it.
+`cg_deliberation_coalition_dryrun.json` is on disk (cost artefact, not a
+cache record, excluded from the clean check). Nothing above this line is
+edited.
+
+---
+
+# Addendum 16.20: gpt-4o behind its content-filter screen -- a fifth vendor enters the grip table (registered 2026-09-13, two separately authorised steps: screen ceiling $15 (dry-run $9.99), deliberation ceiling $50 (projected $36.50), BEFORE any call)
+
+16.11b ran gpt-4o on the 40-item screen and its round-level guard FAILED
+(worst NOVERDICT 15.0% at integration, 7.5% at every r0 seat, every
+failing call `finish_reason: content_filter` with empty output; G3 +0.147
+recorded UNREAD). The deliberation runner's own defence,
+`filter_prone_items()`, drops an item ahead of the 17-call chain when any
+cached single-agent NoT call on it was refused, and found nothing for
+gpt-4o because no single-agent gpt-4o call had ever been made on the
+instrument. Measured from the 16.11b cache: 11 of the 40 items carry a
+refusal (24 of 240 r0 calls, cascading to r1-r4 and the moderator once an
+empty text is in a prompt), all 11 are also in nano's screen and 9 in
+grok's -- the platform's prompt-side filter on the post text, shared by
+every deployment behind the same Azure resource, not model behaviour.
+
+**Design.** `scripts/run_crowdgold_filter_screen.py` (selftest 83 checks,
+ALL OK) runs the protocol the 16.11b RESULTS block named, in two steps
+each with its own authorisation.
+
+STEP 1, `--step screen`: the single-agent calls the screen reads,
+delegated to `run_crowdgold_aita.main` with `--models gpt-4o --scaffolds
+narrative_cot --max-tokens-scaffolded 2560 --n 99 --n-nta 150 --samples 3
+--arms third_person,as_asker --seed 44 --min-votes 50 --min-consensus 0.90
+--no-memorization --tag cg_screen_gpt4o`, always with the full (99, 150)
+draw because the single-agent runner samples items with the seed and only
+the full draw is the panel the deliberation runner prefixes. 249 items x 2
+arms x k = 3 samples = **1,494 calls, dry-run $9.99** (prompt tokens
+regex-counted; completion 484 measured on gpt-4o's cached r0 records;
+gpt-4o priced 2.50/10.00 since 16.11); ceiling **$15**. k = 3 rather than
+the minimal 498 is a DESIGN DECISION FOR THE PI, measured on the nano and
+grok caches behind the same Azure resource: the filter is stochastic per
+call (36% of refused (arm, item) cells are refused in some samples only;
+~0.6 per-call refusal on a prone item), so a sample-00 screen catches 0.68
+of prone items and projects a worst-round NOVERDICT of ~5.4% on gpt-4o --
+the 5% guard fails a second time and the step-2 spend is lost again --
+while k = 3 catches 0.94 and projects ~1.2%. `--screen-samples 1` remains
+available for the registered minimum (the 16.11b block's "~$2" was k = 1).
+The single-agent runner's own NOVERDICT guard MAY report failure on this
+step; that is the readout, not a defect. This module's own step-1 guard is
+the truncation share (<= 5%). The step-1 rows CSV doubles as gpt-4o's own
+single-agent narrative_cot comparator for the transfer readout.
+
+STEP 2, `--step deliberate`: the registered deliberation delegated to
+`run_crowdgold_deliberation.main` with the panel defaults and the
+corrected caps (`--n-yta 99 --n-nta 150 --samples 1 --seed 44
+--agent-scaffold narrative_cot --max-tokens-agent 2560
+--max-tokens-moderator 1024 --max-tokens-label 3072 --max-tokens-vote 3072
+--transcript-cap 0 --tag cg_deliberation_gpt4o --compare-rows <step-1
+rows>`; delegated argv unchanged from 16.11b apart from the panel). The
+runner applies its screen itself at launch; this module refuses to launch
+step 2 until all 1,494 step-1 records exist. `--screen registered`
+(default) is the runner's screen verbatim; `--screen chain-aware`
+additionally drops any item whose cached deliberation call was refused
+(zero cost, a strict superset; the only defence against refusals that
+begin at r1 because a seat's own r0 tripped the filter -- 2 of 31 r0-clean
+16.11b items) and is a DEVIATION from the named protocol, OFF by default
+and registered here as the fallback if the guard trips. Self-moderation
+(`mod-gpt-4o`); `--moderator-model` naming another model is REFUSED (it
+would overwrite the 16.11b r3/r4 records and land on a vendor's self-
+moderated paths; the cross-vendor moderator is 16.17's wrapper).
+
+**Which calls replay and which are new.** Step 1: all 1,494 NEW (namespace
+`cg_gen_gpt-4o_narrative_cot_t2560_*` EMPTY today, 0 files; the run path
+refuses a non-empty namespace without `--resume`). Step 2 introduces NO
+new role set, brief or moderator prefix -- the registered seat ids and
+`mod-gpt-4o` verbatim -- so its namespace `cgd_gpt-4o_narrative_cot_*` IS
+the 16.11b namespace: the selftest verifies every one of the 1,360 records
+on disk is an expected path and none foreign (another cap, sample idx > 0,
+a third arm, a foreign role id or prefix would be FOREIGN and exit 3
+without `--resume`). For every surviving item among the 40 of 16.11b (the
+deterministic (16, 24) prefix of the panel), all 17 calls x 2 arms REPLAY
+byte-identically (same caps 2560/1024/3072/3072, sample 0, prompts rebuilt
+from the same post text and the same cached upstream texts, parent_sha
+verified at replay): 29 chain-clean items = 986 replays at $0. The 11
+chain-refused items hold content_filter records that WOULD replay the
+refusal if they survived; the k = 3 screen is projected to catch ~94% of
+them (chain-aware would drop all 11). Every item outside the 40 is NEW,
+17 x 2 calls each; the dry-run counts only the new ones, priced from per-
+round prompt and completion tokens MEASURED on gpt-4o's cached chain
+records (r0/r1/r2 completions 484/584/150 against the runner's own 1,311
+assumption, whose upper-bound dry-run is $136.53 on all 8,466 calls).
+Before step 1 lands the step-2 dry-run necessarily counts the UNSCREENED
+panel: 249 survivors, 498 cells, 8,466 calls, 1,360 replay, **7,106 new,
+$48.95**. Projected once step 1 lands at k = 3 (catch 0.94): ~185
+survivors, 986 replays, ~312 new cells x 17 = ~5,299 new calls, **~$36.50**;
+~4.3 uncaught prone items -> worst-round NOVERDICT ~0.012 against the 5%
+guard (projected PASS). Ceiling **$50**. The step-2 dry-run is re-read
+after step 1 for the MEASURED catch rate on the 11 chain-refused items and
+the projection from it; a projected guard fail there means raise
+`--screen-samples` and re-run step 1 under `--resume` (only the missing
+sample indices are new calls) before any step-2 call.
+
+**Launch.**
+
+    cd /Users/pat/code/ANI_Examination
+    .venv/bin/python -m scripts.run_crowdgold_filter_screen --selftest
+    .venv/bin/python -m scripts.run_crowdgold_filter_screen --step screen --models gpt-4o --dry-run
+    .venv/bin/python -m scripts.run_crowdgold_filter_screen --step deliberate --models gpt-4o --dry-run
+    # (1) SPENDS ~$10-13, 1,494 calls, k=3, ceiling $15 -- its own authorisation
+    .venv/bin/python -m scripts.run_crowdgold_filter_screen --step screen --models gpt-4o --run
+    # (2) re-read: measured catch rate on the 11 chain-refused items, projection, $0
+    .venv/bin/python -m scripts.run_crowdgold_filter_screen --step deliberate --models gpt-4o --dry-run
+    # (3) SPENDS ~$37 projected, ceiling $50 -- its own authorisation
+    .venv/bin/python -m scripts.run_crowdgold_filter_screen --step deliberate --models gpt-4o --run
+    # (4) offline readout
+    .venv/bin/python -m scripts.run_crowdgold_filter_screen --step readout --models gpt-4o
+    # a fourth vendor behind a filter enters with --models <deployment> plus a PRICES entry
+
+**The theory, and the prediction stated before the data.** The
+credible-signal principle (design document section 3; [milgrom1986relying],
+[lipman1995robust], [glazer2001debates]): a statement against the
+speaker's assigned interest is informative and one with it is not, so on
+one-loser verdicts the against-interest objection is rare and carries the
+case. The cross-model record (16.4): the counter's informativeness tracks
+GRIP (grok G3 +0.631 -> lift +0.320; haiku +0.062 -> +0.133; nano +0.034
+-> +0.039) and not accuracy; nano floods (lock 0.620, fire 0.763, advocate
+phi +0.068 [-0.007, +0.140]) because its advocates do not respect the
+with-interest rule, and haiku's lock is soft (0.442). Registered
+prediction for gpt-4o: role-lock above 0.9; GRIP yes by the Addendum 6
+criteria (G1 fire <= 0.50, G2 reject share >= 0.05, G3 >= +0.20 with the
+interval excluding 0); the advocate edge within one-loser verdicts
+negative with an interval excluding 0; the within-one-loser lift of the
+counter excludes 0 at >= 60 fired; the transfer onto grok solo and onto
+gpt-4o's own solo (majority of the three screen samples) both positive.
+The named failure mode is the nano pattern (lock near 0.6, flooding, phi
+near 0, G3 below +0.20).
+
+**Pre-declared readouts** (step 3: `analyze_stake_grip` G1-G3 plus the
+16.10-table columns computed by `analyze_topology_2x2.analyse_cell`'s
+definitions parametrised by model; reported on gpt-4o's own surviving
+items AND on the intersection with the 16.10 matched 210; embodied/on
+grok baselines in brackets; the within-one-loser stratum and the advocate
+phi via a one-line Community entry (tag `cg_deliberation_gpt4o`,
+`AITA_SEATS`, model gpt-4o) in `analyze_emergent_graphs.COMMUNITIES`,
+config, zero spend).
+
+| readout | grok embodied/on baseline (cross-model where it bears) |
+|---|---|
+| guards first: worst-round NOVERDICT, truncation, mean n_r3_unparsed, P(non-codable) | [1.4-3.3% NOVERDICT on the 16.10 cells; 16.11b 15.0% FAILED] |
+| G1 fire rate, G2 reject share, G3 stake concentration [CI], GRIP verdict | [G3 +0.631; haiku +0.062; nano +0.034; sonnet 0] |
+| role-lock; per-seat P(at_fault) and r0 accuracy | [0.971; 0.003 / 0.974 / 0.430; 0.591 / 0.437 / 0.860; nano 0.620, haiku 0.442] |
+| per-seat objection marginals; localisation excess; fire rate P(>=2) | [0.430 / 0.690 / 0.073; +0.291; 0.196; nano fire 0.763] |
+| error lift of >=2 at >= 60 fired, codable | [+0.320 [+0.241, +0.406]; haiku +0.133; nano +0.039] |
+| within-one-loser counter lift and advocate phi; both-party fire rate | [+0.348 [+0.201, +0.493], 9.83x; phi -0.901 [-0.929, -0.868]; ESH 0.614, NAH 0.576] |
+| S2 accuracy, codable, with n_codable | [0.843; haiku 0.885, nano 0.829] |
+| transfer lift on grok solo; transfer onto gpt-4o's own solo (majority of the k = 3 screen samples, tie -> none) | [+0.212 [+0.081, +0.358]; own-solo transfer has no baseline, it is new for a new model] |
+| measured spend from the cache | -- |
+
+**Pre-declared readings.**
+- GRIP yes, lock > 0.9, within-one-loser lift and phi exclude 0: a fifth
+  vendor carries the structure; g5 gains its fifth panel, and the
+  cross-vendor claim no longer rests on grok plus nano's transfer alone.
+- GRIP no but G3 real (interval above 0, below +0.20) with lock > 0.9: a
+  further point on the transfer-function curve (Fig. 2) between haiku and
+  grok; reported as haiku was, with the lift read only if fired >= 60.
+- Nano pattern (lock near 0.6, fire above 0.5, phi near 0, G3 below +0.20):
+  gpt-4o's advocates do not respect the with-interest rule; the structure
+  is model-dependent, and the paper's claim is scoped to models whose
+  advocates lock.
+- No rejects (G2 fails as sonnet did): the grip screen is unevaluable on
+  this model and is reported as sonnet's was; lock and the objection
+  readouts are still read.
+- Step-2 guard trips again on NOVERDICT: numbers UNREAD, CSVs quarantined;
+  the registered fallback is `--screen chain-aware` and a re-run under
+  `--resume` (cached calls replay, the dropped items cost nothing). A third
+  failure closes the cell as "not runnable behind this platform filter"
+  with the arithmetic recorded, as Addendum 14 was closed.
+- Step 1's truncation guard trips (> 5% at the 2560 cap): the chain's agent
+  cap is wrong for this model; step 2 does not launch until the cap is
+  re-registered.
+
+**Gates.** Step 1: truncation share <= 5% (`GUARD FAILED`, exit 4). Step
+2: the base round-level and outcome guards (worst-round NOVERDICT <= 5%,
+truncation <= 5%, the literal `GUARD FAILED`), the completeness sidecar
+(every launched debate a row; the summary's n_items cross-checked against
+the survivor count), quarantine on exit 4; step 3 REFUSES a failed or
+missing guard record (grip row written only as `<tag>_grip_row.json`
+flagged UNREAD_GUARD_FAILED and G1-G3 to `<tag>_stake_grip_UNREAD.json`,
+never into the shared registry). S2 on the codable population with
+n_codable printed. Minimum-fired 60 per stratum; MDEs as 16.10 on the
+intersection items (approximately fire +/-0.05 and lift +/-0.15 at ~170
+matched items, restated by the readout on the actual count); five-token
+collapse. Azure settings read from generators.py unchanged (non-reasoning
+branch, temperature 0.7, seed = sample index, five attempts); a change to
+the deployment's content-filter policy between 16.11b and this run would
+change the platform under the model and must be recorded if made.
+
+**Stop rule.** $15 for step 1, $50 for step 2, each its own authorisation;
+report the partial panel rather than exceed either. Artefacts on disk:
+`cg_deliberation_gpt4o_dryrun.json` (the runner's own upper bound) and
+`cg_deliberation_gpt4o_step2_plan.json` (this module's plan); neither is
+a cache record. Nothing above this line is edited.
+
+---
+
+# Addendum 16.21: n perspectives -- the k-loser generalisation with a named third party's advocate (registered 2026-09-13, ceiling $8 cell / $0.30 screen, dry-run $4.47 / $0.07, BEFORE any call)
+
+The sensor is a deviation detector on an anti-correlated advocate edge
+that exists only when a verdict has exactly one loser (16.12, 16.15.1).
+With two advocates the number of losers k is 1 on every one-loser verdict,
+so the theory has only ever been read at k = 1 (sensor) against both-party
+verdicts (flooding) and Dilemmas / games (silence). A third advocate for a
+person the account itself names -- affected by how the conflict is judged
+but not the party in conflict -- makes k = 2 reachable on a one-loser
+verdict. The design document (section 4) lists what had to be fixed
+before this could be registered; each item is closed below.
+
+**The screen (zero spend, done; `scripts/screen_third_party.py`, selftest
+61 checks, ALL OK).** For every one of the 249 panel items the cached grok
+single-agent narrative_cot outputs (up to six per item: third_person x3
+and as_asker x3; the as_asker_stance arm EXCLUDED, since nothing generated
+under the stance manipulation may feed a prompt of this cell) are parsed
+for their "Section 2 - Stakeholders" list, which the narration scaffold
+already asks for. Writer = the "Me / Myself" entry; counterparty = the
+non-writer person whose role noun the account mentions most, corroborated
+by the cached counterparty seat's r0 opening; third party = a remaining
+entry naming a person by role or name that the account text itself
+mentions, listed by at least 2 of the cached outputs, ranked by (support,
+mentions, stake rank counterparty-attached > writer's partner > none,
+key); stake = a coarse alignment rule (possessive attachment to the
+counterparty -> YTA serves them; the writer's own partner -> NTA; else
+none), marked heuristic; the description is the modal cleaned head ("my
+X" -> "the writer's X"); the interest text quoted into the seat's prompt
+is the longest third_person-arm Section-2 body after the possessive
+rewrite, with first-person voice in 0 of 157 (an as_asker body is used
+only when no third_person output lists the person and the rewritten body
+carries no first-person pronoun). Result, `third_party_screen.json` (sha
+38dbdbc4ccd2d831, printed on every launch and written to the run's
+manifest): 157 of 249 screened in (interest source third_person 146,
+as_asker 11); after the runner's content-filter screen **143 items, 286
+debates**; third-party stake YTA 30 / NTA 19 / none 94; k = 2 reachable on
+49 items (98 debates). Every intermediate is kept in the JSON for audit.
+The LLM confirmation screen (one call per panel item, default gpt-5.4-nano,
+249 calls, 170,059 prompt tokens, **$0.071**, ceiling **$0.30**, own cache
+namespace `cg_tpscreen_<model>_<item>.json` verified EMPTY, prompts written
+to `third_party_screen_prompts.json`, refuses without `--run`) is
+RECOMMENDED before the cell: the heuristic assigns no stake on 94 of the
+143 items, and the runner reads `stake_source=llm` automatically when the
+LLM results are present, which raises k = 2 coverage. It must run BEFORE
+the cell, never after: the third-party seat's cache is keyed on the screen
+record by design (below), so a re-screen after the cell invalidates that
+seat. The panel and stake counts are therefore restated by the cell's
+`--dry-run` after the LLM screen, and the registered panel is whatever the
+manifest records at launch; the ceiling does not move.
+
+**Design.** `scripts/run_crowdgold_nperspective.py` (selftest 115 checks,
+ALL OK). Four seats, edges ON: `writer_advocate_np` (registered brief
+VERBATIM, not_at_fault), `counterparty_np` (VERBATIM, at_fault),
+`third_party_advocate_np` (NEW: speaks for the third party the screen
+record names; identity, interest and which finding serves them quoted in
+a block after the brief; may not invent facts; stake per item YTA / NTA /
+none from the screen), `neutral_adjudicator_np` (VERBATIM, none).
+Moderator prefix `modnp`, tag `cg_deliberation_nperspective`, 22 calls
+per debate. The registered panel and protocol (grok, `--n-yta 99 --n-nta
+150`, seed 44, third_person + as_asker, `--samples 1`, narrative_cot,
+2560/1024/1024/512), restricted to the screened items (install() wraps
+`subset_items`: registered subset, then intersect with the screen; the
+content-filter screen still applies). The four-seat wording (count words,
+the two moderator system prompts, the R0 preamble) is COPIED from
+`run_crowdgold_coalition.py` byte for byte and asserted equal by selftest
+when that module is importable, so the two four-seat cells differ ONLY in
+the fourth seat. Each row carries the third party's description / stake /
+source / screen sha, k_losers_synthesis, k_losers_final,
+n_favoured_synthesis, n_against_interest_r3, against_interest_roles and
+verdict_type_synthesis; the third-party seat's vote-row role_stake /
+stake_undermined are overwritten from the screen record (blank when the
+third party has no stake, so it never dilutes G3).
+
+**k on this instrument, stated before the data.** Under the registered
+published collapse (ESH -> at fault, NAH -> not at fault) with two opposed
+party advocates, exactly one of writer / counterparty is undermined by
+every codable verdict, so k = 1 + [third party undermined] and k is in
+{1, 2}: k = 0 (silence) and k = n = 3 (flooding) are UNREACHABLE BY
+CONSTRUCTION and the prediction table reports them as such, not
+estimated; the flooding stratum is read from the both-party verdict type
+(ESH/NAH) exactly as 16.12 / 16.15 read it. A k = 0 / k = 3 cell would need
+a different verdict-loser coding (e.g. ESH = both parties lose), which
+departs from `stake_undermined` and is not introduced. A consequence the
+selftest surfaced: at k = 2 the stake-blind counter n_objectors >= 2 fires
+BY CONSTRUCTION (both losers object with interest), so only the against-
+interest count is informative there.
+
+**Which calls replay and which are new.** NOTHING replays. All four seats
+carry `_np` ids and the moderator `modnp`, so no path can coincide with an
+embodied, unembodied, topology, coalition (`_co`, modcoalition) or game
+record, and no replay could be legitimate (four-seat prompts). All 22
+calls per debate are new: **286 x 22 = 6,292 calls**. Namespaces
+`cgd_<model>_narrative_cot_t2560_<arm>_<item>_<k>_{r0,r1,r2,r3_label,
+r4_vote}_{writer_advocate_np, counterparty_np, third_party_advocate_np,
+neutral_adjudicator_np}.json`, `cgd_<mod>_narrative_cot_t1024_..._
+{synthesis,integration}_modnp-<mod>.json`, the tag artefacts and
+`cg_tpscreen_*` all verified EMPTY (count 0; only the dryrun JSON under the
+tag). THE SCREEN LANDMINE, handled: the third-party block is prompt text
+`call_cache_path` cannot see, so a re-screened item under the same role id
+would otherwise replay the old seat's r0. install() wraps `rcd.do_call` so
+every third-party-seat record carries the screen record (description |
+interest | stake) in its parent_sha (selftest: a changed record misses the
+cache and regenerates while the other seats' r0 parent_sha stays over the
+post text only); downstream records go stale through the existing chain.
+`cache_is_clean()` enforced per model on `--run`; `--resume` the only
+override and valid only when the briefs AND the screen file are unchanged.
+Banned flags as 16.19 plus `--keep-filtered`; `--tag` must start with
+`cg_deliberation_nperspective`.
+
+**Dry-run.** 6,292 calls, 14,916,330 prompt tokens (regex, 20-35%
+undercount) / 2,973,828 completion tokens, **$4.47**; budget ~$6, ceiling
+**$8**. (The screen regeneration that removed first-person voice did not
+change the cost: the one dropped item was already content-filtered.)
+
+**Launch.**
+
+    cd /Users/pat/code/ANI_Examination
+    .venv/bin/python -m scripts.screen_third_party --selftest
+    .venv/bin/python -m scripts.screen_third_party --dry-run     # $0 heuristic screen (done) + LLM screen priced, NOT called
+    .venv/bin/python -m scripts.screen_third_party --run         # RECOMMENDED, SPENDS ~$0.07, ceiling $0.30; BEFORE the cell
+    .venv/bin/python -m scripts.run_crowdgold_nperspective --selftest
+    .venv/bin/python -m scripts.run_crowdgold_nperspective --verify-cache-clean
+    .venv/bin/python -m scripts.run_crowdgold_nperspective --dry-run   # re-read the panel / stake counts after the LLM screen
+    .venv/bin/python -m scripts.run_crowdgold_nperspective --run       # SPENDS ~$4.5-6, ceiling $8
+    .venv/bin/python -m scripts.analyze_nperspective                   # readout -> nperspective_analysis.json
+    # fourth vendor: PRICES entry, then --models grok-4-1-fast-reasoning,<name> and analyze_nperspective --model <name>
+
+**The theory, and the prediction stated before the data.** With n
+advocates and a verdict against k of them, the informative objections are
+the against-interest objections of the n - k favoured advocates; the
+stake-blind counter is the n = 2, k = 1 special case, and for general
+(n, k) a stake-blind threshold must exceed k (arithmetic; [feddersen1998
+convicting] only for the half it supports, that a unanimity trigger is the
+wrong rule under strategic voters). [battaglini2002multiple]: with a
+multidimensional state, full revelation is generically possible with more
+than one sender however large the conflict, provided the senders'
+indifference directions are not collinear; a third party's stake is a
+direction the two opposed party advocates do not span, so the third seat
+should add information where the ally of 16.19 (collinear) adds none.
+[gentzkow2017competition]: an added sender raises information only when
+it can refine what the others reveal. Coalitions ([chwe1994farsighted] as
+the pointer): with three interested seats the pairwise fact that one
+committal verdict undermines exactly one of two stakes no longer holds
+mechanically; whether co-losers object together is measured, with the
+n = 2 null (ESH -0.191, NAH -0.275 [-0.564, +0.009]).
+
+Registered predictions, the design document's table specialised to k in
+{1, 2}: (N1) role-lock 0.97 for the writer's and counterparty's seats;
+for the third-party seat |P(at_fault | stake YTA) - P(at_fault | stake
+NTA)| at r0 above 0.9 and P(r0 serves own stake) above 0.95 on items with
+a stake. (N2) with-interest objection rate above 0.95 for every advocate
+in L(v). (N3) against-interest objection rate below 0.10 for every
+favoured advocate at k = 1. (N4) at k = 2: P(both losers object) above 0.9,
+read as a rate; the favoured seat's against-interest rate below 0.10 if
+the stake is one-dimensional, above 0.10 if the stake-dimension reading
+of section 3 is right (registered as a reading, not a failure). (N5) the
+stake-blind counter's fire rate rises from k = 1 to k = 2 and floods at
+k = 2 (by construction); the against-interest counter stays rare at both.
+(N6) the against-interest counter's lift within k = 1 is positive with an
+interval excluding 0 at >= 60 fired; its magnitude is not predicted until
+16.19's analyzer supplies the n = 2 against-interest baseline from the
+cached embodied votes (the +0.348 is the stake-blind counter's and
+includes the neutral seat's 44 of 93 firings). (N7) the stake-blind
+counter's lift within k = 2 is not positive, as -0.097 on both-party.
+(N8) verdict layer: the majority equals the neutral seat; paired S2
+against the embodied cell on the same 143 items includes 0. (N9) phi
+among advocates within a single k = 1 verdict type weak negative between
+the loser and each favoured seat (of the order -0.2 to -0.3, as YTA -0.340
+[-0.663, +0.011] and NTA -0.162 [-0.317, -0.022] at n = 2), strongly
+negative pooled over which party loses.
+
+Which of these the BUILT analyzer reads, stated so nothing is claimed
+for code that does not exist: N1 (role-lock, the third-party seat's
+stake-conditional lock and P(r0 serves own stake)), N3 and N5-N8 (the
+against-interest and stake-blind counters' fire rates and lifts by k,
+pooled and by verdict type; S2 by k and paired; the prediction table)
+are PRIMARY and come from `scripts/analyze_nperspective.py`. N2, N4's
+P(both losers object) and N9 (per-advocate with-interest / against-
+interest rates conditional on loser status, and the advocate phis
+within and pooled over k = 1 verdict types) are SECONDARY: pre-declared
+here with their predictions, computable at zero spend from the votes CSV
+(role_id, objected_r3, synthesis_verdict, the row's third-party stake),
+and to be read by a follow-up script that is not yet built; the same
+holds for the `g7_k_loser.png` figure. Their readings below are
+conditional on that script existing before the cell is read.
+
+**Pre-declared readouts** (`scripts/analyze_nperspective.py`, selftest 22
+checks; k and the against-interest count RECOMPUTED from the votes and
+checked against the rows on >= 0.99 of codable debates; embodied/on
+baselines in brackets, paired on the intersection of the 143 with the
+210; the two rows marked SECONDARY are the follow-up's).
+
+| readout | embodied/on baseline |
+|---|---|
+| k per debate from the synthesis verdict; strata k = 1, k = 2, pooled, and by verdict type (one-loser / both-party); k = 0 and k = 3 marked unreachable | [n = 2: k = 1 on 1,287, both-party 390] |
+| against-interest count: fire rate P(>= 1) and lift by k, pooled, by verdict type and by third-party stake (YTA / NTA / none, with n at k = 2 per stake) | [n = 2 against-interest rates: writer 0.049 on NTA, counterparty 0.028 [0.010, 0.051] on YTA; W 0.314 on NAH] |
+| stake-blind counter n_objectors >= 2 by k, for comparability | [0.196 pooled; 0.072 within one-loser; ESH 0.614, NAH 0.576] |
+| role-lock (16.10 definition), the third-party seat's |P(at_fault given stake YTA) - P(at_fault given stake NTA)| and P(r0 serves own stake); per-seat P(at_fault) and r0 accuracy; per-seat plain objection marginals; four-seat localisation excess | [0.971; 0.003 / 0.974 / 0.430; 0.591 / 0.437 / 0.860; 0.430 / 0.690 / 0.073; +0.291] |
+| SECONDARY: with-interest and against-interest objection rates per advocate conditional on loser status; P(both losers object) at k = 2 | [W 0.992 on YTA, C 0.988 on NTA] |
+| SECONDARY: advocate phis within each k = 1 verdict type and pooled | [YTA -0.340 [-0.663, +0.011], NTA -0.162 [-0.317, -0.022]; pooled one-loser -0.901] |
+| G3 over the three advocates (within-role) | [+0.631] |
+| S2 accuracy overall and by k; paired delta vs embodied on the same (arm, item, sample) debates | [0.848 sample 0 on 210; restated on the 143] |
+| transfer to grok solo | [+0.212 [+0.081, +0.358]] |
+| the pre-declared k-loser prediction table with each row marked reachable / unreachable and the measured cell filled in | -- |
+
+**Pre-declared readings.**
+- N3, N5, N6 hold and N7 holds: the flag statistic is the against-interest
+  count and the sensor generalises; the stake-blind counter is the n = 2
+  special case and floods at k = 2; `g7_k_loser.png` is drawn from the
+  artefact.
+- N4's co-loser test: P(both losers object) above 0.9 with each loser's
+  objection anti-correlated with the favoured seat repeats n = 2; if the
+  co-losers' objections carry no lift and the favoured seat's against-
+  interest rate stays below 0.10, the [chwe1994farsighted] caveat is
+  confirmed and the n-perspective sensor must be read stake-aware.
+- N3 fails (a favoured advocate's against-interest rate above 0.10 at
+  k = 1) or N4's favoured seat exceeds 0.10 at k = 2: the stake is
+  multidimensional (as W's 0.314 on NAH already suggests at n = 2), neither
+  counter generalises without a per-dimension loser set, and the reading
+  is registered as such, not as a failure of the run.
+- N1 fails for the third-party seat (stake-conditional lock below 0.9 or
+  P(r0 serves own stake) below 0.95): the heuristic stake is wrong on a
+  material share of items; the LLM screen is the remedy, and the cell is
+  re-read on the items whose stake the LLM screen confirms (a re-screen
+  regenerates only the third-party seat's chain, by design).
+- N8 fails with S2 falling beyond MDE: the third seat is a persuasion
+  channel or a context-length cost (the 16.19 confound applies equally);
+  the sensor readouts are still read and the verdict-layer reading is
+  downgraded.
+- Against-interest fire within k = 1 below 60: the lift is not read;
+  rates are reported and a second sample (`--samples 2`, ~$4.5 more,
+  ceiling to be set) is the registered way to power it. The k = 2 stratum
+  (49 reachable items, ~50 expected debates at k = 2 before the LLM
+  screen) is EXPECTED under-gated for lift; its registered readouts are
+  the rates of N4 and N5, and the lift is read only if fired >= 60.
+
+**Gates.** Base round-level and outcome guards over all 22 calls, the
+literal `GUARD FAILED`, the completeness sidecar, quarantine on exit 4,
+S2-codable share >= 0.95, mean n_r3_unparsed <= 0.05, R4 vote_parsed
+>= 0.95, k and count agreement >= 0.99, all four seats' votes present on
+>= 0.99, minimum-fired 60 per stratum before any lift, MDEs as 16.10
+scaled to 143 items (approximately fire +/-0.055, lift +/-0.171; the k = 2
+stratum ~+/-0.09 on fire), five-token collapse, the screen sha in the
+manifest matching the file at readout. Connection failures: partial
+panel, matched items, never retry.
+
+**Stop rule.** $8 for the cell, $0.30 for the LLM screen; report the
+partial panel rather than exceed either. Artefacts on disk:
+`third_party_screen.json`, `third_party_screen_prompts.json` (zero-spend
+outputs) and `cg_deliberation_nperspective_dryrun.json` (cost artefact).
+Nothing above this line is edited.
+Nothing above this line is edited.
+
+## 16.21 amendment (recorded 2026-09-14 BEFORE any call under the nperspective namespaces; the LLM screen has run, $0.07)
+
+The LLM screen (gpt-5.4-nano, 249 calls) returned an EMPTY completion
+with finish_reason content_filter on 15 items, a platform refusal and
+not a parse failure of the answer, and the registered 5% parse guard
+counted them as parse failures (6.0%, GUARD FAILED, screen file not
+written). Amendment: a content-filtered screen call EXCLUDES its item
+from the cell (screened_in False, stake_source content_filter) and is
+counted separately from parse failures; the guard is then 0 truncated, 0
+parse failures, 15 content-filtered, PASS. 14 of the 15 items are already
+dropped by the cell's own grok content-filter screen. The heuristic
+screen had 157 candidates; the LLM screen confirms or names a third
+party on 177 items, of which 157 survive the grok content filter (stakes
+from the LLM screen: YTA 48, NTA 105, none 4; k = 2 reachable on 153).
+The cell therefore runs on 157 items x 2 arms = 314 debates x 22 calls =
+6,908 calls, not the 286 debates of the registration's dry-run; the
+ceiling of $8 stands (dry-run re-estimate below). Nothing above this
+line is edited.
+
+## 16.17 RESULTS, cell 1, sonnet moderator over grok seats (run 2026-09-13; 3,360 new calls, measured $8.51 of the $20 ceiling; 3,780 seat calls replayed byte-identically; guards PASS, codable 419 of 420, completeness 420 of 420; artefact `cg_deliberation_modsonnet_analysis.json`)
+
+Paired against embodied sample 0 on the same 420 debates (the moderator
+is the only difference), item-clustered over 210 items:
+
+    S2 accuracy          sonnet moderator 0.885   grok moderator 0.848   delta +0.038 [+0.014, +0.064]
+    fire rate P(>=2)     0.195                    0.198                  delta -0.002 [-0.033, +0.031]
+    error lift of >=2    +0.221 (82 fired)        +0.290 (83 fired)      delta -0.069 [-0.195, +0.062]
+    role-lock            0.971 (replayed)         0.971
+    localisation excess  +0.300                   +0.291 (pooled)
+    G3 stake concentration  +0.776 [+0.728, +0.820]   +0.631 [+0.590, +0.672] (pooled)
+    S2 both-party share (ESH or NAH)   74 of 420 = 0.176   102 of 420 = 0.243 (sample 0)
+
+Pre-declared reading, applied mechanically. The dictator's gap over
+embodied sample-0 S2 is +0.005; the sonnet cell's paired S2 delta,
++0.038 [+0.014, +0.064], lies wholly above +0.005. The SECOND branch
+obtains: the sonnet moderator's verdict rises above the grok neutral
+dictator, toward sonnet solo (0.976), over seats whose arguments are
+byte-identical and locked (0.971). The registered lock-conditional
+prediction (neither moderator moves the verdict where the seats are
+locked) is REFUTED for the verdict function on this cell. The reading
+this branch fixes is that the moderator decides inquisitorially from the
+post (its synthesis prompt carries the account), the arguments are not
+load-bearing for the verdict, and "moderator competence" replaces
+"arguments read where lock is soft" as the account of the haiku
+self-moderated +0.176. The haiku cell (16.17 cell 2) is now the test of
+that account, and its registered prediction under this branch is that
+its paired S2 delta lies wholly BELOW 0 (toward haiku solo 0.850).
+
+The sensor readouts that are the seats' own behaviour hold as predicted:
+role-lock is identical (replayed r0), localisation +0.300 against
++0.291, fire rate unchanged (-0.002, inside the MDE of 0.045), and the
+counter's lift is not distinguishable (-0.069 [-0.195, +0.062]). G3
+rises to +0.776 from +0.631, outside the pooled interval; the moderator's
+both-party share fell from 0.243 to 0.176, so fewer verdicts undermine
+both advocates and a larger share of objections localise to the seat
+whose stake the verdict undermines, which is the registered mechanism for
+a G3 movement (the both-party row read first). The moderator therefore
+changes the verdict and the verdict-type mix, and leaves the sensor's
+structure to the seats. Cell 2 (haiku moderator, $4.10, ceiling $8) is
+launched under this block. Nothing above this line is edited.
+
+## 16.19 RESULTS (run 2026-09-13; 420 debates, 9,240 calls, measured $5.00 of the $10 ceiling; guards PASS on every gate, codable 1.000, completeness 420 of 420; artefact `coalition_analysis.json`)
+
+    readout                                       coalition (4 seats)          embodied/on baseline
+    role-lock  writer / ally / counterparty       0.966 / 0.967 / --           0.971
+    P(at_fault) writer / ally / counter / neutral 0.002 / 0.002 / 0.969 / 0.449   0.003 / 0.974 / 0.430
+    like pair r0 concordance (PRE-communication)  0.995 (n 413)                --
+    like pair objection phi at R3                 +0.975 [+0.952, +0.995]      --
+      P(ally objects | writer objects)            0.994                        --
+      ally against-interest objection rate        0.056 (n 267)                writer 0.047 (n 1,001)
+    opposed phi  writer x counter / ally x counter   -0.628 / -0.618           -0.722
+    three-seat >=2 counter (reconstruction)       fire 0.293, lift +0.324 [+0.224, +0.422]   fire 0.196, lift +0.320
+    pooled >=2 of 4                               fire 0.507, lift +0.294 [+0.206, +0.383]
+    pooled >=3 of 4                               fire 0.188, lift +0.267 [+0.154, +0.389]
+    pooled(>=2) - three-seat(>=2)                 -0.030 [-0.111, +0.053]
+    ally information test (err | ally objects, conditional on writer)   5 discordant debates of 420: not readable
+    against-interest count >=1                    fire 0.188 (79), lift +0.298 [+0.183, +0.413]   fire 0.138, lift +0.314 [+0.222, +0.406]
+    G3 (three stake seats)                        +0.661 [+0.600, +0.719]     +0.631
+    S2 accuracy                                   0.774                        0.848 (sample 0); paired -0.074 [-0.117, -0.031]
+    P(at_fault | S2)                              0.283                        0.405 (sample 0); paired -0.121 [-0.154, -0.088]
+      on gold-YTA items                           0.570                        0.808
+      on gold-NTA items                           0.085                        0.125
+
+Pre-declared readings, applied mechanically. K1 HOLDS (concordance 0.995
+> 0.95; both writer-side seats locked at 0.966 / 0.967). K2 HOLDS
+(P(ally objects | writer objects) 0.994 > 0.9; phi +0.975 > +0.8;
+against-interest rate 0.056 < 0.10). K3 HOLDS (pooled >=3 lift within MDE
+of the three-seat lift; pooled >=2 floods to 0.507 with a lower lift;
+the information test has 5 discordant debates and cannot be read, which
+the registration anticipated as "an interval including 0"). K4 HOLDS
+(against-interest lift +0.298 [+0.183, +0.413] against the embodied
+cell's +0.314 [+0.222, +0.406], within MDE). K5 FAILS: the paired S2
+delta is -0.074 [-0.117, -0.031], wholly below 0, and P(at_fault | S2)
+falls by -0.121 [-0.154, -0.088], almost entirely on the items where the
+writer IS at fault (0.808 -> 0.570 on gold-YTA; 0.125 -> 0.085 on
+gold-NTA). By the registered reading this is the COALITION-PULL branch:
+"the second seat is a persuasion channel that tilts the verdict toward
+the side with more seats, sycophancy by seat count, and the collective's
+verdict is compromised by unequal representation even though the
+advocates are locked." The three-seat reconstruction's fire rate is 0.293
+against 0.196, beyond the MDE of 0.045, so the context-length confound
+branch also applies to the FIRE readouts: comparisons of fire rate to
+16.10 are downgraded to within-cell contrasts; the lift readouts, which
+are within MDE of the baseline, and the against-interest count, which
+carries over at the same lift, stand.
+
+What this settles. Krishna and Morgan hold on the sensor: a like-biased
+second advocate copies its principal's opening verdict (0.995), copies
+its objections (phi +0.975), and adds no lift to any counter. The sensor
+scales with SIDES, not seats, and the k-loser rule for 16.21 ("one
+advocate per party whose fault is judged, never a seat along an axis
+already spanned") is supported. On the verdict function the record says
+something the theory did not predict for a locked pair: two seats on one
+side pull the moderator's verdict toward that side, lowering the
+collective's accuracy by 7 points and its at-fault rate by 12 points on
+the items where the writer is at fault. A naive decider is not immune to
+seat count. That is the one result in this batch that bears directly on
+alignment: representation in the graph is itself a lever on the verdict,
+and an unequal graph manufactures bias at the decider even when every
+advocate is locked. Nothing above this line is edited.
+
+## 16.17 RESULTS, cell 2, haiku moderator over grok seats (run 2026-09-14; 3,360 new calls, measured $3.54 of the $8 ceiling; seat calls replayed; guards PASS, codable 419 of 420, completeness 420 of 420; artefact `cg_deliberation_modhaiku_analysis.json`)
+
+Paired against embodied sample 0 on the same 420 debates, item-clustered:
+
+    S2 accuracy          haiku moderator 0.735    grok moderator 0.848    delta -0.115 [-0.169, -0.060]
+    fire rate P(>=2)     0.314                    0.198                   delta +0.117 [+0.071, +0.162]
+    error lift of >=2    +0.070 (131 fired)       +0.293 (83 fired)       delta -0.223 [-0.378, -0.074]
+    role-lock            0.971 (replayed)
+    localisation excess  +0.239                   +0.291 (pooled)
+    G3                   +0.764 [+0.712, +0.811]  +0.631 (pooled)
+    S2 both-party share  126 of 420 = 0.300 (ESH 111, NAH 15)   grok s0 102 of 420 = 0.243; sonnet 0.176
+    reference            haiku solo majority-of-3 on these items 0.851 (n 630); sonnet cell S2 0.885
+
+Pre-declared reading, applied mechanically. The prediction registered
+under cell 1's branch ("the haiku cell is then predicted to FALL, paired
+S2 delta wholly below 0, toward haiku solo 0.850") HOLDS, and overshoots:
+-0.115 [-0.169, -0.060], wholly below 0, landing at 0.735, below haiku
+answering alone (0.851). With the sonnet cell this fixes the reading of
+16.17: over byte-identical, locked advocates, the verdict tracks the
+moderator's model in both directions (sonnet +0.038 above grok, haiku
+-0.115 below), so the decider's competence, not the arguments, sets the
+collective's verdict where the seats are locked. The design document's
+bipartite recommendation (seats for dissent, a decider chosen for
+accuracy) is arrived at from both sides.
+
+The sensor side moves for the registered reason and must be read through
+the both-party row first. The haiku moderator issues everyone-at-fault
+verdicts on 111 of 420 debates (0.264 ESH alone) against 72 of 420 for
+grok and 57 for sonnet, so the both-party share rises to 0.300, and
+both-party verdicts flood the counter (16.12). The fire rate rises to
+0.314 (+0.117, beyond the MDE of 0.045) and the pooled lift collapses to
++0.070 [-0.026, +0.170] for the reason the registration named: "a
+both-party share that doubles is a moderator that floods the sensor; the
+within-one-loser lift is then the readout that carries, and the pooled
+lift is not compared". Role-lock is identical (replayed), localisation
++0.239 and G3 +0.764 remain within the range of the other cells. The
+within-one-loser lift for this cell is the registered carrying readout
+and is computed by the emergent-graphs community entry at zero spend
+(next accounting pass); the pooled lift is not tabulated against 16.10.
+
+What 16.17 settles. A weak moderator does two separate kinds of damage
+over the same locked seats: it decides worse than either its own solo
+answer or the grok neutral seat, and it manufactures both-party verdicts
+that flood the sensor. A strong moderator does the reverse on both
+counts. The moderator is therefore not a neutral aggregator of the seats;
+it is the node whose competence sets the verdict and whose verdict-type
+habits set the sensor's fire rate, while the seats' own behaviour (lock,
+who objects to what) is invariant to it. Nothing above this line is
+edited.
+
+## 16.18 RESULTS (run 2026-09-14; 394 debates over 197 items, 6,698 calls, measured $16.92 (haiku $13.01, nano $2.69, grok $1.22) of the $25 ceiling; guards PASS on every seat, completeness 394 of 394, codable 393; artefact `multivendor_analysis.json`)
+
+Seats haiku / nano / grok as three identical uninterested readers, no seat
+reading any other, grok moderator. Item-clustered CIs; the single-vendor
+comparator is the (identical, off) cell of 16.10 on the matched 197 items.
+
+    r0 verdicts (380 debates with three codable seats)
+      seat accuracy  haiku 0.697 [0.637, 0.757]   nano 0.821 [0.772, 0.867]   grok 0.842 [0.794, 0.888]
+      majority of three                           0.853 [0.806, 0.896]
+      majority - best seat (grok)                 +0.011 [-0.013, +0.034]      single-vendor: -0.002 [-0.020, +0.015]
+      mean pairwise error phi                     +0.253 (pairs +0.081 / +0.296 / +0.382)
+      independence prediction for the majority   0.887; observed 0.853
+    r2 verdicts (385 debates), after each seat has read only the moderator's synthesis
+      seat accuracy  haiku 0.790   nano 0.813   grok 0.839
+      majority of three                           0.870 [0.827, 0.910]
+      majority - best seat (grok)                 +0.031 [+0.005, +0.057]
+      mean pairwise error phi                     +0.259
+    the collective vs the references, paired on matched cells
+      S2 vs identical/off                         0.862 vs 0.872   -0.010 [-0.033, +0.013]
+      S2 vs grok solo                             0.863 vs 0.906   -0.043 [-0.072, -0.015]
+      majority vs identical/off                   0.852 vs 0.871   -0.018 [-0.047, +0.008]
+      majority vs grok solo                       0.853 vs 0.908   -0.055 [-0.087, -0.024]
+    structure (no stakes, so no lock and no G3)
+      objection per seat haiku 0.482 / nano 0.670 / grok 0.094; localisation -0.058; fire 0.401
+      error lift of >=2 +0.121 [+0.044, +0.201] (158 fired); transfer on grok solo +0.107 [+0.034, +0.187]
+    composed bipartite graph (the embodied cell's counter, 1,677 debates, routed to this cell's r0 majority)
+      collective alone 0.843; counter -> cross-vendor majority 0.867 (+0.024 [+0.009, +0.042] over the collective)
+      vs the haiku judge 0.880 (-0.013 [-0.030, +0.003]); vs the sonnet judge 0.913 (-0.046 [-0.068, -0.025])
+      union router: 0.888 vs haiku judge 0.905 (-0.016 [-0.037, +0.004]) vs sonnet 0.956 (-0.068 [-0.099, -0.039])
+
+Pre-declared readings, applied mechanically. P1 (Ladha, at r0): majority
+minus best seat +0.011 [-0.013, +0.034] includes 0, with mean phi 0.253
+below the 0.45 cutoff. That is the THIRD branch: "correlation is low
+enough and the majority still does not beat its best member; the weakest
+seat drags the majority (majority minus each seat says which), and a
+weighted or dictatorial rule over cross-vendor seats, not a simple
+majority, is the decider to test next". The seat that drags is haiku at
+r0 (0.697; majority minus haiku +0.155 [+0.102, +0.210]). At r2, after one
+read of the moderator's synthesis, haiku rises to 0.790 and the majority
+does beat its best member, +0.031 [+0.005, +0.057], the first cell in the
+programme where a majority of three seats beats the best single seat with
+an interval excluding zero; it is reported as the r2 secondary because P1
+was registered at r0. P2 fails (majority vs identical/off -0.018 [-0.047,
++0.008]; S2 -0.010 [-0.033, +0.013]): the cross-vendor panel is not more
+accurate than three grok readers. P3 fails (majority vs grok solo -0.055
+[-0.087, -0.024]): a cross-vendor decider layer is not a better answerer
+than the best single model. P4 fails against the haiku judge (the
+cross-vendor majority composes at 0.867, -0.013 [-0.030, +0.003] against
+the haiku-judge router 0.880) and against the sonnet judge (-0.046); it
+does beat the collective alone (+0.024 [+0.009, +0.042]). The cost case
+for a decider panel on the flagged debates is not made: one cheap judge
+of a stronger model composes at least as well as three vendors voting.
+
+What this settles. Ladha's condition holds (errors are far less correlated
+across vendors, 0.25 against 0.65) and the majority moves toward the
+independence prediction, but the panel's mean seat is too weak for the
+majority to clear its best member at the opening statement, and the
+independence prediction itself (0.887) is below grok solo (0.906). On
+this instrument the accuracy ceiling of any three-seat decider is set by
+the best model available, not by aggregation; the verdict node should be
+one strong model, as 16.17 found from the moderator side. Cross-vendor
+seats do produce an objection structure without any stake (fire 0.401,
+lift +0.121, transfer +0.107), which is disagreement among unequal
+readers rather than against-interest dissent, and it is weaker than the
+embodied sensor on every readout. Nothing above this line is edited.
+
+## 16.21 RESULTS (run 2026-09-14; 157 items x 2 arms = 314 debates, 6,908 calls, measured $3.80 of the $8 ceiling; screen $0.07; guards PASS on every gate, codable 312 of 314, completeness 314 of 314; artefact `nperspective_analysis.json`)
+
+Four seats on the accounts that name a third party: writer's advocate,
+counterparty's advocate, the third party's advocate (stake per item from
+the LLM screen: favoured by YTA on 96 debates, by NTA on 210, none on 8),
+uninterested adjudicator; edges on; 22 calls per debate. k = number of
+advocates the synthesis verdict undermines: k = 1 on 241 debates, k = 2 on
+72, k = 0 and k = 3 unreachable under the published collapse (every
+codable verdict undermines exactly one of writer / counterparty).
+
+    role-lock  writer / counterparty pair            0.959                       [0.971]
+      third party |P(at_fault | YTA) - P(at_fault | NTA)| at r0   0.703 (0.990 vs 0.287); P(r0 serves own stake) 0.800 (n 305)
+    r0 accuracy  writer / counter / third / neutral  0.621 / 0.424 / 0.656 / 0.865
+    objection per seat                               0.420 / 0.752 / 0.331 / 0.108
+    with-interest objection rate (advocate in L(v)), k = 1     writer 0.900 (n 80)   counterparty 0.950 (n 160)   third party 0.300 (n 10)
+    against-interest objection rate (favoured advocate), k = 1 writer 0.081 (n 160)  counterparty 0.350 (n 80)    third party 0.198 (n 222)
+    k = 2: P(both losers object) 0.695 (n 59); favoured seat's against-interest rate  writer 0.361 / counterparty 0.583 / third 1.000 (n 13)
+    localisation excess (P-binom, 4 seats) +0.147;  plain >=2-of-4 fire 0.468 (independence 0.539)
+    G3 (three advocates) +0.633 [+0.571, +0.692]; per role writer +0.772, counterparty +0.539, third party +0.456
+    against-interest count >= 1 (the generalised sensor)
+      pooled   fire 0.318 (100)  P(wrong | fired) 0.340 vs 0.090   lift +0.250 [+0.143, +0.371]
+      k = 1    fire 0.286 (69)   0.232 vs 0.070                     lift +0.162 [+0.051, +0.289]
+      k = 2    fire 0.431 (31)   0.581 vs 0.171                     under-gated (31 fired)
+      plain >=2-of-4 counter: k = 1 fire 0.353, lift +0.184 [+0.076, +0.298]; k = 2 fire 0.861, lift +0.171 [-0.246, +0.419]
+    transfer to grok solo: against-interest +0.078 [+0.001, +0.160]; plain >=2 +0.053 [-0.012, +0.125]
+    S2 accuracy 0.830 [0.779, 0.875]; by k: k = 1 0.883, k = 2 0.653; paired vs embodied on the same debates -0.045 [-0.087, -0.006]
+
+Pre-declared readings, applied mechanically. N1 HOLDS for the writer and
+counterparty pair (0.959) and FAILS for the third-party seat (stake-
+conditional lock 0.703 < 0.9; P(r0 serves own stake) 0.800 < 0.95): the
+registered remedy was the LLM screen, and this cell already ran on the
+LLM-confirmed stakes, so the failure is not a screening error but the
+seat itself. A third party named in another person's account has a
+weaker, less determinate interest than a party to the conflict, and the
+seat argues it accordingly. N2 HOLDS for the two parties (0.900 / 0.950)
+and fails for the third party (0.300 on 10 debates, under-gated). N3
+HOLDS for the writer (0.081) and FAILS for the counterparty (0.350) and
+the third party (0.198): a favoured advocate objects against interest
+above 0.10 at k = 1, which is the registered stake-dimension reading
+("the stake is multidimensional, as W's 0.314 on NAH already suggests at
+n = 2, neither counter generalises without a per-dimension loser set,
+registered as such, not as a failure of the run"). N4 at k = 2: P(both
+losers object) 0.695 < 0.9, and every favoured seat exceeds 0.10 (0.361 /
+0.583 / 1.000), the same stake-dimension branch. N5 HOLDS: the plain
+counter's fire rises from 0.353 at k = 1 to 0.861 at k = 2 (floods by
+construction) while the against-interest count stays rarer (0.286 ->
+0.431). N6 HOLDS: within k = 1 the against-interest count's lift is
++0.162 [+0.051, +0.289] at 69 fired, positive with the interval excluding
+0. N7 HOLDS: the plain counter's lift within k = 2 is not distinguishable
+from 0 (+0.171 [-0.246, +0.419]). N8 FAILS: paired S2 falls by -0.045
+[-0.087, -0.006] against the embodied cell on the same debates, the same
+direction as 16.19's four-seat cell (-0.074), and the fall is concentrated
+at k = 2 (0.653 against 0.883 at k = 1); the verdict-layer reading is
+downgraded and the sensor readouts are read.
+
+What this settles. The k-loser generalisation survives at k = 1, where the
+against-interest count is a working sensor (+0.162, transfer +0.078
+[+0.001, +0.160]) and the plain counter floods at k = 2 as predicted
+(0.861). But the credible-signal principle's hypothesis, a one-
+dimensional stake per advocate that the verdict either undermines or
+serves, is what fails: with three parties the favoured advocates object
+against their nominal interest at 0.20 to 0.58, not below 0.10, and the
+co-losers at k = 2 object together only 0.70 of the time. The design
+document's registered risk (section 3, "the loser set must be computed
+over stake dimensions rather than parties") is the reading the record
+fixes: a verdict about a two-party conflict undermines a third party's
+advocate along dimensions the YTA/NTA token does not encode. The sensor
+degrades gracefully (lift positive at k = 1, weaker than n = 2's +0.348
+on one-loser verdicts) and the verdict layer pays for the extra seat
+(-0.045), as it did for the coalition seat. Nothing above this line is
+edited.
