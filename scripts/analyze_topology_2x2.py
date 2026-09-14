@@ -61,6 +61,13 @@ CELL_SPECS = {
 }
 for _cell, _spec in CELLS.items():
     CELL_SPECS[_cell] = (_spec["tag"], tuple(r.role_id for r in build_roles(*_cell)))
+#: Addendum 16.16: the embodied cell with plain chain-of-thought seats. Same
+#: roles, same edges, same panel; only the seat system prompt differs, so its
+#: r0 caches live under scaffold "standard_cot" (cgd_<model>_standard_cot_*).
+CELL_SPECS[("embodied_stdcot", "on")] = ("cg_deliberation_stdcot",
+                                         ("writer_advocate", "counterparty", "neutral_adjudicator"))
+CELL_SCAFFOLD = {c: "narrative_cot" for c in CELL_SPECS}
+CELL_SCAFFOLD[("embodied_stdcot", "on")] = "standard_cot"
 
 
 def _boot(by_item: dict, stat, *, draws: int, seed: int, alpha: float = 0.05):
@@ -75,8 +82,9 @@ def _boot(by_item: dict, stat, *, draws: int, seed: int, alpha: float = 0.05):
     return point, vals[int(alpha / 2 * len(vals))], vals[min(int((1 - alpha / 2) * len(vals)), len(vals) - 1)]
 
 
-def r0_verdict_code(arm: str, item: str, idx: int, role_id: str) -> Optional[int]:
-    p = rcd.call_cache_path(MODEL, "narrative_cot", arm, item, idx, "r0", role_id, R0_CAP)
+def r0_verdict_code(arm: str, item: str, idx: int, role_id: str,
+                    scaffold: str = "narrative_cot") -> Optional[int]:
+    p = rcd.call_cache_path(MODEL, scaffold, arm, item, idx, "r0", role_id, R0_CAP)
     if not p.exists():
         return None
     txt = json.loads(p.read_text()).get("output") or ""
@@ -130,7 +138,7 @@ def analyse_cell(cell: tuple, *, keep_items: Optional[set], draws: int, seed: in
     for r in rows:
         codes = {}
         for s in seats:
-            c = r0_verdict_code(r["arm"], r["item"], r["sample_idx"], s)
+            c = r0_verdict_code(r["arm"], r["item"], r["sample_idx"], s, CELL_SCAFFOLD.get(cell, "narrative_cot"))
             if c is None:
                 continue
             codes[s] = c
@@ -234,9 +242,10 @@ def _f(x, fmt="+.3f"):
 
 
 def print_grid(res: dict) -> None:
-    order = [("embodied", "on"), ("embodied", "off"), ("identical", "on"), ("identical", "off")]
+    order = [("embodied", "on"), ("embodied", "off"), ("identical", "on"), ("identical", "off"),
+             ("embodied_stdcot", "on")]
     cells = [res["cells"].get(f"{r}/{e}") for r, e in order]
-    hdr = [f"{r}/{e}" for r, e in order]
+    hdr = [("stdcot/on" if r == "embodied_stdcot" else f"{r}/{e}") for r, e in order]
     print("\n" + "=" * 96)
     print(f"ADDENDUM 16.10 -- ROLE x CONNECTIVITY 2x2   (matched items: {res['n_items_matched']})")
     print("=" * 96)
@@ -277,7 +286,7 @@ def _selftest() -> int:
     def check(name, cond):
         print(f"[{'ok' if cond else 'FAIL'}] {name}")
         if not cond: fails.append(name)
-    check("four cells specified", len(CELL_SPECS) == 4)
+    check("four 2x2 cells plus the 16.16 stdcot cell specified", len(CELL_SPECS) == 5)
     check("embodied/on maps to the registered run", CELL_SPECS[("embodied", "on")][0] == "cg_deliberation")
     ids = [s for _, seats in CELL_SPECS.values() for s in seats]
     check("12 distinct seat ids across the four cells", len(set(ids)) == 12)

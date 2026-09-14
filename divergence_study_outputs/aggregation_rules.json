@@ -1,0 +1,3857 @@
+{
+ "registration": "not registered; zero-spend replay proposed for the aggregation-theory addendum",
+ "estimator": {
+  "bootstrap": "item-clustered percentile",
+  "draws": 4000,
+  "seed": 13,
+  "seed_rule": "panel i of PANELS uses base 13 + 100 i (as effective_voter.json); topology cell j uses base 13 + 100 (4 + j); the fold split uses the base seed; all rules of a community share one resampling stream at base + 1; the reused effective_voter CV oracle keeps its own stream at the base seed",
+  "population": "triples: all three r0 verdicts codable under code_response(extract_verdict(r0), 'published')",
+  "weighted_rule": "log-odds weights log(p/(1-p)), p Laplace-smoothed seat accuracy on the other fold; sign of sum w_i (2 x_i - 1); exact tie -> simple majority",
+  "oracle": "analyze_effective_voter.cv_oracle over the three r0 bits, fold fixed per item",
+  "t2_ceiling": "gain <= p(1-p)(1-rho) for three voters of common competence p and mean pairwise error correlation rho (moment band over the eight profiles, LP-checked in --selftest)"
+ },
+ "panels": {
+  "grok": {
+   "label": "grok",
+   "model": "grok-4-1-fast-reasoning",
+   "tag": "cg_deliberation",
+   "seats": [
+    "writer_advocate",
+    "counterparty",
+    "neutral_adjudicator"
+   ],
+   "guard": {
+    "ok": true,
+    "reasons": [],
+    "n_debates": 1680,
+    "n_triples": 1642,
+    "n_missing_r0_calls": 0,
+    "noncodable_triple_share": 0.02261904761904762
+   },
+   "moderator_model": "grok-4-1-fast-reasoning",
+   "base_seed": 13,
+   "n_debates": 1680,
+   "n_items": 210,
+   "n_triples": 1642,
+   "n_items_in_triples": 210,
+   "n_triples_synthesis_codable": 1641,
+   "n_triples_s2_codable": 1640,
+   "uninformative": false,
+   "best_seat": {
+    "index": 2,
+    "id": "neutral_adjudicator",
+    "acc": 0.8599269183922046
+   },
+   "fold": {
+    "split_seed": 13,
+    "sizes": [
+     105,
+     105
+    ]
+   },
+   "rules": {
+    "seat0": {
+     "point": 0.5913520097442144,
+     "lo": 0.524788391777509,
+     "hi": 0.6532356532356532,
+     "boot_mean": 0.5903504584919885,
+     "n_draws_defined": 4000,
+     "seed": 14
+    },
+    "seat1": {
+     "point": 0.43727161997563946,
+     "lo": 0.3762254901960784,
+     "hi": 0.5015124016938899,
+     "boot_mean": 0.4382086112216749,
+     "n_draws_defined": 4000,
+     "seed": 14
+    },
+    "seat2": {
+     "point": 0.8599269183922046,
+     "lo": 0.8198529411764706,
+     "hi": 0.8967193195625759,
+     "boot_mean": 0.8598870468494214,
+     "n_draws_defined": 4000,
+     "seed": 14
+    },
+    "majority": {
+     "point": 0.8599269183922046,
+     "lo": 0.8198529411764706,
+     "hi": 0.8967193195625759,
+     "boot_mean": 0.8598870468494214,
+     "n_draws_defined": 4000,
+     "seed": 14
+    },
+    "dictator": {
+     "point": 0.8599269183922046,
+     "lo": 0.8198529411764706,
+     "hi": 0.8967193195625759,
+     "boot_mean": 0.8598870468494214,
+     "n_draws_defined": 4000,
+     "seed": 14
+    },
+    "weighted_cv": {
+     "point": 0.8599269183922046,
+     "lo": 0.8018181818181818,
+     "hi": 0.8967193195625759,
+     "boot_mean": 0.8561256807450367,
+     "n_draws_defined": 4000,
+     "seed": 14
+    },
+    "weighted_insample": {
+     "point": 0.8599269183922046,
+     "lo": 0.8198529411764706,
+     "hi": 0.8967193195625759,
+     "boot_mean": 0.8598870468494214,
+     "n_draws_defined": 4000,
+     "seed": 14
+    },
+    "synthesis": {
+     "point": 0.8507007921998782,
+     "lo": 0.8094074526573,
+     "hi": 0.8882138517618469,
+     "boot_mean": 0.8506946083946727,
+     "n_draws_defined": 4000,
+     "seed": 14
+    },
+    "s2": {
+     "point": 0.8432926829268292,
+     "lo": 0.8032786885245902,
+     "hi": 0.8801223241590214,
+     "boot_mean": 0.8432969866617083,
+     "n_draws_defined": 4000,
+     "seed": 14
+    },
+    "oracle_cv": {
+     "point": 0.8599269183922046,
+     "lo": 0.8192261185006046,
+     "hi": 0.8961117861482382,
+     "boot_mean": 0.8592079557705562,
+     "n_draws_defined": 4000,
+     "seed": 14
+    },
+    "best_seat": {
+     "point": 0.8599269183922046,
+     "lo": 0.8198529411764706,
+     "hi": 0.8967193195625759,
+     "boot_mean": 0.8598870468494214,
+     "n_draws_defined": 4000,
+     "seed": 14
+    }
+   },
+   "dominance_broken_share_of_draws": 0.0225,
+   "paired": {
+    "weighted_cv_minus_dictator": {
+     "point": 0.0,
+     "lo": 0.0,
+     "hi": 0.0,
+     "boot_mean": -0.00376136610438496,
+     "n_draws_defined": 4000,
+     "seed": 14
+    },
+    "weighted_cv_minus_best_seat": {
+     "point": 0.0,
+     "lo": 0.0,
+     "hi": 0.0,
+     "boot_mean": -0.00376136610438496,
+     "n_draws_defined": 4000,
+     "seed": 14
+    },
+    "weighted_cv_minus_majority": {
+     "point": 0.0,
+     "lo": 0.0,
+     "hi": 0.0,
+     "boot_mean": -0.00376136610438496,
+     "n_draws_defined": 4000,
+     "seed": 14
+    },
+    "weighted_cv_minus_oracle_cv": {
+     "point": 0.0,
+     "lo": 0.0,
+     "hi": 0.003667481662591687,
+     "boot_mean": -0.0030822750255210694,
+     "n_draws_defined": 4000,
+     "seed": 14
+    },
+    "weighted_insample_minus_dictator": {
+     "point": 0.0,
+     "lo": 0.0,
+     "hi": 0.0,
+     "boot_mean": 0.0,
+     "n_draws_defined": 4000,
+     "seed": 14
+    },
+    "weighted_insample_minus_best_seat": {
+     "point": 0.0,
+     "lo": 0.0,
+     "hi": 0.0,
+     "boot_mean": 0.0,
+     "n_draws_defined": 4000,
+     "seed": 14
+    },
+    "majority_minus_best_seat": {
+     "point": 0.0,
+     "lo": 0.0,
+     "hi": 0.0,
+     "boot_mean": 0.0,
+     "n_draws_defined": 4000,
+     "seed": 14
+    },
+    "majority_minus_dictator": {
+     "point": 0.0,
+     "lo": 0.0,
+     "hi": 0.0,
+     "boot_mean": 0.0,
+     "n_draws_defined": 4000,
+     "seed": 14
+    },
+    "s2_minus_weighted_cv": {
+     "point": -0.016463414634146342,
+     "lo": -0.03117359413202934,
+     "hi": 0.0030321406913280777,
+     "boot_mean": -0.01266964772499355,
+     "n_draws_defined": 4000,
+     "seed": 14
+    },
+    "s2_minus_best_seat": {
+     "point": -0.016463414634146342,
+     "lo": -0.031211750305997554,
+     "hi": -0.0024509803921568627,
+     "boot_mean": -0.016419400738850797,
+     "n_draws_defined": 4000,
+     "seed": 14
+    },
+    "s2_minus_majority": {
+     "point": -0.016463414634146342,
+     "lo": -0.031211750305997554,
+     "hi": -0.0024509803921568627,
+     "boot_mean": -0.016419400738850797,
+     "n_draws_defined": 4000,
+     "seed": 14
+    },
+    "s2_minus_dictator": {
+     "point": -0.016463414634146342,
+     "lo": -0.031211750305997554,
+     "hi": -0.0024509803921568627,
+     "boot_mean": -0.016419400738850797,
+     "n_draws_defined": 4000,
+     "seed": 14
+    },
+    "s2_minus_oracle_cv": {
+     "point": -0.016463414634146342,
+     "lo": -0.030984204131227218,
+     "hi": -0.0018192844147968466,
+     "boot_mean": -0.01573949590056632,
+     "n_draws_defined": 4000,
+     "seed": 14
+    },
+    "synthesis_minus_weighted_cv": {
+     "point": -0.009140767824497258,
+     "lo": -0.02185792349726776,
+     "hi": 0.008557457212713936,
+     "boot_mean": -0.005344461899304661,
+     "n_draws_defined": 4000,
+     "seed": 14
+    },
+    "s2_minus_synthesis": {
+     "point": -0.007931665649786455,
+     "lo": -0.01717791411042945,
+     "hi": 0.0012300123001230013,
+     "boot_mean": -0.00790860530091458,
+     "n_draws_defined": 4000,
+     "seed": 14
+    }
+   },
+   "shares": {
+    "share_weighted_equals_dictator": {
+     "point": 1.0,
+     "lo": 1.0,
+     "hi": 1.0,
+     "boot_mean": 0.9943395888853427,
+     "n_draws_defined": 4000,
+     "seed": 14
+    },
+    "share_weighted_equals_majority": {
+     "point": 1.0,
+     "lo": 1.0,
+     "hi": 1.0,
+     "boot_mean": 0.9943395888853427,
+     "n_draws_defined": 4000,
+     "seed": 14
+    },
+    "share_majority_equals_dictator": {
+     "point": 1.0,
+     "lo": 1.0,
+     "hi": 1.0,
+     "boot_mean": 1.0,
+     "n_draws_defined": 4000,
+     "seed": 14
+    },
+    "share_s2_equals_weighted": {
+     "point": 0.948170731707317,
+     "lo": 0.9244471744471745,
+     "hi": 0.9622758194186766,
+     "boot_mean": 0.943360008230728,
+     "n_draws_defined": 4000,
+     "seed": 14
+    }
+   },
+   "weights": {
+    "seat_order": [
+     "writer_advocate",
+     "counterparty",
+     "neutral_adjudicator"
+    ],
+    "applied_to_fold_0_fitted_on_fold_1": [
+     0.5423242908253615,
+     -0.39730179746900335,
+     1.8075757586713395
+    ],
+    "applied_to_fold_1_fitted_on_fold_0": [
+     0.2031049712503891,
+     -0.11095707058598377,
+     1.8073074856165396
+    ],
+    "in_sample": [
+     0.3690974639372898,
+     -0.25193237979137856,
+     1.8110526721627338
+    ],
+    "dominant_seat_fold_0": 2,
+    "dominant_seat_fold_1": 2,
+    "dominant_seat_in_sample": 2,
+    "smoothing": "Laplace (k+1)/(n+2) on the training fold",
+    "tie_rule": "exact zero score falls back to the simple majority"
+   },
+   "oracle_cv_effective_voter": {
+    "n": 1642,
+    "n_items": 210,
+    "split_seed": 13,
+    "fold_sizes": [
+     105,
+     105
+    ],
+    "cv_oracle_acc": 0.8599269183922046,
+    "neutral_acc": 0.8599269183922046,
+    "gap": 0.0,
+    "lo": -0.004242424242424243,
+    "hi": 0.0,
+    "split_sensitivity": {
+     "n_splits": 200,
+     "mean_gap": -0.0005602923264311818,
+     "min_gap": -0.00243605359317905,
+     "max_gap": 0.0
+    },
+    "in_sample": {
+     "oracle": 0.8599269183922046,
+     "neutral": 0.8599269183922046,
+     "gap": 0.0,
+     "table": {
+      "0|0|0": 0,
+      "0|1|0": 0,
+      "0|1|1": 1,
+      "1|1|1": 1
+     },
+     "default": 0
+    }
+   },
+   "t2_own_seats": {
+    "seat_acc": [
+     0.5913520097442144,
+     0.43727161997563946,
+     0.8599269183922046
+    ],
+    "mean_seat_acc": 0.6295168493706861,
+    "best_seat_acc": 0.8599269183922046,
+    "pairwise_error_correlation": {
+     "0-1": -0.9430297822827154,
+     "0-2": 0.014317578896985745,
+     "1-2": 0.009100063764035701
+    },
+    "mean_pairwise_error_correlation": -0.306537379873898,
+    "majority_acc": 0.8599269183922046,
+    "gain_over_mean_seat": 0.2304100690215185,
+    "gain_over_best_seat": 0.0,
+    "ceiling_at_mean_p_and_mean_rho": 0.3047176843905658,
+    "independence_gain_at_mean_p": 0.0604132343057896,
+    "under_ceiling": true,
+    "seats_exchangeable": false,
+    "note": "seats are heterogeneous (lock): the common-p band is not the right object; the Shapley-Grofman rule is"
+   },
+   "t1": {
+    "verdict": "weighted rule EQUALS the neutral dictator on every debate",
+    "dominant_seat_in_sample": "neutral_adjudicator",
+    "weighted_minus_dictator": {
+     "point": 0.0,
+     "lo": 0.0,
+     "hi": 0.0,
+     "boot_mean": -0.00376136610438496,
+     "n_draws_defined": 4000,
+     "seed": 14
+    },
+    "weighted_insample_minus_dictator": {
+     "point": 0.0,
+     "lo": 0.0,
+     "hi": 0.0,
+     "boot_mean": 0.0,
+     "n_draws_defined": 4000,
+     "seed": 14
+    },
+    "dominance_broken_share_of_draws": 0.0225,
+    "note": "the CV rule's lower tail comes from resamples in which the dominant seat's weight no longer exceeds the others' (share above); under lock the advocates' weights are gold base-rate logits, so an item resample that tilts the gold balance can make the two advocates jointly outweigh the neutral seat and the rule degenerates to a near-constant verdict; Shapley-Grofman optimality assumes conditional independence, which lock violates"
+   },
+   "t3": {
+    "verdict": "moderator (S2) and the CV weighted majority indistinguishable (CI includes 0)",
+    "s2_minus_weighted_cv": {
+     "point": -0.016463414634146342,
+     "lo": -0.03117359413202934,
+     "hi": 0.0030321406913280777,
+     "boot_mean": -0.01266964772499355,
+     "n_draws_defined": 4000,
+     "seed": 14
+    },
+    "verdict_vs_dictator": "S2 WORSE than the neutral dictator (CI below 0)",
+    "s2_minus_dictator": {
+     "point": -0.016463414634146342,
+     "lo": -0.031211750305997554,
+     "hi": -0.0024509803921568627,
+     "boot_mean": -0.016419400738850797,
+     "n_draws_defined": 4000,
+     "seed": 14
+    }
+   },
+   "profile_counts": {
+    "0|0|0": {
+     "n": 43,
+     "gold_at_fault": 0
+    },
+    "0|1|0": {
+     "n": 890,
+     "gold_at_fault": 98
+    },
+    "0|1|1": {
+     "n": 705,
+     "gold_at_fault": 573
+    },
+    "1|1|1": {
+     "n": 4,
+     "gold_at_fault": 4
+    }
+   }
+  },
+  "sonnet": {
+   "label": "sonnet",
+   "model": "claude-sonnet-4-6",
+   "tag": "cg_deliberation_sonnet_fixed",
+   "seats": [
+    "writer_advocate",
+    "counterparty",
+    "neutral_adjudicator"
+   ],
+   "guard": {
+    "ok": true,
+    "reasons": [],
+    "n_debates": 31,
+    "n_triples": 31,
+    "n_missing_r0_calls": 0,
+    "noncodable_triple_share": 0.0
+   },
+   "moderator_model": "claude-sonnet-4-6",
+   "base_seed": 113,
+   "n_debates": 31,
+   "n_items": 16,
+   "n_triples": 31,
+   "n_items_in_triples": 16,
+   "n_triples_synthesis_codable": 31,
+   "n_triples_s2_codable": 31,
+   "uninformative": true,
+   "best_seat": {
+    "index": 2,
+    "id": "neutral_adjudicator",
+    "acc": 1.0
+   },
+   "fold": {
+    "split_seed": 113,
+    "sizes": [
+     8,
+     8
+    ]
+   },
+   "rules": {
+    "seat0": {
+     "point": 0.8064516129032258,
+     "lo": 0.6129032258064516,
+     "hi": 0.967741935483871,
+     "boot_mean": 0.8066050430835071,
+     "n_draws_defined": 4000,
+     "seed": 114
+    },
+    "seat1": {
+     "point": 0.5161290322580645,
+     "lo": 0.25806451612903225,
+     "hi": 0.7586206896551724,
+     "boot_mean": 0.5185448376211506,
+     "n_draws_defined": 4000,
+     "seed": 114
+    },
+    "seat2": {
+     "point": 1.0,
+     "lo": 1.0,
+     "hi": 1.0,
+     "boot_mean": 1.0,
+     "n_draws_defined": 4000,
+     "seed": 114
+    },
+    "majority": {
+     "point": 1.0,
+     "lo": 1.0,
+     "hi": 1.0,
+     "boot_mean": 1.0,
+     "n_draws_defined": 4000,
+     "seed": 114
+    },
+    "dictator": {
+     "point": 1.0,
+     "lo": 1.0,
+     "hi": 1.0,
+     "boot_mean": 1.0,
+     "n_draws_defined": 4000,
+     "seed": 114
+    },
+    "weighted_cv": {
+     "point": 1.0,
+     "lo": 0.7931034482758621,
+     "hi": 1.0,
+     "boot_mean": 0.9732551092224797,
+     "n_draws_defined": 4000,
+     "seed": 114
+    },
+    "weighted_insample": {
+     "point": 1.0,
+     "lo": 1.0,
+     "hi": 1.0,
+     "boot_mean": 0.9994958135435611,
+     "n_draws_defined": 4000,
+     "seed": 114
+    },
+    "synthesis": {
+     "point": 1.0,
+     "lo": 1.0,
+     "hi": 1.0,
+     "boot_mean": 1.0,
+     "n_draws_defined": 4000,
+     "seed": 114
+    },
+    "s2": {
+     "point": 1.0,
+     "lo": 1.0,
+     "hi": 1.0,
+     "boot_mean": 1.0,
+     "n_draws_defined": 4000,
+     "seed": 114
+    },
+    "oracle_cv": {
+     "point": 0.9354838709677419,
+     "lo": 0.53125,
+     "hi": 1.0,
+     "boot_mean": 0.8718810685171223,
+     "n_draws_defined": 4000,
+     "seed": 114
+    },
+    "best_seat": {
+     "point": 1.0,
+     "lo": 1.0,
+     "hi": 1.0,
+     "boot_mean": 1.0,
+     "n_draws_defined": 4000,
+     "seed": 114
+    }
+   },
+   "dominance_broken_share_of_draws": 0.3405,
+   "paired": {
+    "weighted_cv_minus_dictator": {
+     "point": 0.0,
+     "lo": -0.20689655172413793,
+     "hi": 0.0,
+     "boot_mean": -0.026744890777518866,
+     "n_draws_defined": 4000,
+     "seed": 114
+    },
+    "weighted_cv_minus_best_seat": {
+     "point": 0.0,
+     "lo": -0.20689655172413793,
+     "hi": 0.0,
+     "boot_mean": -0.026744890777518866,
+     "n_draws_defined": 4000,
+     "seed": 114
+    },
+    "weighted_cv_minus_majority": {
+     "point": 0.0,
+     "lo": -0.20689655172413793,
+     "hi": 0.0,
+     "boot_mean": -0.026744890777518866,
+     "n_draws_defined": 4000,
+     "seed": 114
+    },
+    "weighted_cv_minus_oracle_cv": {
+     "point": 0.06451612903225806,
+     "lo": -0.06896551724137931,
+     "hi": 0.45161290322580644,
+     "boot_mean": 0.10137404070535992,
+     "n_draws_defined": 4000,
+     "seed": 114
+    },
+    "weighted_insample_minus_dictator": {
+     "point": 0.0,
+     "lo": 0.0,
+     "hi": 0.0,
+     "boot_mean": -0.0005041864564389593,
+     "n_draws_defined": 4000,
+     "seed": 114
+    },
+    "weighted_insample_minus_best_seat": {
+     "point": 0.0,
+     "lo": 0.0,
+     "hi": 0.0,
+     "boot_mean": -0.0005041864564389593,
+     "n_draws_defined": 4000,
+     "seed": 114
+    },
+    "majority_minus_best_seat": {
+     "point": 0.0,
+     "lo": 0.0,
+     "hi": 0.0,
+     "boot_mean": 0.0,
+     "n_draws_defined": 4000,
+     "seed": 114
+    },
+    "majority_minus_dictator": {
+     "point": 0.0,
+     "lo": 0.0,
+     "hi": 0.0,
+     "boot_mean": 0.0,
+     "n_draws_defined": 4000,
+     "seed": 114
+    },
+    "s2_minus_weighted_cv": {
+     "point": 0.0,
+     "lo": 0.0,
+     "hi": 0.20689655172413793,
+     "boot_mean": 0.026744890777519167,
+     "n_draws_defined": 4000,
+     "seed": 114
+    },
+    "s2_minus_best_seat": {
+     "point": 0.0,
+     "lo": 0.0,
+     "hi": 0.0,
+     "boot_mean": 0.0,
+     "n_draws_defined": 4000,
+     "seed": 114
+    },
+    "s2_minus_majority": {
+     "point": 0.0,
+     "lo": 0.0,
+     "hi": 0.0,
+     "boot_mean": 0.0,
+     "n_draws_defined": 4000,
+     "seed": 114
+    },
+    "s2_minus_dictator": {
+     "point": 0.0,
+     "lo": 0.0,
+     "hi": 0.0,
+     "boot_mean": 0.0,
+     "n_draws_defined": 4000,
+     "seed": 114
+    },
+    "s2_minus_oracle_cv": {
+     "point": 0.06451612903225806,
+     "lo": 0.0,
+     "hi": 0.46875,
+     "boot_mean": 0.12811893148287856,
+     "n_draws_defined": 4000,
+     "seed": 114
+    },
+    "synthesis_minus_weighted_cv": {
+     "point": 0.0,
+     "lo": 0.0,
+     "hi": 0.20689655172413793,
+     "boot_mean": 0.026744890777519167,
+     "n_draws_defined": 4000,
+     "seed": 114
+    },
+    "s2_minus_synthesis": {
+     "point": 0.0,
+     "lo": 0.0,
+     "hi": 0.0,
+     "boot_mean": 0.0,
+     "n_draws_defined": 4000,
+     "seed": 114
+    }
+   },
+   "shares": {
+    "share_weighted_equals_dictator": {
+     "point": 1.0,
+     "lo": 0.7931034482758621,
+     "hi": 1.0,
+     "boot_mean": 0.9732551092224797,
+     "n_draws_defined": 4000,
+     "seed": 114
+    },
+    "share_weighted_equals_majority": {
+     "point": 1.0,
+     "lo": 0.7931034482758621,
+     "hi": 1.0,
+     "boot_mean": 0.9732551092224797,
+     "n_draws_defined": 4000,
+     "seed": 114
+    },
+    "share_majority_equals_dictator": {
+     "point": 1.0,
+     "lo": 1.0,
+     "hi": 1.0,
+     "boot_mean": 1.0,
+     "n_draws_defined": 4000,
+     "seed": 114
+    },
+    "share_s2_equals_weighted": {
+     "point": 1.0,
+     "lo": 0.7931034482758621,
+     "hi": 1.0,
+     "boot_mean": 0.9732551092224797,
+     "n_draws_defined": 4000,
+     "seed": 114
+    }
+   },
+   "weights": {
+    "seat_order": [
+     "writer_advocate",
+     "counterparty",
+     "neutral_adjudicator"
+    ],
+    "applied_to_fold_0_fitted_on_fold_1": [
+     1.5404450409471486,
+     0.11778303565638346,
+     2.772588722239781
+    ],
+    "applied_to_fold_1_fitted_on_fold_0": [
+     0.9555114450274362,
+     0.0,
+     2.8332133440562157
+    ],
+    "in_sample": [
+     1.3121863889661685,
+     0.06062462181643484,
+     3.4657359027997274
+    ],
+    "dominant_seat_fold_0": 2,
+    "dominant_seat_fold_1": 2,
+    "dominant_seat_in_sample": 2,
+    "smoothing": "Laplace (k+1)/(n+2) on the training fold",
+    "tie_rule": "exact zero score falls back to the simple majority"
+   },
+   "oracle_cv_effective_voter": {
+    "n": 31,
+    "n_items": 16,
+    "split_seed": 113,
+    "fold_sizes": [
+     8,
+     8
+    ],
+    "cv_oracle_acc": 0.9354838709677419,
+    "neutral_acc": 1.0,
+    "gap": -0.06451612903225806,
+    "lo": -0.4666666666666667,
+    "hi": 0.0,
+    "split_sensitivity": {
+     "n_splits": 200,
+     "mean_gap": -0.04887096774193545,
+     "min_gap": -0.9354838709677419,
+     "max_gap": 0.0
+    },
+    "in_sample": {
+     "oracle": 1.0,
+     "neutral": 1.0,
+     "gap": 0.0,
+     "table": {
+      "0|0|0": 0,
+      "0|1|0": 0,
+      "0|1|1": 1,
+      "1|1|1": 1
+     },
+     "default": 0
+    }
+   },
+   "t2_own_seats": {
+    "seat_acc": [
+     0.8064516129032258,
+     0.5161290322580645,
+     1.0
+    ],
+    "mean_seat_acc": 0.7741935483870966,
+    "best_seat_acc": 1.0,
+    "pairwise_error_correlation": {
+     "0-1": -0.47434164902525666,
+     "0-2": null,
+     "1-2": null
+    },
+    "mean_pairwise_error_correlation": -0.47434164902525666,
+    "majority_acc": 1.0,
+    "gain_over_mean_seat": 0.22580645161290336,
+    "gain_over_best_seat": 0.0,
+    "ceiling_at_mean_p_and_mean_rho": 0.25774130805020123,
+    "independence_gain_at_mean_p": 0.09586787956094123,
+    "under_ceiling": true,
+    "seats_exchangeable": false,
+    "note": "seats are heterogeneous (lock): the common-p band is not the right object; the Shapley-Grofman rule is"
+   },
+   "t1": {
+    "verdict": "weighted rule EQUALS the neutral dictator on every debate",
+    "dominant_seat_in_sample": "neutral_adjudicator",
+    "weighted_minus_dictator": {
+     "point": 0.0,
+     "lo": -0.20689655172413793,
+     "hi": 0.0,
+     "boot_mean": -0.026744890777518866,
+     "n_draws_defined": 4000,
+     "seed": 114
+    },
+    "weighted_insample_minus_dictator": {
+     "point": 0.0,
+     "lo": 0.0,
+     "hi": 0.0,
+     "boot_mean": -0.0005041864564389593,
+     "n_draws_defined": 4000,
+     "seed": 114
+    },
+    "dominance_broken_share_of_draws": 0.3405,
+    "note": "the CV rule's lower tail comes from resamples in which the dominant seat's weight no longer exceeds the others' (share above); under lock the advocates' weights are gold base-rate logits, so an item resample that tilts the gold balance can make the two advocates jointly outweigh the neutral seat and the rule degenerates to a near-constant verdict; Shapley-Grofman optimality assumes conditional independence, which lock violates"
+   },
+   "t3": {
+    "verdict": "moderator (S2) and the CV weighted majority indistinguishable (CI includes 0)",
+    "s2_minus_weighted_cv": {
+     "point": 0.0,
+     "lo": 0.0,
+     "hi": 0.20689655172413793,
+     "boot_mean": 0.026744890777519167,
+     "n_draws_defined": 4000,
+     "seed": 114
+    },
+    "verdict_vs_dictator": "S2 and the neutral dictator indistinguishable (CI includes 0)",
+    "s2_minus_dictator": {
+     "point": 0.0,
+     "lo": 0.0,
+     "hi": 0.0,
+     "boot_mean": 0.0,
+     "n_draws_defined": 4000,
+     "seed": 114
+    }
+   },
+   "profile_counts": {
+    "0|0|0": {
+     "n": 2,
+     "gold_at_fault": 0
+    },
+    "0|1|0": {
+     "n": 15,
+     "gold_at_fault": 0
+    },
+    "0|1|1": {
+     "n": 6,
+     "gold_at_fault": 6
+    },
+    "1|1|1": {
+     "n": 8,
+     "gold_at_fault": 8
+    }
+   }
+  },
+  "nano": {
+   "label": "nano",
+   "model": "gpt-5.4-nano",
+   "tag": "cg_deliberation_nano",
+   "seats": [
+    "writer_advocate",
+    "counterparty",
+    "neutral_adjudicator"
+   ],
+   "guard": {
+    "ok": true,
+    "reasons": [],
+    "n_debates": 836,
+    "n_triples": 781,
+    "n_missing_r0_calls": 0,
+    "noncodable_triple_share": 0.06578947368421052
+   },
+   "moderator_model": "gpt-5.4-nano",
+   "base_seed": 213,
+   "n_debates": 836,
+   "n_items": 209,
+   "n_triples": 781,
+   "n_items_in_triples": 209,
+   "n_triples_synthesis_codable": 780,
+   "n_triples_s2_codable": 781,
+   "uninformative": false,
+   "best_seat": {
+    "index": 2,
+    "id": "neutral_adjudicator",
+    "acc": 0.8245838668373879
+   },
+   "fold": {
+    "split_seed": 213,
+    "sizes": [
+     104,
+     105
+    ]
+   },
+   "rules": {
+    "seat0": {
+     "point": 0.7144686299615877,
+     "lo": 0.6556122448979592,
+     "hi": 0.76953125,
+     "boot_mean": 0.7138874782433449,
+     "n_draws_defined": 4000,
+     "seed": 214
+    },
+    "seat1": {
+     "point": 0.6017925736235595,
+     "lo": 0.5478036175710594,
+     "hi": 0.6581956797966964,
+     "boot_mean": 0.6023214386787107,
+     "n_draws_defined": 4000,
+     "seed": 214
+    },
+    "seat2": {
+     "point": 0.8245838668373879,
+     "lo": 0.7790549169859514,
+     "hi": 0.8690012970168612,
+     "boot_mean": 0.8245605324812202,
+     "n_draws_defined": 4000,
+     "seed": 214
+    },
+    "majority": {
+     "point": 0.8220230473751601,
+     "lo": 0.7760814249363868,
+     "hi": 0.8676277850589778,
+     "boot_mean": 0.8219791214245932,
+     "n_draws_defined": 4000,
+     "seed": 214
+    },
+    "dictator": {
+     "point": 0.8245838668373879,
+     "lo": 0.7790549169859514,
+     "hi": 0.8690012970168612,
+     "boot_mean": 0.8245605324812202,
+     "n_draws_defined": 4000,
+     "seed": 214
+    },
+    "weighted_cv": {
+     "point": 0.8245838668373879,
+     "lo": 0.7753807106598984,
+     "hi": 0.8690012970168612,
+     "boot_mean": 0.8236831267553705,
+     "n_draws_defined": 4000,
+     "seed": 214
+    },
+    "weighted_insample": {
+     "point": 0.8245838668373879,
+     "lo": 0.7787958115183246,
+     "hi": 0.8690012970168612,
+     "boot_mean": 0.8244945892060053,
+     "n_draws_defined": 4000,
+     "seed": 214
+    },
+    "synthesis": {
+     "point": 0.823076923076923,
+     "lo": 0.7770618556701031,
+     "hi": 0.867515923566879,
+     "boot_mean": 0.8227763713608754,
+     "n_draws_defined": 4000,
+     "seed": 214
+    },
+    "s2": {
+     "point": 0.8245838668373879,
+     "lo": 0.7790697674418605,
+     "hi": 0.8678526048284625,
+     "boot_mean": 0.8241829306991482,
+     "n_draws_defined": 4000,
+     "seed": 214
+    },
+    "oracle_cv": {
+     "point": 0.8207426376440461,
+     "lo": 0.7713920817369093,
+     "hi": 0.8664921465968587,
+     "boot_mean": 0.8202558610133924,
+     "n_draws_defined": 4000,
+     "seed": 214
+    },
+    "best_seat": {
+     "point": 0.8245838668373879,
+     "lo": 0.7790549169859514,
+     "hi": 0.8690012970168612,
+     "boot_mean": 0.8245605324812202,
+     "n_draws_defined": 4000,
+     "seed": 214
+    }
+   },
+   "dominance_broken_share_of_draws": 0.21975,
+   "paired": {
+    "weighted_cv_minus_dictator": {
+     "point": 0.0,
+     "lo": -0.0063371356147021544,
+     "hi": 0.0013054830287206266,
+     "boot_mean": -0.0008774057258496467,
+     "n_draws_defined": 4000,
+     "seed": 214
+    },
+    "weighted_cv_minus_best_seat": {
+     "point": 0.0,
+     "lo": -0.0063371356147021544,
+     "hi": 0.0013054830287206266,
+     "boot_mean": -0.0008774057258496467,
+     "n_draws_defined": 4000,
+     "seed": 214
+    },
+    "weighted_cv_minus_majority": {
+     "point": 0.002560819462227913,
+     "lo": -0.0025906735751295338,
+     "hi": 0.007702182284980745,
+     "boot_mean": 0.0017040053307769256,
+     "n_draws_defined": 4000,
+     "seed": 214
+    },
+    "weighted_cv_minus_oracle_cv": {
+     "point": 0.0038412291933418692,
+     "lo": -0.0025673940949935813,
+     "hi": 0.009009009009009009,
+     "boot_mean": 0.0034272657419800083,
+     "n_draws_defined": 4000,
+     "seed": 214
+    },
+    "weighted_insample_minus_dictator": {
+     "point": 0.0,
+     "lo": -0.0012642225031605564,
+     "hi": 0.0,
+     "boot_mean": -6.594327521501669e-05,
+     "n_draws_defined": 4000,
+     "seed": 214
+    },
+    "weighted_insample_minus_best_seat": {
+     "point": 0.0,
+     "lo": -0.0012642225031605564,
+     "hi": 0.0,
+     "boot_mean": -6.594327521501669e-05,
+     "n_draws_defined": 4000,
+     "seed": 214
+    },
+    "majority_minus_best_seat": {
+     "point": -0.002560819462227913,
+     "lo": -0.007702182284980745,
+     "hi": 0.0025284450063211127,
+     "boot_mean": -0.0025814110566265364,
+     "n_draws_defined": 4000,
+     "seed": 214
+    },
+    "majority_minus_dictator": {
+     "point": -0.002560819462227913,
+     "lo": -0.007702182284980745,
+     "hi": 0.0025284450063211127,
+     "boot_mean": -0.0025814110566265364,
+     "n_draws_defined": 4000,
+     "seed": 214
+    },
+    "s2_minus_weighted_cv": {
+     "point": 0.0,
+     "lo": -0.02069857697283312,
+     "hi": 0.02392947103274559,
+     "boot_mean": 0.0004998039437769117,
+     "n_draws_defined": 4000,
+     "seed": 214
+    },
+    "s2_minus_best_seat": {
+     "point": 0.0,
+     "lo": -0.020969855832241154,
+     "hi": 0.020671834625323,
+     "boot_mean": -0.00037760178207274205,
+     "n_draws_defined": 4000,
+     "seed": 214
+    },
+    "s2_minus_majority": {
+     "point": 0.002560819462227913,
+     "lo": -0.01804123711340206,
+     "hi": 0.02328589909443726,
+     "boot_mean": 0.002203809274553813,
+     "n_draws_defined": 4000,
+     "seed": 214
+    },
+    "s2_minus_dictator": {
+     "point": 0.0,
+     "lo": -0.020969855832241154,
+     "hi": 0.020671834625323,
+     "boot_mean": -0.00037760178207274205,
+     "n_draws_defined": 4000,
+     "seed": 214
+    },
+    "s2_minus_oracle_cv": {
+     "point": 0.0038412291933418692,
+     "lo": -0.017857142857142856,
+     "hi": 0.02699228791773779,
+     "boot_mean": 0.00392706968575693,
+     "n_draws_defined": 4000,
+     "seed": 214
+    },
+    "synthesis_minus_weighted_cv": {
+     "point": -0.001282051282051282,
+     "lo": -0.017654476670870115,
+     "hi": 0.016666666666666666,
+     "boot_mean": -0.0006803185028436507,
+     "n_draws_defined": 4000,
+     "seed": 214
+    },
+    "s2_minus_synthesis": {
+     "point": 0.001282051282051282,
+     "lo": -0.011435832274459974,
+     "hi": 0.01403061224489796,
+     "boot_mean": 0.001180431455265168,
+     "n_draws_defined": 4000,
+     "seed": 214
+    }
+   },
+   "shares": {
+    "share_weighted_equals_dictator": {
+     "point": 1.0,
+     "lo": 0.9936467598475223,
+     "hi": 1.0,
+     "boot_mean": 0.9984912417019852,
+     "n_draws_defined": 4000,
+     "seed": 214
+    },
+    "share_weighted_equals_majority": {
+     "point": 0.9948783610755442,
+     "lo": 0.9886506935687264,
+     "hi": 1.0,
+     "boot_mean": 0.9944693110628816,
+     "n_draws_defined": 4000,
+     "seed": 214
+    },
+    "share_majority_equals_dictator": {
+     "point": 0.9948783610755442,
+     "lo": 0.9896238651102465,
+     "hi": 0.9987373737373737,
+     "boot_mean": 0.9948960278888355,
+     "n_draws_defined": 4000,
+     "seed": 214
+    },
+    "share_s2_equals_weighted": {
+     "point": 0.93854033290653,
+     "lo": 0.9129886506935687,
+     "hi": 0.958656330749354,
+     "boot_mean": 0.9372534140271477,
+     "n_draws_defined": 4000,
+     "seed": 214
+    }
+   },
+   "weights": {
+    "seat_order": [
+     "writer_advocate",
+     "counterparty",
+     "neutral_adjudicator"
+    ],
+    "applied_to_fold_0_fitted_on_fold_1": [
+     0.9655258348718396,
+     0.29068959351573603,
+     1.462113197677242
+    ],
+    "applied_to_fold_1_fitted_on_fold_0": [
+     0.8605271573557011,
+     0.5310283310835099,
+     1.6124636333506375
+    ],
+    "in_sample": [
+     0.914503421300059,
+     0.4118549062069352,
+     1.5419966316385676
+    ],
+    "dominant_seat_fold_0": 2,
+    "dominant_seat_fold_1": 2,
+    "dominant_seat_in_sample": 2,
+    "smoothing": "Laplace (k+1)/(n+2) on the training fold",
+    "tie_rule": "exact zero score falls back to the simple majority"
+   },
+   "oracle_cv_effective_voter": {
+    "n": 781,
+    "n_items": 209,
+    "split_seed": 213,
+    "fold_sizes": [
+     104,
+     105
+    ],
+    "cv_oracle_acc": 0.8207426376440461,
+    "neutral_acc": 0.8245838668373879,
+    "gap": -0.0038412291933418692,
+    "lo": -0.009009009009009009,
+    "hi": 0.00129366106080207,
+    "split_sensitivity": {
+     "n_splits": 200,
+     "mean_gap": -0.0028297055057618366,
+     "min_gap": -0.0038412291933418692,
+     "max_gap": -0.002560819462227913
+    },
+    "in_sample": {
+     "oracle": 0.8245838668373879,
+     "neutral": 0.8245838668373879,
+     "gap": 0.0,
+     "table": {
+      "0|0|0": 0,
+      "0|0|1": 1,
+      "0|1|0": 0,
+      "0|1|1": 1,
+      "1|0|1": 1,
+      "1|1|0": 0,
+      "1|1|1": 1
+     },
+     "default": 0
+    }
+   },
+   "t2_own_seats": {
+    "seat_acc": [
+     0.7144686299615877,
+     0.6017925736235595,
+     0.8245838668373879
+    ],
+    "mean_seat_acc": 0.7136150234741784,
+    "best_seat_acc": 0.8245838668373879,
+    "pairwise_error_correlation": {
+     "0-1": -0.3578843060222906,
+     "0-2": 0.4239890965078974,
+     "1-2": 0.0649602133682989
+    },
+    "mean_pairwise_error_correlation": 0.04368833461796856,
+    "majority_acc": 0.8220230473751601,
+    "gain_over_mean_seat": 0.1084080239009817,
+    "gain_over_best_seat": -0.002560819462227859,
+    "ceiling_at_mean_p_and_mean_rho": 0.19544009701386844,
+    "independence_gain_at_mean_p": 0.08731241586336824,
+    "under_ceiling": true,
+    "seats_exchangeable": false,
+    "note": "seats are heterogeneous (lock): the common-p band is not the right object; the Shapley-Grofman rule is"
+   },
+   "t1": {
+    "verdict": "weighted rule EQUALS the neutral dictator on every debate",
+    "dominant_seat_in_sample": "neutral_adjudicator",
+    "weighted_minus_dictator": {
+     "point": 0.0,
+     "lo": -0.0063371356147021544,
+     "hi": 0.0013054830287206266,
+     "boot_mean": -0.0008774057258496467,
+     "n_draws_defined": 4000,
+     "seed": 214
+    },
+    "weighted_insample_minus_dictator": {
+     "point": 0.0,
+     "lo": -0.0012642225031605564,
+     "hi": 0.0,
+     "boot_mean": -6.594327521501669e-05,
+     "n_draws_defined": 4000,
+     "seed": 214
+    },
+    "dominance_broken_share_of_draws": 0.21975,
+    "note": "the CV rule's lower tail comes from resamples in which the dominant seat's weight no longer exceeds the others' (share above); under lock the advocates' weights are gold base-rate logits, so an item resample that tilts the gold balance can make the two advocates jointly outweigh the neutral seat and the rule degenerates to a near-constant verdict; Shapley-Grofman optimality assumes conditional independence, which lock violates"
+   },
+   "t3": {
+    "verdict": "moderator (S2) and the CV weighted majority indistinguishable (CI includes 0)",
+    "s2_minus_weighted_cv": {
+     "point": 0.0,
+     "lo": -0.02069857697283312,
+     "hi": 0.02392947103274559,
+     "boot_mean": 0.0004998039437769117,
+     "n_draws_defined": 4000,
+     "seed": 214
+    },
+    "verdict_vs_dictator": "S2 and the neutral dictator indistinguishable (CI includes 0)",
+    "s2_minus_dictator": {
+     "point": 0.0,
+     "lo": -0.020969855832241154,
+     "hi": 0.020671834625323,
+     "boot_mean": -0.00037760178207274205,
+     "n_draws_defined": 4000,
+     "seed": 214
+    }
+   },
+   "profile_counts": {
+    "0|0|0": {
+     "n": 180,
+     "gold_at_fault": 13
+    },
+    "0|0|1": {
+     "n": 3,
+     "gold_at_fault": 2
+    },
+    "0|1|0": {
+     "n": 315,
+     "gold_at_fault": 72
+    },
+    "0|1|1": {
+     "n": 164,
+     "gold_at_fault": 124
+    },
+    "1|0|1": {
+     "n": 1,
+     "gold_at_fault": 1
+    },
+    "1|1|0": {
+     "n": 1,
+     "gold_at_fault": 0
+    },
+    "1|1|1": {
+     "n": 117,
+     "gold_at_fault": 106
+    }
+   }
+  },
+  "haiku": {
+   "label": "haiku",
+   "model": "claude-haiku-4-5",
+   "tag": "cg_deliberation_haiku_fixed",
+   "seats": [
+    "writer_advocate",
+    "counterparty",
+    "neutral_adjudicator"
+   ],
+   "guard": {
+    "ok": true,
+    "reasons": [],
+    "n_debates": 192,
+    "n_triples": 187,
+    "n_missing_r0_calls": 0,
+    "noncodable_triple_share": 0.026041666666666668
+   },
+   "moderator_model": "claude-haiku-4-5",
+   "base_seed": 313,
+   "n_debates": 192,
+   "n_items": 100,
+   "n_triples": 187,
+   "n_items_in_triples": 100,
+   "n_triples_synthesis_codable": 187,
+   "n_triples_s2_codable": 187,
+   "uninformative": false,
+   "best_seat": {
+    "index": 0,
+    "id": "writer_advocate",
+    "acc": 0.8181818181818182
+   },
+   "fold": {
+    "split_seed": 313,
+    "sizes": [
+     50,
+     50
+    ]
+   },
+   "rules": {
+    "seat0": {
+     "point": 0.8181818181818182,
+     "lo": 0.7513513513513513,
+     "hi": 0.8795811518324608,
+     "boot_mean": 0.818195196420378,
+     "n_draws_defined": 4000,
+     "seed": 314
+    },
+    "seat1": {
+     "point": 0.44385026737967914,
+     "lo": 0.35051546391752575,
+     "hi": 0.5376344086021505,
+     "boot_mean": 0.4436518088738336,
+     "n_draws_defined": 4000,
+     "seed": 314
+    },
+    "seat2": {
+     "point": 0.7165775401069518,
+     "lo": 0.6338797814207651,
+     "hi": 0.7936507936507936,
+     "boot_mean": 0.7159677777430694,
+     "n_draws_defined": 4000,
+     "seed": 314
+    },
+    "majority": {
+     "point": 0.7005347593582888,
+     "lo": 0.6195652173913043,
+     "hi": 0.776595744680851,
+     "boot_mean": 0.6998644182560184,
+     "n_draws_defined": 4000,
+     "seed": 314
+    },
+    "dictator": {
+     "point": 0.7165775401069518,
+     "lo": 0.6338797814207651,
+     "hi": 0.7936507936507936,
+     "boot_mean": 0.7159677777430694,
+     "n_draws_defined": 4000,
+     "seed": 314
+    },
+    "weighted_cv": {
+     "point": 0.8128342245989305,
+     "lo": 0.6894736842105263,
+     "hi": 0.8783068783068783,
+     "boot_mean": 0.8019871770896018,
+     "n_draws_defined": 4000,
+     "seed": 314
+    },
+    "weighted_insample": {
+     "point": 0.8181818181818182,
+     "lo": 0.7593582887700535,
+     "hi": 0.8808290155440415,
+     "boot_mean": 0.8211012911772058,
+     "n_draws_defined": 4000,
+     "seed": 314
+    },
+    "synthesis": {
+     "point": 0.8770053475935828,
+     "lo": 0.8225806451612904,
+     "hi": 0.9251336898395722,
+     "boot_mean": 0.8769903794853225,
+     "n_draws_defined": 4000,
+     "seed": 314
+    },
+    "s2": {
+     "point": 0.893048128342246,
+     "lo": 0.8404255319148937,
+     "hi": 0.9414893617021277,
+     "boot_mean": 0.8932074318080624,
+     "n_draws_defined": 4000,
+     "seed": 314
+    },
+    "oracle_cv": {
+     "point": 0.8288770053475936,
+     "lo": 0.6737967914438503,
+     "hi": 0.8913043478260869,
+     "boot_mean": 0.8216761565030912,
+     "n_draws_defined": 4000,
+     "seed": 314
+    },
+    "best_seat": {
+     "point": 0.8181818181818182,
+     "lo": 0.7513513513513513,
+     "hi": 0.8795811518324608,
+     "boot_mean": 0.818195196420378,
+     "n_draws_defined": 4000,
+     "seed": 314
+    }
+   },
+   "dominance_broken_share_of_draws": 0.67125,
+   "paired": {
+    "weighted_cv_minus_dictator": {
+     "point": 0.0962566844919786,
+     "lo": -0.031088082901554404,
+     "hi": 0.17553191489361702,
+     "boot_mean": 0.08601939934653433,
+     "n_draws_defined": 4000,
+     "seed": 314
+    },
+    "weighted_cv_minus_best_seat": {
+     "point": -0.0053475935828877,
+     "lo": -0.10810810810810811,
+     "hi": 0.010638297872340425,
+     "boot_mean": -0.016208019330772976,
+     "n_draws_defined": 4000,
+     "seed": 314
+    },
+    "weighted_cv_minus_majority": {
+     "point": 0.11229946524064172,
+     "lo": 0.0,
+     "hi": 0.18134715025906736,
+     "boot_mean": 0.10212275883357183,
+     "n_draws_defined": 4000,
+     "seed": 314
+    },
+    "weighted_cv_minus_oracle_cv": {
+     "point": -0.016042780748663103,
+     "lo": -0.1111111111111111,
+     "hi": 0.053763440860215055,
+     "boot_mean": -0.019688979413494085,
+     "n_draws_defined": 4000,
+     "seed": 314
+    },
+    "weighted_insample_minus_dictator": {
+     "point": 0.10160427807486631,
+     "lo": 0.03723404255319149,
+     "hi": 0.1794871794871795,
+     "boot_mean": 0.10513351343413894,
+     "n_draws_defined": 4000,
+     "seed": 314
+    },
+    "weighted_insample_minus_best_seat": {
+     "point": 0.0,
+     "lo": 0.0,
+     "hi": 0.0425531914893617,
+     "boot_mean": 0.0029060947568312558,
+     "n_draws_defined": 4000,
+     "seed": 314
+    },
+    "majority_minus_best_seat": {
+     "point": -0.11764705882352941,
+     "lo": -0.18478260869565216,
+     "hi": -0.054945054945054944,
+     "boot_mean": -0.1183307781643442,
+     "n_draws_defined": 4000,
+     "seed": 314
+    },
+    "majority_minus_dictator": {
+     "point": -0.016042780748663103,
+     "lo": -0.04864864864864865,
+     "hi": 0.01092896174863388,
+     "boot_mean": -0.016103359487036863,
+     "n_draws_defined": 4000,
+     "seed": 314
+    },
+    "s2_minus_weighted_cv": {
+     "point": 0.08021390374331551,
+     "lo": 0.02127659574468085,
+     "hi": 0.2,
+     "boot_mean": 0.09122025471846203,
+     "n_draws_defined": 4000,
+     "seed": 314
+    },
+    "s2_minus_best_seat": {
+     "point": 0.0748663101604278,
+     "lo": 0.02072538860103627,
+     "hi": 0.13114754098360656,
+     "boot_mean": 0.07501223538768904,
+     "n_draws_defined": 4000,
+     "seed": 314
+    },
+    "s2_minus_majority": {
+     "point": 0.1925133689839572,
+     "lo": 0.12435233160621761,
+     "hi": 0.26455026455026454,
+     "boot_mean": 0.19334301355203284,
+     "n_draws_defined": 4000,
+     "seed": 314
+    },
+    "s2_minus_dictator": {
+     "point": 0.17647058823529413,
+     "lo": 0.10638297872340426,
+     "hi": 0.25396825396825395,
+     "boot_mean": 0.17723965406499725,
+     "n_draws_defined": 4000,
+     "seed": 314
+    },
+    "s2_minus_oracle_cv": {
+     "point": 0.06417112299465241,
+     "lo": 0.005494505494505495,
+     "hi": 0.20320855614973263,
+     "boot_mean": 0.07153127530496853,
+     "n_draws_defined": 4000,
+     "seed": 314
+    },
+    "synthesis_minus_weighted_cv": {
+     "point": 0.06417112299465241,
+     "lo": -0.0053475935828877,
+     "hi": 0.18518518518518517,
+     "boot_mean": 0.0750032023957225,
+     "n_draws_defined": 4000,
+     "seed": 314
+    },
+    "s2_minus_synthesis": {
+     "point": 0.016042780748663103,
+     "lo": -0.016574585635359115,
+     "hi": 0.05263157894736842,
+     "boot_mean": 0.016217052322739737,
+     "n_draws_defined": 4000,
+     "seed": 314
+    }
+   },
+   "shares": {
+    "share_weighted_equals_dictator": {
+     "point": 0.7967914438502673,
+     "lo": 0.7157894736842105,
+     "hi": 0.9222797927461139,
+     "boot_mean": 0.801878124015307,
+     "n_draws_defined": 4000,
+     "seed": 314
+    },
+    "share_weighted_equals_majority": {
+     "point": 0.8021390374331551,
+     "lo": 0.7405405405405405,
+     "hi": 0.9405405405405406,
+     "boot_mean": 0.819549195172373,
+     "n_draws_defined": 4000,
+     "seed": 314
+    },
+    "share_majority_equals_dictator": {
+     "point": 0.9625668449197861,
+     "lo": 0.9297297297297298,
+     "hi": 0.9893048128342246,
+     "boot_mean": 0.962489794395879,
+     "n_draws_defined": 4000,
+     "seed": 314
+    },
+    "share_s2_equals_weighted": {
+     "point": 0.8556149732620321,
+     "lo": 0.7566137566137566,
+     "hi": 0.9090909090909091,
+     "boot_mean": 0.8460830426467076,
+     "n_draws_defined": 4000,
+     "seed": 314
+    }
+   },
+   "weights": {
+    "seat_order": [
+     "writer_advocate",
+     "counterparty",
+     "neutral_adjudicator"
+    ],
+    "applied_to_fold_0_fitted_on_fold_1": [
+     1.5968591302272404,
+     0.14763599880606468,
+     0.9760099665757774
+    ],
+    "applied_to_fold_1_fitted_on_fold_0": [
+     1.3350010667323398,
+     -0.60077386042893,
+     0.8373967894044918
+    ],
+    "in_sample": [
+     1.4816045409242151,
+     -0.22314355131420985,
+     0.9162907318741551
+    ],
+    "dominant_seat_fold_0": 0,
+    "dominant_seat_fold_1": null,
+    "dominant_seat_in_sample": 0,
+    "smoothing": "Laplace (k+1)/(n+2) on the training fold",
+    "tie_rule": "exact zero score falls back to the simple majority"
+   },
+   "oracle_cv_effective_voter": {
+    "n": 187,
+    "n_items": 100,
+    "split_seed": 313,
+    "fold_sizes": [
+     50,
+     50
+    ],
+    "cv_oracle_acc": 0.8288770053475936,
+    "neutral_acc": 0.7165775401069518,
+    "gap": 0.11229946524064172,
+    "lo": -0.01675977653631285,
+    "hi": 0.18229166666666666,
+    "split_sensitivity": {
+     "n_splits": 200,
+     "mean_gap": 0.11532085561497325,
+     "min_gap": 0.10160427807486631,
+     "max_gap": 0.12299465240641712
+    },
+    "in_sample": {
+     "oracle": 0.839572192513369,
+     "neutral": 0.7165775401069518,
+     "gap": 0.12299465240641716,
+     "table": {
+      "0|0|0": 0,
+      "0|0|1": 0,
+      "0|1|0": 0,
+      "0|1|1": 0,
+      "1|0|1": 1,
+      "1|1|0": 0,
+      "1|1|1": 1
+     },
+     "default": 0
+    }
+   },
+   "t2_own_seats": {
+    "seat_acc": [
+     0.8181818181818182,
+     0.44385026737967914,
+     0.7165775401069518
+    ],
+    "mean_seat_acc": 0.6595365418894831,
+    "best_seat_acc": 0.8181818181818182,
+    "pairwise_error_correlation": {
+     "0-1": 0.19788033380309544,
+     "0-2": 0.4111409624649612,
+     "1-2": 0.46630039477114427
+    },
+    "mean_pairwise_error_correlation": 0.3584405636797336,
+    "majority_acc": 0.7005347593582888,
+    "gain_over_mean_seat": 0.04099821746880572,
+    "gain_over_best_seat": -0.11764705882352944,
+    "ceiling_at_mean_p_and_mean_rho": 0.14406094720324736,
+    "independence_gain_at_mean_p": 0.071647252107929,
+    "under_ceiling": true,
+    "seats_exchangeable": false,
+    "note": "seats are heterogeneous (lock): the common-p band is not the right object; the Shapley-Grofman rule is"
+   },
+   "t1": {
+    "verdict": "weighted rule and neutral dictator indistinguishable (CI includes 0)",
+    "dominant_seat_in_sample": "writer_advocate",
+    "weighted_minus_dictator": {
+     "point": 0.0962566844919786,
+     "lo": -0.031088082901554404,
+     "hi": 0.17553191489361702,
+     "boot_mean": 0.08601939934653433,
+     "n_draws_defined": 4000,
+     "seed": 314
+    },
+    "weighted_insample_minus_dictator": {
+     "point": 0.10160427807486631,
+     "lo": 0.03723404255319149,
+     "hi": 0.1794871794871795,
+     "boot_mean": 0.10513351343413894,
+     "n_draws_defined": 4000,
+     "seed": 314
+    },
+    "dominance_broken_share_of_draws": 0.67125,
+    "note": "the CV rule's lower tail comes from resamples in which the dominant seat's weight no longer exceeds the others' (share above); under lock the advocates' weights are gold base-rate logits, so an item resample that tilts the gold balance can make the two advocates jointly outweigh the neutral seat and the rule degenerates to a near-constant verdict; Shapley-Grofman optimality assumes conditional independence, which lock violates"
+   },
+   "t3": {
+    "verdict": "moderator (S2) is a BETTER aggregator than the CV weighted majority (CI above 0)",
+    "s2_minus_weighted_cv": {
+     "point": 0.08021390374331551,
+     "lo": 0.02127659574468085,
+     "hi": 0.2,
+     "boot_mean": 0.09122025471846203,
+     "n_draws_defined": 4000,
+     "seed": 314
+    },
+    "verdict_vs_dictator": "S2 BETTER than the neutral dictator (CI above 0)",
+    "s2_minus_dictator": {
+     "point": 0.17647058823529413,
+     "lo": 0.10638297872340426,
+     "hi": 0.25396825396825395,
+     "boot_mean": 0.17723965406499725,
+     "n_draws_defined": 4000,
+     "seed": 314
+    }
+   },
+   "profile_counts": {
+    "0|0|0": {
+     "n": 11,
+     "gold_at_fault": 0
+    },
+    "0|0|1": {
+     "n": 3,
+     "gold_at_fault": 1
+    },
+    "0|1|0": {
+     "n": 50,
+     "gold_at_fault": 2
+    },
+    "0|1|1": {
+     "n": 34,
+     "gold_at_fault": 6
+    },
+    "1|0|1": {
+     "n": 2,
+     "gold_at_fault": 2
+    },
+    "1|1|0": {
+     "n": 4,
+     "gold_at_fault": 0
+    },
+    "1|1|1": {
+     "n": 83,
+     "gold_at_fault": 62
+    }
+   }
+  }
+ },
+ "topology_cells": {
+  "embodied/on": {
+   "label": "embodied/on",
+   "model": "grok-4-1-fast-reasoning",
+   "tag": "cg_deliberation",
+   "seats": [
+    "writer_advocate",
+    "counterparty",
+    "neutral_adjudicator"
+   ],
+   "guard": {
+    "ok": true,
+    "reasons": [],
+    "n_debates": 1680,
+    "n_triples": 1642,
+    "n_missing_r0_calls": 0,
+    "noncodable_triple_share": 0.02261904761904762
+   },
+   "moderator_model": "grok-4-1-fast-reasoning",
+   "base_seed": 413,
+   "n_debates": 1680,
+   "n_items": 210,
+   "n_triples": 1642,
+   "n_items_in_triples": 210,
+   "n_triples_synthesis_codable": 1641,
+   "n_triples_s2_codable": 1640,
+   "uninformative": false,
+   "best_seat": {
+    "index": 2,
+    "id": "neutral_adjudicator",
+    "acc": 0.8599269183922046
+   },
+   "fold": {
+    "split_seed": 413,
+    "sizes": [
+     105,
+     105
+    ]
+   },
+   "rules": {
+    "seat0": {
+     "point": 0.5913520097442144,
+     "lo": 0.524390243902439,
+     "hi": 0.656969696969697,
+     "boot_mean": 0.5914314199221417,
+     "n_draws_defined": 4000,
+     "seed": 414
+    },
+    "seat1": {
+     "point": 0.43727161997563946,
+     "lo": 0.370595382746051,
+     "hi": 0.5045759609517999,
+     "boot_mean": 0.4373151645832105,
+     "n_draws_defined": 4000,
+     "seed": 414
+    },
+    "seat2": {
+     "point": 0.8599269183922046,
+     "lo": 0.8194103194103194,
+     "hi": 0.896969696969697,
+     "boot_mean": 0.8595272630626457,
+     "n_draws_defined": 4000,
+     "seed": 414
+    },
+    "majority": {
+     "point": 0.8599269183922046,
+     "lo": 0.8194103194103194,
+     "hi": 0.896969696969697,
+     "boot_mean": 0.8595272630626457,
+     "n_draws_defined": 4000,
+     "seed": 414
+    },
+    "dictator": {
+     "point": 0.8599269183922046,
+     "lo": 0.8194103194103194,
+     "hi": 0.896969696969697,
+     "boot_mean": 0.8595272630626457,
+     "n_draws_defined": 4000,
+     "seed": 414
+    },
+    "weighted_cv": {
+     "point": 0.8599269183922046,
+     "lo": 0.678809957498482,
+     "hi": 0.896782027929569,
+     "boot_mean": 0.8482365036521649,
+     "n_draws_defined": 4000,
+     "seed": 414
+    },
+    "weighted_insample": {
+     "point": 0.8599269183922046,
+     "lo": 0.8194103194103194,
+     "hi": 0.896969696969697,
+     "boot_mean": 0.8595272630626457,
+     "n_draws_defined": 4000,
+     "seed": 414
+    },
+    "synthesis": {
+     "point": 0.8507007921998782,
+     "lo": 0.8098420413122722,
+     "hi": 0.8896260554885405,
+     "boot_mean": 0.8503745513926456,
+     "n_draws_defined": 4000,
+     "seed": 414
+    },
+    "s2": {
+     "point": 0.8432926829268292,
+     "lo": 0.8026878436163715,
+     "hi": 0.880894800483676,
+     "boot_mean": 0.8430118080719051,
+     "n_draws_defined": 4000,
+     "seed": 414
+    },
+    "oracle_cv": {
+     "point": 0.8599269183922046,
+     "lo": 0.8189655172413793,
+     "hi": 0.8962378640776699,
+     "boot_mean": 0.8587681394746817,
+     "n_draws_defined": 4000,
+     "seed": 414
+    },
+    "best_seat": {
+     "point": 0.8599269183922046,
+     "lo": 0.8194103194103194,
+     "hi": 0.896969696969697,
+     "boot_mean": 0.8595272630626457,
+     "n_draws_defined": 4000,
+     "seed": 414
+    }
+   },
+   "dominance_broken_share_of_draws": 0.06825,
+   "paired": {
+    "weighted_cv_minus_dictator": {
+     "point": 0.0,
+     "lo": -0.1732763880414887,
+     "hi": 0.0,
+     "boot_mean": -0.011290759410480496,
+     "n_draws_defined": 4000,
+     "seed": 414
+    },
+    "weighted_cv_minus_best_seat": {
+     "point": 0.0,
+     "lo": -0.1732763880414887,
+     "hi": 0.0,
+     "boot_mean": -0.011290759410480496,
+     "n_draws_defined": 4000,
+     "seed": 414
+    },
+    "weighted_cv_minus_majority": {
+     "point": 0.0,
+     "lo": -0.1732763880414887,
+     "hi": 0.0,
+     "boot_mean": -0.011290759410480496,
+     "n_draws_defined": 4000,
+     "seed": 414
+    },
+    "weighted_cv_minus_oracle_cv": {
+     "point": 0.0,
+     "lo": -0.1730886850152905,
+     "hi": 0.0036877688998156115,
+     "boot_mean": -0.010531635822517722,
+     "n_draws_defined": 4000,
+     "seed": 414
+    },
+    "weighted_insample_minus_dictator": {
+     "point": 0.0,
+     "lo": 0.0,
+     "hi": 0.0,
+     "boot_mean": 0.0,
+     "n_draws_defined": 4000,
+     "seed": 414
+    },
+    "weighted_insample_minus_best_seat": {
+     "point": 0.0,
+     "lo": 0.0,
+     "hi": 0.0,
+     "boot_mean": 0.0,
+     "n_draws_defined": 4000,
+     "seed": 414
+    },
+    "majority_minus_best_seat": {
+     "point": 0.0,
+     "lo": 0.0,
+     "hi": 0.0,
+     "boot_mean": 0.0,
+     "n_draws_defined": 4000,
+     "seed": 414
+    },
+    "majority_minus_dictator": {
+     "point": 0.0,
+     "lo": 0.0,
+     "hi": 0.0,
+     "boot_mean": 0.0,
+     "n_draws_defined": 4000,
+     "seed": 414
+    },
+    "s2_minus_weighted_cv": {
+     "point": -0.016463414634146342,
+     "lo": -0.031135531135531136,
+     "hi": 0.16172016959418534,
+     "boot_mean": -0.005130144217195919,
+     "n_draws_defined": 4000,
+     "seed": 414
+    },
+    "s2_minus_best_seat": {
+     "point": -0.016463414634146342,
+     "lo": -0.031496062992125984,
+     "hi": -0.002434570906877663,
+     "boot_mean": -0.01634523548714619,
+     "n_draws_defined": 4000,
+     "seed": 414
+    },
+    "s2_minus_majority": {
+     "point": -0.016463414634146342,
+     "lo": -0.031496062992125984,
+     "hi": -0.002434570906877663,
+     "boot_mean": -0.01634523548714619,
+     "n_draws_defined": 4000,
+     "seed": 414
+    },
+    "s2_minus_dictator": {
+     "point": -0.016463414634146342,
+     "lo": -0.031496062992125984,
+     "hi": -0.002434570906877663,
+     "boot_mean": -0.01634523548714619,
+     "n_draws_defined": 4000,
+     "seed": 414
+    },
+    "s2_minus_oracle_cv": {
+     "point": -0.016463414634146342,
+     "lo": -0.03050640634533252,
+     "hi": -0.0018170805572380376,
+     "boot_mean": -0.015585180121549693,
+     "n_draws_defined": 4000,
+     "seed": 414
+    },
+    "synthesis_minus_weighted_cv": {
+     "point": -0.009140767824497258,
+     "lo": -0.021315468940316686,
+     "hi": 0.17003058103975535,
+     "boot_mean": 0.0022286619976079067,
+     "n_draws_defined": 4000,
+     "seed": 414
+    },
+    "s2_minus_synthesis": {
+     "point": -0.007931665649786455,
+     "lo": -0.017135862913096694,
+     "hi": 0.0018259281801582471,
+     "boot_mean": -0.007886416198626315,
+     "n_draws_defined": 4000,
+     "seed": 414
+    }
+   },
+   "shares": {
+    "share_weighted_equals_dictator": {
+     "point": 1.0,
+     "lo": 0.7391304347826086,
+     "hi": 1.0,
+     "boot_mean": 0.9827281492147851,
+     "n_draws_defined": 4000,
+     "seed": 414
+    },
+    "share_weighted_equals_majority": {
+     "point": 1.0,
+     "lo": 0.7391304347826086,
+     "hi": 1.0,
+     "boot_mean": 0.9827281492147851,
+     "n_draws_defined": 4000,
+     "seed": 414
+    },
+    "share_majority_equals_dictator": {
+     "point": 1.0,
+     "lo": 1.0,
+     "hi": 1.0,
+     "boot_mean": 1.0,
+     "n_draws_defined": 4000,
+     "seed": 414
+    },
+    "share_s2_equals_weighted": {
+     "point": 0.948170731707317,
+     "lo": 0.7292682926829268,
+     "hi": 0.9617486338797814,
+     "boot_mean": 0.9338693189525463,
+     "n_draws_defined": 4000,
+     "seed": 414
+    }
+   },
+   "weights": {
+    "seat_order": [
+     "writer_advocate",
+     "counterparty",
+     "neutral_adjudicator"
+    ],
+    "applied_to_fold_0_fitted_on_fold_1": [
+     0.5302437096230924,
+     -0.4684300647983049,
+     1.6328650453292402
+    ],
+    "applied_to_fold_1_fitted_on_fold_0": [
+     0.21053027742846386,
+     -0.03902934390573534,
+     2.008698243655382
+    ],
+    "in_sample": [
+     0.3690974639372898,
+     -0.25193237979137856,
+     1.8110526721627338
+    ],
+    "dominant_seat_fold_0": 2,
+    "dominant_seat_fold_1": 2,
+    "dominant_seat_in_sample": 2,
+    "smoothing": "Laplace (k+1)/(n+2) on the training fold",
+    "tie_rule": "exact zero score falls back to the simple majority"
+   },
+   "oracle_cv_effective_voter": {
+    "n": 1642,
+    "n_items": 210,
+    "split_seed": 413,
+    "fold_sizes": [
+     105,
+     105
+    ],
+    "cv_oracle_acc": 0.8599269183922046,
+    "neutral_acc": 0.8599269183922046,
+    "gap": 0.0,
+    "lo": -0.004257907542579075,
+    "hi": 0.0,
+    "split_sensitivity": {
+     "n_splits": 200,
+     "mean_gap": -0.0006699147381242393,
+     "min_gap": -0.00243605359317905,
+     "max_gap": 0.0
+    },
+    "in_sample": {
+     "oracle": 0.8599269183922046,
+     "neutral": 0.8599269183922046,
+     "gap": 0.0,
+     "table": {
+      "0|0|0": 0,
+      "0|1|0": 0,
+      "0|1|1": 1,
+      "1|1|1": 1
+     },
+     "default": 0
+    }
+   },
+   "t2_own_seats": {
+    "seat_acc": [
+     0.5913520097442144,
+     0.43727161997563946,
+     0.8599269183922046
+    ],
+    "mean_seat_acc": 0.6295168493706861,
+    "best_seat_acc": 0.8599269183922046,
+    "pairwise_error_correlation": {
+     "0-1": -0.9430297822827154,
+     "0-2": 0.014317578896985745,
+     "1-2": 0.009100063764035701
+    },
+    "mean_pairwise_error_correlation": -0.306537379873898,
+    "majority_acc": 0.8599269183922046,
+    "gain_over_mean_seat": 0.2304100690215185,
+    "gain_over_best_seat": 0.0,
+    "ceiling_at_mean_p_and_mean_rho": 0.3047176843905658,
+    "independence_gain_at_mean_p": 0.0604132343057896,
+    "under_ceiling": true,
+    "seats_exchangeable": false,
+    "note": "seats are heterogeneous (lock): the common-p band is not the right object; the Shapley-Grofman rule is"
+   },
+   "t1": {
+    "verdict": "weighted rule EQUALS the neutral dictator on every debate",
+    "dominant_seat_in_sample": "neutral_adjudicator",
+    "weighted_minus_dictator": {
+     "point": 0.0,
+     "lo": -0.1732763880414887,
+     "hi": 0.0,
+     "boot_mean": -0.011290759410480496,
+     "n_draws_defined": 4000,
+     "seed": 414
+    },
+    "weighted_insample_minus_dictator": {
+     "point": 0.0,
+     "lo": 0.0,
+     "hi": 0.0,
+     "boot_mean": 0.0,
+     "n_draws_defined": 4000,
+     "seed": 414
+    },
+    "dominance_broken_share_of_draws": 0.06825,
+    "note": "the CV rule's lower tail comes from resamples in which the dominant seat's weight no longer exceeds the others' (share above); under lock the advocates' weights are gold base-rate logits, so an item resample that tilts the gold balance can make the two advocates jointly outweigh the neutral seat and the rule degenerates to a near-constant verdict; Shapley-Grofman optimality assumes conditional independence, which lock violates"
+   },
+   "t3": {
+    "verdict": "moderator (S2) and the CV weighted majority indistinguishable (CI includes 0)",
+    "s2_minus_weighted_cv": {
+     "point": -0.016463414634146342,
+     "lo": -0.031135531135531136,
+     "hi": 0.16172016959418534,
+     "boot_mean": -0.005130144217195919,
+     "n_draws_defined": 4000,
+     "seed": 414
+    },
+    "verdict_vs_dictator": "S2 WORSE than the neutral dictator (CI below 0)",
+    "s2_minus_dictator": {
+     "point": -0.016463414634146342,
+     "lo": -0.031496062992125984,
+     "hi": -0.002434570906877663,
+     "boot_mean": -0.01634523548714619,
+     "n_draws_defined": 4000,
+     "seed": 414
+    }
+   },
+   "profile_counts": {
+    "0|0|0": {
+     "n": 43,
+     "gold_at_fault": 0
+    },
+    "0|1|0": {
+     "n": 890,
+     "gold_at_fault": 98
+    },
+    "0|1|1": {
+     "n": 705,
+     "gold_at_fault": 573
+    },
+    "1|1|1": {
+     "n": 4,
+     "gold_at_fault": 4
+    }
+   }
+  },
+  "embodied/off": {
+   "label": "embodied/off",
+   "model": "grok-4-1-fast-reasoning",
+   "tag": "cg_deliberation_noedge",
+   "seats": [
+    "writer_advocate_noedge",
+    "counterparty_noedge",
+    "neutral_adjudicator_noedge"
+   ],
+   "guard": {
+    "ok": true,
+    "reasons": [],
+    "n_debates": 420,
+    "n_triples": 410,
+    "n_missing_r0_calls": 0,
+    "noncodable_triple_share": 0.023809523809523808
+   },
+   "moderator_model": "grok-4-1-fast-reasoning",
+   "base_seed": 513,
+   "n_debates": 420,
+   "n_items": 210,
+   "n_triples": 410,
+   "n_items_in_triples": 210,
+   "n_triples_synthesis_codable": 409,
+   "n_triples_s2_codable": 409,
+   "uninformative": false,
+   "best_seat": {
+    "index": 2,
+    "id": "neutral_adjudicator_noedge",
+    "acc": 0.8536585365853658
+   },
+   "fold": {
+    "split_seed": 513,
+    "sizes": [
+     105,
+     105
+    ]
+   },
+   "rules": {
+    "seat0": {
+     "point": 0.5853658536585366,
+     "lo": 0.5196078431372549,
+     "hi": 0.6536585365853659,
+     "boot_mean": 0.5859214624723362,
+     "n_draws_defined": 4000,
+     "seed": 514
+    },
+    "seat1": {
+     "point": 0.44634146341463415,
+     "lo": 0.37772397094430993,
+     "hi": 0.51338199513382,
+     "boot_mean": 0.44633196103503925,
+     "n_draws_defined": 4000,
+     "seed": 514
+    },
+    "seat2": {
+     "point": 0.8536585365853658,
+     "lo": 0.8077858880778589,
+     "hi": 0.8951219512195122,
+     "boot_mean": 0.8537294299544631,
+     "n_draws_defined": 4000,
+     "seed": 514
+    },
+    "majority": {
+     "point": 0.8536585365853658,
+     "lo": 0.8077858880778589,
+     "hi": 0.8951219512195122,
+     "boot_mean": 0.8537294299544631,
+     "n_draws_defined": 4000,
+     "seed": 514
+    },
+    "dictator": {
+     "point": 0.8536585365853658,
+     "lo": 0.8077858880778589,
+     "hi": 0.8951219512195122,
+     "boot_mean": 0.8537294299544631,
+     "n_draws_defined": 4000,
+     "seed": 514
+    },
+    "weighted_cv": {
+     "point": 0.8536585365853658,
+     "lo": 0.6780487804878049,
+     "hi": 0.8951219512195122,
+     "boot_mean": 0.8453793519229018,
+     "n_draws_defined": 4000,
+     "seed": 514
+    },
+    "weighted_insample": {
+     "point": 0.8536585365853658,
+     "lo": 0.8077858880778589,
+     "hi": 0.8951219512195122,
+     "boot_mean": 0.8537294299544631,
+     "n_draws_defined": 4000,
+     "seed": 514
+    },
+    "synthesis": {
+     "point": 0.8484107579462102,
+     "lo": 0.8019559902200489,
+     "hi": 0.8907766990291263,
+     "boot_mean": 0.8484426392472773,
+     "n_draws_defined": 4000,
+     "seed": 514
+    },
+    "s2": {
+     "point": 0.8215158924205379,
+     "lo": 0.773955773955774,
+     "hi": 0.8655256723716381,
+     "boot_mean": 0.8214349018163519,
+     "n_draws_defined": 4000,
+     "seed": 514
+    },
+    "oracle_cv": {
+     "point": 0.8536585365853658,
+     "lo": 0.8062953995157385,
+     "hi": 0.8951219512195122,
+     "boot_mean": 0.853189992123339,
+     "n_draws_defined": 4000,
+     "seed": 514
+    },
+    "best_seat": {
+     "point": 0.8536585365853658,
+     "lo": 0.8077858880778589,
+     "hi": 0.8951219512195122,
+     "boot_mean": 0.8537294299544631,
+     "n_draws_defined": 4000,
+     "seed": 514
+    }
+   },
+   "dominance_broken_share_of_draws": 0.0515,
+   "paired": {
+    "weighted_cv_minus_dictator": {
+     "point": 0.0,
+     "lo": -0.1630170316301703,
+     "hi": 0.0,
+     "boot_mean": -0.008350078031562172,
+     "n_draws_defined": 4000,
+     "seed": 514
+    },
+    "weighted_cv_minus_best_seat": {
+     "point": 0.0,
+     "lo": -0.1630170316301703,
+     "hi": 0.0,
+     "boot_mean": -0.008350078031562172,
+     "n_draws_defined": 4000,
+     "seed": 514
+    },
+    "weighted_cv_minus_majority": {
+     "point": 0.0,
+     "lo": -0.1630170316301703,
+     "hi": 0.0,
+     "boot_mean": -0.008350078031562172,
+     "n_draws_defined": 4000,
+     "seed": 514
+    },
+    "weighted_cv_minus_oracle_cv": {
+     "point": 0.0,
+     "lo": -0.1630170316301703,
+     "hi": 0.0,
+     "boot_mean": -0.0078106402004368275,
+     "n_draws_defined": 4000,
+     "seed": 514
+    },
+    "weighted_insample_minus_dictator": {
+     "point": 0.0,
+     "lo": 0.0,
+     "hi": 0.0,
+     "boot_mean": 0.0,
+     "n_draws_defined": 4000,
+     "seed": 514
+    },
+    "weighted_insample_minus_best_seat": {
+     "point": 0.0,
+     "lo": 0.0,
+     "hi": 0.0,
+     "boot_mean": 0.0,
+     "n_draws_defined": 4000,
+     "seed": 514
+    },
+    "majority_minus_best_seat": {
+     "point": 0.0,
+     "lo": 0.0,
+     "hi": 0.0,
+     "boot_mean": 0.0,
+     "n_draws_defined": 4000,
+     "seed": 514
+    },
+    "majority_minus_dictator": {
+     "point": 0.0,
+     "lo": 0.0,
+     "hi": 0.0,
+     "boot_mean": 0.0,
+     "n_draws_defined": 4000,
+     "seed": 514
+    },
+    "s2_minus_weighted_cv": {
+     "point": -0.03178484107579462,
+     "lo": -0.05486284289276808,
+     "hi": 0.13513513513513514,
+     "boot_mean": -0.023569083909524034,
+     "n_draws_defined": 4000,
+     "seed": 514
+    },
+    "s2_minus_best_seat": {
+     "point": -0.03178484107579462,
+     "lo": -0.05569007263922518,
+     "hi": -0.00980392156862745,
+     "boot_mean": -0.03193504488547539,
+     "n_draws_defined": 4000,
+     "seed": 514
+    },
+    "s2_minus_majority": {
+     "point": -0.03178484107579462,
+     "lo": -0.05569007263922518,
+     "hi": -0.00980392156862745,
+     "boot_mean": -0.03193504488547539,
+     "n_draws_defined": 4000,
+     "seed": 514
+    },
+    "s2_minus_dictator": {
+     "point": -0.03178484107579462,
+     "lo": -0.05569007263922518,
+     "hi": -0.00980392156862745,
+     "boot_mean": -0.03193504488547539,
+     "n_draws_defined": 4000,
+     "seed": 514
+    },
+    "s2_minus_oracle_cv": {
+     "point": -0.03178484107579462,
+     "lo": -0.05486284289276808,
+     "hi": -0.007334963325183374,
+     "boot_mean": -0.03139427206361798,
+     "n_draws_defined": 4000,
+     "seed": 514
+    },
+    "synthesis_minus_weighted_cv": {
+     "point": -0.004889975550122249,
+     "lo": -0.014742014742014743,
+     "hi": 0.16097560975609757,
+     "boot_mean": 0.003438653521399782,
+     "n_draws_defined": 4000,
+     "seed": 514
+    },
+    "s2_minus_synthesis": {
+     "point": -0.02689486552567237,
+     "lo": -0.049019607843137254,
+     "hi": -0.007317073170731708,
+     "boot_mean": -0.02700773743092431,
+     "n_draws_defined": 4000,
+     "seed": 514
+    }
+   },
+   "shares": {
+    "share_weighted_equals_dictator": {
+     "point": 1.0,
+     "lo": 0.7573529411764706,
+     "hi": 1.0,
+     "boot_mean": 0.9875743826509222,
+     "n_draws_defined": 4000,
+     "seed": 514
+    },
+    "share_weighted_equals_majority": {
+     "point": 1.0,
+     "lo": 0.7573529411764706,
+     "hi": 1.0,
+     "boot_mean": 0.9875743826509222,
+     "n_draws_defined": 4000,
+     "seed": 514
+    },
+    "share_majority_equals_dictator": {
+     "point": 1.0,
+     "lo": 1.0,
+     "hi": 1.0,
+     "boot_mean": 1.0,
+     "n_draws_defined": 4000,
+     "seed": 514
+    },
+    "share_s2_equals_weighted": {
+     "point": 0.9437652811735942,
+     "lo": 0.748792270531401,
+     "hi": 0.9635922330097088,
+     "boot_mean": 0.9335572635024014,
+     "n_draws_defined": 4000,
+     "seed": 514
+    }
+   },
+   "weights": {
+    "seat_order": [
+     "writer_advocate_noedge",
+     "counterparty_noedge",
+     "neutral_adjudicator_noedge"
+    ],
+    "applied_to_fold_0_fitted_on_fold_1": [
+     0.6858744212308657,
+     -0.4953214372300254,
+     1.9348603128687278
+    ],
+    "applied_to_fold_1_fitted_on_fold_0": [
+     0.019231361927887592,
+     0.057708317620646564,
+     1.5639755383573426
+    ],
+    "in_sample": [
+     0.34313337698799506,
+     -0.21440987134545506,
+     1.749912359292554
+    ],
+    "dominant_seat_fold_0": 2,
+    "dominant_seat_fold_1": 2,
+    "dominant_seat_in_sample": 2,
+    "smoothing": "Laplace (k+1)/(n+2) on the training fold",
+    "tie_rule": "exact zero score falls back to the simple majority"
+   },
+   "oracle_cv_effective_voter": {
+    "n": 410,
+    "n_items": 210,
+    "split_seed": 513,
+    "fold_sizes": [
+     105,
+     105
+    ],
+    "cv_oracle_acc": 0.8536585365853658,
+    "neutral_acc": 0.8536585365853658,
+    "gap": 0.0,
+    "lo": -0.009900990099009901,
+    "hi": 0.0,
+    "split_sensitivity": {
+     "n_splits": 200,
+     "mean_gap": 0.0,
+     "min_gap": 0.0,
+     "max_gap": 0.0
+    },
+    "in_sample": {
+     "oracle": 0.8536585365853658,
+     "neutral": 0.8536585365853658,
+     "gap": 0.0,
+     "table": {
+      "0|0|0": 0,
+      "0|1|0": 0,
+      "0|1|1": 1
+     },
+     "default": 0
+    }
+   },
+   "t2_own_seats": {
+    "seat_acc": [
+     0.5853658536585366,
+     0.44634146341463415,
+     0.8536585365853658
+    ],
+    "mean_seat_acc": 0.6284552845528455,
+    "best_seat_acc": 0.8536585365853658,
+    "pairwise_error_correlation": {
+     "0-1": -0.9373595826840179,
+     "0-2": 0.09975694083904549,
+     "1-2": -0.0724545481710113
+    },
+    "mean_pairwise_error_correlation": -0.30335239667199454,
+    "majority_acc": 0.8536585365853658,
+    "gain_over_mean_seat": 0.22520325203252034,
+    "gain_over_best_seat": 0.0,
+    "ceiling_at_mean_p_and_mean_rho": 0.30433179390623666,
+    "independence_gain_at_mean_p": 0.0599884226008629,
+    "under_ceiling": true,
+    "seats_exchangeable": false,
+    "note": "seats are heterogeneous (lock): the common-p band is not the right object; the Shapley-Grofman rule is"
+   },
+   "t1": {
+    "verdict": "weighted rule EQUALS the neutral dictator on every debate",
+    "dominant_seat_in_sample": "neutral_adjudicator_noedge",
+    "weighted_minus_dictator": {
+     "point": 0.0,
+     "lo": -0.1630170316301703,
+     "hi": 0.0,
+     "boot_mean": -0.008350078031562172,
+     "n_draws_defined": 4000,
+     "seed": 514
+    },
+    "weighted_insample_minus_dictator": {
+     "point": 0.0,
+     "lo": 0.0,
+     "hi": 0.0,
+     "boot_mean": 0.0,
+     "n_draws_defined": 4000,
+     "seed": 514
+    },
+    "dominance_broken_share_of_draws": 0.0515,
+    "note": "the CV rule's lower tail comes from resamples in which the dominant seat's weight no longer exceeds the others' (share above); under lock the advocates' weights are gold base-rate logits, so an item resample that tilts the gold balance can make the two advocates jointly outweigh the neutral seat and the rule degenerates to a near-constant verdict; Shapley-Grofman optimality assumes conditional independence, which lock violates"
+   },
+   "t3": {
+    "verdict": "moderator (S2) and the CV weighted majority indistinguishable (CI includes 0)",
+    "s2_minus_weighted_cv": {
+     "point": -0.03178484107579462,
+     "lo": -0.05486284289276808,
+     "hi": 0.13513513513513514,
+     "boot_mean": -0.023569083909524034,
+     "n_draws_defined": 4000,
+     "seed": 514
+    },
+    "verdict_vs_dictator": "S2 WORSE than the neutral dictator (CI below 0)",
+    "s2_minus_dictator": {
+     "point": -0.03178484107579462,
+     "lo": -0.05569007263922518,
+     "hi": -0.00980392156862745,
+     "boot_mean": -0.03193504488547539,
+     "n_draws_defined": 4000,
+     "seed": 514
+    }
+   },
+   "profile_counts": {
+    "0|0|0": {
+     "n": 13,
+     "gold_at_fault": 0
+    },
+    "0|1|0": {
+     "n": 231,
+     "gold_at_fault": 32
+    },
+    "0|1|1": {
+     "n": 166,
+     "gold_at_fault": 138
+    }
+   }
+  },
+  "identical/on": {
+   "label": "identical/on",
+   "model": "grok-4-1-fast-reasoning",
+   "tag": "cg_deliberation_identical",
+   "seats": [
+    "reader_alpha",
+    "reader_beta",
+    "reader_gamma"
+   ],
+   "guard": {
+    "ok": true,
+    "reasons": [],
+    "n_debates": 420,
+    "n_triples": 408,
+    "n_missing_r0_calls": 0,
+    "noncodable_triple_share": 0.02857142857142857
+   },
+   "moderator_model": "grok-4-1-fast-reasoning",
+   "base_seed": 613,
+   "n_debates": 420,
+   "n_items": 210,
+   "n_triples": 408,
+   "n_items_in_triples": 208,
+   "n_triples_synthesis_codable": 406,
+   "n_triples_s2_codable": 407,
+   "uninformative": false,
+   "best_seat": {
+    "index": 1,
+    "id": "reader_beta",
+    "acc": 0.8823529411764706
+   },
+   "fold": {
+    "split_seed": 613,
+    "sizes": [
+     104,
+     104
+    ]
+   },
+   "rules": {
+    "seat0": {
+     "point": 0.8799019607843137,
+     "lo": 0.837378640776699,
+     "hi": 0.9170731707317074,
+     "boot_mean": 0.8800437289651186,
+     "n_draws_defined": 4000,
+     "seed": 614
+    },
+    "seat1": {
+     "point": 0.8823529411764706,
+     "lo": 0.8410757946210269,
+     "hi": 0.9209876543209876,
+     "boot_mean": 0.8825264616689588,
+     "n_draws_defined": 4000,
+     "seed": 614
+    },
+    "seat2": {
+     "point": 0.8602941176470589,
+     "lo": 0.8177339901477833,
+     "hi": 0.8995098039215687,
+     "boot_mean": 0.8603517502257899,
+     "n_draws_defined": 4000,
+     "seed": 614
+    },
+    "majority": {
+     "point": 0.8774509803921569,
+     "lo": 0.8361858190709046,
+     "hi": 0.916256157635468,
+     "boot_mean": 0.8777045642594969,
+     "n_draws_defined": 4000,
+     "seed": 614
+    },
+    "dictator": {
+     "point": 0.8602941176470589,
+     "lo": 0.8177339901477833,
+     "hi": 0.8995098039215687,
+     "boot_mean": 0.8603517502257899,
+     "n_draws_defined": 4000,
+     "seed": 614
+    },
+    "weighted_cv": {
+     "point": 0.8774509803921569,
+     "lo": 0.8361858190709046,
+     "hi": 0.916256157635468,
+     "boot_mean": 0.8777045642594969,
+     "n_draws_defined": 4000,
+     "seed": 614
+    },
+    "weighted_insample": {
+     "point": 0.8774509803921569,
+     "lo": 0.8361858190709046,
+     "hi": 0.916256157635468,
+     "boot_mean": 0.8777045642594969,
+     "n_draws_defined": 4000,
+     "seed": 614
+    },
+    "synthesis": {
+     "point": 0.8768472906403941,
+     "lo": 0.8353808353808354,
+     "hi": 0.9156327543424317,
+     "boot_mean": 0.8771051552485662,
+     "n_draws_defined": 4000,
+     "seed": 614
+    },
+    "s2": {
+     "point": 0.8697788697788698,
+     "lo": 0.8275,
+     "hi": 0.9093137254901961,
+     "boot_mean": 0.8699232249793926,
+     "n_draws_defined": 4000,
+     "seed": 614
+    },
+    "oracle_cv": {
+     "point": 0.8676470588235294,
+     "lo": 0.8161764705882353,
+     "hi": 0.9205955334987593,
+     "boot_mean": 0.8733857906478549,
+     "n_draws_defined": 4000,
+     "seed": 614
+    },
+    "best_seat": {
+     "point": 0.8823529411764706,
+     "lo": 0.8410757946210269,
+     "hi": 0.9209876543209876,
+     "boot_mean": 0.8825264616689588,
+     "n_draws_defined": 4000,
+     "seed": 614
+    }
+   },
+   "dominance_broken_share_of_draws": null,
+   "paired": {
+    "weighted_cv_minus_dictator": {
+     "point": 0.01715686274509804,
+     "lo": 0.0,
+     "hi": 0.03712871287128713,
+     "boot_mean": 0.017352814033690326,
+     "n_draws_defined": 4000,
+     "seed": 614
+    },
+    "weighted_cv_minus_best_seat": {
+     "point": -0.004901960784313725,
+     "lo": -0.02977667493796526,
+     "hi": 0.019559902200488997,
+     "boot_mean": -0.004821897409463569,
+     "n_draws_defined": 4000,
+     "seed": 614
+    },
+    "weighted_cv_minus_majority": {
+     "point": 0.0,
+     "lo": 0.0,
+     "hi": 0.0,
+     "boot_mean": 0.0,
+     "n_draws_defined": 4000,
+     "seed": 614
+    },
+    "weighted_cv_minus_oracle_cv": {
+     "point": 0.00980392156862745,
+     "lo": -0.03201970443349754,
+     "hi": 0.043689320388349516,
+     "boot_mean": 0.004318773611636177,
+     "n_draws_defined": 4000,
+     "seed": 614
+    },
+    "weighted_insample_minus_dictator": {
+     "point": 0.01715686274509804,
+     "lo": 0.0,
+     "hi": 0.03712871287128713,
+     "boot_mean": 0.017352814033690326,
+     "n_draws_defined": 4000,
+     "seed": 614
+    },
+    "weighted_insample_minus_best_seat": {
+     "point": -0.004901960784313725,
+     "lo": -0.02977667493796526,
+     "hi": 0.019559902200488997,
+     "boot_mean": -0.004821897409463569,
+     "n_draws_defined": 4000,
+     "seed": 614
+    },
+    "majority_minus_best_seat": {
+     "point": -0.004901960784313725,
+     "lo": -0.02977667493796526,
+     "hi": 0.019559902200488997,
+     "boot_mean": -0.004821897409463569,
+     "n_draws_defined": 4000,
+     "seed": 614
+    },
+    "majority_minus_dictator": {
+     "point": 0.01715686274509804,
+     "lo": 0.0,
+     "hi": 0.03712871287128713,
+     "boot_mean": 0.017352814033690326,
+     "n_draws_defined": 4000,
+     "seed": 614
+    },
+    "s2_minus_weighted_cv": {
+     "point": -0.007371007371007371,
+     "lo": -0.017241379310344827,
+     "hi": 0.0,
+     "boot_mean": -0.00747904559520095,
+     "n_draws_defined": 4000,
+     "seed": 614
+    },
+    "s2_minus_best_seat": {
+     "point": -0.012285012285012284,
+     "lo": -0.036855036855036855,
+     "hi": 0.012165450121654502,
+     "boot_mean": -0.012312315316508398,
+     "n_draws_defined": 4000,
+     "seed": 614
+    },
+    "s2_minus_majority": {
+     "point": -0.007371007371007371,
+     "lo": -0.017241379310344827,
+     "hi": 0.0,
+     "boot_mean": -0.00747904559520095,
+     "n_draws_defined": 4000,
+     "seed": 614
+    },
+    "s2_minus_dictator": {
+     "point": 0.009828009828009828,
+     "lo": -0.009828009828009828,
+     "hi": 0.029925187032418952,
+     "boot_mean": 0.009917048021016289,
+     "n_draws_defined": 4000,
+     "seed": 614
+    },
+    "s2_minus_oracle_cv": {
+     "point": 0.002457002457002457,
+     "lo": -0.04239401496259352,
+     "hi": 0.036855036855036855,
+     "boot_mean": -0.0031487678833587583,
+     "n_draws_defined": 4000,
+     "seed": 614
+    },
+    "synthesis_minus_weighted_cv": {
+     "point": 0.0,
+     "lo": 0.0,
+     "hi": 0.0,
+     "boot_mean": 0.0,
+     "n_draws_defined": 4000,
+     "seed": 614
+    },
+    "s2_minus_synthesis": {
+     "point": -0.007389162561576354,
+     "lo": -0.01728395061728395,
+     "hi": 0.0,
+     "boot_mean": -0.007497243962722111,
+     "n_draws_defined": 4000,
+     "seed": 614
+    }
+   },
+   "shares": {
+    "share_weighted_equals_dictator": {
+     "point": 0.9583333333333334,
+     "lo": 0.9365853658536586,
+     "hi": 0.9781021897810219,
+     "boot_mean": 0.9582763171005871,
+     "n_draws_defined": 4000,
+     "seed": 614
+    },
+    "share_weighted_equals_majority": {
+     "point": 1.0,
+     "lo": 1.0,
+     "hi": 1.0,
+     "boot_mean": 1.0,
+     "n_draws_defined": 4000,
+     "seed": 614
+    },
+    "share_majority_equals_dictator": {
+     "point": 0.9583333333333334,
+     "lo": 0.9365853658536586,
+     "hi": 0.9781021897810219,
+     "boot_mean": 0.9582763171005871,
+     "n_draws_defined": 4000,
+     "seed": 614
+    },
+    "share_s2_equals_weighted": {
+     "point": 0.9926289926289926,
+     "lo": 0.9827586206896551,
+     "hi": 1.0,
+     "boot_mean": 0.9925209544047946,
+     "n_draws_defined": 4000,
+     "seed": 614
+    }
+   },
+   "weights": {
+    "seat_order": [
+     "reader_alpha",
+     "reader_beta",
+     "reader_gamma"
+    ],
+    "applied_to_fold_0_fitted_on_fold_1": [
+     2.170413319885563,
+     1.9292892678192728,
+     1.9740810260220096
+    ],
+    "applied_to_fold_1_fitted_on_fold_0": [
+     1.774952350911674,
+     2.0314323224934756,
+     1.626931069881618
+    ],
+    "in_sample": [
+     1.9740810260220096,
+     1.9970576602222543,
+     1.8031881650516777
+    ],
+    "dominant_seat_fold_0": null,
+    "dominant_seat_fold_1": null,
+    "dominant_seat_in_sample": null,
+    "smoothing": "Laplace (k+1)/(n+2) on the training fold",
+    "tie_rule": "exact zero score falls back to the simple majority"
+   },
+   "oracle_cv_effective_voter": {
+    "n": 408,
+    "n_items": 208,
+    "split_seed": 613,
+    "fold_sizes": [
+     104,
+     104
+    ],
+    "cv_oracle_acc": 0.8676470588235294,
+    "neutral_acc": 0.8602941176470589,
+    "gap": 0.007352941176470588,
+    "lo": -0.027227722772277228,
+    "hi": 0.055825242718446605,
+    "split_sensitivity": {
+     "n_splits": 200,
+     "mean_gap": 0.026384803921568594,
+     "min_gap": -0.0024509803921568627,
+     "max_gap": 0.0392156862745098
+    },
+    "in_sample": {
+     "oracle": 0.8995098039215687,
+     "neutral": 0.8602941176470589,
+     "gap": 0.039215686274509776,
+     "table": {
+      "0|0|0": 0,
+      "0|0|1": 0,
+      "0|1|0": 0,
+      "0|1|1": 0,
+      "1|0|0": 0,
+      "1|0|1": 0,
+      "1|1|0": 1,
+      "1|1|1": 1
+     },
+     "default": 0
+    }
+   },
+   "t2_own_seats": {
+    "seat_acc": [
+     0.8799019607843137,
+     0.8823529411764706,
+     0.8602941176470589
+    ],
+    "mean_seat_acc": 0.8741830065359477,
+    "best_seat_acc": 0.8823529411764706,
+    "pairwise_error_correlation": {
+     "0-1": 0.5905428294211165,
+     "0-2": 0.6775533054753206,
+     "1-2": 0.5769735570457827
+    },
+    "mean_pairwise_error_correlation": 0.6150232306474065,
+    "majority_acc": 0.8774509803921569,
+    "gain_over_mean_seat": 0.0032679738562091387,
+    "gain_over_best_seat": -0.004901960784313708,
+    "ceiling_at_mean_p_and_mean_rho": 0.0423424698125725,
+    "independence_gain_at_mean_p": 0.08231059076769798,
+    "under_ceiling": true,
+    "seats_exchangeable": true,
+    "note": "common-competence band applies (seats within 0.05 of each other)"
+   },
+   "t1": {
+    "verdict": "weighted rule and neutral dictator indistinguishable (CI includes 0)",
+    "dominant_seat_in_sample": null,
+    "weighted_minus_dictator": {
+     "point": 0.01715686274509804,
+     "lo": 0.0,
+     "hi": 0.03712871287128713,
+     "boot_mean": 0.017352814033690326,
+     "n_draws_defined": 4000,
+     "seed": 614
+    },
+    "weighted_insample_minus_dictator": {
+     "point": 0.01715686274509804,
+     "lo": 0.0,
+     "hi": 0.03712871287128713,
+     "boot_mean": 0.017352814033690326,
+     "n_draws_defined": 4000,
+     "seed": 614
+    },
+    "dominance_broken_share_of_draws": null,
+    "note": "the CV rule's lower tail comes from resamples in which the dominant seat's weight no longer exceeds the others' (share above); under lock the advocates' weights are gold base-rate logits, so an item resample that tilts the gold balance can make the two advocates jointly outweigh the neutral seat and the rule degenerates to a near-constant verdict; Shapley-Grofman optimality assumes conditional independence, which lock violates"
+   },
+   "t3": {
+    "verdict": "moderator (S2) and the CV weighted majority indistinguishable (CI includes 0)",
+    "s2_minus_weighted_cv": {
+     "point": -0.007371007371007371,
+     "lo": -0.017241379310344827,
+     "hi": 0.0,
+     "boot_mean": -0.00747904559520095,
+     "n_draws_defined": 4000,
+     "seed": 614
+    },
+    "verdict_vs_dictator": "S2 and the neutral dictator indistinguishable (CI includes 0)",
+    "s2_minus_dictator": {
+     "point": 0.009828009828009828,
+     "lo": -0.009828009828009828,
+     "hi": 0.029925187032418952,
+     "boot_mean": 0.009917048021016289,
+     "n_draws_defined": 4000,
+     "seed": 614
+    }
+   },
+   "profile_counts": {
+    "0|0|0": {
+     "n": 205,
+     "gold_at_fault": 10
+    },
+    "0|0|1": {
+     "n": 9,
+     "gold_at_fault": 3
+    },
+    "0|1|0": {
+     "n": 13,
+     "gold_at_fault": 5
+    },
+    "0|1|1": {
+     "n": 8,
+     "gold_at_fault": 2
+    },
+    "1|0|0": {
+     "n": 5,
+     "gold_at_fault": 1
+    },
+    "1|0|1": {
+     "n": 9,
+     "gold_at_fault": 2
+    },
+    "1|1|0": {
+     "n": 8,
+     "gold_at_fault": 6
+    },
+    "1|1|1": {
+     "n": 151,
+     "gold_at_fault": 135
+    }
+   }
+  },
+  "identical/off": {
+   "label": "identical/off",
+   "model": "grok-4-1-fast-reasoning",
+   "tag": "cg_deliberation_identical_noedge",
+   "seats": [
+    "reader_alpha_noedge",
+    "reader_beta_noedge",
+    "reader_gamma_noedge"
+   ],
+   "guard": {
+    "ok": true,
+    "reasons": [],
+    "n_debates": 420,
+    "n_triples": 409,
+    "n_missing_r0_calls": 0,
+    "noncodable_triple_share": 0.02619047619047619
+   },
+   "moderator_model": "grok-4-1-fast-reasoning",
+   "base_seed": 713,
+   "n_debates": 420,
+   "n_items": 210,
+   "n_triples": 409,
+   "n_items_in_triples": 210,
+   "n_triples_synthesis_codable": 408,
+   "n_triples_s2_codable": 408,
+   "uninformative": false,
+   "best_seat": {
+    "index": 0,
+    "id": "reader_alpha_noedge",
+    "acc": 0.882640586797066
+   },
+   "fold": {
+    "split_seed": 713,
+    "sizes": [
+     105,
+     105
+    ]
+   },
+   "rules": {
+    "seat0": {
+     "point": 0.882640586797066,
+     "lo": 0.8410757946210269,
+     "hi": 0.9204819277108434,
+     "boot_mean": 0.8829863050124651,
+     "n_draws_defined": 4000,
+     "seed": 714
+    },
+    "seat1": {
+     "point": 0.8704156479217604,
+     "lo": 0.829683698296837,
+     "hi": 0.9097560975609756,
+     "boot_mean": 0.8708272761995244,
+     "n_draws_defined": 4000,
+     "seed": 714
+    },
+    "seat2": {
+     "point": 0.8753056234718827,
+     "lo": 0.8337468982630273,
+     "hi": 0.914004914004914,
+     "boot_mean": 0.8753219775512416,
+     "n_draws_defined": 4000,
+     "seed": 714
+    },
+    "majority": {
+     "point": 0.8801955990220048,
+     "lo": 0.8386308068459658,
+     "hi": 0.9191176470588235,
+     "boot_mean": 0.8803289471235989,
+     "n_draws_defined": 4000,
+     "seed": 714
+    },
+    "dictator": {
+     "point": 0.8753056234718827,
+     "lo": 0.8337468982630273,
+     "hi": 0.914004914004914,
+     "boot_mean": 0.8753219775512416,
+     "n_draws_defined": 4000,
+     "seed": 714
+    },
+    "weighted_cv": {
+     "point": 0.8801955990220048,
+     "lo": 0.8386308068459658,
+     "hi": 0.9191176470588235,
+     "boot_mean": 0.8803289471235989,
+     "n_draws_defined": 4000,
+     "seed": 714
+    },
+    "weighted_insample": {
+     "point": 0.8801955990220048,
+     "lo": 0.8386308068459658,
+     "hi": 0.9191176470588235,
+     "boot_mean": 0.8803289471235989,
+     "n_draws_defined": 4000,
+     "seed": 714
+    },
+    "synthesis": {
+     "point": 0.8823529411764706,
+     "lo": 0.8411910669975186,
+     "hi": 0.9207920792079208,
+     "boot_mean": 0.8825391932496145,
+     "n_draws_defined": 4000,
+     "seed": 714
+    },
+    "s2": {
+     "point": 0.875,
+     "lo": 0.8333333333333334,
+     "hi": 0.9144254278728606,
+     "boot_mean": 0.875133188698425,
+     "n_draws_defined": 4000,
+     "seed": 714
+    },
+    "oracle_cv": {
+     "point": 0.8801955990220048,
+     "lo": 0.8300970873786407,
+     "hi": 0.9166666666666666,
+     "boot_mean": 0.8747813204487974,
+     "n_draws_defined": 4000,
+     "seed": 714
+    },
+    "best_seat": {
+     "point": 0.882640586797066,
+     "lo": 0.8410757946210269,
+     "hi": 0.9204819277108434,
+     "boot_mean": 0.8829863050124651,
+     "n_draws_defined": 4000,
+     "seed": 714
+    }
+   },
+   "dominance_broken_share_of_draws": null,
+   "paired": {
+    "weighted_cv_minus_dictator": {
+     "point": 0.004889975550122249,
+     "lo": -0.00980392156862745,
+     "hi": 0.02,
+     "boot_mean": 0.005006969572361357,
+     "n_draws_defined": 4000,
+     "seed": 714
+    },
+    "weighted_cv_minus_best_seat": {
+     "point": -0.0024449877750611247,
+     "lo": -0.021897810218978103,
+     "hi": 0.014925373134328358,
+     "boot_mean": -0.00265735788886234,
+     "n_draws_defined": 4000,
+     "seed": 714
+    },
+    "weighted_cv_minus_majority": {
+     "point": 0.0,
+     "lo": 0.0,
+     "hi": 0.0,
+     "boot_mean": 0.0,
+     "n_draws_defined": 4000,
+     "seed": 714
+    },
+    "weighted_cv_minus_oracle_cv": {
+     "point": 0.0,
+     "lo": -0.026634382566585957,
+     "hi": 0.03631961259079903,
+     "boot_mean": 0.005547626674801965,
+     "n_draws_defined": 4000,
+     "seed": 714
+    },
+    "weighted_insample_minus_dictator": {
+     "point": 0.004889975550122249,
+     "lo": -0.00980392156862745,
+     "hi": 0.02,
+     "boot_mean": 0.005006969572361357,
+     "n_draws_defined": 4000,
+     "seed": 714
+    },
+    "weighted_insample_minus_best_seat": {
+     "point": -0.0024449877750611247,
+     "lo": -0.021897810218978103,
+     "hi": 0.014925373134328358,
+     "boot_mean": -0.00265735788886234,
+     "n_draws_defined": 4000,
+     "seed": 714
+    },
+    "majority_minus_best_seat": {
+     "point": -0.0024449877750611247,
+     "lo": -0.021897810218978103,
+     "hi": 0.014925373134328358,
+     "boot_mean": -0.00265735788886234,
+     "n_draws_defined": 4000,
+     "seed": 714
+    },
+    "majority_minus_dictator": {
+     "point": 0.004889975550122249,
+     "lo": -0.00980392156862745,
+     "hi": 0.02,
+     "boot_mean": 0.005006969572361357,
+     "n_draws_defined": 4000,
+     "seed": 714
+    },
+    "s2_minus_weighted_cv": {
+     "point": -0.004901960784313725,
+     "lo": -0.014814814814814815,
+     "hi": 0.004878048780487805,
+     "boot_mean": -0.004908900552058965,
+     "n_draws_defined": 4000,
+     "seed": 714
+    },
+    "s2_minus_best_seat": {
+     "point": -0.007352941176470588,
+     "lo": -0.0267639902676399,
+     "hi": 0.009950248756218905,
+     "boot_mean": -0.007572891235463013,
+     "n_draws_defined": 4000,
+     "seed": 714
+    },
+    "s2_minus_majority": {
+     "point": -0.004901960784313725,
+     "lo": -0.014814814814814815,
+     "hi": 0.004878048780487805,
+     "boot_mean": -0.004908900552058965,
+     "n_draws_defined": 4000,
+     "seed": 714
+    },
+    "s2_minus_dictator": {
+     "point": 0.0,
+     "lo": -0.014814814814814815,
+     "hi": 0.014814814814814815,
+     "boot_mean": 0.00010993708912877843,
+     "n_draws_defined": 4000,
+     "seed": 714
+    },
+    "s2_minus_oracle_cv": {
+     "point": -0.004901960784313725,
+     "lo": -0.029556650246305417,
+     "hi": 0.031476997578692496,
+     "boot_mean": 0.0006512070219109868,
+     "n_draws_defined": 4000,
+     "seed": 714
+    },
+    "synthesis_minus_weighted_cv": {
+     "point": 0.0024509803921568627,
+     "lo": 0.0,
+     "hi": 0.0075,
+     "boot_mean": 0.0025089463476502404,
+     "n_draws_defined": 4000,
+     "seed": 714
+    },
+    "s2_minus_synthesis": {
+     "point": -0.007371007371007371,
+     "lo": -0.0196078431372549,
+     "hi": 0.0024691358024691358,
+     "boot_mean": -0.007435591719280696,
+     "n_draws_defined": 4000,
+     "seed": 714
+    }
+   },
+   "shares": {
+    "share_weighted_equals_dictator": {
+     "point": 0.9755501222493888,
+     "lo": 0.9587378640776699,
+     "hi": 0.9901234567901235,
+     "boot_mean": 0.9754738687612361,
+     "n_draws_defined": 4000,
+     "seed": 714
+    },
+    "share_weighted_equals_majority": {
+     "point": 1.0,
+     "lo": 1.0,
+     "hi": 1.0,
+     "boot_mean": 1.0,
+     "n_draws_defined": 4000,
+     "seed": 714
+    },
+    "share_majority_equals_dictator": {
+     "point": 0.9755501222493888,
+     "lo": 0.9587378640776699,
+     "hi": 0.9901234567901235,
+     "boot_mean": 0.9754738687612361,
+     "n_draws_defined": 4000,
+     "seed": 714
+    },
+    "share_s2_equals_weighted": {
+     "point": 0.9901960784313726,
+     "lo": 0.9783653846153846,
+     "hi": 0.9975786924939467,
+     "boot_mean": 0.9900653988090677,
+     "n_draws_defined": 4000,
+     "seed": 714
+    }
+   },
+   "weights": {
+    "seat_order": [
+     "reader_alpha_noedge",
+     "reader_beta_noedge",
+     "reader_gamma_noedge"
+    ],
+    "applied_to_fold_0_fitted_on_fold_1": [
+     2.2025016344370627,
+     2.2025016344370627,
+     2.0530547865066415
+    ],
+    "applied_to_fold_1_fitted_on_fold_0": [
+     1.7859957645113047,
+     1.5976034547870972,
+     1.7859957645113047
+    ],
+    "in_sample": [
+     1.9998239137151448,
+     1.888751735215365,
+     1.932078669906852
+    ],
+    "dominant_seat_fold_0": null,
+    "dominant_seat_fold_1": null,
+    "dominant_seat_in_sample": null,
+    "smoothing": "Laplace (k+1)/(n+2) on the training fold",
+    "tie_rule": "exact zero score falls back to the simple majority"
+   },
+   "oracle_cv_effective_voter": {
+    "n": 409,
+    "n_items": 210,
+    "split_seed": 713,
+    "fold_sizes": [
+     105,
+     105
+    ],
+    "cv_oracle_acc": 0.8801955990220048,
+    "neutral_acc": 0.8753056234718827,
+    "gap": 0.004889975550122249,
+    "lo": -0.027093596059113302,
+    "hi": 0.02669902912621359,
+    "split_sensitivity": {
+     "n_splits": 200,
+     "mean_gap": -0.002017114914425428,
+     "min_gap": -0.02444987775061125,
+     "max_gap": 0.009779951100244499
+    },
+    "in_sample": {
+     "oracle": 0.8850855745721271,
+     "neutral": 0.8753056234718827,
+     "gap": 0.009779951100244433,
+     "table": {
+      "0|0|0": 0,
+      "0|0|1": 0,
+      "0|1|0": 0,
+      "0|1|1": 0,
+      "1|0|0": 0,
+      "1|0|1": 0,
+      "1|1|0": 0,
+      "1|1|1": 1
+     },
+     "default": 0
+    }
+   },
+   "t2_own_seats": {
+    "seat_acc": [
+     0.882640586797066,
+     0.8704156479217604,
+     0.8753056234718827
+    ],
+    "mean_seat_acc": 0.876120619396903,
+    "best_seat_acc": 0.882640586797066,
+    "pairwise_error_correlation": {
+     "0-1": 0.6283731671986907,
+     "0-2": 0.7131643914146354,
+     "1-2": 0.691738047452958
+    },
+    "mean_pairwise_error_correlation": 0.677758535355428,
+    "majority_acc": 0.8801955990220048,
+    "gain_over_mean_seat": 0.004074979625101838,
+    "gain_over_best_seat": -0.0024449877750611915,
+    "ceiling_at_mean_p_and_mean_rho": 0.03497392300176394,
+    "independence_gain_at_mean_p": 0.0816432087451705,
+    "under_ceiling": true,
+    "seats_exchangeable": true,
+    "note": "common-competence band applies (seats within 0.05 of each other)"
+   },
+   "t1": {
+    "verdict": "weighted rule and neutral dictator indistinguishable (CI includes 0)",
+    "dominant_seat_in_sample": null,
+    "weighted_minus_dictator": {
+     "point": 0.004889975550122249,
+     "lo": -0.00980392156862745,
+     "hi": 0.02,
+     "boot_mean": 0.005006969572361357,
+     "n_draws_defined": 4000,
+     "seed": 714
+    },
+    "weighted_insample_minus_dictator": {
+     "point": 0.004889975550122249,
+     "lo": -0.00980392156862745,
+     "hi": 0.02,
+     "boot_mean": 0.005006969572361357,
+     "n_draws_defined": 4000,
+     "seed": 714
+    },
+    "dominance_broken_share_of_draws": null,
+    "note": "the CV rule's lower tail comes from resamples in which the dominant seat's weight no longer exceeds the others' (share above); under lock the advocates' weights are gold base-rate logits, so an item resample that tilts the gold balance can make the two advocates jointly outweigh the neutral seat and the rule degenerates to a near-constant verdict; Shapley-Grofman optimality assumes conditional independence, which lock violates"
+   },
+   "t3": {
+    "verdict": "moderator (S2) and the CV weighted majority indistinguishable (CI includes 0)",
+    "s2_minus_weighted_cv": {
+     "point": -0.004901960784313725,
+     "lo": -0.014814814814814815,
+     "hi": 0.004878048780487805,
+     "boot_mean": -0.004908900552058965,
+     "n_draws_defined": 4000,
+     "seed": 714
+    },
+    "verdict_vs_dictator": "S2 and the neutral dictator indistinguishable (CI includes 0)",
+    "s2_minus_dictator": {
+     "point": 0.0,
+     "lo": -0.014814814814814815,
+     "hi": 0.014814814814814815,
+     "boot_mean": 0.00010993708912877843,
+     "n_draws_defined": 4000,
+     "seed": 714
+    }
+   },
+   "profile_counts": {
+    "0|0|0": {
+     "n": 213,
+     "gold_at_fault": 13
+    },
+    "0|0|1": {
+     "n": 2,
+     "gold_at_fault": 0
+    },
+    "0|1|0": {
+     "n": 11,
+     "gold_at_fault": 3
+    },
+    "0|1|1": {
+     "n": 9,
+     "gold_at_fault": 4
+    },
+    "1|0|0": {
+     "n": 6,
+     "gold_at_fault": 3
+    },
+    "1|0|1": {
+     "n": 7,
+     "gold_at_fault": 3
+    },
+    "1|1|0": {
+     "n": 8,
+     "gold_at_fault": 4
+    },
+    "1|1|1": {
+     "n": 153,
+     "gold_at_fault": 136
+    }
+   }
+  }
+ },
+ "guard_ok": true,
+ "guard_failures": [],
+ "t2_passthrough": {
+  "source": "aggregation_passthrough.json",
+  "panels": {
+   "same-model x3  claude-haiku-4-5": {
+    "kind": "same_model",
+    "n_items": 246,
+    "individual_acc": 0.8401084010840109,
+    "majority_acc": 0.8536585365853658,
+    "gain": 0.013550135501354976,
+    "error_rho": 0.6987582737340853,
+    "gain_ceiling": 0.040464679118129454,
+    "gain_floor": -0.04046467911812901,
+    "closed_form_applies": true,
+    "share_of_ceiling_realised": 0.33486328809868376,
+    "independence_gain": 0.09137098957596612,
+    "under_ceiling": true,
+    "under_independence": true
+   },
+   "same-model x3  gpt-5.4-nano": {
+    "kind": "same_model",
+    "n_items": 217,
+    "individual_acc": 0.82642089093702,
+    "majority_acc": 0.8248847926267281,
+    "gain": -0.001536098310291889,
+    "error_rho": 0.6698534869261844,
+    "gain_ceiling": 0.047359319859579085,
+    "gain_floor": -0.04735931985957931,
+    "closed_form_applies": true,
+    "share_of_ceiling_realised": -0.032434974041992956,
+    "independence_gain": 0.09364976318425511,
+    "under_ceiling": true,
+    "under_independence": true
+   },
+   "same-model x3  grok-4-1-fast-reasoning": {
+    "kind": "same_model",
+    "n_items": 231,
+    "individual_acc": 0.9047619047619048,
+    "majority_acc": 0.9177489177489178,
+    "gain": 0.012987012987012991,
+    "error_rho": 0.5885609225821703,
+    "gain_ceiling": 0.035452800321717715,
+    "gain_floor": -0.035452800321717715,
+    "closed_form_applies": true,
+    "share_of_ceiling_realised": 0.3663183971128338,
+    "independence_gain": 0.06975488608141689,
+    "under_ceiling": true,
+    "under_independence": true
+   },
+   "cross-vendor x3  (sample 0)": {
+    "kind": "cross_vendor",
+    "n_items": 220,
+    "individual_acc": 0.8484848484848485,
+    "majority_acc": 0.8818181818181818,
+    "gain": 0.033333333333333326,
+    "error_rho": 0.3532423489519361,
+    "gain_ceiling": 0.08314607084180803,
+    "gain_floor": -0.053592090504879564,
+    "closed_form_applies": true,
+    "share_of_ceiling_realised": 0.4009008843815678,
+    "independence_gain": 0.08960124662603997,
+    "under_ceiling": true,
+    "under_independence": true
+   },
+   "cross-vendor x3  (sample 1)": {
+    "kind": "cross_vendor",
+    "n_items": 220,
+    "individual_acc": 0.8606060606060606,
+    "majority_acc": 0.9136363636363637,
+    "gain": 0.053030303030303094,
+    "error_rho": 0.33612786930123867,
+    "gain_ceiling": 0.07964027103258631,
+    "gain_floor": -0.03986706569012033,
+    "closed_form_applies": true,
+    "share_of_ceiling_realised": 0.6658729602841853,
+    "independence_gain": 0.08651896374210444,
+    "under_ceiling": true,
+    "under_independence": true
+   },
+   "cross-vendor x3  (sample 2)": {
+    "kind": "cross_vendor",
+    "n_items": 224,
+    "individual_acc": 0.8586309523809523,
+    "majority_acc": 0.8973214285714286,
+    "gain": 0.038690476190476275,
+    "error_rho": 0.31914535160293994,
+    "gain_ceiling": 0.0826447517004254,
+    "gain_floor": -0.03480384013682003,
+    "closed_form_applies": true,
+    "share_of_ceiling_realised": 0.46815406174518304,
+    "independence_gain": 0.08706400428164796,
+    "under_ceiling": true,
+    "under_independence": true
+   }
+  },
+  "same_model": {
+   "n": 3,
+   "mean_gain": 0.008333683392692026,
+   "mean_rho": 0.6523908944141467,
+   "mean_ceiling": 0.04109226643314209,
+   "mean_independence_gain": 0.08492521294721271,
+   "all_under_ceiling": true,
+   "all_under_independence": true
+  },
+  "cross_vendor": {
+   "n": 3,
+   "mean_gain": 0.041684704184704234,
+   "mean_rho": 0.3361718566187049,
+   "mean_ceiling": 0.08181036452493991,
+   "mean_independence_gain": 0.08772807154993079,
+   "all_under_ceiling": true,
+   "all_under_independence": true
+  },
+  "spearman_rho_vs_gain_across_panels": -0.7714285714285715,
+  "reading": "majority gain decreases with mean pairwise error correlation across the six panels; every observed gain sits under the correlation ceiling p(1-p)(1-rho); the independence (Condorcet) prediction over-states every same-model gain"
+ },
+ "record_agreement": {
+  "grok_cv_oracle_gap": {
+   "record": [
+    0.0,
+    -0.004,
+    0.0
+   ],
+   "computed": [
+    0.0,
+    -0.004242424242424243,
+    0.0
+   ],
+   "agrees": true
+  },
+  "grok_neutral_acc": {
+   "record": 0.86,
+   "computed": 0.8599269183922046,
+   "agrees": true
+  },
+  "grok_majority_equals_neutral": {
+   "record": [
+    1642,
+    1642
+   ],
+   "computed": [
+    1642,
+    1642
+   ],
+   "agrees": true
+  },
+  "haiku_writer_minus_neutral": {
+   "record_point": 0.102,
+   "computed_in_sample_weighted_minus_dictator": 0.10160427807486631,
+   "agrees": true,
+   "note": "the in-sample log-odds rule on haiku IS the writer's advocate, so this paired difference is the record's writer minus neutral; its interval here comes from a different resampling stream"
+  },
+  "16.10_embodied/on": {
+   "record": {
+    "majority": 0.86,
+    "best_seat": 0.86,
+    "s2": 0.843
+   },
+   "computed": {
+    "majority": 0.8599269183922046,
+    "best_seat": 0.8599269183922046,
+    "s2": 0.8432926829268292
+   },
+   "majority_agrees": true,
+   "s2_agrees": true,
+   "best_seat_agrees": true,
+   "note": ""
+  },
+  "16.10_embodied/off": {
+   "record": {
+    "majority": 0.854,
+    "best_seat": 0.854,
+    "s2": 0.822
+   },
+   "computed": {
+    "majority": 0.8536585365853658,
+    "best_seat": 0.8536585365853658,
+    "s2": 0.8215158924205379
+   },
+   "majority_agrees": true,
+   "s2_agrees": true,
+   "best_seat_agrees": true,
+   "note": ""
+  },
+  "16.10_identical/on": {
+   "record": {
+    "majority": 0.877,
+    "best_seat": 0.88,
+    "s2": 0.87
+   },
+   "computed": {
+    "majority": 0.8774509803921569,
+    "best_seat": 0.8823529411764706,
+    "s2": 0.8697788697788698
+   },
+   "majority_agrees": true,
+   "s2_agrees": true,
+   "best_seat_agrees": false,
+   "note": "best seat is chosen on the triples here; 16.10 chose it on each seat's own codable rows and scored it on the triples, which can pick a different reader on the identical cells (within 0.003)"
+  },
+  "16.10_identical/off": {
+   "record": {
+    "majority": 0.88,
+    "best_seat": 0.883,
+    "s2": 0.875
+   },
+   "computed": {
+    "majority": 0.8801955990220048,
+    "best_seat": 0.882640586797066,
+    "s2": 0.875
+   },
+   "majority_agrees": true,
+   "s2_agrees": true,
+   "best_seat_agrees": true,
+   "note": ""
+  },
+  "passthrough_gains": {
+   "record_about": [
+    0.01,
+    0.04
+   ],
+   "computed": [
+    0.008333683392692026,
+    0.041684704184704234
+   ],
+   "agrees": true
+  }
+ },
+ "headline": {
+  "grok": {
+   "t1": "weighted rule EQUALS the neutral dictator on every debate",
+   "t1_dominant_seat": "neutral_adjudicator",
+   "t1_weighted_cv_minus_dictator": "+0.000 [+0.000, +0.000]",
+   "t1_weighted_insample_minus_dictator": "+0.000 [+0.000, +0.000]",
+   "t1_broken_dominance_share_of_draws": 0.0225,
+   "t3": "moderator (S2) and the CV weighted majority indistinguishable (CI includes 0)",
+   "t3_vs_dictator": "S2 WORSE than the neutral dictator (CI below 0)",
+   "t3_s2_minus_weighted_cv": "-0.016 [-0.031, +0.003]",
+   "t3_s2_minus_dictator": "-0.016 [-0.031, -0.002]",
+   "t2_own_seats_gain_over_mean_seat": 0.2304100690215185,
+   "t2_own_seats_ceiling": 0.3047176843905658,
+   "t2_own_seats_applicable": false,
+   "uninformative": false
+  },
+  "sonnet": {
+   "t1": "weighted rule EQUALS the neutral dictator on every debate",
+   "t1_dominant_seat": "neutral_adjudicator",
+   "t1_weighted_cv_minus_dictator": "+0.000 [-0.207, +0.000]",
+   "t1_weighted_insample_minus_dictator": "+0.000 [+0.000, +0.000]",
+   "t1_broken_dominance_share_of_draws": 0.3405,
+   "t3": "moderator (S2) and the CV weighted majority indistinguishable (CI includes 0)",
+   "t3_vs_dictator": "S2 and the neutral dictator indistinguishable (CI includes 0)",
+   "t3_s2_minus_weighted_cv": "+0.000 [+0.000, +0.207]",
+   "t3_s2_minus_dictator": "+0.000 [+0.000, +0.000]",
+   "t2_own_seats_gain_over_mean_seat": 0.22580645161290336,
+   "t2_own_seats_ceiling": 0.25774130805020123,
+   "t2_own_seats_applicable": false,
+   "uninformative": true
+  },
+  "nano": {
+   "t1": "weighted rule EQUALS the neutral dictator on every debate",
+   "t1_dominant_seat": "neutral_adjudicator",
+   "t1_weighted_cv_minus_dictator": "+0.000 [-0.006, +0.001]",
+   "t1_weighted_insample_minus_dictator": "+0.000 [-0.001, +0.000]",
+   "t1_broken_dominance_share_of_draws": 0.21975,
+   "t3": "moderator (S2) and the CV weighted majority indistinguishable (CI includes 0)",
+   "t3_vs_dictator": "S2 and the neutral dictator indistinguishable (CI includes 0)",
+   "t3_s2_minus_weighted_cv": "+0.000 [-0.021, +0.024]",
+   "t3_s2_minus_dictator": "+0.000 [-0.021, +0.021]",
+   "t2_own_seats_gain_over_mean_seat": 0.1084080239009817,
+   "t2_own_seats_ceiling": 0.19544009701386844,
+   "t2_own_seats_applicable": false,
+   "uninformative": false
+  },
+  "haiku": {
+   "t1": "weighted rule and neutral dictator indistinguishable (CI includes 0)",
+   "t1_dominant_seat": "writer_advocate",
+   "t1_weighted_cv_minus_dictator": "+0.096 [-0.031, +0.176]",
+   "t1_weighted_insample_minus_dictator": "+0.102 [+0.037, +0.179]",
+   "t1_broken_dominance_share_of_draws": 0.67125,
+   "t3": "moderator (S2) is a BETTER aggregator than the CV weighted majority (CI above 0)",
+   "t3_vs_dictator": "S2 BETTER than the neutral dictator (CI above 0)",
+   "t3_s2_minus_weighted_cv": "+0.080 [+0.021, +0.200]",
+   "t3_s2_minus_dictator": "+0.176 [+0.106, +0.254]",
+   "t2_own_seats_gain_over_mean_seat": 0.04099821746880572,
+   "t2_own_seats_ceiling": 0.14406094720324736,
+   "t2_own_seats_applicable": false,
+   "uninformative": false
+  },
+  "embodied/on": {
+   "t1": "weighted rule EQUALS the neutral dictator on every debate",
+   "t1_dominant_seat": "neutral_adjudicator",
+   "t1_weighted_cv_minus_dictator": "+0.000 [-0.173, +0.000]",
+   "t1_weighted_insample_minus_dictator": "+0.000 [+0.000, +0.000]",
+   "t1_broken_dominance_share_of_draws": 0.06825,
+   "t3": "moderator (S2) and the CV weighted majority indistinguishable (CI includes 0)",
+   "t3_vs_dictator": "S2 WORSE than the neutral dictator (CI below 0)",
+   "t3_s2_minus_weighted_cv": "-0.016 [-0.031, +0.162]",
+   "t3_s2_minus_dictator": "-0.016 [-0.031, -0.002]",
+   "t2_own_seats_gain_over_mean_seat": 0.2304100690215185,
+   "t2_own_seats_ceiling": 0.3047176843905658,
+   "t2_own_seats_applicable": false,
+   "uninformative": false
+  },
+  "embodied/off": {
+   "t1": "weighted rule EQUALS the neutral dictator on every debate",
+   "t1_dominant_seat": "neutral_adjudicator_noedge",
+   "t1_weighted_cv_minus_dictator": "+0.000 [-0.163, +0.000]",
+   "t1_weighted_insample_minus_dictator": "+0.000 [+0.000, +0.000]",
+   "t1_broken_dominance_share_of_draws": 0.0515,
+   "t3": "moderator (S2) and the CV weighted majority indistinguishable (CI includes 0)",
+   "t3_vs_dictator": "S2 WORSE than the neutral dictator (CI below 0)",
+   "t3_s2_minus_weighted_cv": "-0.032 [-0.055, +0.135]",
+   "t3_s2_minus_dictator": "-0.032 [-0.056, -0.010]",
+   "t2_own_seats_gain_over_mean_seat": 0.22520325203252034,
+   "t2_own_seats_ceiling": 0.30433179390623666,
+   "t2_own_seats_applicable": false,
+   "uninformative": false
+  },
+  "identical/on": {
+   "t1": "weighted rule and neutral dictator indistinguishable (CI includes 0)",
+   "t1_dominant_seat": null,
+   "t1_weighted_cv_minus_dictator": "+0.017 [+0.000, +0.037]",
+   "t1_weighted_insample_minus_dictator": "+0.017 [+0.000, +0.037]",
+   "t1_broken_dominance_share_of_draws": null,
+   "t3": "moderator (S2) and the CV weighted majority indistinguishable (CI includes 0)",
+   "t3_vs_dictator": "S2 and the neutral dictator indistinguishable (CI includes 0)",
+   "t3_s2_minus_weighted_cv": "-0.007 [-0.017, +0.000]",
+   "t3_s2_minus_dictator": "+0.010 [-0.010, +0.030]",
+   "t2_own_seats_gain_over_mean_seat": 0.0032679738562091387,
+   "t2_own_seats_ceiling": 0.0423424698125725,
+   "t2_own_seats_applicable": true,
+   "uninformative": false
+  },
+  "identical/off": {
+   "t1": "weighted rule and neutral dictator indistinguishable (CI includes 0)",
+   "t1_dominant_seat": null,
+   "t1_weighted_cv_minus_dictator": "+0.005 [-0.010, +0.020]",
+   "t1_weighted_insample_minus_dictator": "+0.005 [-0.010, +0.020]",
+   "t1_broken_dominance_share_of_draws": null,
+   "t3": "moderator (S2) and the CV weighted majority indistinguishable (CI includes 0)",
+   "t3_vs_dictator": "S2 and the neutral dictator indistinguishable (CI includes 0)",
+   "t3_s2_minus_weighted_cv": "-0.005 [-0.015, +0.005]",
+   "t3_s2_minus_dictator": "+0.000 [-0.015, +0.015]",
+   "t2_own_seats_gain_over_mean_seat": 0.004074979625101838,
+   "t2_own_seats_ceiling": 0.03497392300176394,
+   "t2_own_seats_applicable": true,
+   "uninformative": false
+  }
+ }
+}

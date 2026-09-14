@@ -1,141 +1,163 @@
-% introduction.tex -- replaces \section{Introduction} in the ICLR 2027 main file.
-% Synthesised 2026-09-12 from three judged drafts against the corrected record
-% (the scaffold REVERSES under forced commitment: 0.157 -> 0.223). Every number here
-% is in Guidance_Documents/prereg_embodiment_community.md or papers/embodied_sensor/.
-% Style: no em dashes, no colons or semicolons in running prose, no lists.
-% Cites only sharma23, cheng25elephant, golub2010naive, mercier2011argumentative,
-% longino1990science, aumann1974subjectivity, all resolved by references.bib here.
-% Paragraphs 3-7 rewritten 2026-09-12 to the PI's brief: one argument, embodiment
-% (a control) -> the collective as a graph (hypothesis stated in paragraph 4) ->
-% objectivity as a property of structure -> extent and the joint-action frontier.
-% Embodiment is defined once (a perspective, at full dose an interest); narration
-% is the light dose, advocacy the full dose, the collective is the graph built
-% from advocates. Only seven numbers, each with its context; null results are
-% one-clause boundary conditions, the Results section carries them.
-% Addenda 16.10 (roles x edges) and 16.13 (strategic games) are in flight and
-% appear only as "we build/vary", marked by the % pending comment below.
-% If ~100 more words must go: compress the four contribution sentences and drop
-% the 22-to-41-point clause.
+% introduction.tex -- \section{Introduction} body for the ICLR 2027 main file.
+% Rewritten 2026-09-13 from the PI's edit to the six-step arc the PI set: sycophancy and
+% user-prescribed alignment bias -> ungrounded claims as the general problem and why
+% votes and debate among copies fail -> embodiment as mechanism (seat = a copy of the
+% narrating model told whom it speaks for; narration = the five-part scaffold) -> the
+% graph (seats, moderator, rounds), the hypothesis, the sensor, how the claims were
+% verified -> extent -> contributions, then a closing paragraph on uses.
+% Mechanics follow scripts/run_crowdgold_deliberation.py:12-30 and 461-515 (protocol,
+% briefs; agent_system L557-559 makes PROMPTS["narrative_cot"] every seat's system prompt,
+% r0_user L685-694 puts the brief in the user turn) and methods.tex.
+% "The sensor" is the stake-blind counter, at least two of the three seats objecting
+% (analyze_claim_audit.py:70-71; prereg 16.15 RESULTS). The certified gain is over the
+% COLLECTIVE (16.15.1, counter minus collective +0.038 haiku / +0.070 sonnet); the 16.11a
+% gain over the solo model (+0.0239) was routed on the composite flag, and is stated in
+% Results, not here.
+% Style: no em dashes, no colons or semicolons in running prose, no lists. Cites only
+% sharma23, cheng25elephant, golub2010naive, mercier2011argumentative, longino1990science,
+% aumann1974subjectivity. Every number carries a % source comment.
 
 \section{Introduction}
 \label{sec-intro}
 
 Ask a language model whether you were in the wrong and it answers more gently
-than it would answer a stranger holding the same account. Tell it something
-false as if you already believed it, and the false thing survives into the
-answer. Give it a side to argue, and it argues that side. These look like
-three problems. They are one. In each case the conclusion has been pulled
-away from what the evidence supports by something else in the room, the
-feelings of the person asking, a premise already accepted, an interest
-already assigned. Sycophancy is the sharpest of the three, because the pull
-comes from the person who most needs an honest answer
-\citep{sharma23,cheng25elephant}, and preference training plausibly builds it
-in. But the subject of this paper is the general case. Which interventions
-can return the conclusion to the evidence, and which cannot.
+than it would a stranger with the same account. Tell it something false as if
+you believed it, and the falsehood survives. Give it a side, and it argues
+that side. In each case the conclusion is pulled away from the evidence by
+something else in the room, the asker's feelings, an accepted premise, an
+assigned interest. Sycophancy is the sharpest because its pull comes from
+the person who most needs an honest answer \citep{sharma23,cheng25elephant},
+and preference training builds it in as a user prescribed alignment bias.
 
-The pull is not noise. It has a direction, and that is why the standard
-remedies fail. Poll ten people who share one reason to be wrong, and the vote
-cancels their private quirks and keeps the shared reason. A model's samples
-share one reason to defer, so a majority of its samples defers too. A panel
-drawn from three vendors gains about five times more accuracy from voting
-than one model sampled three times, because errors from different vendors
-point in different directions and cancel.
+The general problem is ungrounded claims, conclusions fixed by something
+other than the evidence and unfactual when that something is wrong, and a
+fix for sycophancy alone leaves the others. A panel from three vendors gains
+about five times more from voting than one model sampled three times, yet
+deference points one way for every vendor and passes through both votes and
+debate among copies, so the standard remedies fail.
 % artefact divergence_study_outputs/aggregation_passthrough.json diversity: same-model x3 gain
 % 0.014 / -0.002 / 0.013 (haiku / nano / grok); cross-vendor x3 gain 0.033 / 0.053 / 0.039;
 % error rho 0.59-0.70 same-model vs 0.32-0.35 cross-vendor. Ratio of mean gains ~5.
-The deference points the same way for every vendor, and it passes through both votes essentially untouched.
-Debate among copies of one model converges on whatever was already in the
-room. A bias that enters while the answer is written has to be corrected
-while the answer is written.
+A bias that enters while the answer is written must be corrected while the
+answer is written. Ours is an agent apparatus that exploits social theory to
+drive collective decision making towards objectivity.
 
-If the correction must happen there, the first question is whether the pull
-can be controlled. It can. To embody a model is to assign it a perspective,
-and at full dose an interest as well. Narration is the light dose, a
-perspective with no side, in which the model thinks the asker's situation
-through before it commits. Advocacy is the full dose, a perspective with a
-side to argue. Told it speaks for the person who wrote the account, a model
-takes that side on 99.7 percent of its opening statements, and for the other
-party on 97.4 percent, before any exchange. Narration changes how the model
-speaks and not what it will sign. Across four models from three vendors,
-validation of the asker's own account falls by 22 to 41 points, yet on one of
-those models, on problems with a provably false premise where a bare true or
-false leaves nothing to soften, affirmation of the falsehood rises from 15.7
-to 22.3 percent. So the pull can be set on purpose, in a chosen direction, on
-a chosen agent. That is a lever, not a remedy. Pointed at one agent it
-manufactures bias on demand.
+To embody a model is to give it a perspective and, at full dose, an
+interest. Narration is the light dose, a perspective with no side, five
+first-person parts on who decides, who has a stake, what each action does to
+them and what stays uncertain, before committing. A seat is the full dose,
+a copy of the narrating model told whom it speaks for and what it wants,
+all reading the same account. One seat puts the writer's case as
+strongly as the account allows, one the other party's, neither inventing
+facts, and a third has no stake and wants only the finding the account
+supports. Told it speaks for the writer, a model takes that side on 99.7
+percent of opening statements, for the other party on 97.4 percent, before
+any exchange.
+% artefact rolelock_by_model.json grok (p_at_fault writer 0.0030, counterparty 0.9742,
+% n_r0 1666); prereg L3278, L3404-3405 (16.8 RESULTS)
+Narration cuts validation of the asker's account by 22 to 41 points across
+four models from three vendors,
+% artefact divergence_study_outputs/length_matched_elephant_oeq_validation_corrected.json
+% (16.15.7 RESULTS L4600-4610): ELEPHANT oeq validation, narration minus standard chain of
+% thought, haiku -26.7, sonnet -22.3, nano -41.4, grok -36.0 points; CoT/NoT n 150/150,
+% 150/149, 145/116, 146/145; judge claude-haiku-4-5 per analyze_length_matched_elephant.py
+yet with a bare verdict on a provably false premise one of them affirms the
+falsehood more often, 15.7 to 22.3 percent on a first pass, most of it taken
+back on a second.
+% prereg L16, L167 (standard_cot 0.157, narrative_cot 0.223, gpt-5.4-nano, forced verdict
+% TRUE / FALSE / UNRESOLVED, UNRESOLVED never correct and kept in the denominator,
+% verdict_format.py:263-279); 16.14b RESULTS L4091-4135 (matched-set narrated 0.300 -> 0.224
+% on the second pass, DiD -0.073 [-0.107, -0.039]; the one-shot reversal is a first-pass effect)
+So the pull can be set on purpose, in a chosen direction, on a chosen
+agent. That is a lever, not a remedy.
 
-Once the pull can be placed, the question is how to arrange it across several
-agents, and an arrangement of agents is a graph. Embodied agents are the
-nodes, the relations between them are the edges, which seat is set against
-which and who reads whom, and one node decides. Our hypothesis is
-that objectivity is a property of the graph and not of any node, obtained by
-placing opposed interests so that their agreement is informative and by
-separating who argues from who decides. A network converges to the truth only
-when no single node dominates it \citep{golub2010naive}. An embodied node's
-verdict is fixed by its role, so it carries no information about the case.
-Seat three copies of a model at one case, one for each party and one with no
-interest. Where the roles lock, and on our strongest model they do, the two
-advocates cancel and the uninterested seat dominates, so the collective has
-one effective voter, meaning its majority equals that seat on every case, and
-no vote over the three can beat it. This is the theory's first result. The
-information is not in the nodes. It is in the edges.
+An arrangement of seats is a graph, its nodes the seats and a moderator, its
+edges who is set against whom and who reads whom, and the moderator decides.
+Three seats, copies of one model, open, rebut and restate, a moderator with
+no stake synthesises, each seat accepts, accepts with a modification or
+rejects, the moderator integrates, and each seat votes. Our hypothesis is
+that objectivity is a property of the graph and not of any node, obtained
+by placing opposed interests so that their agreement is informative and by
+separating who argues from who decides. This is the argumentative theory of
+reasoning \citep{mercier2011argumentative} and the social account of
+objectivity \citep{longino1990science} in a machine collective, and a
+network converges to the truth only when no single node dominates it
+\citep{golub2010naive}. A verdict with one loser gives exactly one advocate
+reason to object, so our sensor fires when at least two seats object, an
+agreement no brief can produce. We tested it on over two hundred
+crowd-adjudicated disputes and more than sixteen hundred deliberations,
+every interval an item-clustered bootstrap, every experiment pre-registered
+with a spending ceiling and a stop rule before any call.
+% 210 items, 1,680 debates (16.15.1 RESULTS, 1,677 codable); methods.tex
+% sec-method-instruments and sec-method-estimation
+On one-loser verdicts the collective is wrong nearly ten times as often
+where the flag fires.
+% 16.15.1 RESULTS L4275: one-loser stratum P(wrong | fired) 0.387 vs 0.039, 9.83x,
+% +0.348 [+0.201, +0.493]; fired 93 of 1,287
+The flag also concentrates the errors of the collective's model answering
+alone, never shown the debate, four times over, though its disagreement
+with itself does as much. Cut every line between the seats so that none
+reads another and the flag still fires, a third less often, and still finds
+those errors. The signal belongs to the assigned roles, not to the
+conversation.
+% 16.10 and 16.16 RESULTS: lock, localisation and G3 survive edge removal and narration
+% removal; graph_theory_design.md 2(c) and 2(g): the counter reads all three seats, and the
+% neutral seat sits inside 44 of the 93 one-loser firings, so "roles" rather than "pairing".
+% 16.15.2 RESULTS L4378-4396: counter on grok solo 420 cells, pooled, 0.275 vs 0.062,
+% 4.40x; solo's own disagreement 6.35x, own both-party emission 8.20x. 16.10 RESULTS:
+% embodied/off (peer edges cut, moderator and label rounds intact,
+% run_crowdgold_topology.py:13-20) keeps role-lock 0.969, localisation +0.318, G3 +0.630,
+% transfer +0.111 [+0.016, +0.217]; fire rate 0.196 -> 0.129.
 
-The edge between the two advocates carries that information. An ordinary
-verdict has one loser, so exactly one advocate objects, and that objection is
-what its role produces on any case. When the other advocate objects too, the
-two opposed interests agree, and that agreement cannot come from a role. It
-comes from the case. We call the flag that fires when the second advocate
-objects the sensor. On verdicts with one loser, the collective is wrong
-nearly ten times as often on the cases it flags, and the same flag
-concentrates the errors of the model itself answering alone, stronger than
-the collective and never shown the debate, four times over, though that
-model's own disagreement with itself does as much. The edge that carries
-the signal is the opposed pairing, not the conversation. Cut every line of
-communication between the seats and the flag still fires and still finds
-the errors, only a third less often. Route the flagged cases, and only
-those, to a strong enough uninterested judge, and accuracy rises above
-that solo model.
-% 16.10 RESULTS: embodied/off keeps role-lock 0.969, localisation +0.318, G3 +0.630,
-% transfer +0.111 [+0.016, +0.217]; fire rate 0.196 -> 0.129. 16.15.2: solo's own
-% disagreement 6.35x, own both-party emission 8.20x vs the counter 4.40x.
-Objectivity, where we obtained it, came from the structure, opposed interests
-whose agreement was informative and a deciding node with no interest. This is
-the argumentative theory of reasoning \citep{mercier2011argumentative} and the
-social account of objectivity \citep{longino1990science}, measured in a
-machine collective.
-
-The theory says where the structure ends. The flag reads an advocate objecting
-after its own side won, so it needs a verdict with exactly one loser and
-advocates that sometimes do so. Where they never do, as on a second corpus, it
-has nothing to read and goes silent. Where the verdict finds everyone at
-fault, both advocates lose and it floods, firing on 60 percent of cases
-instead of 7, and there the verdict type itself is the cheaper error
-signal. Where there is no real opposed party, as on the false-premise
-problems, opposed roles move a vote only modestly. The same theory marks a
-frontier. Joint-action problems such as the prisoner's dilemma have no
-verdict with one loser. Under a binding agreement the model solves them
-alone and the advocates have nothing to argue, so the sensor is silent
-there too. With no enforcement, the private action is each advocate's
-case, every seat recommends the equilibrium, and a third node with no
-side, the mediator of correlated equilibrium
-\citep{aumann1974subjectivity}, cannot make the better outcome
-self-enforcing and does not try. What the collective adds on these
-problems is an answer where the model alone declines to give one, a
-plan where none is unique, or a choice between two equilibria.
+The sensor needs a verdict with one loser and advocates that sometimes
+deviate, and on a second corpus where they all but never do it is silent.
+% results.tex sec-results-extent: paired-account corpus, composite fired 6 of 624, both
+% advocates rejected on none (prereg L2594, L2732)
+Where the verdict finds everyone at fault or no one, it floods, 60 percent
+of cases instead of 7, and there the verdict type is
+the cheaper signal.
+% 16.15.1 RESULTS L4275-4276: both-party stratum (ESH or NAH) fired 235 of 390 (0.603),
+% one-loser 93 of 1,287 (0.072); analyze_router_decomposition.py:100-101
+Joint-action problems have no loser. Under a binding agreement the model
+solves them alone, without one every seat recommends the equilibrium and a
+mediator of correlated equilibrium \citep{aumann1974subjectivity} cannot
+make the better outcome self-enforcing, and the collective adds only
+restraint where no plan is unique, given the mediator, and a choice between
+two equilibria the model alone declines.
 % 16.13 RESULTS (binding, B1/B2): advocates lock 0.09-0.12 in the value region, 0.39-0.41
-% elsewhere, then concede; both arms 48/48; mediator +0.151 [+0.043, +0.280] over solo on
-% cannot-assist games. 16.13c RESULTS (non-binding C1): tempted advocates 1.000 private
-% action; solo, neutral reader and mediator all Nash in every dilemma game; P3' fails.
-% 16.13d RESULTS: coordination +0.185 / +0.222 over a solo that declines on 27/27; D1 fails.
+% elsewhere, then concede; both arms 48/48; planner minus solo on cannot-assist +0.151
+% [+0.043, +0.280], neutral minus solo +0.086 [-0.032, +0.226] (L5037-5044). 16.13c RESULTS
+% (non-binding C1): tempted advocates 1.000 private action; solo, neutral reader and
+% mediator all Nash in every dilemma game; P3' fails. 16.13d RESULTS: coordination +0.185 /
+% +0.222 over a solo that declines on 27/27, both arms; D1 fails.
 
-We make four contributions, and they follow the story. Embodiment is a
-strong control, a lever that places bias where one chooses, and cycling it
-on one agent does not deepen it. Where the roles lock, an embodied
-collective has one effective voter, its majority being its uninterested
-seat, which is the theory's first result, and the dissent structure that
-survives is a property of the opposed pairing rather than of the exchange.
-The flag that fires when the second advocate objects is an error sensor on
-one-loser verdicts, and routing on it to a strong enough judge certifies a
-gain over the model answering alone, which is objectivity obtained as a
-property of structure. And the method's extent is mapped, three failure
-modes and a joint-action frontier.
+Four contributions follow. Embodiment is a lever that places bias where one
+chooses, and a second pass does not deepen what it placed. Where the
+advocates' verdicts are fixed by their briefs the collective's majority is
+its uninterested seat, the theory's first result, and its surviving dissent
+belongs to the assigned roles and not to the conversation. A second
+objecting seat is an error sensor on any judgement with exactly one losing
+party, needing no labelled data, and routing on it certifies a gain over the
+collective alone. And the method's extent is mapped, with the three cases
+where it has nothing to read.
+% 16.15.4 RESULTS L4496: grok majority equals neutral on 1,642 of 1,642 triples. 16.10 and
+% 16.16 RESULTS: lock, localisation and G3 survive edge removal and narration removal.
+% 16.15.1 RESULTS L4290: counter routed 328 of 1,677 debates, coverage 0.196; counter minus
+% collective +0.038 [+0.016, +0.060] (haiku judge), +0.070 [+0.048, +0.094] (sonnet)
+
+Three uses follow from that extent. A deployed assistant that adjudicates a dispute can answer
+most cases itself and hand the flagged fifth to a stronger, uninterested
+judge, paying for the judge only where the collective is likely wrong. An
+auditor with no labelled data can seat two opposed advocates on any finding
+that names one losing party, an appeal, a review of a contested account, a
+claim against a policy, and read the cases where a second seat objects as
+the ones to check first, at four to ten times the base error rate. Where a finding
+blames everyone or no one, the verdict type itself is the cheaper signal.
+And where the model alone declines to choose between two acceptable
+answers, the collective chooses. It is not a better answerer by vote, and
+it does not make a prisoner's dilemma cooperate. Within that extent the
+result is objectivity and groundedness obtained as a property of structure.
+% 16.15.1 RESULTS: 9.83x within one-loser verdicts, 4.37x pooled; verdict-type router 0.894
+% vs counter 0.880 (haiku judge). 16.13d RESULTS: coordination +0.185 / +0.222 over a solo
+% that declines on 27/27. 16.10 RESULTS: no cell beats the best single seat by vote.
+% 16.13c RESULTS: every node recommends the equilibrium without enforcement.

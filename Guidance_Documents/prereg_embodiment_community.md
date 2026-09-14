@@ -5190,3 +5190,95 @@ is supported is that deliberation with opposed advocates makes a model
 answer a coordination question it declines alone. Games programme spend
 to date: binding $1.77, non-binding $0.85, solo $0.15, total $2.77 against
 staged ceilings of $3 + $30 + $10 + $2. Nothing above this line is edited.
+
+# Addendum 16.16: is narration of thought load-bearing in the collective? The plain-chain-of-thought seats cell (registered 2026-09-12, ceiling $8, dry-run $4.62, BEFORE any call)
+
+Every embodied seat in every collective run so far (AITA `deliberation_ncot`,
+Dilemmas `dilemma_ncot`, games `game_plan_ncot` / `game_action_ncot`) has
+carried the five-part narration scaffold (`PROMPTS["narrative_cot"]`) as its
+system prompt, with the party-and-interest brief layered into the user turn.
+The dissent structure, the sensor and the routing gain were all measured on
+narrated seats, and the collective has never been run with the seats on
+plain chain of thought. This cell separates narration from assignment.
+
+Design. `run_crowdgold_deliberation.py --agent-scaffold standard_cot --tag
+cg_deliberation_stdcot --samples 1`: same grok-4-1-fast-reasoning, same
+249-item pilot panel and content-filter screen (210 items), same two arms,
+same seven-round protocol, same role briefs, same moderator; the only
+change is each seat's system prompt, `PROMPTS["standard_cot"]` ("You are a
+helpful assistant. Think step by step, then give your answer.") in place of
+the narration scaffold. Cache scaffold `deliberation_ncot_standard_cot`,
+zero files at registration (checked); the moderator caches carry the
+scaffold in their path and cannot collide with the narrated run.
+
+Pre-declared readouts, matched to (embodied, on) of 16.10 on the same 210
+items, embodied baselines in brackets: role-lock [0.971]; per-seat
+objection marginals [0.430 / 0.690 / 0.073]; localisation excess vs the
+Poisson-binomial null [+0.291]; fire rate P(>=2) [0.196]; G3 stake
+concentration [+0.631]; error lift of the >=2 counter at >= 60 fired
+[+0.320]; within-one-loser lift [+0.348]; seat-majority vs best seat
+[+0.000]; S2 accuracy [0.843] with a paired item-clustered CI against the
+narrated cell; transfer to grok solo [+0.212]. Gates as 16.10 (round-level
+and outcome guards, literal GUARD FAILED, minimum-fired 60, MDEs fire
++/-0.045 and lift +/-0.141).
+
+Pre-declared readings. If role-lock, localisation, fire rate and the
+within-one-loser lift survive within their MDEs, narration is NOT
+load-bearing for the sensor: the structure is the assignment's, and
+narration's role in the paper is manner and perspective. If fire rate or
+lift collapse while role-lock survives, narration is what makes an
+advocate object against its own side (the sensor needs narrated seats).
+If role-lock itself falls, narration is part of what pins the seat, and
+the intro's "light dose" framing is understated. S2 accuracy is reported
+either way; a plain-chain-of-thought collective that is MORE accurate than
+the narrated one would be the BrokenMath reversal (narration hurts
+commitment) reappearing in the collective, and is reported as such.
+
+Ceiling $8 (dry-run $4.62); stop and report partial. Nothing above this
+line is edited.
+
+## 16.16 RESULTS (run 2026-09-12; 420 debates, 7,140 calls; guards PASSED, worst NOVERDICT 1.4%, truncation 0.0%; artefact `topology_2x2_analysis.json` cell `embodied_stdcot/on`; matched items 210)
+
+Correction to the registration text: the cell's cache namespace is
+`cgd_grok-4-1-fast-reasoning_standard_cot_*` (the runner keys the scaffold
+by its PROMPTS name), not `deliberation_ncot_standard_cot`; it is disjoint
+from the narrated run's `narrative_cot` namespace, which is what the
+registration required. Spend: read from the caches at the next accounting
+pass (dry-run $4.62).
+
+    readout                              narrated seats (16.10 embodied/on)   plain chain-of-thought seats (this cell)
+    role-lock                            0.971                                 0.974
+    P(at_fault) writer / counterparty / neutral   0.003 / 0.974 / 0.430        0.000 / 0.974 / 0.423
+    per-seat objection marginals         0.430 / 0.690 / 0.073                 0.433 / 0.629 / 0.052
+    localisation excess (P-binom)        +0.291                                +0.339
+    fire rate P(>=2)                     0.196 (329 fired)                     0.131 (55 fired)
+    G3 stake concentration               +0.631                                +0.644
+    error lift of >=2, codable           +0.320 [+0.241, +0.406]               +0.404 [+0.253, +0.552], n fired 55 < 60: UNDER-GATED, not read
+    seat-majority = best seat            +0.000                                +0.000
+    S2 accuracy                          0.843                                 0.853; paired stdcot - narrated +0.010 [-0.010, +0.029]
+    transfer lift on grok solo           +0.212 [+0.081, +0.358]               +0.233 [+0.102, +0.368]
+
+Pre-declared reading, applied mechanically. Role-lock (0.974 vs 0.971),
+localisation (+0.339 vs +0.291) and G3 (+0.644 vs +0.631) survive within
+their MDEs, so the first branch obtains for the structure: narration is
+NOT load-bearing for role-lock, localisation or stake concentration; they
+are the assignment's. The fire rate falls from 0.196 to 0.131, a drop of
+0.065 against the MDE of 0.045, which is the second branch for the fire
+rate alone: narration is part of what makes an advocate object against
+its own side, at about the same magnitude as the exchange edges (16.10:
+0.196 -> 0.129 with edges cut). The within-cell lift is under-gated (55
+fired, minimum 60) and is not read; the transfer to grok solo, which
+does not depend on the fired count gate, survives at +0.233 [+0.102,
++0.368] against +0.212. S2 accuracy is not distinguishable from the
+narrated cell (+0.010 [-0.010, +0.029]); the BrokenMath reversal does not
+reappear in the collective.
+
+Consequence for the paper. Narration of thought is the substrate every
+collective ran on, and it earns its place in the mechanism as an
+amplifier of against-interest objection (about a third more firings, the
+same size as the exchange), not as the source of the structure. The
+introduction's "light dose" framing stands; the claim "the dissent
+structure is a property of the opposed pairing" now rests on two
+independent removals (edges, 16.10; narration, 16.16) that each leave
+lock, localisation and grip intact and each cut the fire rate by about a
+third. Nothing above this line is edited.
