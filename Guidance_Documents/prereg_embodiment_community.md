@@ -7015,3 +7015,22 @@ only for the protocol annotation). `analyze_emergent_graphs.COMMUNITIES`
 gained `haiku_aita_249` and `analyze_rolelock_by_model.PANELS` gained
 `haiku_249` (config entries only).
 Nothing above this line is edited.
+
+## 16.23 RESULTS note (2026-09-21, zero spend): the paired routed-minus-collective intervals the block above said were not part of the readout are in the artefact
+
+`router_decomposition_haiku.json["composed_haiku"]["block"]["paired_deltas"]`
+(judge slot "haiku" holds sonnet standard majority-of-3) and
+`["composed_sonnet"]["block"]["paired_deltas"]` (slot "sonnet" holds grok
+standard majority-of-3), item-clustered, 487 debates: counter routed to
+sonnet minus the collective alone +0.037 [+0.015, +0.059]; to grok +0.033
+[+0.010, +0.056]; verdict-type route to sonnet +0.064 [+0.041, +0.089];
+union to sonnet +0.074 [+0.047, +0.103]. Grok's registered values for the
+same quantities (`router_decomposition.json`, 1,677 debates): counter to
+sonnet minus the collective +0.070 [+0.048, +0.094] (the abstract's 7.0
+points), to haiku +0.038 [+0.016, +0.060]. So the routing gain over the
+collective replicates on haiku with a cross-vendor judge at about half the
+grok size, and its interval excludes 0; this is the one pillar-3 headline
+that holds on both models as registered. It does not change the branch
+reading above (the mechanism conditions are the lift and phi within
+one-loser verdicts, which fail on haiku).
+Nothing above this line is edited.
