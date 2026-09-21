@@ -1,0 +1,41 @@
+% abstract.tex -- unified NoT paper. The PI's 2026-09-21 text with the three edits the
+% 2026-09-21 audit requires: the sycophancy number stated as what it is (relative on nano,
+% absolute range on four models), the theory-of-mind sentence written from Addendum 18's
+% interval (placeholder until B1 is read), and the routing gain over the strongest single
+% model added because 16.22 certified it. Style: no em dashes, colons or semicolons, no lists.
+\begin{abstract}
+Language models are adept at conversation, offering advice and suggestions
+with apparent empathy and understanding. Whatever the nature of that
+understanding, it is widely accepted to break down under more complex social
+conditions, and the sharpest case is sycophancy, the answer pulled toward the
+person asking. The social account of objectivity holds that organised
+criticism across perspectives exposes errors that no single mind corrects,
+and on that account we introduce a general, lightweight prompt scaffold
+structured as a narrative. Narration-of-Thought (NoT) guides the model
+through a first-person narrative that identifies the decision-maker and what
+they know, considers every affected party and their interests, traces the
+consequences of the available actions, acknowledges uncertainty, and only
+then commits. We show that the scaffold can be used in single-agent and
+multi-agent settings on a range of nuanced social reasoning tasks. Used alone,
+it reduces validation of the asker's own account on open-ended personal
+dilemmas by 22 to 41 points
+% pillar1_headline.json: drops -26.7 / -22.3 / -41.4 / -36.0 (16.15.7)
+relative to standard chain-of-thought on four models from three vendors, a
+relative reduction of up to 55 percent,
+% pillar1_headline.json: nano 0.759 -> 0.345, relative 0.5455; sanctioned "31% to 55%"
+and the reduction is three times as large on accounts that name a second
+party.
+% counterparty_moderator.json: -37.7 vs -11.3 points, Z2 RESULTS
+\todo{Addendum 18 sentence on theory of mind, written from the pooled interval}
+Used to build a collective, copies of one model given opposing sides
+support more objective, grounded judgements through structured criticism,
+and reviewing the cases flagged by a second dissenting seat with a stronger
+judge that has no side raises accuracy by 7.0 points over the collective
+alone
+% router_decomposition.json composed_sonnet paired_deltas counter_minus_collective_alone +0.0704 [+0.0477, +0.0941]
+and by 2.4 points over the strongest single model
+% routing_certification.json R1 +0.0238 [+0.0048, +0.0452] (16.22)
+in our primary evaluation. We map where each effect holds and where it does
+not, and our findings lay the groundwork for further work on the scaffold as
+an instrument of social alignment.
+\end{abstract}

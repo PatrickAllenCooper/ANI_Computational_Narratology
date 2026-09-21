@@ -1,0 +1,83 @@
+% results.tex -- unified NoT paper. Pillar 1 from pillar1_headline.json and the Z RESULTS
+% blocks; pillar 2 pending Addendum 18; pillar 3 is results_pillar3.tex (derived from
+% papers/embodied_sensor/results_clean.tex). Numbers carry % source comments.
+\providecommand{\todo}[1]{\textbf{[TODO: #1]}}
+
+\section{Results}
+\label{sec-results-unified}
+
+\subsection{Pillar 1, the scaffold reduces validation of the asker's account}
+\label{sec-results-pillar1}
+
+\begin{table}[t]
+\centering
+\small
+\input{pillar1_headline}
+\caption{Validation of the asker's account on 150 open-ended dilemmas, scored
+from the complete response. Drop is the scaffold minus the control in
+points with an item-clustered 95 percent interval. Relative is the drop
+over the control rate. Bracket bounds the drop over responses an arm did
+not return. Length-matched restricts both arms to responses of the same
+length where the arms share support, with the number of responses used.}
+\label{tab-pillar1}
+\end{table}
+
+On every model the scaffold lowers the rate at which the response endorses
+the asker's account, by 22.3 points on the model that moves least and 41.4
+on the model that moves most,
+% pillar1_headline.json: sonnet -22.3 [-31.3, -13.3]; nano -41.4 [-51.1, -31.4]
+which is 31 to 55 percent of the control rate
+% sanctioned_phrasing.relative
+(Table~\ref{tab-pillar1}). The largest drop is also the least certain
+because that model returned no response on 23 percent of scaffold items
+against 3 percent of control items,
+% nonresponse_not 0.227, nonresponse_cot 0.033
+and scoring the missing responses at either extreme bounds its drop
+between 24 and 50 points.
+% delta_pp_bracket [-50.0, -24.0]
+A control that asks the standard prompt for a response of the scaffold's
+length raises validation rather than lowering it on three models
+% 1b-RESULT-5 corrected verbose rates 0.760 / 0.827 / 0.780 vs CoT 0.627 / 0.727 / 0.759
+and lowers it on the fourth,
+% grok verbose 0.288
+so length is not what carries the effect, though that control contains
+three of the scaffold's instructions in prose and is a control on wording
+as much as on length. Restricting both arms to responses of the same
+length leaves drops of 35.6 and 24.6 points on the two models whose arms
+share enough support to compare.
+% length_matched nano -35.6 (119+85), grok -24.6 (141+75)
+
+The reduction is a counterparty effect in the sense the theory predicts.
+On the 110 accounts that name a specific other party with an interest in
+the outcome the pooled drop is 37.7 points, and on the 40 that do not it is
+11.3, a difference of 26.3 points with an interval that excludes zero,
+% counterparty_moderator.json pooled: -37.7 [-43.6, -31.8]; -11.3 [-18.5, -4.0]; diff -26.3 [-35.7, -17.0]
+and the difference holds on three of the four models taken separately.
+% per-generator diff CIs: haiku, nano, grok exclude 0; sonnet [-32.2, +5.9]
+The residual drop on accounts with no counterparty is real and is the part
+the represented-counterparty account does not explain.
+\todo{17.3 knockout shares (COUNTERPARTY / HEDGING-REGISTER / NEITHER) and 17.1 open-weight rows}
+
+The effect is on the register of the answer and not on its verdict. On the
+mechanically scored dispute instrument the asker's own framing moves the
+verdict toward the asker under both the scaffold and the control on two of
+the three open-weight models and on neither under the third,
+% Z3 RESULTS: Llama CoT +0.256 [+0.130, +0.406], NoT +0.270 [+0.092, +0.451]; Mistral CoT +0.127, NoT +0.299; DeepSeek both include 0
+and the binary instrument returned a clean null on the original models.
+% E1 clean null, HANDOFF_2026-08-26 §R1
+Where the asker's pull reaches the verdict itself, the scaffold does not
+remove it. Where a premise is false and no second party exists, the
+scaffold affirms the falsehood more often on a forced verdict, 22.3
+against 15.7 percent on a first pass,
+% bm_neutral_ncot / bm_neutral_standard (16.15.5 S0 +0.067 [+0.033, +0.103])
+and lowers false affirmation elsewhere by abstaining more rather than by
+rejecting more.
+% 16.15.6 RESULTS
+These are the boundaries the theory owns.
+
+\subsection{Pillar 2, theory of mind}
+\label{sec-results-pillar2}
+
+\todo{Addendum 18 RESULTS: per-model and pooled deltas, false-belief stratum, unparsed rates}
+
+\input{results_pillar3}

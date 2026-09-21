@@ -1,0 +1,82 @@
+\providecommand{\todo}[1]{\textbf{[TODO: #1]}}
+
+\section{Method}
+\label{sec-method-unified}
+
+\subsection{The scaffold (pillar 1)}
+\label{sec-method-scaffold}
+
+Narration-of-Thought is a system prompt of five sections that the model is
+asked to write in the first person before it answers. The first names and
+characterises the decision-maker, who they are, their role and what they
+know. The second lists every person whose life intersects the decision and
+what is at stake for each. The third narrates, for each available action,
+its consequences at least two steps into the future for each stakeholder.
+The fourth states what remains genuinely uncertain about each projected
+future. The fifth commits to a decision and explains, within the narrative
+frame, why that trajectory is preferable to the alternatives. The prompt is
+the same on every model and every task in this paper, and the standard
+chain-of-thought control is a one-line instruction to think step by step
+before answering.
+
+We chose the five sections because each one places a party or a
+consequence into the trace that the asker's account leaves out. The
+stakeholder section is a represented counterparty, the consequence section
+traces what the answer does to that counterparty, and the uncertainty
+section withholds the commitment until both have been written. The theory
+in Section~\ref{sec-theory} predicts that the first two carry the reduction
+in sycophancy and the third does not, and the knockout experiment that
+tests that prediction removes one section at a time under new arm names
+so that no cached response can be mistaken for another.
+
+The primary instrument is the open-ended personal dilemma set of the
+ELEPHANT benchmark \citep{cheng25elephant}, 150 items sampled once with a
+fixed seed. Each response is scored by a judge model for validation,
+whether the response endorses the asker's own account of the situation,
+the construct on which human respondents validate 29 percent of the time
+in the benchmark's own labels.
+The judge sees the full response. The production scorer had passed the
+first 4,000 characters only, which cut the scaffold's longer responses
+before the judge reached their conclusion, and every score in this paper is
+from a re-score of the complete text.
+One response per item and arm is generated on each of seven models from
+six vendors, the four proprietary models of the original study and three
+open-weight deployments,
+and the outcome is the difference in validation rate between the scaffold
+and the control, with a percentile interval from a bootstrap that resamples
+items. Where an arm returned no response we report the share and bound the
+difference by scoring every missing response first as validating and then
+as not.
+
+Three controls scope the claim. A verbose control asks the standard prompt
+for a response of the scaffold's length without its sections, and a
+length-matched comparison restricts both arms to responses of the same
+length where the arms share support. A counterparty coding marks each item
+for whether the account names a specific other party with an interest in
+the outcome, and the difference is read within each stratum.
+And a mechanically scored instrument with a checkable verdict, disputes
+from the Scruples corpus with a gold label from more than a hundred crowd
+votes per item, presents the same account in the third person and as the
+asker's own, so that any movement of the verdict toward the asker is read
+directly from the letter the model outputs rather than from a judge.
+Judge reliability on the validation construct is reported in the
+appendix, with a three-judge panel from three vendors and each judge's
+agreement with human gold labels.
+
+\subsection{Theory of mind (pillar 2)}
+\label{sec-method-tom}
+
+The scaffold is evaluated unchanged on ToMBench \citep{chen2024tombench},
+a multiple-choice theory-of-mind benchmark of eight tasks, from which we
+draw forty items per task with a fixed seed, 320 items in all. The false
+belief task is the pre-declared primary stratum because it is the classic
+test of reasoning about another agent's knowledge state. The system prompt
+is the scaffold or the control, the user turn is the story, the question
+and the four options with one fixed instruction to end with an answer
+letter, and the answer is scored mechanically against the gold letter with
+no judge. The registration is sign-agnostic. The abstract's sentence on
+theory of mind is written from the pooled interval over seven models,
+whatever its sign, and a model on which more than one response in ten has
+no parsable answer is excluded and named.
+
+\input{methods_collective}

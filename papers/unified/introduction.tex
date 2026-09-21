@@ -1,0 +1,91 @@
+% introduction.tex -- unified NoT paper, first draft 2026-09-21. Arc: understanding breaks
+% down under social conditions -> sycophancy as the sharpest case -> the social account of
+% objectivity -> the scaffold as represented opposition inside one trace -> the collective as
+% assigned opposition across seats -> what each pillar shows -> contributions. Every number
+% carries a % source comment. Style: no em dashes, colons or semicolons in running prose, no lists.
+\section{Introduction}
+\label{sec-intro}
+
+Language models are adept at conversation. They give advice and suggestions
+with apparent empathy and an apparent understanding of the person asking.
+Whatever that understanding is and however it arose, it is widely accepted
+to break down under more complex social conditions, when the person asking
+has a stake in the answer, when the account they give is one side of a
+dispute, or when several parties want different things. The sharpest case
+is sycophancy. Ask a model whether you were in the wrong and it answers more
+gently than it would a stranger with the same account
+\citep{sharma23,cheng25elephant}, and preference training builds this in as
+a bias prescribed by the user. The general problem is a conclusion pulled
+away from the evidence by something else in the room, the asker's feelings,
+an accepted premise, an assigned side, and a fix for sycophancy alone leaves
+the others.
+
+The social account of objectivity says where a remedy lies. On the
+argumentative theory of reasoning individuals argue for a side, and on the
+social account of objectivity truth is a property of the organised
+criticism among them rather than of any one mind
+\citep{mercier2011argumentative,longino1990science}. A model answering a
+single user has no critic in the room. Our proposal is to put one there, in
+two ways. Narration-of-Thought (NoT) is a lightweight prompt scaffold that
+guides the model through a first-person narrative that identifies the
+decision-maker and what they know, names every affected party and their
+interests, traces the consequences of each available action for each of
+them, acknowledges what remains uncertain, and only then commits. The
+critic is represented inside the trace. The collective goes further and
+assigns the interests to separate copies of the model, one speaking for
+the writer of an account, one for the other party, one for no one, so that
+the criticism is real and its dissent can be read by a simple rule, that a
+statement against the speaker's assigned interest is informative and a
+statement with it is not \citep{milgrom1986relying,lipman1995robust}.
+
+Three outcomes follow, and the paper reports each at the scope its
+evidence supports. Used alone, the scaffold reduces validation of the
+asker's own account on open-ended personal dilemmas by 22 to 41 points
+% pillar1_headline.json: -26.7, -22.3, -41.4, -36.0 (16.15.7)
+relative to standard chain-of-thought on four models from three vendors,
+a relative reduction of 31 to 55 percent,
+% pillar1_headline.json sanctioned_phrasing.relative
+with a token-matched control that does not reproduce it and a reduction
+three times as large on accounts that name a second party than on accounts
+that do not, 37.7 against 11.3 points.
+% counterparty_moderator.json pooled drop_present / drop_absent (Z2 RESULTS)
+The same scaffold does not remove the asker's pull on a mechanically
+scored verdict instrument,
+% Z3 RESULTS: Llama and Mistral SHIELDING-UNCHANGED, DeepSeek NO-SHIELDING-TO-REMOVE; E1 clean null on nano
+so the claim is about the register of the answer, whether it endorses the
+asker's account, and not about which verdict is reached.
+\todo{Pillar 2 sentence from Addendum 18, written from the pooled interval}
+Used to build a collective of three seats and a moderator with no side, the
+scaffold's assigned opposition produces a dissent that is a sensor. A
+verdict with one losing party gives exactly one advocate a reason to
+object, so when a second seat objects as well the collective is wrong
+nearly ten times as often, 0.39 against 0.04,
+% router_decomposition.json counter_lift_by_stratum.one_loser 0.387 vs 0.039, 9.83x (16.15.1)
+and reviewing only the flagged fifth of cases with a stronger judge that
+has no side raises accuracy by 7.0 points over the collective alone
+% composed_sonnet paired_deltas counter_minus_collective_alone +0.0704 [+0.0477, +0.0941]
+and by 2.4 points over the strongest single model.
+% routing_certification.json R1 +0.0238 [+0.0048, +0.0452] (16.22)
+The flag belongs to the assigned roles and not to the conversation, since
+it survives cutting every line between the seats
+% topology_2x2_analysis.json embodied/off fire 0.129, lift read (16.10)
+and replacing narration with plain chain-of-thought in the seats,
+% 16.16 RESULTS fire 0.131
+and it needs the roles to hold. On a model whose seats do not lock to
+their sides the all-strata sensor and the routing gain replicate but the
+one-loser mechanism does not,
+% 16.23 RESULTS: haiku-249 lock 0.419, phi +0.246, within-one-loser lift includes 0
+which is what the reading rule predicts.
+
+The paper's claim is one sentence long. Objectivity is obtained by placing
+an opposed interest into the process, represented inside one trace or
+assigned to a separate seat, and it is a property of that arrangement and
+not of any copy. Our contributions are the scaffold and its single-agent
+evaluation on social sycophancy with the controls that scope it, a
+theory-of-mind evaluation that is sign-agnostic by registration, the
+collective and its dissent sensor with the ablations that locate the
+signal in the assigned roles, and a map of where each effect holds and
+where it does not. Every experiment was pre-registered with a spending
+ceiling and a stop rule before any model call, every interval is an
+item-clustered bootstrap, and every citation was fetched at a primary
+page.

@@ -1,0 +1,393 @@
+\providecommand{\todo}[1]{\textbf{[TODO: #1]}}
+
+\subsection{Pillar 3, the collective}
+\label{sec-results}
+
+Five instruments carry the results (Table~\ref{tab-instruments}).
+Intervals are 95 percent item-clustered bootstraps unless another level is
+named.
+
+\subsubsection{Embodiment places the bias}
+\label{sec-results-control}
+
+On the open-ended accounts \citep{cheng25elephant} narration reduced
+validation of the asker's own account on every generator, by 26.7 points
+[16.7, 36.7] on haiku, 22.3 [13.3, 31.3] on sonnet, 41.4 [31.4, 51.1] on
+nano and 36.0 [27.1, 44.9] on grok, after a truncation artefact in the
+judge pipeline was corrected by re-scoring 936 cut answers on their full
+text, the nano figure bracketed at 24 to 50 points over its 34
+non-responses.
+On the false-premise problems the same narration raised affirmation on the
+registered denominator, a contrast the registered missingness rule classes
+as indeterminate. The untreated model affirmed the false premise at 0.157
+and under narration at 0.223,
+the registered contrast was +0.067 [+0.033, +0.103],
+the committed-only contrast, with the 34.5 and 27.8 percent of the 600 units
+per arm that returned no verdict removed, was +0.070 [+0.030, +0.115], and
+the Manski bounds on the registered contrast, [-0.278, +0.345], cross zero.
+
+Assigning an interest without narration moved commitment far less. As the
+statement's author the model affirmed it at 0.192 and as the author's rival
+at 0.163,
+a contrast of +0.028 [+0.000, +0.058].
+Combining the two did not add, a difference in differences of -0.025
+[-0.070, +0.022].
+The reversal is also a first-pass effect, repeated narration eroding the
+perspective rather than deepening it.
+Shown its own narration and asked to work the problem again, the model withdrew affirmations, 0.300 to 0.224 on
+434 matched units, -0.076 [-0.104, -0.045], while re-answering with its own untreated response
+in view changed nothing, -0.003 [-0.025, +0.020], a difference in
+differences of -0.073 [-0.107, -0.039].
+
+Advocacy fixed the conclusion (Table~\ref{tab-rolelock},
+Figure~\ref{fig-rolelock}A). On grok the writer's advocate found the writer
+at fault on 0.3 percent of its opening statements and the other party's
+advocate on 97.4 percent, a role-lock of 0.971 [0.954, 0.986] on 1,666
+debates, while the seat with no interest sat at 0.430.
+Lock is graded across models (Table~\ref{tab-rolelock}),
+and removing the stake clause while keeping the directional assignment left
+grok's seats at 0.946 on 377 debates,
+so the pinning force was the assignment, not the stake.
+
+\begin{table}[t]
+\centering
+\caption{Role-lock and seat accuracy at the opening statement by model of the
+collective. Lock is $|P(\text{at-fault})_{\text{writer}} -
+P(\text{at-fault})_{\text{counterparty}}|$. The stake-removed row keeps the
+directional assignment without the stake clause, and its seat accuracies were
+not computed. Seat accuracies are on each seat's codable opening verdicts
+(1,666, 1,665 and 1,670 on grok), and the prose uses the 1,642 debates where
+all three are codable, so 0.857 here and 0.860 there are one quantity on two
+denominators.}
+\label{tab-rolelock}
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{lrcccrccc}
+\toprule
+ & & \multicolumn{3}{c}{$P(\text{at-fault})$ at opening} & & \multicolumn{3}{c}{seat accuracy} \\
+\cmidrule(lr){3-5} \cmidrule(lr){7-9}
+model & $n$ & writer & counterparty & neutral & lock & writer & counterparty & neutral \\
+\midrule
+grok        & 1,666 & 0.003 & 0.974 & 0.430 & 0.971 & 0.592 & 0.437 & 0.857 \\
+grok, stake removed & 377 & 0.008 & 0.954 & 0.387 & 0.946 & n/a & n/a & n/a \\
+sonnet      & 31    & 0.258 & 0.935 & 0.452 & 0.677 & 0.806 & 0.516 & 1.000 \\
+nano        & 816   & 0.147 & 0.767 & 0.363 & 0.620 & 0.718 & 0.612 & 0.830 \\
+haiku       & 190   & 0.474 & 0.915 & 0.656 & 0.442 & 0.816 & 0.444 & 0.708 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{figures/fig1.png}
+\caption{Advocacy as control, and its cost. (A) Probability that each seat's
+opening verdict is at-fault, four models, with the gold base rate marked.
+(B) Each seat's verdict accuracy against its model's role-lock. The writer's
+advocate scores 0.816 at the lowest lock and 0.592 at the highest.}
+\label{fig-rolelock}
+\end{figure}
+
+\subsubsection{The collective has one effective voter where the roles lock}
+\label{sec-results-collective}
+
+A locked seat carried almost nothing about the case, the two advocates
+scoring 0.591 and 0.437 against the crowd on grok while the neutral seat
+scored 0.860, on the 1,642 debates with three codable opening verdicts
+(Figure~\ref{fig-rolelock}B).
+So where the roles locked the collective had one effective voter
+(Figure~\ref{fig-localisation}B), the three-seat majority equalling the
+neutral seat's verdict on 1,642 of those 1,642 debates and the
+cross-validated best fixed function of the three opening verdicts being
+the neutral seat's own, a gap of +0.000 [-0.004, +0.000] against its
+0.860 [0.822, 0.896].
+The count holds only where lock does. On nano at lock 0.620 the majority
+equalled the neutral seat on 777 of 781 debates, and on haiku at lock 0.442
+the writer's advocate outscored the neutral seat, 0.818 against 0.717 on
+187 debates, +0.102 [+0.028, +0.182], the majority still tracking it on
+180 of 187, so haiku is the boundary of the claim.
+
+The two-by-two of roles and edges (Table~\ref{tab-topology}, Figure~\ref{fig-topology}) says which
+creates the structure. With the edges cut, role-lock, the localisation
+excess and the stake concentration G3 held, and with three identical
+readers on the same protocol they vanished, the registered reading H-ROLE,
+the structure coming from directional role assignment.
+The edges of the two-by-two are the exchange rounds, not the pairing of
+opposed verdicts the theory calls an edge, and that pairing sat on nodes
+that read no other seat before the synthesis they labelled, while three
+identical readers under the same moderator produced none of it.
+Cutting the exchange lowered the fire rate from 0.196 to 0.129, a drop of
+0.067 against the registered minimum detectable 0.045, so the exchange
+amplified the sensor without creating it.
+No seat majority beat the best single seat in any cell, with or without
+roles, and what lock adds is that the majority is the neutral seat on every
+debate.
+The interests also cost accuracy. On 415 item-matched cells, identical
+readers with no edges scored 0.872 against 0.842 for the embodied
+collective, +0.030 [+0.012, +0.048], and every collective stayed below
+grok answering alone at 0.911 on the same matched cells.
+
+\begin{table}[t]
+\centering
+\caption{The roles-by-edges two-by-two on grok, 210 items. Embodied seats
+are the two advocates and the neutral adjudicator, identical seats three
+copies of the neutral brief. Edges on means the seats read one another at the
+rebuttal rounds. Intervals are the two-by-two's own item-clustered bootstrap
+with 3,000 draws, so the embodied, edges-on transfer interval differs in the
+third decimal from the 4,000-draw artefact quoted in the text. The majority
+row's intervals are [+0.000, +0.000] in both embodied cells and
+[-0.019, +0.015] and [-0.020, +0.015] in the identical cells.
+Fire rate is the share of debates on which two or more seats objected. G3 is
+undefined without stakes, and the identical cells fired too rarely for a
+lift or transfer reading.}
+\label{tab-topology}
+\footnotesize
+\setlength{\tabcolsep}{2.5pt}
+\begin{tabular}{lcccc}
+\toprule
+ & \multicolumn{2}{c}{embodied roles} & \multicolumn{2}{c}{identical roles} \\
+\cmidrule(lr){2-3} \cmidrule(lr){4-5}
+readout & edges on & edges off & edges on & edges off \\
+\midrule
+debates                        & 1,680 & 420 & 420 & 420 \\
+role-lock                      & 0.971 & 0.969 & 0.013 & 0.018 \\
+localisation excess            & +0.291 & +0.318 & +0.014 & +0.001 \\
+fire rate, two or more object  & 0.196 & 0.129 & 0.005 & 0.007 \\
+debates fired                  & 329 & 54 & 2 & 3 \\
+G3 stake concentration         & +0.631 & +0.630 & n/a & n/a \\
+seat majority at opening       & 0.860 & 0.854 & 0.877 & 0.880 \\
+best single seat               & 0.860 & 0.854 & 0.880 & 0.883 \\
+majority minus best seat       & +0.000 & +0.000 & -0.002 & -0.002 \\
+collective's verdict           & 0.843 & 0.822 & 0.870 & 0.875 \\
+transfer lift on grok alone    & +0.212 [+0.081, +0.358] & +0.111 [+0.016, +0.217] & not read & not read \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{figures/fig6.png}
+\caption{The roles by edges two-by-two on grok. Role-lock, the fire rate of
+the counter, the localisation excess and the collective's verdict accuracy
+per cell. The structure follows the roles and survives the removal of every
+exchange. The identical-reader cells produce none of it and are the most
+accurate.}
+\label{fig-topology}
+\end{figure}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{figures/fig4.png}
+\caption{Structure of the dissent and the effective voter count on grok.
+(A) Number of seats objecting, observed against a Poisson-binomial null from
+the per-seat marginals. (B) Accuracy of the neutral seat, the three-seat
+majority and the cross-validated oracle over the three opening verdicts on
+the 1,642 debates with three codable opening verdicts, the full protocol's
+verdict on 1,677 codable debates, and grok alone at majority-of-three on 420
+cells.}
+\label{fig-localisation}
+\end{figure}
+
+\subsubsection{The dissent is an error sensor on one-loser verdicts}
+\label{sec-results-sensor}
+
+A one-loser verdict undermines exactly one advocate, so on grok exactly one
+seat objected
+on 0.792 of debates against 0.501 under an independence null from the
+seats' own objection marginals, a localisation excess of +0.291
+[+0.255, +0.328] (Figure~\ref{fig-localisation}A).
+The registered composite flag fired on 337 of 1,677 codable debates,
+lifting the probability of a wrong synthesis by +0.325 [+0.236, +0.416],
+and the stake-blind counter, two or more seats objecting, fired on 328,
+with integrated-verdict error rates of 0.415 against 0.095, +0.320
+[+0.239, +0.404], a ratio of 4.37,
+the composite's advantage as a router being +0.001 [+0.000, +0.003], so
+the introduction's sensor is this counter.
+
+The pooled ratio mixes two signals. Of the 328 firings, 93 sat on the 1,287
+one-loser verdicts and 235 on the 390 both-party verdicts. Within one-loser
+verdicts the collective was wrong on 0.387 of flagged debates against 0.039
+of unflagged, +0.348 [+0.201, +0.493], a ratio of 9.83, and within
+both-party verdicts on 0.426 against 0.523, -0.097 [-0.233, +0.043].
+The dissent is the signal where the verdict has one loser and the verdict
+type where it does not. As a router to the haiku judge the
+verdict type alone composed at 0.894 against the counter's 0.880, +0.014
+[-0.003, +0.030], and their union at 0.905, +0.011 [-0.001, +0.024] over
+the verdict type.
+With the cached sonnet judge the three routers composed at 0.913, 0.936 and
+0.956 and the union's gain over the verdict type, +0.021 [+0.011, +0.033],
+excluded zero.
+Whether the two add depends on the judge. Grip, the registered
+precondition, held on grok alone among four models (Table~\ref{tab-sensor}).
+
+The counter also concentrated the errors of generators that never saw the
+debate, on three of four readouts (Table~\ref{tab-sensor},
+Figure~\ref{fig-transfer}). On the 420 cells, grok answering alone at
+0.912 was wrong 4.40 times as often where the counter flagged,
++0.212 [+0.085, +0.359],
+and over the 1,287 and 390 debates that transfer lived in the one-loser
+stratum, +0.130 [+0.026, +0.258] against +0.017 [-0.087, +0.122].
+Nano gave +0.216 [+0.064, +0.383] on 407 codable cells and haiku +0.119
+[-0.010, +0.271], so with both grok readouts within-model, one of two
+cross-vendor readouts excludes zero, which is the claim's scope.
+The solo model's own free signals did as much, any both-party verdict
+among its three samples concentrating its errors 8.20 times and
+disagreement among them 6.35, against the counter's 4.40, each composing
+with the same judge within 0.005 of the counter's 0.914, no pairwise
+difference excluding zero.
+By the registered rule the transfer claim is that the collective's flag
+concentrates a solo model's errors, and so do its own signals.
+
+\begin{table}[t]
+\centering
+\caption{The sensor by model, and its transfer. Top block, each model's own
+collective on the crowd panel, with G1 the composite-flag fire rate, G2 the
+share of final votes that reject, G3 the stake concentration and $S_2$ the
+collective's accuracy. Bottom block, the grok collective's counter applied
+to solo generators that never saw the debate, on the codable cells of 420
+over 210 items, with the error rate on flagged against unflagged cells, the
+ratio and the lift.}
+\label{tab-sensor}
+\footnotesize
+\setlength{\tabcolsep}{2.5pt}
+\begin{tabular}{lrcccc}
+\toprule
+model of the collective & debates & G1 & G2 & G3 & $S_2$ acc. \\
+\midrule
+grok   & 1,677 & 0.201 & 0.333 & +0.631 [+0.587, +0.673] & 0.843 \\
+haiku  & 192   & 0.458 & 0.069 & +0.062 [+0.016, +0.108] & 0.885 \\
+nano   & 828   & 0.854 & 0.024 & +0.034 [+0.018, +0.051] & 0.829 \\
+sonnet & 31    & 0.065 & 0.000 & 0 (no rejects)          & 1.000 \\
+\midrule
+solo generator & cells & \multicolumn{2}{c}{wrong, flagged vs not} & ratio & lift \\
+\midrule
+grok, standard & 420 & \multicolumn{2}{c}{0.275 vs 0.062} & 4.40 & +0.212 [+0.085, +0.359] \\
+grok, narrated & 420 & \multicolumn{2}{c}{0.353 vs 0.070} & 5.01 & +0.282 [+0.143, +0.435] \\
+nano           & 407 & \multicolumn{2}{c}{0.375 vs 0.159} & 2.36 & +0.216 [+0.064, +0.383] \\
+haiku          & 420 & \multicolumn{2}{c}{0.255 vs 0.136} & 1.88 & +0.119 [-0.010, +0.271] \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{figures/fig3.png}
+\caption{Transfer of the counter. (A) Ratio of the error rate on flagged to
+unflagged cells of item and framing, and debates for the collective, for the
+collective itself and for four solo generators the flag never touched. (B) Item-clustered intervals and point estimates on the
+four transfer lifts.}
+\label{fig-transfer}
+\end{figure}
+
+Routing on the flag paid over the collective (Figure~\ref{fig-routing}).
+The haiku judge on the 337 flagged debates raised their accuracy from 0.582
+to 0.774, +0.193 [+0.067, +0.310] at the Bonferroni-corrected 98.75 percent
+level, and on the unflagged debates moved it -0.040 [-0.100, +0.016], so
+at 95 percent the composed system at 0.881 beat the collective by +0.039
+[+0.018, +0.060] and the judge used everywhere, 0.850, by +0.032
+[-0.004, +0.068], a gain the record does not claim.
+A stronger judge met the first registered criterion and not the second.
+Routing grok's solo verdicts to sonnet on the counter raised 0.912 to
+0.936, +0.024 [+0.005, +0.045], on the same 420 cells where the composite
+flag gives the same result, and sonnet on every cell scored 0.976, so
+routing on the flag sits 0.041 [0.014, 0.069] below the judge used
+everywhere.
+The same cells routed on the solo model's own three-sample disagreement
+reached 0.938, +0.026 [+0.010, +0.045], not distinguishable from the
+counter, +0.002 [-0.019, +0.024], at three calls per case against
+seventeen, and routing on any both-party verdict among the solo's samples
+reached 0.960.
+Priced from the cached token counts, the solo model alone costs
+\$0.0005 a case, the solo routed on its own disagreement \$0.0014, the
+collective's sensor routed to the same judge \$0.0098, and the judge
+everywhere \$0.0115, so for a solo model's errors the collective's flag
+is dominated on cost by the model's own disagreement, and its value is as
+an audit of the collective's own verdicts and as the structure in which
+the information sits.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{figures/fig5.png}
+\caption{Composed-system accuracy against the fraction of debates routed to
+the judge, for the counter, the verdict-type router and their union, with
+random routing at the union's coverage and the two solo grok baselines
+marked. Panel A routes to the haiku judge and panel B to the sonnet judge
+of the second design.}
+\label{fig-routing}
+\end{figure}
+
+\subsubsection{The extent of the method}
+\label{sec-results-extent}
+
+The sensor reads departures from role, so it fails in three measured ways. On
+the paired-account corpus, where the verdict names which of two actions was
+worse, grip was the strongest we measured, +0.670 [+0.627, +0.710] on
+624 codable debates.
+The advocates tracked their interests so well that the composite flag fired
+on 6 of 624 debates and both advocates rejected on none,
+and a registered search over eleven native dissent statistics promoted
+none.
+The sensor went silent.
+
+Where the verdict finds everyone at fault or no one, both advocates lose and
+the sensor floods, firing on 0.603 of grok's 390 both-party verdicts
+against 0.072 of its 1,287 one-loser verdicts, so there the verdict type
+is the error signal, not the dissent (Section~\ref{sec-results-sensor}).
+
+Without a real counterparty the roles moved the vote little. On the
+false-premise problems a majority-of-three panel mixing author, neutral and
+rival affirmed the false premise at 0.162 against 0.188 for three
+authors, -0.026 [-0.047, -0.007], and -0.010 [-0.031, +0.008] against
+three disinterested judges.
+It rejected the premise no more often, -0.001 [-0.025, +0.022], and
+abstained more, +0.027 [+0.000, +0.054], so it lowered false affirmation
+by abstaining more, not by rejecting more, no gain in accuracy under the
+rule that non-commitment is never correct.
+Under narration the same contrast fell to -0.004 [-0.025, +0.016] and the
+mixed panel itself rose by +0.044 [+0.012, +0.079], so narration's error
+passed through the vote.
+
+The same theory marks a joint-action frontier, and every regime of its
+instrument fell outside the theory's domain for a measured reason. On 144
+ordinal two-by-two games under a binding joint plan, grok alone scored
+0.891 [0.840, 0.935] and 48 of 48 in the value region, against the 0.215
+floor with payoffs masked.
+Seated for the two players the advocates barely locked, 0.094
+[+0.031, +0.167] beside a neutral seat and 0.115 [+0.042, +0.198] beside a
+mediator, neither ever named the mutual-private cell, both collectives
+scored 48 of 48 and no seat objected, so the sensor was silent, not
+flooded.
+A plan both must accept removes the conflict the roles need. Over all
+144 games the advocates locked at the opening statement, 0.405
+[+0.335, +0.474] and 0.385 [+0.322, +0.449], then conceded by the second
+round, so the flag never fired on 288 cells, and the one gain over grok
+alone was restraint. Where no unique
+plan exists the solo model named one on 47 percent of cells, and the
+mediator collective declined more often, +0.151 [+0.043, +0.280] over 31
+games, against the registered expectation that neither arm would beat the
+solo there, while the naive collective's +0.086 [-0.032, +0.226] did not
+clear zero.
+Without enforcement the roles locked completely, the tempted advocate
+naming its private action on every opening statement, and so did every
+other node, the solo model and the neutral reader recommending the
+equilibrium in every dilemma game and the mediator in 20 of 21 cells,
+none ever the Pareto cell, so the mediator held nothing, -0.042
+[-0.146, +0.042] against the naive reader. In a one-shot dilemma without
+enforcement the correlated-equilibrium set is the Nash set, so the
+unanimity is the correct answer to the question as put.
+Where a recommendation can coordinate, in nine games with two equilibria
+favouring different players, the solo model declined on every one of 27
+rows, which the registration scores as failure because either
+equilibrium is self-enforcing once both players hear it, and the
+collective coordinated on an equilibrium on 5 and 6 of 27, +0.185
+[+0.037, +0.370] over the solo in the neutral arm and +0.222 in the
+mediator arm, whose own interval [0.000, 0.481] reaches zero. All eleven
+recommendations named an equilibrium, nine the welfare-better one, so
+the gain is commitment, not guessing, and the two third seats did not
+differ, +0.037 [-0.111, +0.222]. Across every regime the advocates locked
+at the opening and yielded by the vote, the opposite of the dispute and
+paired-account advocates, so the sensor had nothing to read and a
+non-embodied third node steered nothing the naive reader did not, and
+whether restraint and coordination owe anything to the opposed advocates
+rather than to deliberation itself is not separable here, since the solo
+comparator has no third seat and no identical-reader cell was run on the
+games.
