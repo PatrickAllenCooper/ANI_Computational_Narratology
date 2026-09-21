@@ -7320,3 +7320,28 @@ deployments' 17.1 ELEPHANT cells, when read, will show whether the
 register effect reproduces on the same models on which the verdict effect
 does not.
 Nothing above this line is edited.
+
+## Z4 RESULTS (zero spend, 2026-09-21; artefact `bridge_shielding.json`, script `scripts/analyze_bridge_shielding.py`, 4,000 item-clustered draws, seed 7)
+
+Asker-shielding, P(at fault | as_asker) minus P(at fault | third_person),
+item-paired majority verdicts, published coding, on each community's own
+items:
+
+| model (items) | solo CoT | solo NoT | collective S2 | neutral seat r0 | S2 minus solo NoT | reading |
+|---|---|---|---|---|---|---|
+| grok (210) | -0.052 [-0.086, -0.019] | -0.048 [-0.081, -0.019] | -0.016 [-0.043, +0.005] | -0.021 [-0.047, +0.000] | +0.005 [-0.032, +0.043] | NO-BRIDGE |
+| nano (209) | -0.060 [-0.101, -0.025] | -0.015 [-0.065, +0.030] | -0.023 [-0.051, +0.000] | -0.029 [-0.058, -0.006] | -0.012 [-0.065, +0.041] | FLOOR |
+| haiku (249) | -0.028 [-0.065, +0.004] | -0.012 [-0.057, +0.032] | -0.025 [-0.076, +0.025] | -0.046 [-0.087, +0.000] | -0.008 [-0.085, +0.064] | FLOOR |
+
+Pre-declared reading: BRIDGE on 0 of 3 models; NO-BRIDGE on grok (the
+collective's shielding is smaller in point value, -0.016 against -0.048,
+but the paired difference includes 0) and FLOOR on nano and haiku (solo
+NoT shielding already inside an interval around 0). The instrument's
+asker-shielding is at most about five points on any solo, so there is
+little for the external counterparty to remove and the test is not
+powered to see it. The unified paper does not carry a bridge sentence;
+the tie between pillars 1 and 3 rests on 16.16 and 16.23 (`theory.md`
+§3), not on Z4. Note in passing that NoT's solo shielding on nano is
+smaller than CoT's (+0.062 [+0.000, +0.125]), an interval that touches 0
+and is not read.
+Nothing above this line is edited.
