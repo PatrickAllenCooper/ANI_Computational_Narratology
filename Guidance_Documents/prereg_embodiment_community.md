@@ -7241,3 +7241,23 @@ ceiling $106 of the $130 authorised; the balance is reserved for the
 17.3 extension (sonnet, or a fifth arm `not_drop_protagonist`) which the PI
 decides after the 17.3 readout.
 Nothing above this line is edited.
+
+## 16.25 amendment (recorded 2026-09-21 BEFORE the call; PI authorised in session): one further `--resume` pass on cells lost to client-side connection failures
+
+The no-edge k=4 run (`logs/cell_1625_noedge_k4_resume.log`) finished with
+1,348 of 1,680 rows; 333 calls failed after the runner's 5 attempts, every
+one "Connection error", all inside one contiguous stretch of the run (cells
+1200 to 1300, roughly 10:00 to 10:50 local), while the Llama community on a
+different vendor lost 149 calls the same way in the same window. That is
+a failure of this machine's link, not of a model call, and it is not
+outcome-dependent. The PI authorised one further `--resume` pass for each
+affected run (no-edge now; the Llama community after its current pass
+ends), same command and flags, which replays every cached call by name and
+generates only the missing cells. The "never retry" rule for API-side
+failures inside a run stands; this amendment covers link outages only, and
+the RESULTS block will report both passes' counts. Cost of the no-edge
+fill: about 332 cells x 17 calls at the measured grok rate, roughly $2.75,
+inside the 16.25 ceiling ($15). The partial-panel CSVs written by the first
+pass are kept as `cg_deliberation_noedge_pass1_{rows,votes}.csv` and
+`_pass1_summary.json`.
+Nothing above this line is edited.

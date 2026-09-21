@@ -53,6 +53,24 @@ from scripts.verdict_format import (
     is_noncommittal,
 )
 
+# Addendum 17.3 (2026-09-21): the section-knockout arms, installed under NEW
+# arm names so their caches cannot collide with any existing cell. Each is
+# asserted byte-identical to its scripts.scaffold_permutations entry, and the
+# intact scaffold there is asserted equal to PROMPTS["narrative_cot"].
+from scripts.scaffold_permutations import PERMUTATIONS as _PERMS
+
+KNOCKOUT_ARMS = {
+    "not_drop_stakeholders": "drop_stakeholders",
+    "not_drop_consequences": "drop_consequences",
+    "not_drop_uncertainty": "drop_uncertainty",
+    "not_commit_first": "commit_first",
+}
+assert _PERMS["narrative_cot_full"] == PROMPTS["narrative_cot"], "intact scaffold drifted from PERMUTATIONS"
+for _arm, _key in KNOCKOUT_ARMS.items():
+    assert _arm not in PROMPTS, f"{_arm} already in PROMPTS"
+    PROMPTS[_arm] = _PERMS[_key]
+    assert PROMPTS[_arm] == _PERMS[_key]
+
 BUDGET_GENERATORS = ["gpt-5.4-nano", "claude-haiku-4-5", "grok-4-1-fast-reasoning"]
 ALL_GENERATORS = BUDGET_GENERATORS + ["claude-sonnet-4-6"]
 SINGLE_AGENT_ARMS = ["raw", "baseline_io", "standard_cot", "narrative_cot"]
@@ -128,7 +146,7 @@ def _gen_cache_path(
 def _max_tokens_for(gen_model: str, arm: str) -> int:
     if gen_model == "gpt-5.4-nano":
         return 2048
-    if arm in ("narrative_cot", "narrative_cot_v2", "narrative_cot_v3"):
+    if arm in ("narrative_cot", "narrative_cot_v2", "narrative_cot_v3") or arm in KNOCKOUT_ARMS:
         return 2048
     return 1024
 
@@ -136,7 +154,11 @@ def _max_tokens_for(gen_model: str, arm: str) -> int:
 def _system_prompt(arm: str) -> str:
     if arm == "raw":
         return ""
-    return PROMPTS.get(arm, PROMPTS["standard_cot"])
+    # 17.3: no silent fallback. An arm name that is not a registered prompt
+    # would otherwise run standard CoT under the wrong cache name.
+    if arm not in PROMPTS:
+        raise KeyError(f"unknown arm {arm!r}; registered arms: {sorted(PROMPTS)}")
+    return PROMPTS[arm]
 
 
 def _generate_advice(
