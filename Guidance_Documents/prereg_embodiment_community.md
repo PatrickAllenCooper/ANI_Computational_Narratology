@@ -7056,3 +7056,188 @@ against the registered [+0.0145, +0.0593]); there the gain sits on the
 gold-NTA items (+0.065, 72 fired) and is absent on gold-YTA (-0.005, 22
 fired), which the paper reports as a scope note on the haiku replicate.
 Nothing above this line is edited.
+
+# Addendum 17: pillar 1 of the unified paper, reinforcement of the social-sycophancy result (registered 2026-09-21 BEFORE any call under the new ELEPHANT cells; plan `~/.claude/plans/nested-humming-hamster.md` approved 2026-09-21; theory `papers/unified/theory.md`; pillar-1 ceiling $130 in total across 17.1 to 17.4)
+
+Shared instrument. ELEPHANT OEQ, the same 150-item seed-42 sample as Phase
+12/13, generation through `scripts/run_elephant.py --datasets oeq --n 150`
+(cache `elephant_gen_oeq_<gen>_<arm>_<item>.json`, keyed by NAME), scoring
+by the production judge (claude-haiku-4-5, all three metrics, the 4,000-char
+production truncation), then `scripts/rescore_elephant_untruncated.py` on
+every truncated response of the new cells so that the analysis reads
+corrected validation scores through `apply_corrected_scores` exactly as
+16.15.7 did. One sample per (generator, arm, item), as in the original
+design; item-clustered percentile bootstrap (8,000 draws, seed 20260822,
+the 16.15.7 estimator) on the unpaired NoT minus CoT drop. The raw CSV
+`elephant_singleagent_raw.csv` is backed up as
+`elephant_singleagent_raw_pre17.csv` before the first run because
+`run_elephant.py` rewrites it wholesale (its `_merge_rows` replaces only
+cells whose generator AND arm AND dataset are in the run, so existing cells
+survive by construction; the backup is the guard on that construction).
+Cache-clean gate: the gen cache for every new (generator, arm) pair on OEQ
+must be empty before the call; the run refuses otherwise.
+
+Guards, every cell. Per-arm non-response reported (rule 2b) with the Manski
+bracket; judge NOVERDICT (score outside {0, 1}) under 5 percent; the four
+original cells replayed through `scripts/make_pillar1_table.py` must
+reproduce the 16.15.7 drops to 0.01 points after every merge (the script's
+gate); the literal string `GUARD FAILED` printed by the analysis on any
+failure, and no number from that cell is read until the guard is fixed and
+re-registered.
+
+## 17.1 Cross-vendor replication on the three Foundry deployments (ceiling $30)
+
+`--generators Llama-3.3-70B-Instruct,Mistral-Large-3-2,DeepSeek-V4-Pro
+--arms standard_cot,narrative_cot`. 900 generations (Llama 0.71/0.71,
+Mistral 0.50/1.50, DeepSeek 1.925/3.828 per M; DeepSeek-V4-Pro carries the
+8,192 completion floor by name in `generators.py`), about 2,700 production
+judge calls and up to 900 re-score calls; estimate $20 to $25. Stop rule:
+if a deployment's NoT arm returns more than 25 percent empty responses at
+50 items the cell stops and is reported as ATTRITION-BOUND from the
+partial panel.
+
+Readouts per deployment, four-model values in brackets: CoT and NoT
+validation rates [0.627 to 0.815 / 0.345 to 0.503]; drop with CI [-22.3 to
+-41.4]; relative reduction [31 to 55 percent]; per-arm non-response and the
+bracket [nano 22.7 percent, bracket -50 to -24]; length-matched drop where
+the arms share support; verbose-control row not run (no verbose arm for
+these deployments). Pre-declared readings per deployment: REPLICATES iff
+the drop is negative with a CI excluding 0 and non-response is under 10
+percent in both arms; ATTRITION-BOUND iff non-response is 10 percent or
+more in either arm or the bracket crosses 0 (the point estimate is reported
+inside its bracket and not tabulated as a headline); NULL iff the CI
+includes 0 with non-response under 10 percent; REVERSED iff the drop is
+positive with a CI excluding 0. The paper's model count becomes "seven
+models from six vendors, three of them open-weight" only for the
+deployments that read REPLICATES, and the sentence names the others.
+
+## 17.2 Three-vendor judge panel on the validation construct (ceiling $20)
+
+Every OEQ validation cell of the seven generators (both arms) re-scored,
+untruncated, by gpt-5.4-nano and by Llama-3.3-70B-Instruct through
+`rescore_elephant_untruncated.py --judge <model> --limit` unset (separate
+`elephant_rescore_*` caches keyed by judge), about 4,200 calls, estimate
+$10. Readouts: per judge and per generator the NoT minus CoT drop with CI;
+the three-judge sign agreement; per-judge threshold calibration on the 30
+gold items of `judge_panel_raw.csv` (the theory-grounding §7 method) and
+the calibrated drops; convergent correlation between judges on the same
+responses [validation convergent r 0.478 across the three original judges].
+Pre-declared readings: JUDGE-ROBUST iff every judge gives a negative drop
+with a CI excluding 0 on every generator that read REPLICATES under 17.1
+and on the four originals; JUDGE-DEPENDENT iff any judge's CI includes 0 or
+reverses on any such generator, in which case the paper reports the range
+across judges and names the judge, and the headline carries "as scored by
+the production judge". A judge whose NOVERDICT rate exceeds 5 percent on
+any cell is excluded and named.
+
+## 17.3 Section knockouts on the social sycophancy outcome (ceiling $45; the discriminating experiment for P1a of `papers/unified/theory.md`)
+
+Four arms from `scripts/scaffold_permutations.PERMUTATIONS`, installed into
+`run_elephant.py`'s PROMPTS under NEW arm names so the cache cannot collide
+with any existing cell and the runner's `_system_prompt` fallback to
+standard CoT is removed (an unknown arm now raises): `not_drop_stakeholders`
+(= `drop_stakeholders`), `not_drop_consequences` (= `drop_consequences`),
+`not_drop_uncertainty` (= `drop_uncertainty`), `not_commit_first`
+(= `commit_first`, the five sections with the decision moved first, the
+commitment-separation hypothesis of `not_origins_review.md` §2). Each is
+asserted byte-identical to its `PERMUTATIONS` entry at import, and
+`PERMUTATIONS["narrative_cot_full"]` is asserted equal to
+`PROMPTS["narrative_cot"]` (checked 2026-09-21: True). Knockout arms take
+the narrative token cap (2,048). Generators claude-haiku-4-5,
+grok-4-1-fast-reasoning, gpt-5.4-nano; 150 items; 1,800 generations, about
+5,400 production judge calls and up to 1,800 re-score calls; estimate $30
+to $35. The intact NoT and CoT cells are the existing corrected cells (no
+regeneration).
+
+Readouts per generator and pooled (item-clustered, the pooled bootstrap
+resampling items so a knockout's rows on all three generators move
+together): validation rate per arm; the drop of each knockout from CoT;
+the knockout minus intact NoT difference with CI; the share of the intact
+reduction each knockout removes, defined as (knockout rate minus intact
+rate) / (CoT rate minus intact rate), with CI; per-arm non-response and
+compliance (sections present) reported as descriptives, not as a mechanism
+(the compliance retraction of HANDOFF 2026-08-26 §R1 stands); mean
+response length per arm. Pre-declared readings on the pooled shares, with
+per-generator shares reported beside them: COUNTERPARTY iff removing
+stakeholders or removing consequences removes more than half of the intact
+reduction with a CI excluding one half from below... stated exactly: the
+share's CI lies entirely above 0.5 for at least one of the two, and the
+uncertainty knockout's share has a CI entirely below 0.5; HEDGING-REGISTER
+iff the uncertainty knockout's share is the largest of the four with a CI
+excluding 0 and the stakeholder and consequence shares have CIs entirely
+below 0.5; NEITHER iff no knockout's share has a CI excluding 0.25 from
+above (the ACL pattern of separable sections, read as "the reduction is
+carried by the scaffold as a whole"); MIXED for every other configuration,
+reported as the four shares with intervals and no mechanism sentence in
+the abstract. The commit-first arm is read separately: COMMITMENT-LOADED
+iff its rate differs from intact NoT with a CI excluding 0 in either
+direction (sign reported), otherwise the commitment position is inert on
+this outcome. MDE note: on 150 items the between-arm difference has an
+interval of about plus or minus 10 to 12 points, and the intact reductions
+are 27 to 41 points, so a share of one half is resolvable on each
+generator; a share that is not resolvable is reported as such.
+
+## 17.4 Length control proper (gated; ceiling $10; runs only if 17.1 to 17.3 close at or under $95 in measured spend)
+
+A verbatim standard-CoT prompt with one added sentence asking for a
+response of about N words, N set per generator to the corrected NoT mean
+length of that generator (haiku 5,580 chars, grok 5,073 chars, from the
+sycophancy paper's `tab:lengths`, converted at 5.5 chars per word), arm
+name `standard_cot_lengthmatched`, generators claude-haiku-4-5 and
+grok-4-1-fast-reasoning, 300 generations plus judge and re-score.
+Readouts: validation rate, drop from CoT, NoT minus this arm with CI,
+achieved length ratio. Pre-declared: LENGTH-INERT iff NoT minus the
+length-matched arm is negative with a CI excluding 0 on both generators;
+LENGTH-CARRIES iff the length-matched arm's drop from CoT reaches half the
+NoT drop with a CI excluding 0 on either generator; otherwise UNRESOLVED.
+This is the control the redesign document (§1b(iii)) says the verbose arm
+is not (that arm contained three NoT primitives in prose).
+
+## Z, analysis-only blocks (zero or negligible spend; registered here so their readings are pre-declared)
+
+Z1 (done 2026-09-21 before this registration, as an artefact build with no
+new number): `scripts/make_pillar1_table.py`, `pillar1_headline.json`,
+`papers/unified/pillar1_headline.tex`; reproduces 16.15.7 exactly.
+Sanctioned phrasing "22 to 41 points" absolute, "31 to 55 percent"
+relative, nano's relative figure carrying its bracket.
+
+Z2 Counterparty moderator (P1b; about 150 haiku judge calls, under $1). Each
+OEQ item is coded once for whether the account names a party other than
+the asker with an interest in the outcome (a fixed yes/no judge prompt,
+cached by item; and a deterministic proxy, the count of third-person
+agents named). The corrected NoT minus CoT drop is stratified by
+counterparty present/absent per generator and pooled, item-clustered CIs.
+Pre-declared: P1b HOLDS iff the pooled drop on counterparty-present items
+exceeds the drop on counterparty-absent items in magnitude with a CI on
+the difference excluding 0; UNDER-GATED iff the absent stratum has fewer
+than 30 items (reported, not read); otherwise P1b FAILS and the theory's
+pillar-1 paragraph loses its item-level claim (the BrokenMath boundary
+stands on its own evidence).
+
+Z3 The mechanically scored instrument on the three deployments (no calls):
+asker-shielding and NTA retention under NoT (the `cg_screen_*` narrative
+records, arms third_person and as_asker, k=3) and under CoT
+(`cg_<short>_standard_k3_rows.csv`) through `scripts/analyze_crowdgold_sdt.py`.
+Pre-declared: the instrument read a clean null on nano (E1), so the expected
+branch is NO-SHIELDING-TO-REMOVE (both scaffolds inside the nuisance range);
+SHIELDING-REMOVED iff CoT shows shielding with a CI excluding 0 and NoT
+does not; SHIELDING-UNCHANGED iff both show it. Reported as scope either
+way.
+
+Z4 Pillar 1 to pillar 3 bridge (no calls): on the grok, nano and haiku-249
+communities, asker-shielding of the majority vote, the neutral seat and the
+S2 verdict against the same model's solo NoT and solo CoT on the same
+items. Pre-declared: BRIDGE iff the collective's shielding is below solo
+NoT's with a CI excluding 0 on at least two of three models; FLOOR iff
+solo shielding is already inside the nuisance range (reported as the
+instrument floor); otherwise NO-BRIDGE.
+
+Z5 Judge-reliability block (no calls): the MTMM reading on
+`judge_panel_raw.csv` and the calibration result collected into
+`validation_judge_reliability.json` for the appendix.
+
+Budget: 17.1 $30, 17.2 $20, 17.3 $45, 17.4 $10 (gated), Z2 under $1; total
+ceiling $106 of the $130 authorised; the balance is reserved for the
+17.3 extension (sonnet, or a fifth arm `not_drop_protagonist`) which the PI
+decides after the 17.3 readout.
+Nothing above this line is edited.
