@@ -7034,3 +7034,25 @@ that holds on both models as registered. It does not change the branch
 reading above (the mechanism conditions are the lift and phi within
 one-loser verdicts, which fail on haiku).
 Nothing above this line is edited.
+
+## Pillar-3 headline, independent recomputation (2026-09-21, zero spend; `scripts/verify_pillar3_headline.py`, artefacts `verify_pillar3_headline_grok.json`, `verify_pillar3_headline_haiku_249.json`)
+
+A second implementation, written from the CSV schema alone (no import from
+the registered analyzers; numpy item-clustered bootstrap with its own seed
+101), recomputes the grok headline from `cg_deliberation_rows.csv`,
+`cg_deliberation_votes.csv` and `cg_sonnet_actuator_rows.csv`: 1,677
+debates, collective 0.8426, counter fire 0.1956 (328), one-loser 1,287 with
+93 fired, P(wrong | fired) 0.3871 against 0.0394 (9.83x), routed to sonnet
+0.9129, routed minus collective +0.0704 [+0.0482, +0.0943] (registered
+[+0.0477, +0.0941]). Every registered value is reproduced inside tolerance
+(0.0015 on rates, 0.006 on interval ends, exact on counts); the
+`n_objectors` column agrees with the votes' `objected_r3` sum on 1,677 of
+1,677 debates. The gain is present in each of the four samples taken
+separately (+0.064, +0.067, +0.079, +0.072), in both arms (as_asker +0.060,
+third_person +0.081) and in both gold classes (NTA +0.062, YTA +0.083),
+descriptive, no intervals. On haiku-249 the same script reproduces the
+16.23 block (collective 0.8542, routed 0.8912, +0.0370 [+0.0164, +0.0583]
+against the registered [+0.0145, +0.0593]); there the gain sits on the
+gold-NTA items (+0.065, 72 fired) and is absent on gold-YTA (-0.005, 22
+fired), which the paper reports as a scope note on the haiku replicate.
+Nothing above this line is edited.
