@@ -7365,3 +7365,71 @@ agrees with human gold labels at kappa 0.73 to 0.86 on the 29 gold items,
 and the 17.2 panel will show whether the NoT minus CoT drop itself is
 judge-robust.
 Nothing above this line is edited.
+
+# Addendum 18: pillar 2 of the unified paper, Narration-of-Thought on a public theory-of-mind benchmark (registered 2026-09-21 BEFORE any call under the `tom_gen_*` namespace; ceiling $60; sign-agnostic)
+
+Why. The PI's target abstract states a theory-of-mind gain of 3 to 10 points.
+The repository holds no theory-of-mind evaluation of any kind (audit
+2026-09-21; the only 3-to-10 interval on disk is the BrokenMath backfire
+CI). The PI chose to run one and to write the abstract's sentence from its
+interval, whatever the sign.
+
+Instrument. ToMBench [chen2024tombench], fetched at the ACL Anthology page
+(DOI 10.18653/v1/2024.acl-long.847) and at the GitHub repository (MIT
+licence, LICENSE file fetched; ledger entry `tom_benchmark_2026_09_21` in
+`related_works_verified.json`). English fields of the eight task files
+(2,470 items; four-option multiple choice; answer letter as gold), copied
+to `data/tombench/`. The README's usage note (evaluation only, never
+training) is honoured. Stratified sample: 40 items per task, 320 items,
+seeded per task with seed 42 (`load_items`, deterministic; selftest checks
+the sample is reproducible). The False Belief Task is the pre-declared
+primary stratum (the classic knowledge-state test); the other seven are
+secondary strata.
+
+Arms and prompts. `standard_cot` and `narrative_cot`, system prompts
+VERBATIM from `run_phase1_quartet.PROMPTS` (the scaffold unchanged, as the
+paper's claim is about the scaffold as it is); the user turn is the story,
+the question, the four options and one fixed instruction to end with
+`ANSWER: <letter>`, identical in both arms. One sample per (model, arm,
+item), token caps 1,024 CoT / 2,048 NoT (the ELEPHANT convention; the
+Foundry route applies DeepSeek-V4-Pro's floor by name). Seven models: the
+four originals plus Llama-3.3-70B-Instruct, Mistral-Large-3-2,
+DeepSeek-V4-Pro. Cache `tom_gen_<model>_<arm>_<task>_<index>.json`, keyed
+by name, verified empty at registration (dry-run: 4,480 calls, 0 cached).
+Script `scripts/run_tom_benchmark.py`; dry-run estimate $14.92 at assumed
+420 tokens in and 350 / 1,100 out; ceiling $60. Stop rule: if measured
+spend reaches $60 the run stops and the panel is reported as partial.
+
+Scoring. Mechanical: the last `ANSWER: <letter>` line against the gold
+letter. An unparsed answer scores wrong and is counted; the unparsed rate
+per arm is a readout and a guard (over 10 percent in either arm on a model
+puts that model's readout in the FORMAT-BOUND branch below).
+
+Readouts. Accuracy per (model, arm); paired NoT minus CoT per model,
+item-clustered percentile CI (4,000 draws, seed 18); pooled delta over
+models with items as clusters; per-task deltas; primary-stratum delta per
+model and pooled; unparsed and empty rates per arm; mean completion tokens
+per arm. Baselines in brackets: none in the record (first run); ToMBench's
+paper reports GPT-4 more than 10 points below humans, cited for context
+only.
+
+Pre-declared readings (pooled over models, items as clusters, primary
+readout the pooled delta; the primary stratum reported beside it):
+IMPROVES iff the pooled delta is positive with a CI excluding 0; the
+abstract then says "improves accuracy on a theory-of-mind benchmark by X to
+Y points" with X and Y the interval ends, and names the models on which the
+per-model CI excludes 0. NO CHANGE iff the pooled CI includes 0; the
+abstract says the scaffold "does not change" theory-of-mind accuracy and
+the paper reports the per-model intervals. COSTS iff the pooled delta is
+negative with a CI excluding 0; the abstract reports the cost in the same
+words as a gain would be reported. FORMAT-BOUND per model iff either arm's
+unparsed rate exceeds 10 percent; that model is excluded from the pooled
+readout and named. The "3 to 10 points" wording is not used unless the
+interval says so. Per-task deltas are descriptive. MDE note: 320 paired
+items give an interval of about plus or minus 5 points per model and about
+plus or minus 3 points pooled over seven models.
+
+Guards: cache verified empty before the call; the sample reproduces
+byte-identically (selftest); unparsed rate per arm; `GUARD FAILED` printed
+on any failure by the analysis, and no number read until re-registered.
+Nothing above this line is edited.
