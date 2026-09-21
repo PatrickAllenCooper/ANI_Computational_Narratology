@@ -6910,3 +6910,108 @@ replicates and the one-loser stratum has fewer than 60 fired, `--samples 4
 reading is FLOODS or SILENT. Mistral-Large-3-2 and DeepSeek-V4-Pro
 communities are optional tier, decided after the Llama readout.
 Nothing above this line is edited.
+
+## 16.23 RESULTS (run 2026-09-14 to 2026-09-15; read 2026-09-21; 491 debates over 249 items, 8,347 calls in the chain; 5,390 new calls under the haiku deliberation namespaces dated 2026-09-14 or later, measured $39.70 at list prices (a 2026-09-18 accounting gave $38.19; both inside the $45 ceiling); guards PASSED, worst round truncation 3.6%, worst NOVERDICT 0.4%, outcome guard 0.0% / 0.0%, no `GUARD FAILED` in `logs/cell_1623_haiku249.log`; completeness 491 of 498 rows, the 7 missing as_asker debates are runner errors (Foundry DNS resolution failures, 5 attempts each) and are handled under the partial-panel rule; artefacts `topology_cell_haiku_249.json`, `router_decomposition_haiku.json`, `transfer_readouts_haiku.json`, `routing_certification_haiku.json`, `flooding_analysis_haiku_249.json`, `emergent_graphs_haiku_249.json`, `stake_grip_haiku_249.json`)
+
+Readouts on the 249 own items (487 S2-codable debates), with the grok-210
+matched panel (413 debates, 410 codable) in parentheses where it differs.
+Grok baselines from 16.10/16.15 in brackets.
+
+- Role-lock 0.419 (0.414) [0.971]; haiku_fixed gave 0.442 on 100 items.
+  P(at_fault) writer 0.499, counterparty 0.918, neutral 0.682 [0.003 /
+  0.974 / 0.430]. r0 accuracy by seat writer 0.793, counterparty 0.430,
+  neutral 0.710; the best seat is the writer's advocate, as in 16.15.4's
+  haiku_fixed line. Seat majority 0.692, majority minus best seat -0.101
+  [-0.145, -0.056]. Group verdict S2 0.858 (0.851) against haiku solo
+  standard majority-of-3 0.862 [grok 0.843 vs 0.911]: the collective does
+  not beat its own solo (-0.004), but unlike grok it is not far below it.
+- Objection marginals writer 0.246, counterparty 0.200, neutral 0.365
+  [0.430 / 0.690 / 0.073]; localisation excess against the Poisson-binomial
+  null -0.078 (-0.075) [+0.291]; fire rate P(>=2) 0.196 raw, 0.193 codable
+  (0.201) [0.196]; haiku_fixed gave 0.161.
+- Stake grip: G1 0.476, G2 0.092, G3 +0.037 [+0.004, +0.070] (+0.039
+  [+0.002, +0.076]) [G3 +0.631]; haiku_fixed gave +0.062. GRIP false.
+- All-strata counter lift at 94 fired (gate 60 met): P(wrong | fired) 0.266
+  vs 0.117, ratio 2.27x, lift +0.149 [+0.053, +0.242] (matched +0.165
+  [+0.063, +0.268] at 83 fired) [+0.320, 4.37x].
+- Within-one-loser lift at 65 fired (gate 60 met): 424 one-loser debates,
+  P(wrong | fired) 0.108 vs 0.072, ratio 1.49x, lift +0.035 [-0.041, +0.120]
+  [+0.348, 9.83x]; haiku_fixed gave +0.089 [-0.048, +0.251] at 25 fired.
+  Both-party stratum (63 debates, 29 fired): +0.032 [-0.224, +0.274].
+- Advocate phi within one-loser +0.246 [+0.130, +0.360] [-0.901]; within
+  YTA +0.180 [-0.002, +0.375], within NTA +0.270 [+0.115, +0.410]; pooled
+  +0.295 [+0.193, +0.393]. All three edges of the emergent graph are
+  positive (writer|neutral +0.109 [+0.015, +0.201], counterparty|neutral
+  +0.121 [+0.028, +0.216]). P(exactly one objector) within one-loser 0.361
+  [0.318, 0.407] [0.922]: the losing seat objects on roughly a third of the
+  verdicts against it, not nearly always.
+- Transfer of haiku's counter (cell rule, 486 codable cells): onto haiku's
+  own solos, standard +0.119 [+0.032, +0.211], narrative +0.237 [+0.133,
+  +0.342], verbose +0.219 [+0.111, +0.325]; onto sonnet standard +0.054
+  [+0.001, +0.123]; onto grok standard +0.019 [-0.039, +0.089], grok
+  narrative +0.022 [-0.043, +0.093], nano standard +0.012 [-0.066, +0.094],
+  nano narrative +0.054 [-0.031, +0.144]; onto the two verbose solos of grok
+  and nano +0.093 [+0.012, +0.178] and +0.098 [+0.001, +0.206]. Grok's flag
+  transferred to nano and not to haiku (16.15.3); haiku's flag transfers to
+  haiku and sonnet and not to grok or nano on their registered scaffolds.
+- 16.22 routed-versus-own-solo block (base haiku standard majority-of-3
+  0.862 on 486 cells; judges sonnet standard and grok standard; the analyzer
+  labels the first judge slot "haiku" and the second "sonnet" whatever the
+  model, so the slot names in the artefact are read as sonnet then grok):
+  counter routed to sonnet 0.893, +0.031 [+0.012, +0.051] over the solo;
+  counter routed to grok 0.887, +0.025 [+0.006, +0.043]; sonnet everywhere
+  0.969 (+0.107 [+0.072, +0.146]); grok everywhere 0.912 (+0.049 [+0.010,
+  +0.091]). Disagreement minus counter +0.006 [-0.016, +0.031] with the
+  sonnet judge and -0.010 [-0.031, +0.010] with the grok judge; union minus
+  disagreement +0.017 [+0.000, +0.033] and +0.019 [+0.004, +0.033]. Routed
+  versus the collective (composed on 487 debates): collective alone 0.854,
+  counter to sonnet 0.891, counter to grok 0.887, verdict-type to sonnet
+  0.918, union to sonnet 0.928 (point estimates; the paired interval for
+  routed minus collective is not part of this readout). Cost per decision
+  at list prices: haiku base $0.0043, counter route to sonnet $0.124 at k=1
+  (the 17-call chain dominates), disagreement route to sonnet $0.0057,
+  sonnet everywhere $0.0115.
+
+Pre-declared readings, applied mechanically. REPLICATES requires lock
+> 0.9: fails (0.419). REPLICATES THE SENSOR, NOT THE LOCK requires the lift
+conditions to hold with lock < 0.9 and G3 < +0.20: the all-strata lift
+holds (+0.149, CI excludes 0, 94 fired) and G3 is below +0.20, but the
+within-one-loser lift includes 0 (+0.035 [-0.041, +0.120] at 65 fired) and
+the advocate phi within one-loser is positive with a CI excluding 0
+(+0.246), so this branch FAILS on two of its three lift conditions. FLOODS
+requires fire > 0.5: fails (0.193). SILENT requires fire < 0.05 or G2 = 0:
+fails. The cell falls in NO pre-declared branch and is recorded as such.
+
+What the numbers say, at the record's scope. On haiku the stake-blind
+counter is a usable error sensor over all verdicts (it concentrates the
+collective's errors 2.3x, transfers to haiku's own solos, and routing the
+fifth of cells it flags to a stronger judge raises accuracy over the haiku
+solo with a CI excluding 0), but it is not the against-interest sensor of
+the grok cell. With role-lock at 0.42 the losing advocate objects on 36
+percent of the verdicts against it, the two advocates' objections are
+positively correlated rather than opposed, all three seats behave as
+correlated readers (the 16.10 identical-readers pattern), and within
+one-loser verdicts the second objector carries no lift the interval can
+distinguish from 0. The registered mechanism (a second objection against
+assigned interest) needs the lock, and haiku does not supply it. The
+all-strata lift on haiku is the ordinary disagreement signal of three
+correlated copies, which is also what the solo's own sample disagreement
+gives at three calls against seventeen (disagreement minus counter includes
+0 under both judges). The paper's sentence "not from any one model" is
+therefore scoped: the sensor mechanism is demonstrated on grok, the
+generic disagreement signal replicates on haiku, and the two are not the
+same claim. The `--samples 2` powering step registered for this cell would
+tighten the one-loser interval (65 fired at k=1) but cannot change the
+sign of the phi, so it is not requested.
+
+Guards on every analyzer PASSED (codable share 0.992, mean unparsed 0.000,
+seat vote coverage 1.000, judge emission on fired 0.99 / 0.95). The
+analyzers' "agreement with the 16.12 table" and "agreement with 16.15.1"
+lines compare this cell against grok's registered numbers by construction
+and print DIFFERS on every row; those lines are not a guard for a
+non-grok cell and are not read. `emergent_graphs.json` is untouched (the
+haiku-249 community was written to its own artefact with grok_aita loaded
+only for the protocol annotation). `analyze_emergent_graphs.COMMUNITIES`
+gained `haiku_aita_249` and `analyze_rolelock_by_model.PANELS` gained
+`haiku_249` (config entries only).
+Nothing above this line is edited.

@@ -57,6 +57,8 @@ PANELS = {
     "sonnet": ("claude-sonnet-4-6", "cg_deliberation_sonnet_fixed"),
     "nano": ("gpt-5.4-nano", "cg_deliberation_nano"),
     "haiku": ("claude-haiku-4-5", "cg_deliberation_haiku_fixed"),
+    # 16.23: the full 249-item haiku panel at k = 1 (own tag; the fixed CSVs are untouched)
+    "haiku_249": ("claude-haiku-4-5", "cg_deliberation_haiku_249"),
 }
 
 
