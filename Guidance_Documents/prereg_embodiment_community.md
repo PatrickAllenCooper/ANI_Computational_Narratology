@@ -7290,3 +7290,33 @@ paragraph in `papers/unified/theory.md` may carry the item-level claim as
 items (-11.3 [-18.5, -4.0]) is real and is reported as the part the
 represented-counterparty account does not explain.
 Nothing above this line is edited.
+
+## Z3 RESULTS (zero spend, 2026-09-21; artefacts `z3_sdt_{llama,mistral,deepseek}.json` from `scripts/analyze_crowdgold_sdt.py --rows` on each deployment's narrative screen (k=3, arms third_person and as_asker) concatenated with its standard k=3 comparator (three arms); published ESH coding is the registered one, the other two codings are in the artefacts)
+
+Criterion shift on the person step (third_person to as_asker; positive is
+toward the asker, item-bootstrap 95 percent CI), under CoT and under NoT:
+
+| deployment | CoT person step | NoT person step | NoT vs CoT on the neutral arm | reading |
+|---|---|---|---|---|
+| Llama-3.3-70B-Instruct | +0.256 [+0.130, +0.406] | +0.270 [+0.092, +0.451] | +0.030 [-0.177, +0.218] | SHIELDING-UNCHANGED |
+| Mistral-Large-3-2 | +0.127 [+0.008, +0.267] | +0.299 [+0.171, +0.459] | +0.545 [+0.402, +0.725] | SHIELDING-UNCHANGED (larger under NoT; NoT also shifts the neutral arm, a global caution shift) |
+| DeepSeek-V4-Pro | -0.077 [-0.324, +0.229] | +0.008 [-0.161, +0.157] | +0.172 [-0.046, +0.492] | NO-SHIELDING-TO-REMOVE |
+
+Accuracies (published coding): Llama CoT 0.801 / 0.875 / 0.883 on the three
+arms, NoT 0.827 / 0.868; Mistral CoT 0.819 / 0.832 / 0.853, NoT 0.831 /
+0.862; DeepSeek CoT 0.945 / 0.956 / 0.947, NoT 0.909 / 0.927 (NoT lowers
+d-prime on DeepSeek, 3.30 to 2.66 on the neutral arm).
+
+Reading, at the record's scope. On the mechanically scored verdict
+instrument the scaffold does not remove the asker's pull where that pull
+exists (Llama, Mistral), and on Mistral it moves the criterion on the
+neutral arm as well. This is the same picture E1 gave on nano (a clean
+null on the binary instrument). The pillar-1 claim is therefore scoped in
+the unified paper to the validation register (whether the response
+endorses the asker's own account, ELEPHANT OEQ), not to verdict flipping
+on a checkable dispute; the abstract's sentence must say "validation of
+the asker's account", not "sycophancy" unqualified. These three
+deployments' 17.1 ELEPHANT cells, when read, will show whether the
+register effect reproduces on the same models on which the verdict effect
+does not.
+Nothing above this line is edited.

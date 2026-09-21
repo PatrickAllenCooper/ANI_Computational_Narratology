@@ -1,0 +1,366 @@
+{
+  "models": [
+    "DeepSeek-V4-Pro"
+  ],
+  "scaffolds": [
+    "narrative_cot",
+    "standard"
+  ],
+  "n_rows": 3735,
+  "codings": {
+    "published": {
+      "DeepSeek-V4-Pro|narrative_cot|third_person": {
+        "d_prime": 2.658067532728257,
+        "criterion": -0.013301913131337106,
+        "accuracy": 0.9088235294117647,
+        "hit_rate": 0.9117647058823529,
+        "fa_rate": 0.09313725490196079,
+        "n_signal": 272,
+        "n_noise": 408,
+        "n_excluded": 67
+      },
+      "DeepSeek-V4-Pro|narrative_cot|as_asker": {
+        "d_prime": 2.8871450311628255,
+        "criterion": -0.004910495342326904,
+        "accuracy": 0.9266862170087976,
+        "hit_rate": 0.927797833935018,
+        "fa_rate": 0.07407407407407407,
+        "n_signal": 277,
+        "n_noise": 405,
+        "n_excluded": 65
+      },
+      "DeepSeek-V4-Pro|standard|third_person": {
+        "d_prime": 3.300720774725322,
+        "criterion": -0.1851265930242828,
+        "accuracy": 0.9451476793248945,
+        "hit_rate": 0.968421052631579,
+        "fa_rate": 0.07042253521126761,
+        "n_signal": 285,
+        "n_noise": 426,
+        "n_excluded": 36
+      },
+      "DeepSeek-V4-Pro|standard|as_asker": {
+        "d_prime": 3.6003506858023573,
+        "criterion": -0.2624745093142018,
+        "accuracy": 0.9560906515580736,
+        "hit_rate": 0.9821428571428571,
+        "fa_rate": 0.06103286384976526,
+        "n_signal": 280,
+        "n_noise": 426,
+        "n_excluded": 41
+      },
+      "DeepSeek-V4-Pro|standard|as_asker_stance": {
+        "d_prime": 3.267401610019344,
+        "criterion": -0.11129318429315804,
+        "accuracy": 0.9466292134831461,
+        "hit_rate": 0.9611307420494699,
+        "fa_rate": 0.06293706293706294,
+        "n_signal": 283,
+        "n_noise": 429,
+        "n_excluded": 35
+      },
+      "decomposition": {
+        "DeepSeek-V4-Pro|narrative_cot|PERSON (3rd -> as_asker)": {
+          "delta": 0.008391417789010203,
+          "ci_low": -0.16065296574501942,
+          "ci_high": 0.15713478640349832,
+          "excludes_zero": false,
+          "n_items": 249,
+          "n_boot": 1000
+        },
+        "DeepSeek-V4-Pro|standard|PERSON (3rd -> as_asker)": {
+          "delta": -0.077347916289919,
+          "ci_low": -0.3242958049593655,
+          "ci_high": 0.22896904122203776,
+          "excludes_zero": false,
+          "n_items": 249,
+          "n_boot": 1000
+        },
+        "DeepSeek-V4-Pro|standard|PURE STANCE (asker -> +stance)": {
+          "delta": 0.15118132502104376,
+          "ci_low": -0.07793004431540063,
+          "ci_high": 0.4395040153701306,
+          "excludes_zero": false,
+          "n_items": 249,
+          "n_boot": 1000
+        },
+        "DeepSeek-V4-Pro|standard|TOTAL (3rd -> +stance)": {
+          "delta": 0.07383340873112476,
+          "ci_low": -0.10426607587728498,
+          "ci_high": 0.30451836489606465,
+          "excludes_zero": false,
+          "n_items": 249,
+          "n_boot": 1000
+        }
+      },
+      "specificity": {
+        "DeepSeek-V4-Pro|narrative_cot": {
+          "criterion": {
+            "delta": 0.1718246798929457,
+            "ci_low": -0.04573504519280003,
+            "ci_high": 0.49155691544379154,
+            "excludes_zero": false,
+            "n_items": 249,
+            "n_boot": 1000
+          },
+          "d_prime": {
+            "delta": -0.6426532419970652,
+            "ci_low": -1.2066350711462013,
+            "ci_high": -0.18651631976512117,
+            "excludes_zero": true,
+            "n_items": 249,
+            "n_boot": 1000
+          }
+        }
+      },
+      "compliance": {
+        "DeepSeek-V4-Pro|narrative_cot|complied": {
+          "d_prime": 2.7660478940438544,
+          "criterion": -0.00803800289613854,
+          "accuracy": 0.917037037037037,
+          "hit_rate": 0.9186691312384473,
+          "fa_rate": 0.08405438813349815,
+          "n_signal": 541,
+          "n_noise": 809,
+          "n_excluded": 1
+        }
+      }
+    },
+    "dropped": {
+      "DeepSeek-V4-Pro|narrative_cot|third_person": {
+        "d_prime": 3.6726971035573053,
+        "criterion": 0.5147797785088258,
+        "accuracy": 0.9574803149606299,
+        "hit_rate": 0.9083969465648855,
+        "fa_rate": 0.00804289544235925,
+        "n_signal": 262,
+        "n_noise": 373,
+        "n_excluded": 112
+      },
+      "DeepSeek-V4-Pro|narrative_cot|as_asker": {
+        "d_prime": 3.7811412129394975,
+        "criterion": 0.4654949684163048,
+        "accuracy": 0.9642301710730948,
+        "hit_rate": 0.9245283018867925,
+        "fa_rate": 0.007936507936507936,
+        "n_signal": 265,
+        "n_noise": 378,
+        "n_excluded": 104
+      },
+      "DeepSeek-V4-Pro|standard|third_person": {
+        "d_prime": 3.959022957485229,
+        "criterion": 0.16168663988844456,
+        "accuracy": 0.977810650887574,
+        "hit_rate": 0.9671532846715328,
+        "fa_rate": 0.014925373134328358,
+        "n_signal": 274,
+        "n_noise": 402,
+        "n_excluded": 71
+      },
+      "DeepSeek-V4-Pro|standard|as_asker": {
+        "d_prime": 4.265414523812339,
+        "criterion": 0.0774594230788137,
+        "accuracy": 0.9852941176470589,
+        "hit_rate": 0.9818181818181818,
+        "fa_rate": 0.012345679012345678,
+        "n_signal": 275,
+        "n_noise": 405,
+        "n_excluded": 67
+      },
+      "DeepSeek-V4-Pro|standard|as_asker_stance": {
+        "d_prime": 3.938631933015233,
+        "criterion": 0.24276914828986662,
+        "accuracy": 0.9764359351988218,
+        "hit_rate": 0.9595588235294118,
+        "fa_rate": 0.012285012285012284,
+        "n_signal": 272,
+        "n_noise": 407,
+        "n_excluded": 68
+      },
+      "decomposition": {
+        "DeepSeek-V4-Pro|narrative_cot|PERSON (3rd -> as_asker)": {
+          "delta": -0.04928481009252106,
+          "ci_low": -0.46889265883276987,
+          "ci_high": 0.17631794452763105,
+          "excludes_zero": false,
+          "n_items": 249,
+          "n_boot": 1000
+        },
+        "DeepSeek-V4-Pro|standard|PERSON (3rd -> as_asker)": {
+          "delta": -0.08422721680963086,
+          "ci_low": -0.4049137386113183,
+          "ci_high": 0.2618447338225346,
+          "excludes_zero": false,
+          "n_items": 249,
+          "n_boot": 1000
+        },
+        "DeepSeek-V4-Pro|standard|PURE STANCE (asker -> +stance)": {
+          "delta": 0.16530972521105292,
+          "ci_low": -0.17283821533519683,
+          "ci_high": 0.5005510228105001,
+          "excludes_zero": false,
+          "n_items": 249,
+          "n_boot": 1000
+        },
+        "DeepSeek-V4-Pro|standard|TOTAL (3rd -> +stance)": {
+          "delta": 0.08108250840142206,
+          "ci_low": -0.15241994415445104,
+          "ci_high": 0.35083827144626545,
+          "excludes_zero": false,
+          "n_items": 249,
+          "n_boot": 1000
+        }
+      },
+      "specificity": {
+        "DeepSeek-V4-Pro|narrative_cot": {
+          "criterion": {
+            "delta": 0.3530931386203813,
+            "ci_low": 0.13386542525266698,
+            "ci_high": 0.7908876041191365,
+            "excludes_zero": true,
+            "n_items": 249,
+            "n_boot": 1000
+          },
+          "d_prime": {
+            "delta": -0.28632585392792365,
+            "ci_low": -0.8398422340376044,
+            "ci_high": 0.4494302143792952,
+            "excludes_zero": false,
+            "n_items": 249,
+            "n_boot": 1000
+          }
+        }
+      },
+      "compliance": {
+        "DeepSeek-V4-Pro|narrative_cot|complied": {
+          "d_prime": 3.74708114198142,
+          "criterion": 0.5050348937032759,
+          "accuracy": 0.9605055292259084,
+          "hit_rate": 0.9152215799614644,
+          "fa_rate": 0.008032128514056224,
+          "n_signal": 519,
+          "n_noise": 747,
+          "n_excluded": 85
+        }
+      }
+    },
+    "not_at_fault": {
+      "DeepSeek-V4-Pro|narrative_cot|third_person": {
+        "d_prime": 3.527931710820309,
+        "criterion": 0.6202638770116978,
+        "accuracy": 0.9455882352941176,
+        "hit_rate": 0.875,
+        "fa_rate": 0.007352941176470588,
+        "n_signal": 272,
+        "n_noise": 408,
+        "n_excluded": 67
+      },
+      "DeepSeek-V4-Pro|narrative_cot|as_asker": {
+        "d_prime": 3.5721136197063657,
+        "criterion": 0.5954626613584975,
+        "accuracy": 0.9486803519061584,
+        "hit_rate": 0.8844765342960289,
+        "fa_rate": 0.007407407407407408,
+        "n_signal": 277,
+        "n_noise": 405,
+        "n_excluded": 65
+      },
+      "DeepSeek-V4-Pro|standard|third_person": {
+        "d_prime": 3.6276574549663723,
+        "criterion": 0.35042391604625855,
+        "accuracy": 0.9634317862165963,
+        "hit_rate": 0.9298245614035088,
+        "fa_rate": 0.014084507042253521,
+        "n_signal": 285,
+        "n_noise": 426,
+        "n_excluded": 36
+      },
+      "DeepSeek-V4-Pro|standard|as_asker": {
+        "d_prime": 4.011892923145746,
+        "criterion": 0.22384750385793006,
+        "accuracy": 0.9787535410764873,
+        "hit_rate": 0.9642857142857143,
+        "fa_rate": 0.011737089201877934,
+        "n_signal": 280,
+        "n_noise": 426,
+        "n_excluded": 41
+      },
+      "DeepSeek-V4-Pro|standard|as_asker_stance": {
+        "d_prime": 3.642809581220091,
+        "criterion": 0.4111033858654902,
+        "accuracy": 0.9620786516853933,
+        "hit_rate": 0.9222614840989399,
+        "fa_rate": 0.011655011655011656,
+        "n_signal": 283,
+        "n_noise": 429,
+        "n_excluded": 35
+      },
+      "decomposition": {
+        "DeepSeek-V4-Pro|narrative_cot|PERSON (3rd -> as_asker)": {
+          "delta": -0.02480121565320037,
+          "ci_low": -0.43085456288539026,
+          "ci_high": 0.18234335121263334,
+          "excludes_zero": false,
+          "n_items": 249,
+          "n_boot": 1000
+        },
+        "DeepSeek-V4-Pro|standard|PERSON (3rd -> as_asker)": {
+          "delta": -0.1265764121883285,
+          "ci_low": -0.4303528871752793,
+          "ci_high": 0.18167841046401012,
+          "excludes_zero": false,
+          "n_items": 249,
+          "n_boot": 1000
+        },
+        "DeepSeek-V4-Pro|standard|PURE STANCE (asker -> +stance)": {
+          "delta": 0.18725588200756016,
+          "ci_low": -0.11285585222705774,
+          "ci_high": 0.4851052713279008,
+          "excludes_zero": false,
+          "n_items": 249,
+          "n_boot": 1000
+        },
+        "DeepSeek-V4-Pro|standard|TOTAL (3rd -> +stance)": {
+          "delta": 0.06067946981923167,
+          "ci_low": -0.1732641450756035,
+          "ci_high": 0.29344349122312874,
+          "excludes_zero": false,
+          "n_items": 249,
+          "n_boot": 1000
+        }
+      },
+      "specificity": {
+        "DeepSeek-V4-Pro|narrative_cot": {
+          "criterion": {
+            "delta": 0.2698399609654393,
+            "ci_low": 0.08249300387691838,
+            "ci_high": 0.641779891537725,
+            "excludes_zero": true,
+            "n_items": 249,
+            "n_boot": 1000
+          },
+          "d_prime": {
+            "delta": -0.09972574414606328,
+            "ci_low": -0.5304448363090284,
+            "ci_high": 0.5869541715974815,
+            "excludes_zero": false,
+            "n_items": 249,
+            "n_boot": 1000
+          }
+        }
+      },
+      "compliance": {
+        "DeepSeek-V4-Pro|narrative_cot|complied": {
+          "d_prime": 3.5694165270998104,
+          "criterion": 0.6230823563787449,
+          "accuracy": 0.9466666666666667,
+          "hit_rate": 0.878003696857671,
+          "fa_rate": 0.007416563658838072,
+          "n_signal": 541,
+          "n_noise": 809,
+          "n_excluded": 1
+        }
+      }
+    }
+  }
+}
