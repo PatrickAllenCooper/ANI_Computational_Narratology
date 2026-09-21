@@ -9,8 +9,10 @@ Design. 40 items per task x 8 tasks = 320 items, stratified sample with seed 42
 system prompts VERBATIM from scripts.run_phase1_quartet.PROMPTS; the user turn
 is the story, the question, the four options and one fixed instruction to end
 with a line `ANSWER: <letter>`; one sample per (model, arm, item); cache
-`divergence_study_outputs/tom_gen_<model>_<arm>_<task>_<index>.json`, keyed by
-NAME. Token caps as in run_elephant (1,024 CoT, 2,048 NoT; the Foundry route
+`divergence_study_outputs/tom_gen_<model>_<arm>_<task>_<row>.json`, keyed by NAME,
+where <row> is the item's 0-based row position within its task file (fixed 2026-09-21;
+ToMBench's own INDEX field is a within-story question counter, not a unique row id,
+see load_items's docstring). Token caps as in run_elephant (1,024 CoT, 2,048 NoT; the Foundry route
 applies DeepSeek-V4-Pro's floor by name).
 
 Readouts. Accuracy per (model, arm); paired NoT minus CoT per model with an
@@ -59,13 +61,33 @@ def _safe(s: str) -> str:
 
 
 def load_items(per_task=PER_TASK, seed=SEED):
+    """Sample per_task items from each task file.
+
+    BUG FOUND 2026-09-21, fixed here: ToMBench's `\u5e8f\u53f7 / INDEX` field is a
+    WITHIN-STORY question counter (1, 2, 3... resetting for every new vignette), not a
+    unique row id -- across an entire task file it takes as few as 1 and at most 6
+    distinct values (checked: Ambiguous Story Task 2, False Belief Task 6, Faux-pas
+    Recognition Test 4, Hinting Task Test 2, Persuasion Story Task 1, Scalar Implicature
+    Test 2, Strange Story Task 4, Unexpected Outcome Test 3). Keying the cache path on
+    (task, index) therefore funnelled dozens of DIFFERENT stories onto a handful of
+    filenames, each write silently clobbering the last (and, under threading, some
+    concurrent writes to the same path corrupted the file, the "Extra data" JSON errors
+    in cell_18_tom_stage1.log). Stage-1 cells landed on 23 of the intended 320 items per
+    model per arm -- see divergence_study_outputs/tom_gen_VOID_2026_09_21/ (quarantined,
+    not deleted) and tom_benchmark_analysis_VOID_2026_09_21.json (the resulting pooled
+    delta, -0.033 [-0.130, +0.065], is an artefact of this bug and was never read as a
+    finding). The unique key is now the row's 0-based position in the task's jsonl file,
+    stable because data/tombench/*.jsonl is static and committed.
+    """
     items = []
     for t in TASKS:
         rows = [json.loads(l) for l in open(DATA / f"{t}.jsonl")]
         rng = random.Random(f"{seed}:{t}")
-        for r in sorted(rng.sample(rows, per_task), key=lambda r: r["序号\nINDEX"]):
-            items.append({"task": t, "index": int(r["序号\nINDEX"]), "ability": r["能力\nABILITY"],
-                          "story": r["STORY"], "question": r["QUESTION"],
+        pool = list(enumerate(rows))                    # (row_position, row) pairs
+        picked = rng.sample(pool, per_task)
+        for row_pos, r in sorted(picked, key=lambda p: p[0]):
+            items.append({"task": t, "row": row_pos, "within_story_index": int(r["序号\nINDEX"]),
+                          "ability": r["能力\nABILITY"], "story": r["STORY"], "question": r["QUESTION"],
                           "options": {k: r[f"OPTION-{k}"] for k in "ABCD"}, "answer": r["答案\nANSWER"].strip().upper()})
     return items
 
@@ -76,7 +98,7 @@ def user_turn(it) -> str:
 
 
 def cache_path(model, arm, it) -> Path:
-    return OUT / f"tom_gen_{_safe(model)}_{arm}_{_safe(it['task'])}_{it['index']}.json"
+    return OUT / f"tom_gen_{_safe(model)}_{arm}_{_safe(it['task'])}_{it['row']:04d}.json"
 
 
 def parse_answer(text: str):
@@ -90,7 +112,7 @@ def generate_one(model, arm, it):
         return json.loads(p.read_text())
     from scripts.generators import generate
     r = generate(model, PROMPTS[arm], user_turn(it), sample_idx=0, max_tokens=2048 if arm == "narrative_cot" else 1024)
-    rec = {"model": model, "arm": arm, "task": it["task"], "index": it["index"], "text": r.text or "",
+    rec = {"model": model, "arm": arm, "task": it["task"], "row": it["row"], "text": r.text or "",
            "finish_reason": r.finish_reason, "prompt_tokens": r.prompt_tokens, "completion_tokens": r.completion_tokens,
            "answer": parse_answer(r.text or ""), "gold": it["answer"]}
     if rec["text"].strip():
@@ -117,7 +139,7 @@ def analyse(items, models):
             for it in items:
                 p = cache_path(model, arm, it)
                 if p.exists():
-                    recs[arm][(it["task"], it["index"])] = json.loads(p.read_text())
+                    recs[arm][(it["task"], it["row"])] = json.loads(p.read_text())
         if not recs["standard_cot"] or not recs["narrative_cot"]:
             res["models"][model] = {"status": "ABSENT"}
             continue
@@ -162,6 +184,13 @@ def _selftest() -> int:
     items = load_items(per_task=3)
     ok &= len(items) == 24 and all(it["answer"] in "ABCD" for it in items) and load_items(per_task=3) == items
     ok &= "ANSWER:" in user_turn(items[0]) and PROMPTS["narrative_cot"].startswith("You are a thoughtful advisor")
+    # Regression check for the 2026-09-21 collision bug: the cache key must be unique
+    # per item even though ToMBench's own within-story INDEX repeats heavily.
+    cache_keys = {cache_path("m", "standard_cot", it) for it in items}
+    ok &= len(cache_keys) == len(items)
+    full = load_items()
+    full_keys = {(it["task"], it["row"]) for it in full}
+    ok &= len(full) == 320 and len(full_keys) == 320
     print("selftest", "OK" if ok else "FAILED"); return 0 if ok else 1
 
 

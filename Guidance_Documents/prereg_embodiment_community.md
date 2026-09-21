@@ -7433,3 +7433,37 @@ Guards: cache verified empty before the call; the sample reproduces
 byte-identically (selftest); unparsed rate per arm; `GUARD FAILED` printed
 on any failure by the analysis, and no number read until re-registered.
 Nothing above this line is edited.
+
+## Addendum 18 amendment (recorded 2026-09-21 BEFORE any further call under the `tom_gen_*` namespace; VOIDS stage 1 in full; overrides no reading, since none was applied)
+
+**Stage 1 (`gpt-5.4-nano,grok-4-1-fast-reasoning,Mistral-Large-3-2,DeepSeek-V4-Pro`) is
+VOID, not a finding.** ToMBench's `序号 / INDEX` field is a within-story question
+counter (1, 2, 3... resetting for every new vignette), not a unique row id. Across
+an entire task file it takes as few as 1 and at most 6 distinct values (checked:
+Ambiguous Story Task 2, False Belief Task 6, Faux-pas Recognition Test 4, Hinting
+Task Test 2, Persuasion Story Task 1, Scalar Implicature Test 2, Strange Story
+Task 4, Unexpected Outcome Test 3). `scripts/run_tom_benchmark.load_items` keyed
+the generation cache on `(task, index)`, so dozens of genuinely different stories
+per task collided onto a handful of filenames; each write silently overwrote the
+last, and under `--workers 4` some concurrent writes to the same path corrupted
+the file outright (the six `Extra data` JSON errors in
+`logs/cell_18_tom_stage1.log`). Every one of the eight (model, arm) cells landed
+on 23 of the intended 320 items, not necessarily the same 23 stories between the
+CoT and NoT arms of a given model, so even the within-model paired delta is not
+reliably a comparison of the same item across arms. The resulting pooled delta,
+-0.033 [-0.130, +0.065], and the false-belief delta, -0.083 [-0.250, +0.000],
+were never applied to the pre-declared readings and carry no evidential weight.
+Corrupted and collided cache quarantined at
+`divergence_study_outputs/tom_gen_VOID_2026_09_21/` (184 files, not deleted) and
+`divergence_study_outputs/tom_benchmark_analysis_VOID_2026_09_21.json`.
+
+Fix, in `scripts/run_tom_benchmark.py`: the cache key and the paired-analysis key
+are now the item's 0-based row position within its task's jsonl file, which is
+unique by construction and stable because `data/tombench/*.jsonl` is static and
+committed. The selftest now asserts 320 unique row keys over the full seed-42
+sample and would have caught this before any call. No other part of the design
+changes: same 320 items (the seed and per-task count are unchanged, so the
+intended item set is the same one originally registered), same arms, same
+models, same token caps, same pre-declared readings, same $60 ceiling (measured
+spend on the void stage 1 is separately reported and counted against it).
+Nothing above this line is edited.
