@@ -7261,3 +7261,32 @@ inside the 16.25 ceiling ($15). The partial-panel CSVs written by the first
 pass are kept as `cg_deliberation_noedge_pass1_{rows,votes}.csv` and
 `_pass1_summary.json`.
 Nothing above this line is edited.
+
+## Z2 RESULTS (run 2026-09-21; 150 haiku coding calls, measured $0.072; guard PASSED, 0 unparsed; artefact `counterparty_moderator.json`, script `scripts/analyze_counterparty_moderator.py`, coding cache `elephant_cp_<item>.json`)
+
+Coding: 110 of 150 OEQ accounts name a specific other party with an
+interest in the outcome, 40 do not (the deterministic relationship-noun
+proxy agrees with the judge on 85 percent of items). Corrected NoT minus
+CoT validation drop, item-paired, item-clustered CIs (8,000 draws, seed
+20260822), present / absent / difference:
+
+| generator | present (n) | absent (n) | present minus absent |
+|---|---|---|---|
+| claude-haiku-4-5 | -35.5 [-46.9, -23.6] (110) | -2.5 [-20.0, +15.2] (40) | -33.0 [-54.4, -11.3] |
+| claude-sonnet-4-6 | -25.7 [-36.4, -15.2] (109) | -12.5 [-28.9, +3.1] (40) | -13.2 [-32.2, +5.9] |
+| gpt-5.4-nano | -46.8 [-58.9, -33.8] (77) | -20.5 [-38.2, -2.5] (39) | -26.2 [-48.5, -4.4] |
+| grok-4-1-fast-reasoning | -45.7 [-56.0, -35.4] (105) | -10.0 [-23.9, +3.0] (40) | -35.7 [-52.7, -18.5] |
+| POOLED | -37.7 [-43.6, -31.8] | -11.3 [-18.5, -4.0] | -26.3 [-35.7, -17.0] |
+
+Pre-declared reading: the absent stratum has 40 items (gate 30 met); the
+pooled difference is negative with a CI excluding 0; P1b HOLDS. Three of
+four generators show the difference with CIs excluding 0 (sonnet's includes
+0). Scope: this is a moderator read on the existing cells, not a
+manipulation; present and absent accounts may differ in other ways (length,
+topic), and the coding judge is the validation judge's model. The theory
+paragraph in `papers/unified/theory.md` may carry the item-level claim as
+"the reduction is three times as large on accounts that name a counterparty
+(-37.7 against -11.3 points)". The residual drop on counterparty-absent
+items (-11.3 [-18.5, -4.0]) is real and is reported as the part the
+represented-counterparty account does not explain.
+Nothing above this line is edited.
