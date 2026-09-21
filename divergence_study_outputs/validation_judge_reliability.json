@@ -1,0 +1,338 @@
+{
+ "construct": "validation (ELEPHANT OEQ, the pillar-1 outcome)",
+ "mtmm": {
+  "n_complete_units": 60,
+  "judges": [
+   "claude-haiku-4-5",
+   "gpt-5.4-nano",
+   "grok-4-1-fast-reasoning"
+  ],
+  "metrics": [
+   "framing",
+   "indirectness",
+   "validation"
+  ],
+  "convergent": {
+   "framing": {
+    "pairs": [
+     {
+      "judges": [
+       "claude-haiku-4-5",
+       "gpt-5.4-nano"
+      ],
+      "r": 0.28203803740888317
+     },
+     {
+      "judges": [
+       "claude-haiku-4-5",
+       "grok-4-1-fast-reasoning"
+      ],
+      "r": 0.2362120290670844
+     },
+     {
+      "judges": [
+       "gpt-5.4-nano",
+       "grok-4-1-fast-reasoning"
+      ],
+      "r": 0.31173495695154235
+     }
+    ],
+    "mean_r": 0.27666167447583667
+   },
+   "indirectness": {
+    "pairs": [
+     {
+      "judges": [
+       "claude-haiku-4-5",
+       "gpt-5.4-nano"
+      ],
+      "r": -0.06579516949597686
+     },
+     {
+      "judges": [
+       "claude-haiku-4-5",
+       "grok-4-1-fast-reasoning"
+      ],
+      "r": 0.1428571428571426
+     },
+     {
+      "judges": [
+       "gpt-5.4-nano",
+       "grok-4-1-fast-reasoning"
+      ],
+      "r": -0.1597882687759437
+     }
+    ],
+    "mean_r": -0.027575431804925988
+   },
+   "validation": {
+    "pairs": [
+     {
+      "judges": [
+       "claude-haiku-4-5",
+       "gpt-5.4-nano"
+      ],
+      "r": 0.44047887516260664
+     },
+     {
+      "judges": [
+       "claude-haiku-4-5",
+       "grok-4-1-fast-reasoning"
+      ],
+      "r": 0.5313726480094202
+     },
+     {
+      "judges": [
+       "gpt-5.4-nano",
+       "grok-4-1-fast-reasoning"
+      ],
+      "r": 0.4630286259163091
+     }
+    ],
+    "mean_r": 0.4782933830294453
+   }
+  },
+  "monomethod_heterotrait": {
+   "pairs": [
+    {
+     "judge": "claude-haiku-4-5",
+     "metrics": [
+      "framing",
+      "indirectness"
+     ],
+     "r": 0.04029114820126915
+    },
+    {
+     "judge": "claude-haiku-4-5",
+     "metrics": [
+      "framing",
+      "validation"
+     ],
+     "r": 0.39732142857142877
+    },
+    {
+     "judge": "claude-haiku-4-5",
+     "metrics": [
+      "indirectness",
+      "validation"
+     ],
+     "r": -0.08058229640253788
+    },
+    {
+     "judge": "gpt-5.4-nano",
+     "metrics": [
+      "framing",
+      "indirectness"
+     ],
+     "r": 0.06579516949597687
+    },
+    {
+     "judge": "gpt-5.4-nano",
+     "metrics": [
+      "framing",
+      "validation"
+     ],
+     "r": -0.05401382498736262
+    },
+    {
+     "judge": "gpt-5.4-nano",
+     "metrics": [
+      "indirectness",
+      "validation"
+     ],
+     "r": -0.25800942071430977
+    },
+    {
+     "judge": "grok-4-1-fast-reasoning",
+     "metrics": [
+      "framing",
+      "indirectness"
+     ],
+     "r": -0.05889923149775686
+    },
+    {
+     "judge": "grok-4-1-fast-reasoning",
+     "metrics": [
+      "framing",
+      "validation"
+     ],
+     "r": -0.008003011005173274
+    },
+    {
+     "judge": "grok-4-1-fast-reasoning",
+     "metrics": [
+      "indirectness",
+      "validation"
+     ],
+     "r": 0.10778633311079502
+    }
+   ],
+   "mean_r": 0.016854032752481048
+  },
+  "base_rates": {
+   "claude-haiku-4-5": {
+    "framing": 0.4666666666666667,
+    "indirectness": 0.9166666666666666,
+    "validation": 0.4666666666666667
+   },
+   "gpt-5.4-nano": {
+    "framing": 0.9166666666666666,
+    "indirectness": 0.7,
+    "validation": 0.31666666666666665
+   },
+   "grok-4-1-fast-reasoning": {
+    "framing": 0.5166666666666667,
+    "indirectness": 0.18333333333333332,
+    "validation": 0.6166666666666667
+   }
+  }
+ },
+ "krippendorff_alpha": {
+  "validation": {
+   "alpha": 0.4196428571428571,
+   "ci95": [
+    0.2479435957696826,
+    0.5914764846803682
+   ],
+   "n_items": 60,
+   "threshold": 0.67
+  },
+  "indirectness": {
+   "alpha": -0.22685185185185186,
+   "ci95": [
+    -0.32441471571906355,
+    -0.12440191387559785
+   ],
+   "n_items": 60,
+   "threshold": 0.67
+  },
+  "framing": {
+   "alpha": 0.11483253588516773,
+   "ci95": [
+    -0.05194805194805219,
+    0.275
+   ],
+   "n_items": 60,
+   "threshold": 0.67
+  }
+ },
+ "kappa_vs_human_gold": [
+  {
+   "point": 0.8481675392670156,
+   "ci95": [
+    0.599078341013825,
+    1.0
+   ],
+   "n_bootstrap": 2000,
+   "metric": "validation",
+   "judge": "gpt-5.4-nano",
+   "n": 29
+  },
+  {
+   "point": 0.8585365853658536,
+   "ci95": [
+    0.6384039900249376,
+    1.0
+   ],
+   "n_bootstrap": 2000,
+   "metric": "validation",
+   "judge": "claude-haiku-4-5",
+   "n": 29
+  },
+  {
+   "point": 0.7264150943396226,
+   "ci95": [
+    0.48214285714285704,
+    0.9307875894988068
+   ],
+   "n_bootstrap": 2000,
+   "metric": "validation",
+   "judge": "grok-4-1-fast-reasoning",
+   "n": 29
+  },
+  {
+   "point": 0.31372549019607876,
+   "ci95": [
+    -0.11111111111111156,
+    0.7058823529411766
+   ],
+   "n_bootstrap": 2000,
+   "metric": "indirectness",
+   "judge": "gpt-5.4-nano",
+   "n": 30
+  },
+  {
+   "point": 0.39393939393939376,
+   "ci95": [
+    0.057142857142856676,
+    0.7058823529411765
+   ],
+   "n_bootstrap": 2000,
+   "metric": "indirectness",
+   "judge": "claude-haiku-4-5",
+   "n": 30
+  },
+  {
+   "point": 0.6296296296296295,
+   "ci95": [
+    0.25373134328358216,
+    0.9230769230769231
+   ],
+   "n_bootstrap": 2000,
+   "metric": "indirectness",
+   "judge": "grok-4-1-fast-reasoning",
+   "n": 30
+  },
+  {
+   "point": 0.15254237288135603,
+   "ci95": [
+    -0.12244897959183684,
+    0.46808510638297907
+   ],
+   "n_bootstrap": 2000,
+   "metric": "framing",
+   "judge": "gpt-5.4-nano",
+   "n": 30
+  },
+  {
+   "point": 0.5693779904306221,
+   "ci95": [
+    0.2325581395348836,
+    0.8564593301435407
+   ],
+   "n_bootstrap": 2000,
+   "metric": "framing",
+   "judge": "claude-haiku-4-5",
+   "n": 30
+  },
+  {
+   "point": 0.7014925373134329,
+   "ci95": [
+    0.39461883408071735,
+    0.9295774647887324
+   ],
+   "n_bootstrap": 2000,
+   "metric": "framing",
+   "judge": "grok-4-1-fast-reasoning",
+   "n": 30
+  }
+ ],
+ "calibration_S0_1": {
+  "source": "Guidance_Documents/theory_grounding_and_judge_rehabilitation.md \u00a7S0.1 (copied, not recomputed)",
+  "validation_cross_judge_spread_of_reductions_pp": 54.3,
+  "absorbed_by_per_judge_threshold": 0.92,
+  "threshold_model_rejected_G2_df4_p": {
+   "validation": [
+    16.63,
+    0.0023
+   ]
+  },
+  "note": "calibration absorbs the level gap on validation, which is the one quantity a threshold moves; the judge x arm interaction remains (threshold model rejected)"
+ },
+ "sources": [
+  "judge_panel_raw.csv",
+  "judge_reliability_summary.json",
+  "reliability_bootstrap_cis.json",
+  "theory_grounding_and_judge_rehabilitation.md \u00a77, \u00a7S0.1"
+ ]
+}

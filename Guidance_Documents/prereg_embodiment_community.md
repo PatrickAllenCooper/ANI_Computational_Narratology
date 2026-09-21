@@ -7345,3 +7345,23 @@ the tie between pillars 1 and 3 rests on 16.16 and 16.23 (`theory.md`
 smaller than CoT's (+0.062 [+0.000, +0.125]), an interval that touches 0
 and is not read.
 Nothing above this line is edited.
+
+## Z5 RESULTS (zero spend, 2026-09-21; artefact `validation_judge_reliability.json`, script `scripts/make_validation_judge_reliability.py`)
+
+Recomputed from `judge_panel_raw.csv` (60 complete units, three judges,
+three constructs): convergent r on validation +0.478 (pairs +0.44, +0.53,
++0.46), on framing +0.277, on indirectness -0.028; monomethod-heterotrait
++0.017. Reproduces the theory-grounding §7 and §S0.1 figures exactly.
+Copied from the named artefacts: Krippendorff alpha on validation 0.420
+[0.248, 0.591] (60 items), below the 0.67 threshold the sycophancy paper
+pre-registered; kappa of each judge against the human gold labels on
+validation, nano 0.848 [0.599, 1.000], haiku 0.859 [0.638, 1.000], grok
+0.726 [0.482, 0.931] (29 items); the S0.1 calibration absorbs 92 percent
+of the 54.3-point cross-judge spread in the validation reduction while the
+threshold model is formally rejected (G2 16.6 on 4 df). For the unified
+paper's appendix the reliability sentence on the pillar-1 construct reads:
+inter-judge agreement on validation is moderate (alpha 0.42), each judge
+agrees with human gold labels at kappa 0.73 to 0.86 on the 29 gold items,
+and the 17.2 panel will show whether the NoT minus CoT drop itself is
+judge-robust.
+Nothing above this line is edited.
