@@ -368,3 +368,78 @@ and confirm the sentence around the number doesn't say more than the block's own
   design pass's cut version of the paper.
 - **Optional tier** (Mistral/DeepSeek communities, gpt-4o, sonnet-249 community): entirely
   undecided, not discussed this session.
+
+---
+
+## 9. In-flight jobs at the moment of a laptop hibernation (2026-09-22, later the same session)
+
+Three "real gaps" experiments were registered and launched after this document's §1-8
+were written (Addenda 17.6, 16.26, 16.27). Two are done and registered; two are still
+running and were very likely interrupted by the laptop hibernating shortly after this
+note. **Nothing is lost if they were cut off: every call is cached by name, so
+`--resume` picks up exactly where they stopped at zero extra cost for completed cells.**
+
+### 9a. Done
+
+- **Addendum 17.6** (grok as a third judge for pillar 1): RESULTS registered.
+  **grok is NOT a clean judge, it shares the Llama judge's acquiescence defect**
+  (haiku and sonnet reverse sign under grok too). Pillar-1 judge-robustness is now
+  correctly stated in the paper as "one clean additional judge (nano) of two attempted,
+  sonnet confirmed only by the production judge." `results.tex` already updated to this
+  language and pushed.
+- Also done and registered this session: the grok-counter-onto-open-weight-solos
+  zero-spend transfer extension (16.15.3 note), and four editorial bugs found and fixed
+  (swallowed abstract sentence, stale four-model claims in `results.tex`, two commits
+  that were silently dropped by a failed `git add` and have since been recovered).
+
+### 9b. Still running (or interrupted) at hibernation
+
+Both are Addendum 16.26 (Mistral-Large-3-2 community, k=2, ceiling $50) and Addendum
+16.27 (DeepSeek-V4-Pro community, k=2, ceiling $90), registered in full in the prereg
+before any call. **The very first launch (workers=4) was far too slow** (roughly
+0.6-1.0 cells per minute against 868/840 cells needed, an estimated 14-22 hour
+completion time) even though both deployments' registered RPM limits (2,500 and 5,000)
+have enormous headroom; the bottleneck is each cell's own 17-call sequential chain, not
+API throttling. **Killed and relaunched at `--workers 20`** (still comfortably inside
+the RPM ceilings), which requires `--resume` on relaunch or the runner refuses on
+"foreign files" (a real, deliberate safety check, not a bug, see the note it prints).
+As of this note: Mistral at 30 of 868 cells, DeepSeek at 50 of 840 cells, zero errors
+either run.
+
+**If hibernation killed them, resume with exactly:**
+```
+cd /Users/pat/code/ANI_Examination
+.venv/bin/python -m scripts.run_crowdgold_filter_screen --step deliberate --models Mistral-Large-3-2 --samples 2 --run --resume --workers 20 > logs/cell_1626_mistral_k2_resume.log 2>&1 &
+.venv/bin/python -m scripts.run_crowdgold_filter_screen --step deliberate --models DeepSeek-V4-Pro --samples 2 --run --resume --workers 20 > logs/cell_1627_deepseek_k2_resume.log 2>&1 &
+```
+Both `--workers 20` invocations can run concurrently (different Foundry deployments,
+no shared queue contention observed). If throughput is still poor at `--workers 20`,
+the bottleneck is genuinely per-call latency on these deployments and more workers up
+to the RPM ceiling (try 30-40, still inside 2,500/5,000 RPM) is the next lever, not a
+design problem.
+
+**After both complete**, the readout for each mirrors 16.24's exactly (adjust the
+model name and tag):
+```
+.venv/bin/python -m scripts.run_crowdgold_filter_screen --step readout --models Mistral-Large-3-2
+.venv/bin/python -m scripts.run_crowdgold_filter_screen --step readout --models DeepSeek-V4-Pro
+# then per-model modes (role-lock, phi, routing), mirroring HANDOFF_2026-09-18.md §6.2/6.3
+# and the 16.24 RESULTS write-up in the prereg, for each model, plus extending
+# scripts/verify_pillar3_headline.py's COMMUNITIES dict with "mistral" and "deepseek"
+# entries once the router_decomposition artefacts exist.
+```
+
+**What these two results will settle, per the pre-declared readings already
+registered:** whether the credible-signal mechanism's sign (grok's opposed advocate
+phi, -0.901, versus haiku/Llama's positively-correlated phi, +0.15 to +0.25 despite
+very different role-lock) is a grok idiosyncrasy or has a second instance among these
+two remaining vendors. This is the single most theoretically important open question
+in the pillar-3 programme; do not skip the phi reading when writing these up.
+
+### 9c. Nothing else needs attention at hibernation
+
+`git status --short` is clean (only `divergence_study_outputs/` cache files, which are
+either gitignored or genuinely new artefacts not yet worth committing mid-run). All
+commits through this note are pushed to `origin/sycophancy-scenario-redesign`. The
+`request_keep_awake` call made earlier in this session only prevents idle sleep, never
+a deliberate hibernate, so the two jobs above stopping is expected, not a bug.
