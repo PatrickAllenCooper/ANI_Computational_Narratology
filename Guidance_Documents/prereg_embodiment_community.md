@@ -8072,3 +8072,34 @@ reduction appears to depend on the counterparty-awareness being embedded
 in the fuller structure NoT provides, not on the counterparty content by
 itself.
 Nothing above this line is edited.
+
+## 16.15.3 extension note (zero spend, 2026-09-22): grok's counter transferred onto the three Foundry deployments' own solo answers
+
+The registered transfer targets (16.15.3: grok's own solo, nano, haiku)
+never included the three deployments added under Addendum 17, though
+their standard-scaffold comparators (`cg_llama_standard_k3_rows.csv`,
+`cg_mistral_standard_k3_rows.csv`, `cg_deepseek_standard_k3_rows.csv`,
+all from 17.1's screening work) have been on disk since 2026-09-21. Run
+via `analyze_router_decomposition.py`'s `--transfer-targets` flag,
+exploratory, no new calls; artefacts `router_decomposition_grok_openweight.json`,
+`transfer_readouts_grok_openweight.json`, `routing_certification_grok_openweight.json`.
+
+| target solo | codable cells | fired | lift | 95% CI | excludes 0 |
+|---|---|---|---|---|---|
+| Llama-3.3-70B-Instruct:standard | 419 | 50 | +0.134 | [-0.004, +0.288] | no |
+| Mistral-Large-3-2:standard | 420 | 51 | +0.148 | [-0.001, +0.313] | no |
+| DeepSeek-V4-Pro:standard | 419 | 51 | +0.065 | [-0.008, +0.157] | no |
+
+Directionally positive on all three, in the same range as the registered
+nano transfer (+0.216 [+0.064, +0.383]) and above haiku's (+0.119
+[-0.010, +0.271]), but none excludes zero at this power, matching
+haiku's pattern rather than nano's. Two of the three (Llama, Mistral)
+sit close enough to the boundary that the lower interval bound is within
+0.005 of zero, which is the kind of near-miss a modest power increase
+(more items in the comparator, or a second sample) would plausibly
+resolve rather than a design change. This is recorded as an open,
+well-motivated power question for a future addendum if the transfer
+claim's generalization to open-weight models is worth strengthening
+further; it is not registered as a claim on its own and is not read as
+either a positive or a null result at this sample size.
+Nothing above this line is edited.
