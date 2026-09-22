@@ -7539,3 +7539,15 @@ NOT YET RUN; queued behind other Anthropic and Llama jobs. Read on the
 corrected loader; the pre-declared pooled reading over all seven models is
 applied only once stage 2 completes.
 Nothing above this line is edited.
+
+## Addendum 18, out of scope (PI decision, recorded 2026-09-21)
+
+The PI has ruled theory of mind out of scope for this programme; pillars 1
+and 3 are the focus. Stage 2 (haiku, sonnet, Llama) is NOT authorised and
+will not run. Stage 1's data and read-out above stand as a completed,
+guard-clean measurement and are not retracted, but no pooled seven-model
+reading will be produced and no ToM claim goes into the paper. `data/tombench/`,
+`scripts/run_tom_benchmark.py` and `scripts/analyze_tom_mechanism.py` are
+left in place as working, tested code should this become in scope again,
+but no further call is registered under this addendum.
+Nothing above this line is edited.
