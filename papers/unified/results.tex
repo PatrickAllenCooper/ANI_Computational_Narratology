@@ -57,7 +57,38 @@ and the difference holds on three of the four models taken separately.
 % per-generator diff CIs: haiku, nano, grok exclude 0; sonnet [-32.2, +5.9]
 The residual drop on accounts with no counterparty is real and is the part
 the represented-counterparty account does not explain.
-\todo{17.3 knockout shares (COUNTERPARTY / HEDGING-REGISTER / NEITHER) and 17.1 open-weight rows}
+
+The reduction also reproduces on three open-weight deployments from three
+further vendors, and reproduces there more strongly than on any of the
+four proprietary models. Llama-3.3-70B-Instruct falls 69.9 points, from
+0.806 to 0.106, Mistral-Large-3-2 falls 58.2 points, and DeepSeek-V4-Pro
+falls 45.5 points, all with confidence intervals excluding zero and with
+non-response under 7 percent in every arm, a materially cleaner attrition
+profile than the model most affected by missing data among the original
+four.
+% Addendum 17.1 RESULTS: Llama -69.9 [-77.7,-61.4], Mistral -58.2 [-66.2,-49.7],
+% DeepSeek -45.5 [-53.8,-37.1]; non-response 4-7% each arm; nano's 22.7% for comparison
+Seven models from six vendors, three of them open-weight, now show the
+same negative, significant drop.
+% pillar1_headline.json sanctioned_phrasing: 22 to 70 points, 31 to 87 percent
+
+The claim survives a change of judge on most, not all, of these models. A
+second judge from a different vendor confirms a negative, significant
+drop on six of the seven; a third judge reverses the sign on three of
+them, a pattern traced to that judge's own validation rate sitting near
+ceiling on almost every response regardless of its content, which is
+reported as a property of that judge and not as evidence against the
+effect.
+% Addendum 17.2 RESULTS: nano judge confirms 6/7 (sonnet's CI touches zero);
+% Llama judge reverses sign on haiku/sonnet/nano, full_rate 0.80-1.00 on nearly every cell
+One model, the one answering as sonnet, does not survive a change of
+judge under either reading, and its reduction should be read as
+judge-specific.
+
+\todo{17.3 knockout shares (COUNTERPARTY / HEDGING-REGISTER / NEITHER), the
+discriminating test of whether the reduction is carried by the sections
+that represent the counterparty or by the section that licenses hedging;
+running as of this draft}
 
 The effect is on the register of the answer and not on its verdict. On the
 mechanically scored dispute instrument the asker's own framing moves the
