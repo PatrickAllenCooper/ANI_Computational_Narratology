@@ -36,7 +36,9 @@ OUT = Path(__file__).resolve().parents[1] / "divergence_study_outputs"
 CORRECTED = OUT / "length_matched_elephant_oeq_validation_corrected.json"
 AITA_RESCORE = OUT / "rescore_aita_all.json"
 COL = "sycophantic_validation"
-GEN_ORDER = ("claude-haiku-4-5", "claude-sonnet-4-6", "gpt-5.4-nano", "grok-4-1-fast-reasoning")
+GEN_ORDER = ("claude-haiku-4-5", "claude-sonnet-4-6", "gpt-5.4-nano", "grok-4-1-fast-reasoning",
+             # Addendum 17.1 (2026-09-21): three open-weight Foundry deployments
+             "Llama-3.3-70B-Instruct", "Mistral-Large-3-2", "DeepSeek-V4-Pro")
 
 
 def unpaired_records(rows, gen, col):
@@ -85,7 +87,11 @@ def build(rows, *, b=8000, seed=20260822, gens=None):
             "verbose_rate": st.mean(verbose) if verbose else None, "verbose_n": len(verbose),
             "verbose_scores": "published (re-score cache does not cover this arm)",
             "artefact_full_delta_pp": art.get("delta_pp"),
-            "agrees_with_artefact": (art.get("delta_pp") is not None and abs(art["delta_pp"] - ci["point"]) < 0.01),
+            # gate applies only to the four generators with a prior 16.15.7 artefact to check
+            # against; a new generator (Addendum 17.1) has none, so it passes vacuously and is
+            # instead cross-checked once by hand against its own first make_pillar1_table run.
+            "agrees_with_artefact": (True if g not in corrected else
+                                     art.get("delta_pp") is not None and abs(art["delta_pp"] - ci["point"]) < 0.01),
             "aita_yta_validation_corrected_pp": aita.get(g, {}).get("corrected_delta_pp"),
             "aita_yta_status": "WITHDRAWN (1b-RESULT-4; 16.15.7 scope)",
         }

@@ -7718,3 +7718,42 @@ directly, were unaffected throughout (all four communities' headline
 quantities reproduced exactly before and after this fix). Fixed with a
 per-community seat-name table; 0 mismatches now.
 Nothing above this line is edited.
+
+## Addendum 17.1 RESULTS (run 2026-09-21; 900 generations on the three Foundry deployments plus judge and untruncated re-score calls; one job died mid-run with no traceback, plausibly a machine sleep event, restarted from its own cache at no extra cost; guards clean; artefacts `rescore_oeq_validation_17_1.json`, `pillar1_headline.json`, `papers/unified/pillar1_headline.tex`)
+
+Same 150-item seed-42 OEQ sample, same judge (claude-haiku-4-5), same
+untruncated re-score procedure as the four original models. Non-response
+and the corrected drop, item-clustered CI (8,000 draws, seed 20260822):
+
+| deployment | CoT missing | NoT missing | CoT rate | NoT rate | drop [95% CI] | relative | reading |
+|---|---|---|---|---|---|---|---|
+| Llama-3.3-70B-Instruct | 6/150 (4%) | 9/150 (6%) | 0.806 | 0.106 | -69.9 [-77.7, -61.4] | 87% | REPLICATES |
+| Mistral-Large-3-2 | 8/150 (5%) | 10/150 (7%) | 0.775 | 0.193 | -58.2 [-66.2, -49.7] | 75% | REPLICATES |
+| DeepSeek-V4-Pro | 6/150 (4%) | 9/150 (6%) | 0.944 | 0.489 | -45.5 [-53.8, -37.1] | 48% | REPLICATES |
+
+All three clear the pre-declared REPLICATES branch: the drop is negative
+with a CI excluding zero and non-response is under 10 percent in both
+arms on every deployment, a materially cleaner attrition profile than the
+worst original cell (nano, 22.7 percent NoT non-response). The four
+original models reproduced their 16.15.7 drops exactly through the
+extended table (gate: every one of the four `agrees_with_artefact`
+checks passed). The sanctioned phrasing for the unified paper's abstract
+and introduction becomes **"22 to 70 points absolute, 31 to 87 percent
+relative, on seven models from six vendors, three of them open-weight"**,
+replacing "four models from three vendors". The three new deployments do
+not have a `standard_cot_verbose` arm (never run for them; the paper's
+length-matched control sentence continues to cite only the four original
+models for that specific control) but the length-matched-by-response-size
+comparison is computed for all seven and shows the same negative
+direction on every one (Llama -78.6, Mistral -39.7, DeepSeek -61.5,
+alongside the originals -24.6 to -50.4).
+
+Reading. P1c (`theory.md`: the reduction is a property of the prompt's
+structure and should reproduce across vendors and on open-weight models)
+is now confirmed on six vendors and three open-weight deployments, and
+the effect is if anything LARGER on the new deployments than on any of
+the four originals (the smallest of the three new drops, DeepSeek's -45.5,
+still exceeds every original model's drop except nano's -41.4, which it
+also exceeds). This is the single strongest replication result in the
+pillar-1 programme to date.
+Nothing above this line is edited.
