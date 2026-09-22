@@ -50,15 +50,18 @@ Sycophancy is the answer pulled toward the asker [sharma23, cheng25elephant,
 chen2024yesmen]. The prediction is that the reduction under the scaffold is a counterparty
 effect and not a manner effect.
 
-- P1a. The reduction is carried by the sections that represent the other parties
-  (stakeholders, consequences), not by the section that licenses hedging (uncertainty).
-  The competing account in the record (theory-grounding §1.1, the hedging register is the
-  only implicated element) predicts the opposite ordering. Discriminating experiment: A2,
-  the four-way section knockout on the social sycophancy outcome (ELEPHANT OEQ validation).
-  Pre-declared: COUNTERPARTY if dropping stakeholders or consequences removes more than half
-  the intact reduction with a CI excluding zero and dropping uncertainty removes less than
-  half; HEDGING-REGISTER if the uncertainty knockout removes the most; NEITHER if no single
-  knockout removes more than a quarter.
+- P1a. RESULT (17.3, run 2026-09-21): NEITHER, at the pooled level. The four-way section
+  knockout on ELEPHANT OEQ validation found no single section's removal clears a 0.25 share
+  of the intact reduction with a CI excluding zero, pooled across haiku, grok and nano.
+  The result is model-heterogeneous: on haiku every one of the three candidate sections
+  (stakeholders, consequences, uncertainty) removes 0.42 to 0.55 of the reduction, mostly
+  with a CI excluding zero, so on haiku the whole scaffold is load-bearing rather than any
+  one section, which does not separate the counterparty account from the competing
+  hedging-register account (theory-grounding §1.1); on grok and nano every knockout's
+  share sits near zero with a wide CI including zero, so the reduction there survives
+  losing any single section almost intact. Neither the counterparty prediction nor the
+  hedging-register prediction is confirmed at the section level. The item-level prediction
+  (P1b) is unaffected by this and still holds.
 - P1b. The reduction is concentrated on accounts that contain a party other than the asker
   and absent where none exists. Experiment: Z2, the counterparty moderator on the 150 OEQ
   items (zero spend). The propositional case is the no-counterparty case by construction
@@ -137,9 +140,9 @@ counterparty removes the asker's pull that the internal one only reduces.
 
 | prediction | source | experiment | status (2026-09-21) |
 |---|---|---|---|
-| P1a counterparty sections carry the sycophancy reduction | argumentative theory; against the hedging-register account | A2 knockout on the social DV | to register (17.3) |
-| P1b reduction concentrated where a counterparty exists | same; BrokenMath as the no-counterparty case | Z2 moderator; 16.15.5/16.15.6 | Z2 to run (zero spend) |
-| P1c reduction reproduces across vendors and open weights | property of the prompt | A1, A1b | to register (17.1, 17.2) |
+| P1a counterparty sections carry the sycophancy reduction | argumentative theory; against the hedging-register account | 17.3 knockout on the social DV | NOT CONFIRMED at section level: pooled NEITHER (no section clears a 0.25 share with CI excluding 0); confirmed on haiku only, where all three sections matter roughly equally rather than the counterparty sections specifically; grok and nano lose almost nothing from any single knockout |
+| P1b reduction concentrated where a counterparty exists | same; BrokenMath as the no-counterparty case | Z2 moderator; 16.15.5/16.15.6 | done: pooled diff -26.3 [-35.7,-17.0], HOLDS on 3 of 4 original models |
+| P1c reduction reproduces across vendors and open weights | property of the prompt | 17.1, 17.2 | done: REPLICATES on all 3 new deployments (22-70 points, 31-87%, larger on open-weight models); judge-robust on 6 of 7 models under a second judge, NOT judge-robust in the strong sense (a third judge reverses sign on 3/7, traced to that judge's acquiescence bias) |
 | P2 scaffold moves knowledge-state questions (sign-agnostic) | expression-side ToM | B1 | to register (18) |
 | P3a dissent edge needs opposed interests, not exchange or narration | [dewatripont1999advocates, krishna2001model] | 16.10, 16.16, 16.25 noedge k=4 | done, quantified: within-one-loser lift 9.83x on-edge, 5.06x with edges cut (still CI-excluding-zero at 78 fired); phi -0.901 on-edge, -0.842 off-edge |
 | P3b dissent against interest is informative within one-loser verdicts | [milgrom1986relying, lipman1995robust, glazer2001debates] | 16.15.1, 16.12, 16.13 B1 | done on grok (phi -0.901, opposed); NOT established on haiku (phi +0.246) or Llama (phi +0.148) despite Llama's high role-lock (0.862); the lift survives on both, the against-interest READING does not |
