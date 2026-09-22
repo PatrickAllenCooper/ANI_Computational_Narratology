@@ -7894,3 +7894,51 @@ ITEM-level evidence (Z2, the counterparty moderator) still holds and is
 unaffected by this result, but the SECTION-level claim about which part
 of the prompt carries the reduction does not generalise past one model.
 Nothing above this line is edited.
+
+## Addendum 16.24 diagnostic note (zero spend, 2026-09-22): why the routed-minus-solo-base certification (16.22 R1) does not replicate on Llama
+
+Investigated on request. Two compounding causes, both read directly from
+`routing_certification_llama.json["routed_vs_solo"]` against
+`routing_certification.json["routed_vs_solo"]` (the same cell-level
+convention on both, a cell fires when strictly more than half its
+codable samples fire, matching 16.22's own population definition, 420
+cells for grok and 450 for Llama):
+
+1. **Llama's collective is a far worse decision procedure relative to
+   its own solo than grok's is.** Llama's solo model (standard CoT,
+   majority of three samples) scores 0.842 on this item panel; the same
+   model's three-seat deliberation collective scores 0.620 (16.24
+   RESULTS stake-grip block), a 22-point gap in the solo's favour. Grok's
+   solo scores 0.912 against its collective's 0.843 to 0.848, a 7-point
+   gap. The routing signal is derived from the collective's own internal
+   disagreement, so when the collective itself is far less reliable than
+   just asking the model once, the signal has much less useful
+   information relative to the bar (the solo) it needs to clear, and
+   pushing the collective's accuracy up by routing a handful of flagged
+   cells to a judge cannot close a 22-point structural gap the way it
+   can help close a 7-point one.
+2. **The specific certified flag fires six times more rarely on Llama.**
+   On the identical cell-level convention, the counter fires on 51 of
+   420 cells on grok (12.1 percent coverage) and on 9 of 450 cells on
+   Llama (2.0 percent coverage). With 9 flagged cells the routed-minus-
+   base delta has almost no room to be either large or precisely
+   estimated regardless of the true effect: Llama's R1 delta is +0.002
+   [0.000, +0.007], a real but tiny, imprecisely bounded number, not a
+   reversal or a null in the sense of "no effect", but a floor effect
+   from a signal that essentially never fires against this particular
+   base.
+
+Reading. "Routing beats the collective" (the headline, robust claim)
+does not depend on either of these, because its baseline is the weak
+collective itself, not the strong solo, and Llama's collective has
+plenty of room to improve from a low base (16.24 RESULTS: +0.041
+[+0.028, +0.056] over the collective, confirmed). "Routing beats the
+solo" (16.22 R1, the narrower claim already scoped to grok in the paper)
+fails on Llama for a structural reason specific to how much the
+deliberation protocol itself costs that model, not because the
+credible-signal mechanism is absent. This is the same fact already
+visible in 16.24's phi finding stated from a different angle: on a model
+whose seats do not lock and do not oppose each other the way grok's do,
+both the mechanism's reading and the collective's own reliability
+degrade together.
+Nothing above this line is edited.
