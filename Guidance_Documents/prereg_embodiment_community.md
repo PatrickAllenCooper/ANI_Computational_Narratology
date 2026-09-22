@@ -8103,3 +8103,98 @@ claim's generalization to open-weight models is worth strengthening
 further; it is not registered as a claim on its own and is not read as
 either a positive or a null result at this sample size.
 Nothing above this line is edited.
+
+# Addendum 17.6: a third, independently-clean judge for pillar 1 (registered 2026-09-22 BEFORE any call; ceiling $20)
+
+17.2 left pillar-1's judge-robustness resting on one clean confirming
+judge (gpt-5.4-nano, 6 of 7 models) after the second additional judge
+(Llama-3.3-70B-Instruct) turned out to have an acquiescence defect
+(validation rate pinned near ceiling regardless of content). This
+addendum adds grok-4-1-fast-reasoning as a fourth judge overall (third
+beyond production), chosen because it is already validated as a working,
+discriminating judge in the pillar-3 programme (used as a decider and a
+judge throughout 16.15-16.24 with no reliability defect ever found) and
+is inexpensive (0.20/0.50 per Mtok). grok is also one of the seven pillar-1
+generators, the same relationship haiku already has as both a generator
+and the production judge, so this is not a new category of design.
+
+Method: `rescore_elephant_untruncated.py --judge grok-4-1-fast-reasoning`
+on all seven generators' existing OEQ responses (both arms), untruncated,
+same procedure as 17.2. Readouts: per-model and pooled drop with CI via
+`make_pillar1_table.build` with `apply_corrected_scores(..., judge=
+"grok-4-1-fast-reasoning")`; the same sign-agreement and CI-exclusion
+comparison against the production and nano judges; specific attention to
+whether this judge confirms or nulls sonnet's effect, which failed under
+both prior additional judges. A basic reliability check (the full_rate
+spread across generators and arms, the diagnostic that caught the Llama
+judge's defect) is computed before any number is read as a finding.
+
+Pre-declared reading: JUDGE-ROBUST (revised) iff grok confirms a
+negative, CI-excluding-zero drop on the same six models nano already
+confirmed, in which case the pillar-1 claim rests on three-judge
+triangulation (production, nano, grok) on those six. A judge that shows
+the same near-ceiling pattern as Llama is diagnosed the same way and
+excluded from the robustness claim, named. Sonnet is read on its own:
+CONFIRMED-BY-A-THIRD-JUDGE iff grok's CI excludes zero in the same
+direction as production; JUDGE-SPECIFIC (unchanged) otherwise.
+Nothing above this line is edited.
+
+# Addendum 16.26: Mistral-Large-3-2 community, k = 2 (registered 2026-09-22 BEFORE any call; ceiling $50; optional tier from the approved plan, now activated)
+
+Same design as 16.24 (Llama), same screen and standard-k3 comparator
+already on disk (17.1/16.24 stage 1). `run_crowdgold_filter_screen --step
+deliberate --models Mistral-Large-3-2 --samples 2 --run`. Dry-run: 217 of
+249 items survive the registered content-filter screen (32 refused),
+434 cells, 7,378 new calls, per-sample cost model $20.73, upper bound
+~$41 for both samples. Llama's actual measured spend ($18.12) came in at
+42 percent of its own upper-bound dry-run estimate ($43), so Mistral's
+plausible actual range is roughly $17 to $41; ceiling set at $50 with a
+stop rule: if sample 0 alone measures above $30, sample 1 is deferred
+for a separate authorization rather than run automatically.
+
+Readouts: the same per-model modes as 16.24 (`analyze_topology_2x2`,
+`analyze_router_decomposition`, `analyze_flooding`, `verify_pillar3_headline`
+extended with a `mistral` entry, `analyze_stake_grip`), role-lock, advocate
+phi within one-loser (the number this addendum most wants, given grok
+shows opposed phi and haiku/Llama both show positively-correlated phi
+despite very different role-lock), within-one-loser counter lift at the
+registered power gate (60 fired), routed-versus-collective and
+routed-versus-solo-base.
+
+Pre-declared readings, mirroring 16.24's frame: role-lock read against
+grok's 0.971 and Llama's 0.862; advocate phi within one-loser read
+against grok's -0.901 (opposed) and haiku/Llama's +0.15 to +0.25
+(correlated), a third data point either replicating grok's pattern
+(OPPOSED), replicating haiku/Llama's (CORRELATED), or neither (a fourth
+pattern, reported as such); the within-one-loser lift's sign and CI
+exclusion read regardless of the phi reading, since the routing gain has
+held on every condition tested so far independent of phi's sign; routed
+minus collective read against the four prior conditions' uniform success;
+routed minus solo base read against grok's HOLDS and Llama's fails.
+Guards: the standard round-level and outcome guards, completeness
+(868 rows expected at k=2), `GUARD FAILED` checked before any number.
+Nothing above this line is edited.
+
+# Addendum 16.27: DeepSeek-V4-Pro community, k = 2 (registered 2026-09-22 BEFORE any call; ceiling $90; optional tier from the approved plan, now activated)
+
+Same design as 16.24 and 16.26. `run_crowdgold_filter_screen --step
+deliberate --models DeepSeek-V4-Pro --samples 2 --run`. Dry-run: 210 of
+249 items survive the screen (39 refused), 420 cells, 7,140 new calls,
+per-sample cost model $65.73, upper bound ~$131 for both samples.
+DeepSeek is priced substantially higher than the other two deployments
+(1.925/3.828 per Mtok against Mistral's 0.50/1.50), so its upper bound is
+proportionately larger; applying the same 42 percent actual/estimate
+ratio observed on Llama gives a plausible actual range of roughly $28 to
+$65, well under the ceiling, but DeepSeek's own generation behaviour on
+this workload has not been observed at this volume before (17.1's
+single-agent run was 150 items, this is 420 debates of 22 calls each), so
+the ratio is an extrapolation, not a replay of a known pattern for this
+specific deployment. Ceiling $90, with the same stop rule as 16.26: if
+sample 0 alone measures above $55, sample 1 is deferred for separate
+authorization.
+
+Readouts and pre-declared readings: identical in kind to 16.26,
+DeepSeek's advocate phi within one-loser read as a fourth data point
+against the same three-pattern frame (OPPOSED / CORRELATED / neither).
+Guards identical to 16.26; completeness 840 rows expected at k=2.
+Nothing above this line is edited.
