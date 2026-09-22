@@ -8359,3 +8359,72 @@ reconciled against final spend, not as evidence the projection method
 itself was wrong (the projected $87.86 upper bound was itself close to
 the eventual actual, within 7%).
 Nothing above this line is edited.
+
+## Addendum 16.26 amendment (registered 2026-09-22 BEFORE the fix call; PI-authorised additional spend, ceiling $55 for the fix on top of the $35.90 already spent and now superseded): the Mistral community's ROUND-LEVEL guard failed, not just completeness
+
+The Mistral-Large-3-2 community's first pass finished generation with two
+guard failures, not one. Completeness failed in the by-now-familiar
+link-outage shape (15 of 868 debates missing, all `third_person`, same
+"Foundry v1 generation failed after 5 attempts: Connection error"
+pattern as 16.25/16.27). But the ROUND-LEVEL truncation guard also
+failed, on the 853 rows that exist: the `counterparty` seat's r0 round
+in the `third_person` arm truncated before its forced verdict line on
+7.6% of calls (limit 5%; `as_asker` sat at 4.6%, under the limit but
+close). This is the exact failure mode documented in this file's own
+2026-09-02 correction (haiku/sonnet R4 vote truncation): "Raise the
+token caps and re-run... a run that truncates cannot support ANY
+contrast read from it." No number from `cg_deliberation_mistrallarge32`
+is read; the $35.90 already measured on this tag is not a finding, it
+is the cost of a run whose own guard says it is unreadable.
+
+**Diagnosis of the fix's cost.** `--max-tokens-agent` (default 2560, the
+cap on r0/r1/r2, the three rounds each of the three seats writes in the
+narrative_cot scaffold) is part of the cache path by design (% source:
+`scripts/run_crowdgold_deliberation.py`, `call_cache_path`, comment:
+"a re-run at a larger cap must not serve truncated responses back out
+of cache and make the fix look like it failed"). Raising it therefore
+forces fresh generation of r0/r1/r2 for all 868 debates, and via the
+`parent_sha` staleness check on every downstream call, the label/
+integration/vote rounds that follow will very likely regenerate too
+once their parent text changes. This is functionally a full second pass
+over the same panel, not an incremental resume. `run_crowdgold_filter_screen.py`
+did not previously expose `--max-tokens-agent` as an override for step 2
+(it was hardcoded to `CAPS["agent"]`); a `--max-tokens-agent` flag was
+added, threaded through `deliberate_argv` / `run_deliberate` /
+`main()`, defaulting to `None` (meaning the registered `CAPS["agent"]`,
+unchanged behaviour when omitted), with a selftest re-run confirming no
+existing check broke.
+
+**Cost registration.** `--step deliberate --models Mistral-Large-3-2
+--samples 2 --max-tokens-agent 4096 --dry-run` (no `--resume`, pricing
+the full panel from scratch, the honest estimate for this scenario since
+the wrapper's own "NEW-CALL COST MODEL" replay counter globs the cache
+namespace without the token-cap suffix and so overstates replay
+candidates that do not actually exist at the new cap; verified by
+listing the cache directory, 14,651 files, all at `t1024` (moderator),
+`t2560` (agent), or `t3072` (label/vote), none at `t4096`): 14,756
+calls, **$41.46** upper bound (measured completion-length assumptions
+carried over from the failed t2560 run, so actual cost may run a little
+higher if the raised cap lets completions run longer, which is the
+point of raising it). PI authorised the fix (2026-09-22, in-chat). New
+cap chosen: 4096 (1.6x the registered 2560), a round increase in the
+family of the 2026-09-02 fix's own jump (512 to 3072 on the vote round).
+Ceiling for this amendment: **$55**, roughly 30 percent over the $41.46
+estimate, the same buffer convention used throughout this file's cost
+registrations. Stop rule: if the first-sample generation alone measures
+above $35, the second sample is deferred for separate authorisation
+rather than run automatically, mirroring 16.26's own original stop
+rule. Guards: the same round-level and outcome truncation guards
+(worst truncation and worst NOVERDICT both <= 5% required this time,
+checked explicitly before any number is read from the new run) plus
+completeness (868 rows expected at k=2), `GUARD FAILED` checked before
+any number.
+
+Launch:
+
+    cd /Users/pat/code/ANI_Examination
+    .venv/bin/python -m scripts.run_crowdgold_filter_screen --selftest
+    .venv/bin/python -m scripts.run_crowdgold_filter_screen --step deliberate --models Mistral-Large-3-2 --samples 2 --max-tokens-agent 4096 --dry-run
+    # SPENDS ~$41 projected, ceiling $55 -- its own authorisation, PI-approved above
+    .venv/bin/python -m scripts.run_crowdgold_filter_screen --step deliberate --models Mistral-Large-3-2 --samples 2 --max-tokens-agent 4096 --run --resume --workers 20
+Nothing above this line is edited.

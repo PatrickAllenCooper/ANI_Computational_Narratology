@@ -1071,15 +1071,18 @@ def screen_argv(model: str, tag: str, *, workers: int, dry_run: bool,
 
 def deliberate_argv(model: str, tag: str, *, n_yta: int, n_nta: int, workers: int,
                     n_boot: int, compare_rows: Path, moderator_model: Optional[str],
-                    dry_run: bool, samples: int = 1) -> list[str]:
+                    dry_run: bool, samples: int = 1,
+                    max_tokens_agent: Optional[int] = None) -> list[str]:
     """The deliberation runner's argv. ``samples`` (this module's --samples,
     default 1) is forwarded as the runner's --samples; every other token is
-    fixed by the registration."""
+    fixed by the registration. ``max_tokens_agent`` overrides CAPS["agent"]
+    (None keeps the registered default) -- a documented escape hatch for a
+    round-level truncation guard failure, not a silent registration change."""
     return (["--models", model, "--arms", ",".join(ARMS), "--n-yta", str(n_yta),
              "--n-nta", str(n_nta), "--samples", str(samples), "--seed", str(SEED),
              "--min-votes", str(MIN_VOTES), "--min-consensus", str(MIN_CONSENSUS),
              "--agent-scaffold", SCREEN_SCAFFOLD,
-             "--max-tokens-agent", str(CAPS["agent"]),
+             "--max-tokens-agent", str(max_tokens_agent if max_tokens_agent is not None else CAPS["agent"]),
              "--max-tokens-moderator", str(CAPS["moderator"]),
              "--max-tokens-label", str(CAPS["label"]),
              "--max-tokens-vote", str(CAPS["vote"]),
@@ -1186,7 +1189,8 @@ def run_screen(model: str, tag: str, items: Sequence[CrowdGoldItem], *, workers:
 def run_deliberate(model: str, tag: str, screen_tag: str, items: Sequence[CrowdGoldItem], *,
                    n_yta: int, n_nta: int, workers: int, n_boot: int, screen: str,
                    samples: int, moderator_model: Optional[str], run: bool, dry_run: bool,
-                   resume: bool, delib_samples: int = 1) -> int:
+                   resume: bool, delib_samples: int = 1,
+                   max_tokens_agent: Optional[int] = None) -> int:
     """``samples`` is the step-1 screen's k; ``delib_samples`` (this module's
     --samples, default 1) is the deliberation runner's --samples and the
     sample count the completeness guard expects rows for."""
@@ -1239,7 +1243,8 @@ def run_deliberate(model: str, tag: str, screen_tag: str, items: Sequence[CrowdG
     compare_rows = rca.OUT_DIR / f"{screen_tag}_rows.csv"
     argv = deliberate_argv(model, tag, n_yta=n_yta, n_nta=n_nta, workers=workers, n_boot=n_boot,
                            compare_rows=compare_rows, moderator_model=moderator_model,
-                           dry_run=(dry_run or not run), samples=delib_samples)
+                           dry_run=(dry_run or not run), samples=delib_samples,
+                           max_tokens_agent=max_tokens_agent)
     print(f"  delegates to: python -m scripts.run_crowdgold_deliberation " + " ".join(argv))
     if not compare_rows.exists():
         print(f"  NOTE: {compare_rows.name} not on disk yet (step 1 writes it); the "
@@ -2270,6 +2275,13 @@ def main(argv: Optional[list[str]] = None) -> int:
                          "cross-vendor moderator")
     ap.add_argument("--n-yta", type=int, default=N_YTA, help="testing only; the panel is the default")
     ap.add_argument("--n-nta", type=int, default=N_NTA, help="testing only; the panel is the default")
+    ap.add_argument("--max-tokens-agent", type=int, default=None,
+                    help="step 2 only: override the deliberation runner's --max-tokens-agent "
+                         "(default CAPS['agent'], currently %d); the cap is part of the r0/r1/r2 "
+                         "cache key by design, so raising it forces fresh generation for those "
+                         "rounds and, via parent_sha, everything downstream of them. Use this to "
+                         "fix a round-level truncation guard failure, never to silently widen the "
+                         "registered default." % CAPS["agent"])
     ap.add_argument("--workers", type=int, default=4)
     ap.add_argument("--n-boot", type=int, default=1000)
     ap.add_argument("--draws", type=int, default=2000, help="readout bootstrap draws")
@@ -2323,7 +2335,8 @@ def main(argv: Optional[list[str]] = None) -> int:
                                 samples=args.screen_samples,
                                 moderator_model=args.moderator_model, run=args.run,
                                 dry_run=args.dry_run, resume=args.resume,
-                                delib_samples=args.samples)
+                                delib_samples=args.samples,
+                                max_tokens_agent=args.max_tokens_agent)
         else:
             rc = run_readout(m, dtag, stag, draws=args.draws)
         worst = max(worst, rc)
