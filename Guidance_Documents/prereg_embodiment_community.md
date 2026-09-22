@@ -8198,3 +8198,60 @@ DeepSeek's advocate phi within one-loser read as a fourth data point
 against the same three-pattern frame (OPPOSED / CORRELATED / neither).
 Guards identical to 16.26; completeness 840 rows expected at k=2.
 Nothing above this line is edited.
+
+## Addendum 17.6 RESULTS (run 2026-09-22; untruncated re-score of all seven generators' existing OEQ responses, no new generation; artefacts `rescore_oeq_validation_judge_grok.json`, bootstrapped table not committed separately, numbers below reproducible via `make_pillar1_table.build` with `apply_corrected_scores(..., judge="grok-4-1-fast-reasoning")`)
+
+**grok is not a clean third judge. It shows the same acquiescence defect
+as the Llama judge (17.2), not the reliability its use elsewhere in the
+programme predicted.** Its validation rate sits at 0.82 to 0.97 on
+almost every generator and arm regardless of content, the same pinned-
+near-ceiling pattern that flagged the Llama judge as defective, with the
+one exception being Llama's own narrative_cot responses (0.339), which
+are stylistically distinct enough (much shorter, starker) that even a
+compressed judge still discriminates them. Bootstrapped drops,
+item-clustered:
+
+| generator | drop under grok judge | reading |
+|---|---|---|
+| claude-haiku-4-5 | +18.0 [+8.7, +27.3] | REVERSED |
+| claude-sonnet-4-6 | +20.6 [+13.9, +27.9] | REVERSED |
+| gpt-5.4-nano | +3.4 [-4.8, +11.9] | null |
+| grok-4-1-fast-reasoning | +0.6 [-4.4, +6.1] | null |
+| Llama-3.3-70B-Instruct | -59.3 [-68.0, -50.2] | confirmed (as under every judge) |
+| Mistral-Large-3-2 | -0.2 [-6.9, +6.9] | null |
+| DeepSeek-V4-Pro | -5.1 [-10.7, +0.5] | null |
+
+**Reading, revised from what the registration anticipated.** The
+pre-declared branches assumed a genuinely independent third judge would
+either confirm or fail to confirm the effect; they did not anticipate a
+SECOND judge with the identical failure mode as the first. Two of the
+three additional judges tried (Llama, grok) show the same near-ceiling
+acquiescence on this specific validation rubric; only gpt-5.4-nano has
+been found to discriminate normally. This changes the honest
+interpretation of pillar 1's judge-robustness from "one clean additional
+judge out of one tried, one defective judge found separately" to "one
+clean additional judge (nano) found out of two attempted, with a
+consistent failure mode recurring." The paper should not claim
+"judge-robust" in any strong sense; it should say the effect is
+confirmed by the production judge and by nano, and that two further
+models tried as judges (Llama, grok) were unable to discriminate the
+construct at all on most generators, a property of validation-tone
+judging on this rubric across models rather than of any one judge. This
+is registered honestly rather than treated as a second success to add to
+the robustness count. Sonnet's status is UNCHANGED and now worse: it
+fails under nano (CI touches zero) and reverses under BOTH Llama and
+grok, so its effect is judge-specific in the strongest sense available in
+this record, confirmed only by the production judge.
+
+**A candidate explanation, offered but not tested further under this
+addendum.** Both defective judges (Llama, grok) are also GENERATORS in
+this same panel whose own narrative_cot responses are among the most
+validating under the production judge (grok's own full-rate corrected
+rate was 0.455, one of the least sycophancy-reduced cells; this session
+established Llama is an outlier on the opposite end). A model whose own
+generation tendency sits toward one end of a scale may share that
+tendency when asked to judge the same construct in others' text. This
+is speculative and not something this addendum tests causally; it is
+recorded as a hypothesis for a future judge-selection design, not a
+finding.
+Nothing above this line is edited.
