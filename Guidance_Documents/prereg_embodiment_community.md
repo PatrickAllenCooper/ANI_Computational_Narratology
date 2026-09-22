@@ -7467,3 +7467,75 @@ intended item set is the same one originally registered), same arms, same
 models, same token caps, same pre-declared readings, same $60 ceiling (measured
 spend on the void stage 1 is separately reported and counted against it).
 Nothing above this line is edited.
+
+## Addendum 18 RESULTS, stage 1 (run 2026-09-21 after the load_items fix; 2,560 calls, 8 link-outage failures of 2,560 (0.3%, ordinary "Connection error", not the collision bug), guards PASSED; artefacts `tom_benchmark_analysis.json`, `tom_mechanism_analysis.json`; script `scripts/run_tom_benchmark.py`, diagnostic `scripts/analyze_tom_mechanism.py`)
+
+Four models (gpt-5.4-nano, grok-4-1-fast-reasoning, Mistral-Large-3-2,
+DeepSeek-V4-Pro), 320 items, one sample per arm per item, unparsed rate
+0.000 to 0.006 on every cell:
+
+| model | CoT acc | NoT acc | delta | false-belief delta |
+|---|---|---|---|---|
+| gpt-5.4-nano | 0.731 | 0.719 | -0.019 [-0.064, +0.026] | +0.000 [-0.075, +0.075] |
+| grok-4-1-fast-reasoning | 0.759 | 0.743 | -0.016 [-0.047, +0.016] | +0.000 [+0.000, +0.000] |
+| Mistral-Large-3-2 | 0.731 | 0.650 | -0.081 [-0.128, -0.034] | -0.100 [-0.200, -0.025] |
+| DeepSeek-V4-Pro | 0.803 | 0.741 | -0.062 [-0.106, -0.019] | +0.050 [+0.000, +0.125] |
+| **POOLED (4 models)** | | | **-0.044 [-0.066, -0.022]** | -0.013 [-0.044, +0.019] |
+
+**Pre-declared reading applied mechanically: the pooled CI is negative and
+excludes zero. This is the COSTS branch, not IMPROVES.** Two of four models
+(Mistral, DeepSeek) individually have a CI excluding zero in the negative
+direction; grok and nano are negative but do not individually exclude
+zero. The false-belief primary stratum is flat (CI includes zero). The
+"3 to 10 point gain" wording in the PI's draft abstract is not supported
+by this stage and is not used; the paper reports a cost instead, scoped to
+where it concentrates (below).
+
+**Why, investigated 2026-09-21 (`scripts/analyze_tom_mechanism.py`, zero
+spend, recomputed from the existing cache).** The loss is not spread
+evenly across theory of mind. Splitting the eight tasks into FACTUAL
+state-tracking (False Belief, Scalar Implicature, where no party's
+preference is a coherent concept) and INTENT inference (Strange Story,
+Faux-pas Recognition, Persuasion Story, Hinting, where inferring
+deception, tact or strategy competes against a charitable reading):
+FACTUAL delta +0.000 [-0.034, +0.034], dead flat, 320 items; INTENT delta
+-0.075 [-0.108, -0.042], the entire measured cost, 639 items. Read two
+transcripts side by side and the mechanism is visible directly. On a
+Strange Story item (gold: the character's claim is false), CoT infers
+directly from the events that he never returned to the library and
+answers correctly. NoT's stakeholder section invents interests (his
+honesty, his sister's trust, the library's record), its consequence
+section traces both a lying and an honest reading as parallel futures,
+and its decision section, instructed to "commit to a decision and explain
+why that trajectory is preferable to the alternatives," a scaffold clause
+written for moral dilemmas, picks the reading that "preserves honesty" as
+preferable and answers incorrectly. The same substitution recurs on a
+different model and task (Persuasion Story: NoT reframes the objectively
+most effective persuasion tactic as unfair to the subordinate and
+prefers a more collegial, wrong, option). This is systematic, not
+anecdotal: pooled across the four models, CoT-right-to-NoT-wrong flips
+outnumber CoT-wrong-to-NoT-right flips 120 to 63, a 1.90x asymmetry; NoT's
+own text on the wrong-flip cases uses normative vocabulary (preferable,
+trust, honest, fair, morale, reassure) at 0.575 versus 0.416 on cases
+both arms got right.
+
+**Reading for the theory.** Section 5 of the scaffold, "commit to a
+decision and explain why that trajectory is preferable," was built for
+moral dilemmas, where picking the ethically preferable action is the
+correct thing to optimise. On a comprehension question there is no action
+to prefer, only a fact to infer, and the scaffold's own stakeholder and
+consequence sections manufacture a normatively nicer alternative that
+Section 5 then locks onto in place of the answer the evidence supports.
+This is a distinct failure mode from the propositional backfire on
+BrokenMath (16.15.5, an abstention effect) and from the pillar-1 gain
+(a represented-counterparty effect); here the same commitment clause that
+pillar 1's theory treats as the least essential section (Addendum 17.3
+tests this directly) is implicated as the one doing the damage. The
+unified paper's theory section and limitations must carry this as a named
+cost with a named cause, not as an unexplained null.
+
+**Stage 2** (claude-haiku-4-5, claude-sonnet-4-6, Llama-3.3-70B-Instruct)
+NOT YET RUN; queued behind other Anthropic and Llama jobs. Read on the
+corrected loader; the pre-declared pooled reading over all seven models is
+applied only once stage 2 completes.
+Nothing above this line is edited.
