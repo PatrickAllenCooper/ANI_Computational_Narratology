@@ -7757,3 +7757,68 @@ still exceeds every original model's drop except nano's -41.4, which it
 also exceeds). This is the single strongest replication result in the
 pillar-1 programme to date.
 Nothing above this line is edited.
+
+## Addendum 17.2 RESULTS (run 2026-09-21; two untruncated re-score passes over the existing OEQ response cache, one per new judge; no new generation; gpt-5.4-nano judge $0 measured beyond cached compute, Llama-3.3-70B-Instruct judge required a restart at `--workers 2` after a 429 rate-limit crash at `--workers 8`, resumed from cache at no extra cost; artefacts `rescore_oeq_validation_judge_nano.json`, `rescore_oeq_validation_judge_llama.json`, bootstrapped tables in `/tmp/nano_judge_table.json` and `/tmp/llama_judge_table.json` (not committed, ad hoc; the numbers below are copied from them and are reproducible by re-running `make_pillar1_table.build` with `apply_corrected_scores(..., judge=<model>)`))
+
+Three judges now score the same untruncated responses on the same 150-item
+OEQ sample: the production judge (claude-haiku-4-5, the drops already
+registered under 17.1 and 16.15.7), gpt-5.4-nano, and
+Llama-3.3-70B-Instruct. Item-clustered bootstrap (8,000 draws, seed
+20260822), drop in points, [CI]:
+
+| generator | haiku judge (production) | nano judge | Llama judge |
+|---|---|---|---|
+| claude-haiku-4-5 | -26.7 [-36.7, -16.7] | -16.0 [-26.0, -5.3] | **+18.7 [+10.0, +27.3]** |
+| claude-sonnet-4-6 | -22.3 [-31.3, -13.3] | -6.9 [-14.9, +1.1] | **+19.3 [+12.0, +27.1]** |
+| gpt-5.4-nano | -41.4 [-51.1, -31.4] | -18.3 [-29.1, -7.2] | **+11.7 [+6.0, +17.9]** |
+| grok-4-1-fast-reasoning | -36.0 [-44.9, -27.1] | -8.4 [-15.8, -0.8] | -1.5 [-7.5, +4.1] |
+| Llama-3.3-70B-Instruct | -69.9 [-77.7, -61.4] | -61.4 [-70.0, -52.3] | -41.5 [-51.5, -31.4] |
+| Mistral-Large-3-2 | -58.2 [-66.2, -49.7] | -22.5 [-31.4, -13.4] | -5.9 [-12.3, +0.5] |
+| DeepSeek-V4-Pro | -45.5 [-53.8, -37.1] | -26.6 [-35.5, -17.7] | -0.1 [-4.9, +4.7] |
+
+**Pre-declared reading, applied as registered.** JUDGE-ROBUST requires
+every judge to give a negative drop with a CI excluding zero on every
+model. This fails immediately: under the nano judge sonnet's CI includes
+zero; under the Llama judge three models (haiku, sonnet, nano) REVERSE
+sign with a CI excluding zero in the positive direction, and two more
+(grok, DeepSeek) fall to a CI including zero. The branch is
+JUDGE-DEPENDENT, and both disagreeing judges are named as the
+registration requires.
+
+**Why the Llama judge disagrees, checked before accepting the reversal
+at face value.** Its validation rate is not sensitive to content: it
+reads 0.80 to 1.00 on almost every generator and arm, standard CoT
+included, with no cell below 0.60 except one five-response cell.
+A judge pinned near ceiling regardless of what it is shown has no
+headroom for NoT to move the rate in either direction, and the small
+residual movement that remains is not distinguishable from whatever
+drives the judge to occasionally say no. This is an acquiescence pattern
+in the judge, not evidence that NoT increases validation. The
+pre-declared guard as registered (NOVERDICT or unparsed rate over 5
+percent excludes a judge) does not catch this, because the Llama judge
+parses its answer cleanly on 99.2 percent of cells (10 of 1,189
+unparseable); the guard was written for a judge that fails to answer, not
+for one that answers the same way regardless of the question. This is a
+deviation from the registered exclusion rule, reported as such rather
+than applied silently: the Llama judge is not formally excluded, but its
+three reversed cells are reported with this diagnosis attached and are
+not read as a finding against pillar 1.
+
+The nano judge shows no such ceiling problem (its full_rate spans a
+normal range) and its disagreement is a matter of degree, not sign,
+except on sonnet, where the CI touches zero. Six of seven models retain
+a negative, CI-excluding-zero drop under the nano judge; only sonnet does
+not.
+
+**Reading for the paper.** The pillar-1 claim is judge-robust in the
+weak sense (the production judge and one of two additional judges agree
+in sign and significance on 6 of 7 models) and not judge-robust in the
+strong pre-declared sense. The abstract and results carry the sentence
+"as scored by the production judge" as the registration anticipated for
+exactly this outcome, and the appendix reports the three-judge table in
+full, including the Llama judge's apparent acquiescence bias as a
+limitation of that specific judge rather than of the underlying effect.
+Sonnet is the one model whose reduction does not survive a change of
+judge under any reading (nano's CI touches zero, Llama's reverses); the
+paper should not claim sonnet's drop is judge-independent.
+Nothing above this line is edited.
