@@ -7690,3 +7690,31 @@ is why routing still works, but the paper's mechanism claim
 should be read alongside this: the signal's SIGN is grok-specific, its
 PRESENCE is not.
 Nothing above this line is edited.
+
+## Pillar-3 headline, independent recomputation extended to two more conditions (2026-09-21, zero spend; `scripts/verify_pillar3_headline.py`, artefacts `verify_pillar3_headline_{noedge,llama}.json`)
+
+The same from-scratch script (no import from the registered analyzers)
+now covers four conditions: grok on-edge, grok no-edge k=4, haiku-249,
+and the Llama community. Every registered value is reproduced within
+tolerance on both new conditions. No-edge: 1,675 debates, collective
+0.8322, routed 0.8800, delta +0.0478 [+0.0316, +0.0655] (registered
+[+0.0320, +0.0650]); the gain holds in all four samples separately
+(+0.041 to +0.053), both arms, both gold classes. Llama: 897 debates,
+collective 0.6198, routed 0.6611, delta +0.0412 [+0.0278, +0.0567]
+(registered [+0.0279, +0.0559]); holds in both samples, both arms; on
+gold-YTA the gain is 0.0000 (the collective is already at 0.989 there)
+and the entire measured gain is on gold-NTA (+0.0697), the same
+scope pattern seen on haiku-249 (16.23 RESULTS note). The routing gain
+over the collective is now confirmed by two independent implementations
+on four conditions spanning three vendors, one topology ablation, and
+open versus proprietary weights, and it has not failed once.
+
+A diagnostic bug in the verifier itself was found and fixed while adding
+the no-edge condition: its own `n_objectors`-vs-votes cross-check
+hardcoded the default (non-suffixed) seat names, so it reported 1,601 of
+1,675 debates as mismatched on the no-edge cell even though the actual
+fired/lift/delta figures, which read `n_objectors` from the rows CSV
+directly, were unaffected throughout (all four communities' headline
+quantities reproduced exactly before and after this fix). Fixed with a
+per-community seat-name table; 0 mismatches now.
+Nothing above this line is edited.

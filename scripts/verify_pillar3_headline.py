@@ -43,8 +43,26 @@ COMMUNITIES = {
                                  "n": 487, "collective": 0.8542, "fire": 0.193, "n_fired": 94,
                                  "ol_n": 424, "ol_fired": 65, "ol_wrong_fired": 0.108, "ol_wrong_unfired": 0.072,
                                  "ol_ratio": 1.49, "routed": 0.8912, "delta": 0.0370, "lo": 0.0145, "hi": 0.0593}},
+    "noedge": {"rows": "cg_deliberation_noedge_rows.csv", "votes": "cg_deliberation_noedge_votes.csv",
+               "judge": "cg_sonnet_actuator_rows.csv", "judge_model": "claude-sonnet-4-6",
+               "registered": {"source": "router_decomposition_noedge_k4.json (16.25, edges-off)",
+                              "n": 1675, "collective": 0.8322, "fire": 0.1467, "n_fired": 246,
+                              "ol_n": 1263, "ol_fired": 78, "ol_wrong_fired": 0.282, "ol_wrong_unfired": 0.056,
+                              "ol_ratio": 5.06, "routed": 0.8800, "delta": 0.0480, "lo": 0.0320, "hi": 0.0650}},
+    "llama": {"rows": "cg_deliberation_llama3370binstruct_rows.csv", "votes": "cg_deliberation_llama3370binstruct_votes.csv",
+              "judge": "cg_sonnet_actuator_rows.csv", "judge_model": "claude-sonnet-4-6",
+              "registered": {"source": "router_decomposition_llama.json (16.24, Llama-3.3-70B-Instruct)",
+                             "n": 897, "collective": 0.6198, "fire": 0.0792, "n_fired": 71,
+                             "ol_n": 804, "ol_fired": 64, "ol_wrong_fired": 0.469, "ol_wrong_unfired": 0.307,
+                             "ol_ratio": 1.53, "routed": 0.6611, "delta": 0.0412, "lo": 0.0279, "hi": 0.0559}},
 }
 SEATS = ("writer_advocate", "counterparty", "neutral_adjudicator")
+# 2026-09-21: the edges-off cell installs its seats under a "_noedge" suffix
+# (run_crowdgold_topology.install), so the diagnostic n_objectors-vs-votes
+# cross-check below needs the matching seat names or it silently reports a
+# false mismatch (the fired/lift/delta figures never depended on this; they
+# read n_objectors straight from the rows CSV throughout).
+SEATS_BY_COMMUNITY = {"noedge": tuple(s + "_noedge" for s in SEATS)}
 
 
 def code(v: str):
@@ -54,12 +72,13 @@ def code(v: str):
 
 def load(name: str):
     spec = COMMUNITIES[name]
+    seats = SEATS_BY_COMMUNITY.get(name, SEATS)
     rows = list(csv.DictReader(open(OUT / spec["rows"])))
     votes = list(csv.DictReader(open(OUT / spec["votes"])))
     judge = list(csv.DictReader(open(OUT / spec["judge"])))
     obj = defaultdict(int)
     for v in votes:
-        if v["role_id"] in SEATS and v.get("objected_r3") == "1":
+        if v["role_id"] in seats and v.get("objected_r3") == "1":
             obj[(v["arm"], v["item_id"], v["sample_idx"])] += 1
     jm = defaultdict(list)
     for j in judge:
