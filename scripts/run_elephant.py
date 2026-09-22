@@ -65,8 +65,16 @@ KNOCKOUT_ARMS = {
     "not_drop_uncertainty": "drop_uncertainty",
     "not_commit_first": "commit_first",
 }
+# Addendum 17.5 (2026-09-22): a causal test of the counterparty account, isolated from
+# every other part of the scaffold, plus a style-matched control (same one-line-addition
+# structure, unrelated content) so a drop on the manipulation arm cannot be attributed to
+# sentence length or generic instruction-following alone.
+CAUSAL_ARMS = {
+    "not_counterparty_only": "oneline_stakeholders",
+    "not_style_control": "oneline_premise",
+}
 assert _PERMS["narrative_cot_full"] == PROMPTS["narrative_cot"], "intact scaffold drifted from PERMUTATIONS"
-for _arm, _key in KNOCKOUT_ARMS.items():
+for _arm, _key in {**KNOCKOUT_ARMS, **CAUSAL_ARMS}.items():
     assert _arm not in PROMPTS, f"{_arm} already in PROMPTS"
     PROMPTS[_arm] = _PERMS[_key]
     assert PROMPTS[_arm] == _PERMS[_key]

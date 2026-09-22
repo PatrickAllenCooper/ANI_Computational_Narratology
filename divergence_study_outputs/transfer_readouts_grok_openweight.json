@@ -1,0 +1,186 @@
+{
+  "n_cells": 420,
+  "n_items": 210,
+  "targets": {
+    "Llama-3.3-70B-Instruct:standard": {
+      "model": "Llama-3.3-70B-Instruct",
+      "scaffold": "standard",
+      "n_cells_codable": 419,
+      "n_cells_noncodable": 1,
+      "solo_accuracy": 0.837708830548926,
+      "n_samples_per_cell": [
+        3
+      ],
+      "by_sensor": {
+        "counter": {
+          "n": 419,
+          "n_fired": 50,
+          "n_unfired": 369,
+          "n_frame": 420,
+          "n_items_frame": 210,
+          "n_items_kept": 210,
+          "coverage": 0.11933174224343675,
+          "p_wrong_fired": 0.28,
+          "p_wrong_unfired": 0.14634146341463414,
+          "ratio": 1.9133333333333336,
+          "lift": 0.1336585365853659,
+          "lo": -0.003971571906354526,
+          "hi": 0.28763440860215056,
+          "ci_excludes_zero": false
+        },
+        "composite": {
+          "n": 419,
+          "n_fired": 52,
+          "n_unfired": 367,
+          "n_frame": 420,
+          "n_items_frame": 210,
+          "n_items_kept": 210,
+          "coverage": 0.12410501193317422,
+          "p_wrong_fired": 0.2692307692307692,
+          "p_wrong_unfired": 0.14713896457765668,
+          "ratio": 1.8297720797720796,
+          "lift": 0.12209180465311253,
+          "lo": -0.009484384824984288,
+          "hi": 0.27042424242424246,
+          "ci_excludes_zero": false
+        }
+      }
+    },
+    "Mistral-Large-3-2:standard": {
+      "model": "Mistral-Large-3-2",
+      "scaffold": "standard",
+      "n_cells_codable": 420,
+      "n_cells_noncodable": 0,
+      "solo_accuracy": 0.8357142857142857,
+      "n_samples_per_cell": [
+        3
+      ],
+      "by_sensor": {
+        "counter": {
+          "n": 420,
+          "n_fired": 51,
+          "n_unfired": 369,
+          "n_frame": 420,
+          "n_items_frame": 210,
+          "n_items_kept": 210,
+          "coverage": 0.12142857142857143,
+          "p_wrong_fired": 0.29411764705882354,
+          "p_wrong_unfired": 0.14634146341463414,
+          "ratio": 2.009803921568628,
+          "lift": 0.1477761836441894,
+          "lo": -0.001369003479550518,
+          "hi": 0.3131578947368421,
+          "ci_excludes_zero": false
+        },
+        "composite": {
+          "n": 420,
+          "n_fired": 53,
+          "n_unfired": 367,
+          "n_frame": 420,
+          "n_items_frame": 210,
+          "n_items_kept": 210,
+          "coverage": 0.1261904761904762,
+          "p_wrong_fired": 0.2830188679245283,
+          "p_wrong_unfired": 0.14713896457765668,
+          "ratio": 1.9234800838574422,
+          "lift": 0.1358799033468716,
+          "lo": -0.009408602150537626,
+          "hi": 0.2952033314482546,
+          "ci_excludes_zero": false
+        }
+      }
+    },
+    "DeepSeek-V4-Pro:standard": {
+      "model": "DeepSeek-V4-Pro",
+      "scaffold": "standard",
+      "n_cells_codable": 419,
+      "n_cells_noncodable": 1,
+      "solo_accuracy": 0.9594272076372315,
+      "n_samples_per_cell": [
+        3
+      ],
+      "by_sensor": {
+        "counter": {
+          "n": 419,
+          "n_fired": 51,
+          "n_unfired": 368,
+          "n_frame": 420,
+          "n_items_frame": 210,
+          "n_items_kept": 210,
+          "coverage": 0.12171837708830549,
+          "p_wrong_fired": 0.09803921568627451,
+          "p_wrong_unfired": 0.03260869565217391,
+          "ratio": 3.0065359477124183,
+          "lift": 0.0654305200341006,
+          "lo": -0.007456140350877195,
+          "hi": 0.15720265527884658,
+          "ci_excludes_zero": false
+        },
+        "composite": {
+          "n": 419,
+          "n_fired": 53,
+          "n_unfired": 366,
+          "n_frame": 420,
+          "n_items_frame": 210,
+          "n_items_kept": 210,
+          "coverage": 0.12649164677804295,
+          "p_wrong_fired": 0.09433962264150944,
+          "p_wrong_unfired": 0.03278688524590164,
+          "ratio": 2.8773584905660377,
+          "lift": 0.0615527373956078,
+          "lo": -0.009031491384432558,
+          "hi": 0.1500246983275704,
+          "ci_excludes_zero": false
+        }
+      }
+    }
+  },
+  "n_targets_ci_excludes_zero_counter": 0,
+  "n_targets_ci_excludes_zero_composite": 0,
+  "registration": "Addendum 16.15.3",
+  "draws": 4000,
+  "seed": 13,
+  "cell_flag_rule": "fires when strictly more than half of the cell's codable debate samples fire",
+  "readout": {
+    "model": "grok-4-1-fast-reasoning",
+    "registered": false,
+    "solo": [
+      "grok-4-1-fast-reasoning",
+      "standard"
+    ],
+    "judges": [
+      [
+        "claude-haiku-4-5",
+        "standard"
+      ],
+      [
+        "claude-sonnet-4-6",
+        "standard"
+      ]
+    ],
+    "deviations": [
+      "--extra-comparator ['divergence_study_outputs/cg_llama_standard_k3_rows.csv', 'divergence_study_outputs/cg_mistral_standard_k3_rows.csv', 'divergence_study_outputs/cg_deepseek_standard_k3_rows.csv']",
+      "--transfer-targets Llama-3.3-70B-Instruct:standard,Mistral-Large-3-2:standard,DeepSeek-V4-Pro:standard (registered: the R5 four)"
+    ],
+    "note": "exploratory per-model readout; the registered readout of Addendum 16.15 is the grok panel"
+  },
+  "r5_quoted": {
+    "not_applicable": "registered for the grok panel (Addendum 16.15); this is a grok-4-1-fast-reasoning readout, exploratory, not registered (deviations: --extra-comparator ['divergence_study_outputs/cg_llama_standard_k3_rows.csv', 'divergence_study_outputs/cg_mistral_standard_k3_rows.csv', 'divergence_study_outputs/cg_deepseek_standard_k3_rows.csv']; --transfer-targets Llama-3.3-70B-Instruct:standard,Mistral-Large-3-2:standard,DeepSeek-V4-Pro:standard (registered: the R5 four))"
+  },
+  "r5_agreement": {
+    "not_applicable": "registered for the grok panel (Addendum 16.15); this is a grok-4-1-fast-reasoning readout, exploratory, not registered (deviations: --extra-comparator ['divergence_study_outputs/cg_llama_standard_k3_rows.csv', 'divergence_study_outputs/cg_mistral_standard_k3_rows.csv', 'divergence_study_outputs/cg_deepseek_standard_k3_rows.csv']; --transfer-targets Llama-3.3-70B-Instruct:standard,Mistral-Large-3-2:standard,DeepSeek-V4-Pro:standard (registered: the R5 four))"
+  },
+  "guards_passed": true,
+  "resampling_frame": "every concentration interval resamples the items of the FULL registered population (all codable debates / all cells) and applies the stratum or codability restriction inside each resample; see n_items_frame / n_items_kept in each block",
+  "inputs": {
+    "rows": "divergence_study_outputs/cg_deliberation_rows.csv",
+    "votes": "divergence_study_outputs/cg_deliberation_votes.csv",
+    "comparator": "divergence_study_outputs/cg_scaffold_combined_rows_k3.csv",
+    "sonnet_rows": "divergence_study_outputs/cg_sonnet_actuator_rows.csv",
+    "extra_comparator": [
+      "divergence_study_outputs/cg_llama_standard_k3_rows.csv",
+      "divergence_study_outputs/cg_mistral_standard_k3_rows.csv",
+      "divergence_study_outputs/cg_deepseek_standard_k3_rows.csv"
+    ]
+  }
+}
