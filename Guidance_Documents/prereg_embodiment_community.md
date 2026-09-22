@@ -8271,3 +8271,91 @@ replays every cached call by name and generates only the 20 missing
 debates; no number from this cell is read until completeness passes.
 Cost of the fill: 20 debates x 17 calls, well under $1.
 Nothing above this line is edited.
+
+## Addendum 16.27 RESULTS (DeepSeek-V4-Pro k = 2 community; run 2026-09-22 across a first pass and one authorised resume for the 20 link-outage debates; 840 of 840 rows, completeness PASS, guards PASSED; measured spend $93.70 against the $90 ceiling, $3.70 over, reported as an overage rather than smoothed into the ceiling; artefacts `cg_deliberation_deepseekv4pro_grip_row.json`, `topology_cell_cg_deliberation_deepseekv4pro.json`, `flooding_analysis_deepseek.json`, `router_decomposition_deepseek.json`, `transfer_readouts_deepseek.json`, `routing_certification_deepseek.json`, `verify_pillar3_headline_deepseek.json`)
+
+A fourth model, a fourth vendor, a second open-weight deployment. 210
+surviving items (39 of 249 screened out by the registered content-filter
+screen), 840 debates.
+
+Role and structure: role-lock 0.816; P(at_fault) writer 0.065,
+counterparty 0.881, neutral 0.454 (grok 0.971, haiku 0.442, Llama 0.862).
+G1 fire 0.383 PASS, G2 reject share 0.088 PASS, G3 stake concentration
++0.120 [+0.093, +0.147] fail (>= +0.2 required; grok +0.631, Llama
++0.037); GRIP false. Localisation excess +0.011, near zero, between
+grok's +0.291 and Llama's -0.090. All-strata error lift +0.095
+[+0.030, +0.160] at 234 fired (gate 60 met); S2 accuracy 0.778 (0.943
+within one-loser, 0.409 within both-party). The both-party stratum shows
+a NEGATIVE lift, -0.124 [-0.236, -0.002] at 106 fired (% source:
+`router_decomposition_deepseek.json` composed-accuracy block via
+`scripts/analyze_flooding.py`), the flag anti-predicts error there; this
+is new, no model examined so far has shown a signed reversal within a
+single stratum, and it does not affect the one-loser reading below.
+
+**The mechanism check.** Advocate phi within one-loser verdicts is
+**negative**, -0.093 [-0.182, -0.007] (% source:
+`flooding_analysis_deepseek.json`, population s2, one_loser row; cross-
+checked against `emergent_graphs_analysis.json`'s independent
+computation, exact agreement). This is the same sign as grok (-0.901)
+and no-edge k=4 (-0.842) but an order of magnitude weaker, and it sits on
+the opposite side of zero from both haiku-249 (+0.246) and Llama
+(+0.148). DeepSeek's role-lock (0.816) is close to Llama's (0.862), so
+role-lock alone continues not to predict phi's sign: two models with
+similar, moderately high lock (Llama, DeepSeek) land on opposite sides of
+zero. Within-one-loser counter lift is nonetheless positive with a CI
+excluding zero: +0.057 [+0.003, +0.113], ratio 2.27x, 128 fired (gate
+met). Routed minus collective alone (item-clustered, % source:
+`router_decomposition_deepseek.json`, paired deltas block): sonnet judge
++0.072 [+0.052, +0.094], haiku judge +0.032 [+0.012, +0.052], both
+excluding zero, the fifth condition across four vendors and two open-
+weight deployments in which this delta has cleared a CI excluding zero
+and never failed to. Routed minus DeepSeek's own solo base (the 16.22 R1
+certification style, sonnet judge): +0.0024 [-0.0048, +0.0119], CI
+includes zero, does NOT replicate, the same non-result as Llama; under
+the haiku judge specifically the same comparison is negative and CI-
+excluding-zero, -0.0095 [-0.0191, -0.0024] (routing on the counter LOSES
+to the base under that judge), a new wrinkle not seen on grok or Llama
+and reported rather than dropped. Disagreement minus counter (sonnet):
++0.0167 [+0.0024, +0.0310], favouring disagreement, the same direction
+as every model tested so far, though the smallest margin measured.
+
+**Reading.** The routing gain over the collective is now confirmed on
+five conditions across four vendors (grok on-edge, grok no-edge, haiku-
+249, Llama, DeepSeek) and has never failed to clear a CI excluding zero;
+`verify_pillar3_headline.py --community deepseek` reproduces every
+registered value from `router_decomposition_deepseek.json` independently
+(all 13 quantities agree, 0 of 832 `n_objectors` mismatches). Routing
+beating the model's OWN solo base (16.22 R1) continues not to replicate
+off grok; it is now 0 of 2 on the models tested for it (Llama, DeepSeek),
+and the abstract's "+2.4 points over the strongest single model" stays
+scoped to grok. On the mechanism, DeepSeek adds a data point between the
+two established patterns rather than confirming either: weakly anti-
+correlated advocates, the same sign as grok's opposition but far short of
+its magnitude, on a model whose role-lock is closer to Llama's than to
+grok's. Four models now span the full range from strong opposition
+(grok) through weak opposition (DeepSeek) to weak-to-moderate correlation
+(Llama, haiku), and the lift survives on every one of them regardless of
+where advocate phi lands. The paper's mechanism claim should read: the
+lift's presence does not depend on the sign or size of advocate phi; what
+generates the lift is that a second seat sometimes objects when the
+first does not, independent of whether that second objection is for or
+against the first seat's own assigned interest.
+
+**Spend.** The registered ceiling for this addendum was $90, with a
+projected upper bound at registration of $87.86 (% source:
+`logs/cell_1627_deepseek_k2_pass1.log`, dry-run cost model). Measured
+spend, read from the cache after both the first pass and the resume
+(% source: `cg_deliberation_deepseekv4pro_grip_row.json`, "measured
+spend" line, 14,280 calls = 840 debates x 17 calls exactly, so this
+figure is this addendum's own spend and not polluted by other DeepSeek-
+V4-Pro work in the same cache), is $93.70, $3.70 (4.1%) over the
+registered ceiling. This overage is reported plainly rather than folded
+into the ceiling after the fact; it was not caught before the resume
+pass landed because the registered stop-rule checked the sample-0
+footprint against half the ceiling during the run, not the final
+measured total against the full ceiling once complete. The PI should
+treat this as a process gap in how mid-run cost projections were
+reconciled against final spend, not as evidence the projection method
+itself was wrong (the projected $87.86 upper bound was itself close to
+the eventual actual, within 7%).
+Nothing above this line is edited.

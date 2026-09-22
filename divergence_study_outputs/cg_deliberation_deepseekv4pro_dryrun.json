@@ -1,0 +1,121 @@
+{
+  "cells": 840,
+  "calls_per_cell": 17,
+  "moderator_model": "(agent model)",
+  "per_model": {
+    "DeepSeek-V4-Pro": {
+      "priced": true,
+      "completion_measured": false,
+      "price_in_per_mtok": 1.925,
+      "price_out_per_mtok": 3.828,
+      "moderator_model": "DeepSeek-V4-Pro",
+      "moderator_price_in_per_mtok": 1.925,
+      "moderator_price_out_per_mtok": 3.828,
+      "cells": 840,
+      "calls": 14280,
+      "input_tokens": 44688840,
+      "output_tokens": 11868360,
+      "usd": 131.46,
+      "moderator_usd": 12.6,
+      "rounds": {
+        "r0": {
+          "calls": 2520,
+          "billed_to": "DeepSeek-V4-Pro",
+          "prompt_tokens_each": 727,
+          "prompt_tokens_each_regex": 727,
+          "completion_tokens_each": 1311,
+          "input_tokens": 1832040,
+          "output_tokens": 3303720,
+          "price_in_per_mtok": 1.925,
+          "price_out_per_mtok": 3.828,
+          "usd": 16.17
+        },
+        "r1": {
+          "calls": 2520,
+          "billed_to": "DeepSeek-V4-Pro",
+          "prompt_tokens_each": 4697,
+          "prompt_tokens_each_regex": 4697,
+          "completion_tokens_each": 1311,
+          "input_tokens": 11836440,
+          "output_tokens": 3303720,
+          "price_in_per_mtok": 1.925,
+          "price_out_per_mtok": 3.828,
+          "usd": 35.43
+        },
+        "r2": {
+          "calls": 2520,
+          "billed_to": "DeepSeek-V4-Pro",
+          "prompt_tokens_each": 6009,
+          "prompt_tokens_each_regex": 6009,
+          "completion_tokens_each": 1311,
+          "input_tokens": 15142680,
+          "output_tokens": 3303720,
+          "price_in_per_mtok": 1.925,
+          "price_out_per_mtok": 3.828,
+          "usd": 41.8
+        },
+        "synthesis": {
+          "calls": 840,
+          "billed_to": "DeepSeek-V4-Pro",
+          "prompt_tokens_each": 4597,
+          "prompt_tokens_each_regex": 4597,
+          "completion_tokens_each": 450,
+          "input_tokens": 3861480,
+          "output_tokens": 378000,
+          "price_in_per_mtok": 1.925,
+          "price_out_per_mtok": 3.828,
+          "usd": 8.88
+        },
+        "r3_label": {
+          "calls": 2520,
+          "billed_to": "DeepSeek-V4-Pro",
+          "prompt_tokens_each": 2561,
+          "prompt_tokens_each_regex": 2561,
+          "completion_tokens_each": 320,
+          "input_tokens": 6453720,
+          "output_tokens": 806400,
+          "price_in_per_mtok": 1.925,
+          "price_out_per_mtok": 3.828,
+          "usd": 15.51
+        },
+        "integration": {
+          "calls": 840,
+          "billed_to": "DeepSeek-V4-Pro",
+          "prompt_tokens_each": 1309,
+          "prompt_tokens_each_regex": 1309,
+          "completion_tokens_each": 500,
+          "input_tokens": 1099560,
+          "output_tokens": 420000,
+          "price_in_per_mtok": 1.925,
+          "price_out_per_mtok": 3.828,
+          "usd": 3.72
+        },
+        "r4_vote": {
+          "calls": 2520,
+          "billed_to": "DeepSeek-V4-Pro",
+          "prompt_tokens_each": 1771,
+          "prompt_tokens_each_regex": 1771,
+          "completion_tokens_each": 140,
+          "input_tokens": 4462920,
+          "output_tokens": 352800,
+          "price_in_per_mtok": 1.925,
+          "price_out_per_mtok": 3.828,
+          "usd": 9.94
+        }
+      }
+    }
+  },
+  "assumptions": {
+    "r0_r1_r2_completion": "MEASURED per model from cached cg_gen_*narrative_cot* cells on this instrument",
+    "synthesis_completion": 450,
+    "r3_label_completion": 320,
+    "integration_completion": 500,
+    "r4_vote_completion": 140,
+    "prompt_tokens": "computed from real constructed prompts with stand-in prior-round text at the measured length",
+    "tokenizer": "regex approximation ONLY -- tiktoken not installed, so prompt tokens are UNDERCOUNTED by roughly 20-35% and so is the cost",
+    "prices": "redesign doc Sec 8 list rates, UNVERIFIED against vendor pages"
+  },
+  "total_calls": 14280,
+  "total_usd": 131.46,
+  "mde_probe": {}
+}

@@ -1,0 +1,197 @@
+{
+  "mode": "single_cell",
+  "tag": "cg_deliberation_deepseekv4pro",
+  "model": "DeepSeek-V4-Pro",
+  "scaffold": "narrative_cot",
+  "cell": "embodied/on",
+  "seats": [
+    "writer_advocate",
+    "counterparty",
+    "neutral_adjudicator"
+  ],
+  "solo_models": [
+    "DeepSeek-V4-Pro:standard"
+  ],
+  "reference": {
+    "tag": "cg_deliberation",
+    "model": "grok-4-1-fast-reasoning",
+    "n_items": 210
+  },
+  "registered": false,
+  "n_items_own": 210,
+  "n_items_matched": 201,
+  "draws": 3000,
+  "seed": 29,
+  "matched": {
+    "cell": {
+      "roles": "embodied",
+      "edges": "on"
+    },
+    "tag": "cg_deliberation_deepseekv4pro",
+    "seats": [
+      "writer_advocate",
+      "counterparty",
+      "neutral_adjudicator"
+    ],
+    "n_debates": 804,
+    "n_items": 201,
+    "n_codable": 796,
+    "role_lock": 0.8119812545875444,
+    "p_at_fault": {
+      "writer_advocate": 0.06741573033707865,
+      "counterparty": 0.8793969849246231,
+      "neutral_adjudicator": 0.4617314930991217
+    },
+    "seat_r0_accuracy": {
+      "writer_advocate": 0.6529338327091136,
+      "counterparty": 0.47738693467336685,
+      "neutral_adjudicator": 0.8820577164366374
+    },
+    "best_seat": "neutral_adjudicator",
+    "aggregation": {
+      "n": 786,
+      "seat_majority_r0": 0.871501272264631,
+      "best_seat_r0": 0.8816793893129771,
+      "group_verdict_s2": 0.7843388960205392,
+      "majority_equals_best_seat_rate": 0.9720101781170484,
+      "majority_minus_best_seat": {
+        "delta": -0.010178117048346057,
+        "lo": -0.024173027989821884,
+        "hi": 0.0025348542458808617
+      }
+    },
+    "objection": {
+      "per_seat": {
+        "writer_advocate": 0.3917910447761194,
+        "counterparty": 0.472636815920398,
+        "neutral_adjudicator": 0.21517412935323382
+      },
+      "pooled": 0.3598673300165838,
+      "localisation_excess": 0.007148601131862109,
+      "fire_rate": 0.2885572139303483,
+      "fire_independence": 0.2914877005408836
+    },
+    "g3": {
+      "applicable": true,
+      "n_stake_votes": 1594,
+      "delta": 0.12045169385194479,
+      "lo": 0.09079445145018916,
+      "hi": 0.15018773466833543
+    },
+    "lift": {
+      "n_fired": 232,
+      "powered": true,
+      "codable": {
+        "n_fired": 229,
+        "err_fired": 0.2925764192139738,
+        "err_unfired": 0.19223985890652562
+      },
+      "delta": 0.1003365603074482,
+      "lo": 0.033725077739162224,
+      "hi": 0.1634665076525541
+    },
+    "transfer_solo": {
+      "DeepSeek-V4-Pro:standard": {
+        "n_cells": 401,
+        "n_flagged_cells": 47,
+        "p_wrong_flagged": 0.06382978723404255,
+        "p_wrong_unflagged": 0.03954802259887006,
+        "lift": 0.02428176463517249,
+        "lo": -0.034482758620689655,
+        "hi": 0.09957627118644068
+      }
+    },
+    "guards": {
+      "mean_n_r3_unparsed": 0.0012437810945273632,
+      "p_noncodable_given_fired": 0.01293103448275862
+    }
+  },
+  "own": {
+    "cell": {
+      "roles": "embodied",
+      "edges": "on"
+    },
+    "tag": "cg_deliberation_deepseekv4pro",
+    "seats": [
+      "writer_advocate",
+      "counterparty",
+      "neutral_adjudicator"
+    ],
+    "n_debates": 840,
+    "n_items": 210,
+    "n_codable": 832,
+    "role_lock": 0.8162614139457665,
+    "p_at_fault": {
+      "writer_advocate": 0.06474820143884892,
+      "counterparty": 0.8810096153846154,
+      "neutral_adjudicator": 0.453781512605042
+    },
+    "seat_r0_accuracy": {
+      "writer_advocate": 0.6642685851318945,
+      "counterparty": 0.46274038461538464,
+      "neutral_adjudicator": 0.879951980792317
+    },
+    "best_seat": "neutral_adjudicator",
+    "aggregation": {
+      "n": 819,
+      "seat_majority_r0": 0.8681318681318682,
+      "best_seat_r0": 0.8791208791208791,
+      "group_verdict_s2": 0.7820197044334976,
+      "majority_equals_best_seat_rate": 0.9719169719169719,
+      "majority_minus_best_seat": {
+        "delta": -0.01098901098901099,
+        "lo": -0.024390243902439025,
+        "hi": 0.0012135922330097086
+      }
+    },
+    "objection": {
+      "per_seat": {
+        "writer_advocate": 0.3821428571428571,
+        "counterparty": 0.4773809523809524,
+        "neutral_adjudicator": 0.2119047619047619
+      },
+      "pooled": 0.35714285714285715,
+      "localisation_excess": 0.01077695780693233,
+      "fire_rate": 0.28214285714285714,
+      "fire_independence": 0.2872503036929057
+    },
+    "g3": {
+      "applicable": true,
+      "n_stake_votes": 1666,
+      "delta": 0.12004801920768308,
+      "lo": 0.09232613908872903,
+      "hi": 0.14850299401197606
+    },
+    "lift": {
+      "n_fired": 237,
+      "powered": true,
+      "codable": {
+        "n_fired": 234,
+        "err_fired": 0.29059829059829057,
+        "err_unfired": 0.19565217391304346
+      },
+      "delta": 0.0949461166852471,
+      "lo": 0.02903460837887062,
+      "hi": 0.16147672552166936
+    },
+    "transfer_solo": {
+      "DeepSeek-V4-Pro:standard": {
+        "n_cells": 419,
+        "n_flagged_cells": 47,
+        "p_wrong_flagged": 0.06382978723404255,
+        "p_wrong_unflagged": 0.03763440860215054,
+        "lift": 0.02619537863189201,
+        "lo": -0.03434782608695652,
+        "hi": 0.10476964769647698
+      }
+    },
+    "guards": {
+      "mean_n_r3_unparsed": 0.002380952380952381,
+      "p_noncodable_given_fired": 0.012658227848101266
+    }
+  },
+  "comparator": [
+    "divergence_study_outputs/cg_scaffold_combined_rows_k3.csv",
+    "divergence_study_outputs/cg_deepseek_standard_k3_rows.csv"
+  ]
+}

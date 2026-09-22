@@ -1,0 +1,1444 @@
+{
+  "registration": "Addendum 16.22 (routing certification; zero spend)",
+  "status": "not_applicable (exploratory)",
+  "readout": {
+    "model": "DeepSeek-V4-Pro",
+    "registered": false,
+    "solo": [
+      "DeepSeek-V4-Pro",
+      "standard"
+    ],
+    "judges": [
+      [
+        "claude-haiku-4-5",
+        "standard"
+      ],
+      [
+        "claude-sonnet-4-6",
+        "standard"
+      ]
+    ],
+    "deviations": [
+      "--model DeepSeek-V4-Pro (registered grok-4-1-fast-reasoning)",
+      "--solo DeepSeek-V4-Pro:standard (registered grok-4-1-fast-reasoning:standard)",
+      "--rows divergence_study_outputs/cg_deliberation_deepseekv4pro_rows.csv (registered divergence_study_outputs/cg_deliberation_rows.csv)",
+      "--votes divergence_study_outputs/cg_deliberation_deepseekv4pro_votes.csv (registered divergence_study_outputs/cg_deliberation_votes.csv)",
+      "--extra-comparator ['divergence_study_outputs/cg_deepseek_standard_k3_rows.csv']"
+    ],
+    "note": "exploratory per-model readout; the registered readout of Addendum 16.15 is the grok panel"
+  },
+  "population": "419 (arm, item) cells on which the base majority-of-3 is codable, of 420; base = DeepSeek-V4-Pro standard majority-3; a cell fires when strictly more than half of its codable debate samples fire",
+  "base": [
+    "DeepSeek-V4-Pro",
+    "standard"
+  ],
+  "judges": {
+    "haiku": [
+      "claude-haiku-4-5",
+      "standard"
+    ],
+    "sonnet": [
+      "claude-sonnet-4-6",
+      "standard"
+    ]
+  },
+  "signals": [
+    "counter",
+    "composite",
+    "any_eshnah",
+    "disagree",
+    "disagree_raw",
+    "union"
+  ],
+  "pairwise": [
+    "disagree_minus_counter",
+    "union_minus_counter",
+    "union_minus_disagree",
+    "composite_minus_counter"
+  ],
+  "estimator": {
+    "draws": 4000,
+    "seed": 13,
+    "trim_seeds": 200,
+    "kind": "item-clustered percentile bootstrap, paired per cell"
+  },
+  "replay_gate_16_11a": {
+    "status": "not_applicable",
+    "passed": false,
+    "reproduces": [],
+    "reason": "16.11a replay is defined for the grok panel with the grok standard base and the sonnet standard judge; this is DeepSeek-V4-Pro / DeepSeek-V4-Pro:standard / claude-sonnet-4-6:standard"
+  },
+  "routed_vs_solo": {
+    "haiku": {
+      "judge": "claude-haiku-4-5 standard majority-3 (cached)",
+      "n_cells_total": 420,
+      "n_cells": 419,
+      "n_items": 210,
+      "n_judge_codable": 419,
+      "acc_base": 0.9594272076372315,
+      "acc_judge_everywhere": 0.8568019093078759,
+      "judge_everywhere_minus_base": {
+        "acc_a": 0.8568019093078759,
+        "acc_b": 0.9594272076372315,
+        "delta": -0.1026252983293556,
+        "lo": -0.14558472553699284,
+        "hi": -0.06205250596658711,
+        "n": 419,
+        "ci_excludes_zero": true
+      },
+      "signals": {
+        "counter": {
+          "n_fired": 49,
+          "coverage": 0.11694510739856802,
+          "acc_routed": 0.9498806682577565,
+          "acc_base": 0.9594272076372315,
+          "routed_minus_base": {
+            "acc_a": 0.9498806682577565,
+            "acc_b": 0.9594272076372315,
+            "delta": -0.00954653937947494,
+            "lo": -0.019138755980861243,
+            "hi": -0.002380952380952381,
+            "n": 419,
+            "ci_excludes_zero": true
+          },
+          "ci_excludes_zero": true,
+          "acc_judge_everywhere": 0.8568019093078759,
+          "routed_minus_judge_everywhere": {
+            "acc_a": 0.9498806682577565,
+            "acc_b": 0.8568019093078759,
+            "delta": 0.09307875894988067,
+            "lo": 0.05714285714285714,
+            "hi": 0.13365155131264916,
+            "n": 419,
+            "ci_excludes_zero": true
+          },
+          "judge_emitted_on_fired": 1.0,
+          "n_fallback_to_base": 0,
+          "random_at_coverage": {
+            "target_n": 49,
+            "coverage": 0.11694510739856802,
+            "mean": 0.9474463007159888,
+            "best": 0.9618138424821002,
+            "worst": 0.9307875894988067,
+            "p05": 0.9379474940334129,
+            "p95": 0.954653937947494,
+            "n_seeds": 200
+          },
+          "routed_minus_random_mean": 0.0024343675417677346
+        },
+        "composite": {
+          "n_fired": 76,
+          "coverage": 0.18138424821002386,
+          "acc_routed": 0.9498806682577565,
+          "acc_base": 0.9594272076372315,
+          "routed_minus_base": {
+            "acc_a": 0.9498806682577565,
+            "acc_b": 0.9594272076372315,
+            "delta": -0.00954653937947494,
+            "lo": -0.021479713603818614,
+            "hi": 0.0,
+            "n": 419,
+            "ci_excludes_zero": false
+          },
+          "ci_excludes_zero": false,
+          "acc_judge_everywhere": 0.8568019093078759,
+          "routed_minus_judge_everywhere": {
+            "acc_a": 0.9498806682577565,
+            "acc_b": 0.8568019093078759,
+            "delta": 0.09307875894988067,
+            "lo": 0.057279236276849645,
+            "hi": 0.13189448441247004,
+            "n": 419,
+            "ci_excludes_zero": true
+          },
+          "judge_emitted_on_fired": 1.0,
+          "n_fallback_to_base": 0,
+          "random_at_coverage": {
+            "target_n": 76,
+            "coverage": 0.18138424821002386,
+            "mean": 0.9408233890214754,
+            "best": 0.9594272076372315,
+            "worst": 0.9212410501193318,
+            "p05": 0.9307875894988067,
+            "p95": 0.9498806682577565,
+            "n_seeds": 200
+          },
+          "routed_minus_random_mean": 0.00905727923628108
+        },
+        "any_eshnah": {
+          "n_fired": 47,
+          "coverage": 0.11217183770883055,
+          "acc_routed": 0.9403341288782816,
+          "acc_base": 0.9594272076372315,
+          "routed_minus_base": {
+            "acc_a": 0.9403341288782816,
+            "acc_b": 0.9594272076372315,
+            "delta": -0.01909307875894988,
+            "lo": -0.04066985645933014,
+            "hi": 0.0,
+            "n": 419,
+            "ci_excludes_zero": false
+          },
+          "ci_excludes_zero": false,
+          "acc_judge_everywhere": 0.8568019093078759,
+          "routed_minus_judge_everywhere": {
+            "acc_a": 0.9403341288782816,
+            "acc_b": 0.8568019093078759,
+            "delta": 0.08353221957040573,
+            "lo": 0.05238095238095238,
+            "hi": 0.11835748792270531,
+            "n": 419,
+            "ci_excludes_zero": true
+          },
+          "judge_emitted_on_fired": 1.0,
+          "n_fallback_to_base": 0,
+          "random_at_coverage": {
+            "target_n": 47,
+            "coverage": 0.11217183770883055,
+            "mean": 0.9480071599045335,
+            "best": 0.9618138424821002,
+            "worst": 0.9331742243436754,
+            "p05": 0.9403341288782816,
+            "p95": 0.9570405727923628,
+            "n_seeds": 200
+          },
+          "routed_minus_random_mean": -0.007673031026251942
+        },
+        "disagree": {
+          "n_fired": 37,
+          "coverage": 0.0883054892601432,
+          "acc_routed": 0.9307875894988067,
+          "acc_base": 0.9594272076372315,
+          "routed_minus_base": {
+            "acc_a": 0.9307875894988067,
+            "acc_b": 0.9594272076372315,
+            "delta": -0.028639618138424822,
+            "lo": -0.05250596658711217,
+            "hi": -0.009523809523809525,
+            "n": 419,
+            "ci_excludes_zero": true
+          },
+          "ci_excludes_zero": true,
+          "acc_judge_everywhere": 0.8568019093078759,
+          "routed_minus_judge_everywhere": {
+            "acc_a": 0.9307875894988067,
+            "acc_b": 0.8568019093078759,
+            "delta": 0.07398568019093078,
+            "lo": 0.04295942720763723,
+            "hi": 0.1076555023923445,
+            "n": 419,
+            "ci_excludes_zero": true
+          },
+          "judge_emitted_on_fired": 1.0,
+          "n_fallback_to_base": 0,
+          "random_at_coverage": {
+            "target_n": 37,
+            "coverage": 0.0883054892601432,
+            "mean": 0.9505250596658695,
+            "best": 0.964200477326969,
+            "worst": 0.9355608591885441,
+            "p05": 0.9427207637231504,
+            "p95": 0.9594272076372315,
+            "n_seeds": 200
+          },
+          "routed_minus_random_mean": -0.019737470167062843
+        },
+        "disagree_raw": {
+          "n_fired": 48,
+          "coverage": 0.11455847255369929,
+          "acc_routed": 0.9307875894988067,
+          "acc_base": 0.9594272076372315,
+          "routed_minus_base": {
+            "acc_a": 0.9307875894988067,
+            "acc_b": 0.9594272076372315,
+            "delta": -0.028639618138424822,
+            "lo": -0.05250596658711217,
+            "hi": -0.009523809523809525,
+            "n": 419,
+            "ci_excludes_zero": true
+          },
+          "ci_excludes_zero": true,
+          "acc_judge_everywhere": 0.8568019093078759,
+          "routed_minus_judge_everywhere": {
+            "acc_a": 0.9307875894988067,
+            "acc_b": 0.8568019093078759,
+            "delta": 0.07398568019093078,
+            "lo": 0.04295942720763723,
+            "hi": 0.1076555023923445,
+            "n": 419,
+            "ci_excludes_zero": true
+          },
+          "judge_emitted_on_fired": 1.0,
+          "n_fallback_to_base": 0,
+          "random_at_coverage": {
+            "target_n": 48,
+            "coverage": 0.11455847255369929,
+            "mean": 0.947684964200476,
+            "best": 0.9618138424821002,
+            "worst": 0.9307875894988067,
+            "p05": 0.9403341288782816,
+            "p95": 0.954653937947494,
+            "n_seeds": 200
+          },
+          "routed_minus_random_mean": -0.0168973747016693
+        },
+        "union": {
+          "n_fired": 80,
+          "coverage": 0.1909307875894988,
+          "acc_routed": 0.9212410501193318,
+          "acc_base": 0.9594272076372315,
+          "routed_minus_base": {
+            "acc_a": 0.9212410501193318,
+            "acc_b": 0.9594272076372315,
+            "delta": -0.03818615751789976,
+            "lo": -0.06443914081145585,
+            "hi": -0.016666666666666666,
+            "n": 419,
+            "ci_excludes_zero": true
+          },
+          "ci_excludes_zero": true,
+          "acc_judge_everywhere": 0.8568019093078759,
+          "routed_minus_judge_everywhere": {
+            "acc_a": 0.9212410501193318,
+            "acc_b": 0.8568019093078759,
+            "delta": 0.06443914081145585,
+            "lo": 0.03579952267303103,
+            "hi": 0.09523809523809523,
+            "n": 419,
+            "ci_excludes_zero": true
+          },
+          "judge_emitted_on_fired": 1.0,
+          "n_fallback_to_base": 0,
+          "random_at_coverage": {
+            "target_n": 80,
+            "coverage": 0.1909307875894988,
+            "mean": 0.9397852028639574,
+            "best": 0.9570405727923628,
+            "worst": 0.9212410501193318,
+            "p05": 0.9284009546539379,
+            "p95": 0.9498806682577565,
+            "n_seeds": 200
+          },
+          "routed_minus_random_mean": -0.01854415274462562
+        }
+      },
+      "pairwise": {
+        "disagree_minus_counter": {
+          "acc_a": 0.9307875894988067,
+          "acc_b": 0.9498806682577565,
+          "delta": -0.01909307875894988,
+          "lo": -0.0430622009569378,
+          "hi": 0.002380952380952381,
+          "n": 419,
+          "ci_excludes_zero": false
+        },
+        "union_minus_counter": {
+          "acc_a": 0.9212410501193318,
+          "acc_b": 0.9498806682577565,
+          "delta": -0.028639618138424822,
+          "lo": -0.05250596658711217,
+          "hi": -0.009523809523809525,
+          "n": 419,
+          "ci_excludes_zero": true
+        },
+        "union_minus_disagree": {
+          "acc_a": 0.9212410501193318,
+          "acc_b": 0.9307875894988067,
+          "delta": -0.00954653937947494,
+          "lo": -0.019138755980861243,
+          "hi": -0.002380952380952381,
+          "n": 419,
+          "ci_excludes_zero": true
+        },
+        "composite_minus_counter": {
+          "acc_a": 0.9498806682577565,
+          "acc_b": 0.9498806682577565,
+          "delta": 0.0,
+          "lo": -0.007159904534606206,
+          "hi": 0.007159904534606206,
+          "n": 419,
+          "ci_excludes_zero": false
+        }
+      }
+    },
+    "sonnet": {
+      "judge": "claude-sonnet-4-6 standard majority-3 (cached, 16.11a cache)",
+      "n_cells_total": 420,
+      "n_cells": 419,
+      "n_items": 210,
+      "n_judge_codable": 419,
+      "acc_base": 0.9594272076372315,
+      "acc_judge_everywhere": 0.9761336515513126,
+      "judge_everywhere_minus_base": {
+        "acc_a": 0.9761336515513126,
+        "acc_b": 0.9594272076372315,
+        "delta": 0.016706443914081145,
+        "lo": -0.00954653937947494,
+        "hi": 0.0430622009569378,
+        "n": 419,
+        "ci_excludes_zero": false
+      },
+      "signals": {
+        "counter": {
+          "n_fired": 49,
+          "coverage": 0.11694510739856802,
+          "acc_routed": 0.9618138424821002,
+          "acc_base": 0.9594272076372315,
+          "routed_minus_base": {
+            "acc_a": 0.9618138424821002,
+            "acc_b": 0.9594272076372315,
+            "delta": 0.002386634844868735,
+            "lo": -0.004784688995215311,
+            "hi": 0.011904761904761904,
+            "n": 419,
+            "ci_excludes_zero": false
+          },
+          "ci_excludes_zero": false,
+          "acc_judge_everywhere": 0.9761336515513126,
+          "routed_minus_judge_everywhere": {
+            "acc_a": 0.9618138424821002,
+            "acc_b": 0.9761336515513126,
+            "delta": -0.014319809069212411,
+            "lo": -0.03818615751789976,
+            "hi": 0.009523809523809525,
+            "n": 419,
+            "ci_excludes_zero": false
+          },
+          "judge_emitted_on_fired": 1.0,
+          "n_fallback_to_base": 0,
+          "random_at_coverage": {
+            "target_n": 49,
+            "coverage": 0.11694510739856802,
+            "mean": 0.9610859188544194,
+            "best": 0.9713603818615751,
+            "worst": 0.9522673031026253,
+            "p05": 0.954653937947494,
+            "p95": 0.9665871121718377,
+            "n_seeds": 200
+          },
+          "routed_minus_random_mean": 0.0007279236276808154
+        },
+        "composite": {
+          "n_fired": 76,
+          "coverage": 0.18138424821002386,
+          "acc_routed": 0.964200477326969,
+          "acc_base": 0.9594272076372315,
+          "routed_minus_base": {
+            "acc_a": 0.964200477326969,
+            "acc_b": 0.9594272076372315,
+            "delta": 0.00477326968973747,
+            "lo": -0.004761904761904762,
+            "hi": 0.014354066985645933,
+            "n": 419,
+            "ci_excludes_zero": false
+          },
+          "ci_excludes_zero": false,
+          "acc_judge_everywhere": 0.9761336515513126,
+          "routed_minus_judge_everywhere": {
+            "acc_a": 0.964200477326969,
+            "acc_b": 0.9761336515513126,
+            "delta": -0.011933174224343675,
+            "lo": -0.03571428571428571,
+            "hi": 0.011904761904761904,
+            "n": 419,
+            "ci_excludes_zero": false
+          },
+          "judge_emitted_on_fired": 1.0,
+          "n_fallback_to_base": 0,
+          "random_at_coverage": {
+            "target_n": 76,
+            "coverage": 0.18138424821002386,
+            "mean": 0.9624701670644439,
+            "best": 0.9761336515513126,
+            "worst": 0.9498806682577565,
+            "p05": 0.9570405727923628,
+            "p95": 0.9713603818615751,
+            "n_seeds": 200
+          },
+          "routed_minus_random_mean": 0.0017303102625251254
+        },
+        "any_eshnah": {
+          "n_fired": 47,
+          "coverage": 0.11217183770883055,
+          "acc_routed": 0.9856801909307876,
+          "acc_base": 0.9594272076372315,
+          "routed_minus_base": {
+            "acc_a": 0.9856801909307876,
+            "acc_b": 0.9594272076372315,
+            "delta": 0.026252983293556086,
+            "lo": 0.00954653937947494,
+            "hi": 0.045346062052505964,
+            "n": 419,
+            "ci_excludes_zero": true
+          },
+          "ci_excludes_zero": true,
+          "acc_judge_everywhere": 0.9761336515513126,
+          "routed_minus_judge_everywhere": {
+            "acc_a": 0.9856801909307876,
+            "acc_b": 0.9761336515513126,
+            "delta": 0.00954653937947494,
+            "lo": -0.007142857142857143,
+            "hi": 0.028639618138424822,
+            "n": 419,
+            "ci_excludes_zero": false
+          },
+          "judge_emitted_on_fired": 1.0,
+          "n_fallback_to_base": 0,
+          "random_at_coverage": {
+            "target_n": 47,
+            "coverage": 0.11217183770883055,
+            "mean": 0.9609785202863995,
+            "best": 0.9713603818615751,
+            "worst": 0.9522673031026253,
+            "p05": 0.954653937947494,
+            "p95": 0.9665871121718377,
+            "n_seeds": 200
+          },
+          "routed_minus_random_mean": 0.024701670644388107
+        },
+        "disagree": {
+          "n_fired": 37,
+          "coverage": 0.0883054892601432,
+          "acc_routed": 0.9785202863961814,
+          "acc_base": 0.9594272076372315,
+          "routed_minus_base": {
+            "acc_a": 0.9785202863961814,
+            "acc_b": 0.9594272076372315,
+            "delta": 0.01909307875894988,
+            "lo": 0.007142857142857143,
+            "hi": 0.03333333333333333,
+            "n": 419,
+            "ci_excludes_zero": true
+          },
+          "ci_excludes_zero": true,
+          "acc_judge_everywhere": 0.9761336515513126,
+          "routed_minus_judge_everywhere": {
+            "acc_a": 0.9785202863961814,
+            "acc_b": 0.9761336515513126,
+            "delta": 0.002386634844868735,
+            "lo": -0.01904761904761905,
+            "hi": 0.02386634844868735,
+            "n": 419,
+            "ci_excludes_zero": false
+          },
+          "judge_emitted_on_fired": 1.0,
+          "n_fallback_to_base": 0,
+          "random_at_coverage": {
+            "target_n": 37,
+            "coverage": 0.0883054892601432,
+            "mean": 0.9608949880668283,
+            "best": 0.9713603818615751,
+            "worst": 0.9522673031026253,
+            "p05": 0.9570405727923628,
+            "p95": 0.9665871121718377,
+            "n_seeds": 200
+          },
+          "routed_minus_random_mean": 0.017625298329353112
+        },
+        "disagree_raw": {
+          "n_fired": 48,
+          "coverage": 0.11455847255369929,
+          "acc_routed": 0.9809069212410502,
+          "acc_base": 0.9594272076372315,
+          "routed_minus_base": {
+            "acc_a": 0.9809069212410502,
+            "acc_b": 0.9594272076372315,
+            "delta": 0.021479713603818614,
+            "lo": 0.009523809523809525,
+            "hi": 0.03579952267303103,
+            "n": 419,
+            "ci_excludes_zero": true
+          },
+          "ci_excludes_zero": true,
+          "acc_judge_everywhere": 0.9761336515513126,
+          "routed_minus_judge_everywhere": {
+            "acc_a": 0.9809069212410502,
+            "acc_b": 0.9761336515513126,
+            "delta": 0.00477326968973747,
+            "lo": -0.014319809069212411,
+            "hi": 0.023923444976076555,
+            "n": 419,
+            "ci_excludes_zero": false
+          },
+          "judge_emitted_on_fired": 1.0,
+          "n_fallback_to_base": 0,
+          "random_at_coverage": {
+            "target_n": 48,
+            "coverage": 0.11455847255369929,
+            "mean": 0.9610143198090728,
+            "best": 0.9713603818615751,
+            "worst": 0.9522673031026253,
+            "p05": 0.954653937947494,
+            "p95": 0.9665871121718377,
+            "n_seeds": 200
+          },
+          "routed_minus_random_mean": 0.019892601431977353
+        },
+        "union": {
+          "n_fired": 80,
+          "coverage": 0.1909307875894988,
+          "acc_routed": 0.9785202863961814,
+          "acc_base": 0.9594272076372315,
+          "routed_minus_base": {
+            "acc_a": 0.9785202863961814,
+            "acc_b": 0.9594272076372315,
+            "delta": 0.01909307875894988,
+            "lo": 0.00477326968973747,
+            "hi": 0.03349282296650718,
+            "n": 419,
+            "ci_excludes_zero": true
+          },
+          "ci_excludes_zero": true,
+          "acc_judge_everywhere": 0.9761336515513126,
+          "routed_minus_judge_everywhere": {
+            "acc_a": 0.9785202863961814,
+            "acc_b": 0.9761336515513126,
+            "delta": 0.002386634844868735,
+            "lo": -0.014319809069212411,
+            "hi": 0.019184652278177457,
+            "n": 419,
+            "ci_excludes_zero": false
+          },
+          "judge_emitted_on_fired": 1.0,
+          "n_fallback_to_base": 0,
+          "random_at_coverage": {
+            "target_n": 80,
+            "coverage": 0.1909307875894988,
+            "mean": 0.9625775656324629,
+            "best": 0.9761336515513126,
+            "worst": 0.9498806682577565,
+            "p05": 0.954653937947494,
+            "p95": 0.9689737470167065,
+            "n_seeds": 200
+          },
+          "routed_minus_random_mean": 0.0159427207637185
+        }
+      },
+      "pairwise": {
+        "disagree_minus_counter": {
+          "acc_a": 0.9785202863961814,
+          "acc_b": 0.9618138424821002,
+          "delta": 0.016706443914081145,
+          "lo": 0.0024096385542168677,
+          "hi": 0.031026252983293555,
+          "n": 419,
+          "ci_excludes_zero": true
+        },
+        "union_minus_counter": {
+          "acc_a": 0.9785202863961814,
+          "acc_b": 0.9618138424821002,
+          "delta": 0.016706443914081145,
+          "lo": 0.00477326968973747,
+          "hi": 0.028846153846153848,
+          "n": 419,
+          "ci_excludes_zero": true
+        },
+        "union_minus_disagree": {
+          "acc_a": 0.9785202863961814,
+          "acc_b": 0.9785202863961814,
+          "delta": 0.0,
+          "lo": -0.007142857142857143,
+          "hi": 0.007159904534606206,
+          "n": 419,
+          "ci_excludes_zero": false
+        },
+        "composite_minus_counter": {
+          "acc_a": 0.964200477326969,
+          "acc_b": 0.9618138424821002,
+          "delta": 0.002386634844868735,
+          "lo": 0.0,
+          "hi": 0.007194244604316547,
+          "n": 419,
+          "ci_excludes_zero": false
+        }
+      }
+    },
+    "sonnet_judge_codable": {
+      "judge": "claude-sonnet-4-6 standard majority-3 (cached, judge-codable cells only)",
+      "n_cells_total": 420,
+      "n_cells": 419,
+      "n_items": 210,
+      "n_judge_codable": 419,
+      "acc_base": 0.9594272076372315,
+      "acc_judge_everywhere": 0.9761336515513126,
+      "judge_everywhere_minus_base": {
+        "acc_a": 0.9761336515513126,
+        "acc_b": 0.9594272076372315,
+        "delta": 0.016706443914081145,
+        "lo": -0.00954653937947494,
+        "hi": 0.0430622009569378,
+        "n": 419,
+        "ci_excludes_zero": false
+      },
+      "signals": {
+        "counter": {
+          "n_fired": 49,
+          "coverage": 0.11694510739856802,
+          "acc_routed": 0.9618138424821002,
+          "acc_base": 0.9594272076372315,
+          "routed_minus_base": {
+            "acc_a": 0.9618138424821002,
+            "acc_b": 0.9594272076372315,
+            "delta": 0.002386634844868735,
+            "lo": -0.004784688995215311,
+            "hi": 0.011904761904761904,
+            "n": 419,
+            "ci_excludes_zero": false
+          },
+          "ci_excludes_zero": false,
+          "acc_judge_everywhere": 0.9761336515513126,
+          "routed_minus_judge_everywhere": {
+            "acc_a": 0.9618138424821002,
+            "acc_b": 0.9761336515513126,
+            "delta": -0.014319809069212411,
+            "lo": -0.03818615751789976,
+            "hi": 0.009523809523809525,
+            "n": 419,
+            "ci_excludes_zero": false
+          },
+          "judge_emitted_on_fired": 1.0,
+          "n_fallback_to_base": 0,
+          "random_at_coverage": {
+            "target_n": 49,
+            "coverage": 0.11694510739856802,
+            "mean": 0.9610859188544194,
+            "best": 0.9713603818615751,
+            "worst": 0.9522673031026253,
+            "p05": 0.954653937947494,
+            "p95": 0.9665871121718377,
+            "n_seeds": 200
+          },
+          "routed_minus_random_mean": 0.0007279236276808154
+        },
+        "composite": {
+          "n_fired": 76,
+          "coverage": 0.18138424821002386,
+          "acc_routed": 0.964200477326969,
+          "acc_base": 0.9594272076372315,
+          "routed_minus_base": {
+            "acc_a": 0.964200477326969,
+            "acc_b": 0.9594272076372315,
+            "delta": 0.00477326968973747,
+            "lo": -0.004761904761904762,
+            "hi": 0.014354066985645933,
+            "n": 419,
+            "ci_excludes_zero": false
+          },
+          "ci_excludes_zero": false,
+          "acc_judge_everywhere": 0.9761336515513126,
+          "routed_minus_judge_everywhere": {
+            "acc_a": 0.964200477326969,
+            "acc_b": 0.9761336515513126,
+            "delta": -0.011933174224343675,
+            "lo": -0.03571428571428571,
+            "hi": 0.011904761904761904,
+            "n": 419,
+            "ci_excludes_zero": false
+          },
+          "judge_emitted_on_fired": 1.0,
+          "n_fallback_to_base": 0,
+          "random_at_coverage": {
+            "target_n": 76,
+            "coverage": 0.18138424821002386,
+            "mean": 0.9624701670644439,
+            "best": 0.9761336515513126,
+            "worst": 0.9498806682577565,
+            "p05": 0.9570405727923628,
+            "p95": 0.9713603818615751,
+            "n_seeds": 200
+          },
+          "routed_minus_random_mean": 0.0017303102625251254
+        },
+        "any_eshnah": {
+          "n_fired": 47,
+          "coverage": 0.11217183770883055,
+          "acc_routed": 0.9856801909307876,
+          "acc_base": 0.9594272076372315,
+          "routed_minus_base": {
+            "acc_a": 0.9856801909307876,
+            "acc_b": 0.9594272076372315,
+            "delta": 0.026252983293556086,
+            "lo": 0.00954653937947494,
+            "hi": 0.045346062052505964,
+            "n": 419,
+            "ci_excludes_zero": true
+          },
+          "ci_excludes_zero": true,
+          "acc_judge_everywhere": 0.9761336515513126,
+          "routed_minus_judge_everywhere": {
+            "acc_a": 0.9856801909307876,
+            "acc_b": 0.9761336515513126,
+            "delta": 0.00954653937947494,
+            "lo": -0.007142857142857143,
+            "hi": 0.028639618138424822,
+            "n": 419,
+            "ci_excludes_zero": false
+          },
+          "judge_emitted_on_fired": 1.0,
+          "n_fallback_to_base": 0,
+          "random_at_coverage": {
+            "target_n": 47,
+            "coverage": 0.11217183770883055,
+            "mean": 0.9609785202863995,
+            "best": 0.9713603818615751,
+            "worst": 0.9522673031026253,
+            "p05": 0.954653937947494,
+            "p95": 0.9665871121718377,
+            "n_seeds": 200
+          },
+          "routed_minus_random_mean": 0.024701670644388107
+        },
+        "disagree": {
+          "n_fired": 37,
+          "coverage": 0.0883054892601432,
+          "acc_routed": 0.9785202863961814,
+          "acc_base": 0.9594272076372315,
+          "routed_minus_base": {
+            "acc_a": 0.9785202863961814,
+            "acc_b": 0.9594272076372315,
+            "delta": 0.01909307875894988,
+            "lo": 0.007142857142857143,
+            "hi": 0.03333333333333333,
+            "n": 419,
+            "ci_excludes_zero": true
+          },
+          "ci_excludes_zero": true,
+          "acc_judge_everywhere": 0.9761336515513126,
+          "routed_minus_judge_everywhere": {
+            "acc_a": 0.9785202863961814,
+            "acc_b": 0.9761336515513126,
+            "delta": 0.002386634844868735,
+            "lo": -0.01904761904761905,
+            "hi": 0.02386634844868735,
+            "n": 419,
+            "ci_excludes_zero": false
+          },
+          "judge_emitted_on_fired": 1.0,
+          "n_fallback_to_base": 0,
+          "random_at_coverage": {
+            "target_n": 37,
+            "coverage": 0.0883054892601432,
+            "mean": 0.9608949880668283,
+            "best": 0.9713603818615751,
+            "worst": 0.9522673031026253,
+            "p05": 0.9570405727923628,
+            "p95": 0.9665871121718377,
+            "n_seeds": 200
+          },
+          "routed_minus_random_mean": 0.017625298329353112
+        },
+        "disagree_raw": {
+          "n_fired": 48,
+          "coverage": 0.11455847255369929,
+          "acc_routed": 0.9809069212410502,
+          "acc_base": 0.9594272076372315,
+          "routed_minus_base": {
+            "acc_a": 0.9809069212410502,
+            "acc_b": 0.9594272076372315,
+            "delta": 0.021479713603818614,
+            "lo": 0.009523809523809525,
+            "hi": 0.03579952267303103,
+            "n": 419,
+            "ci_excludes_zero": true
+          },
+          "ci_excludes_zero": true,
+          "acc_judge_everywhere": 0.9761336515513126,
+          "routed_minus_judge_everywhere": {
+            "acc_a": 0.9809069212410502,
+            "acc_b": 0.9761336515513126,
+            "delta": 0.00477326968973747,
+            "lo": -0.014319809069212411,
+            "hi": 0.023923444976076555,
+            "n": 419,
+            "ci_excludes_zero": false
+          },
+          "judge_emitted_on_fired": 1.0,
+          "n_fallback_to_base": 0,
+          "random_at_coverage": {
+            "target_n": 48,
+            "coverage": 0.11455847255369929,
+            "mean": 0.9610143198090728,
+            "best": 0.9713603818615751,
+            "worst": 0.9522673031026253,
+            "p05": 0.954653937947494,
+            "p95": 0.9665871121718377,
+            "n_seeds": 200
+          },
+          "routed_minus_random_mean": 0.019892601431977353
+        },
+        "union": {
+          "n_fired": 80,
+          "coverage": 0.1909307875894988,
+          "acc_routed": 0.9785202863961814,
+          "acc_base": 0.9594272076372315,
+          "routed_minus_base": {
+            "acc_a": 0.9785202863961814,
+            "acc_b": 0.9594272076372315,
+            "delta": 0.01909307875894988,
+            "lo": 0.00477326968973747,
+            "hi": 0.03349282296650718,
+            "n": 419,
+            "ci_excludes_zero": true
+          },
+          "ci_excludes_zero": true,
+          "acc_judge_everywhere": 0.9761336515513126,
+          "routed_minus_judge_everywhere": {
+            "acc_a": 0.9785202863961814,
+            "acc_b": 0.9761336515513126,
+            "delta": 0.002386634844868735,
+            "lo": -0.014319809069212411,
+            "hi": 0.019184652278177457,
+            "n": 419,
+            "ci_excludes_zero": false
+          },
+          "judge_emitted_on_fired": 1.0,
+          "n_fallback_to_base": 0,
+          "random_at_coverage": {
+            "target_n": 80,
+            "coverage": 0.1909307875894988,
+            "mean": 0.9625775656324629,
+            "best": 0.9761336515513126,
+            "worst": 0.9498806682577565,
+            "p05": 0.954653937947494,
+            "p95": 0.9689737470167065,
+            "n_seeds": 200
+          },
+          "routed_minus_random_mean": 0.0159427207637185
+        }
+      },
+      "pairwise": {
+        "disagree_minus_counter": {
+          "acc_a": 0.9785202863961814,
+          "acc_b": 0.9618138424821002,
+          "delta": 0.016706443914081145,
+          "lo": 0.0024096385542168677,
+          "hi": 0.031026252983293555,
+          "n": 419,
+          "ci_excludes_zero": true
+        },
+        "union_minus_counter": {
+          "acc_a": 0.9785202863961814,
+          "acc_b": 0.9618138424821002,
+          "delta": 0.016706443914081145,
+          "lo": 0.00477326968973747,
+          "hi": 0.028846153846153848,
+          "n": 419,
+          "ci_excludes_zero": true
+        },
+        "union_minus_disagree": {
+          "acc_a": 0.9785202863961814,
+          "acc_b": 0.9785202863961814,
+          "delta": 0.0,
+          "lo": -0.007142857142857143,
+          "hi": 0.007159904534606206,
+          "n": 419,
+          "ci_excludes_zero": false
+        },
+        "composite_minus_counter": {
+          "acc_a": 0.964200477326969,
+          "acc_b": 0.9618138424821002,
+          "delta": 0.002386634844868735,
+          "lo": 0.0,
+          "hi": 0.007194244604316547,
+          "n": 419,
+          "ci_excludes_zero": false
+        }
+      },
+      "n_dropped_judge_noncodable": 1
+    }
+  },
+  "pre_declared_readings": {
+    "note": "applied mechanically on the sonnet slot (the judge that beats the base); the haiku replicate is reported, expected non-positive",
+    "sonnet": {
+      "R1_counter_routed_minus_base": {
+        "delta": 0.002386634844868735,
+        "lo": -0.004784688995215311,
+        "hi": 0.011904761904761904,
+        "ci_excludes_zero": false,
+        "reading": "CI includes 0: certification stands on the composite flag only (16.11a); the counter's routing claim stays scoped to the collective's own verdicts (16.15.1)"
+      },
+      "R2_counter_routed_minus_judge_everywhere": {
+        "delta": -0.014319809069212411,
+        "lo": -0.03818615751789976,
+        "hi": 0.009523809523809525,
+        "ci_excludes_zero": false,
+        "reading": "CI includes 0: routing not distinguishable from the judge everywhere"
+      },
+      "R3_disagree_routed_minus_counter_routed": {
+        "delta": 0.016706443914081145,
+        "lo": 0.0024096385542168677,
+        "hi": 0.031026252983293555,
+        "ci_excludes_zero": true,
+        "reading": "in favour of disagreement: the solo's own disagreement routes the solo's errors at least as well as the counter at 3 calls against 17; the collective sensor is scoped to the collective's own errors and dominated on cost for solo errors"
+      },
+      "R4_union_minus_disagree": {
+        "delta": 0.0,
+        "lo": -0.007142857142857143,
+        "hi": 0.007159904534606206,
+        "ci_excludes_zero": false,
+        "reading": "CI includes 0: no claim that the counter adds to disagreement"
+      },
+      "R5_accuracy_cost_frontier": {
+        "points": [
+          {
+            "system": "base_alone",
+            "acc": 0.9594272076372315,
+            "usd": 0.004828540697619045
+          },
+          {
+            "system": "judge_everywhere/sonnet",
+            "acc": 0.9761336515513126,
+            "usd": 0.011479828571428584
+          },
+          {
+            "system": "solo_signal_router/any_eshnah/sonnet",
+            "acc": 0.9856801909307876,
+            "usd": 0.006116254165058528
+          },
+          {
+            "system": "solo_signal_router/disagree/sonnet",
+            "acc": 0.9785202863961814,
+            "usd": 0.005842272576241617
+          },
+          {
+            "system": "solo_signal_router/disagree_raw/sonnet",
+            "acc": 0.9809069212410502,
+            "usd": 0.00614365232394022
+          },
+          {
+            "system": "k2_sensor_over_base/counter/sonnet",
+            "acc": 0.9618138424821002,
+            "usd": null
+          },
+          {
+            "system": "k2_sensor_over_base/composite/sonnet",
+            "acc": 0.964200477326969,
+            "usd": null
+          },
+          {
+            "system": "union_router_k2_over_base/sonnet",
+            "acc": 0.9785202863961814,
+            "usd": null
+          }
+        ],
+        "frontier": [
+          {
+            "system": "base_alone",
+            "acc": 0.9594272076372315,
+            "usd": 0.004828540697619045
+          },
+          {
+            "system": "solo_signal_router/disagree/sonnet",
+            "acc": 0.9785202863961814,
+            "usd": 0.005842272576241617
+          },
+          {
+            "system": "solo_signal_router/any_eshnah/sonnet",
+            "acc": 0.9856801909307876,
+            "usd": 0.006116254165058528
+          }
+        ],
+        "note": "descriptive; accuracy from this block (k=2 majority flags), cost as run (the k=2 collective); k=1 costs are projections in cost_per_decision"
+      }
+    },
+    "haiku": {
+      "R1_counter_routed_minus_base": {
+        "delta": -0.00954653937947494,
+        "lo": -0.019138755980861243,
+        "hi": -0.002380952380952381,
+        "ci_excludes_zero": true,
+        "reading": "haiku replicate, reported only (the verdicts are the sonnet slot's): routing on the counter LOSES to the base with CI excluding 0; certification stands on the composite flag only (16.11a)"
+      },
+      "R2_counter_routed_minus_judge_everywhere": {
+        "delta": 0.09307875894988067,
+        "lo": 0.05714285714285714,
+        "hi": 0.13365155131264916,
+        "ci_excludes_zero": true,
+        "reading": "haiku replicate, reported only (the verdicts are the sonnet slot's): routing at or above the judge everywhere with CI excluding 0: strengthens the abstract's routing sentence"
+      },
+      "R3_disagree_routed_minus_counter_routed": {
+        "delta": -0.01909307875894988,
+        "lo": -0.0430622009569378,
+        "hi": 0.002380952380952381,
+        "ci_excludes_zero": false,
+        "reading": "haiku replicate, reported only (the verdicts are the sonnet slot's): CI includes 0: disagreement routes the solo's errors at least as well as the counter at 3 calls against 17; the collective sensor is scoped to the collective's own errors and dominated on cost for solo errors"
+      },
+      "R4_union_minus_disagree": {
+        "delta": -0.00954653937947494,
+        "lo": -0.019138755980861243,
+        "hi": -0.002380952380952381,
+        "ci_excludes_zero": true,
+        "reading": "haiku replicate, reported only (the verdicts are the sonnet slot's): the counter subtracts from disagreement (CI excluding 0)"
+      },
+      "R5_accuracy_cost_frontier": {
+        "points": [
+          {
+            "system": "base_alone",
+            "acc": 0.9594272076372315,
+            "usd": 0.004828540697619045
+          },
+          {
+            "system": "judge_everywhere/haiku",
+            "acc": 0.8568019093078759,
+            "usd": 0.0042666095238095255
+          },
+          {
+            "system": "solo_signal_router/any_eshnah/haiku",
+            "acc": 0.9403341288782816,
+            "usd": 0.0053071341286907575
+          },
+          {
+            "system": "solo_signal_router/disagree/haiku",
+            "acc": 0.9307875894988067,
+            "usd": 0.005205305739101032
+          },
+          {
+            "system": "solo_signal_router/disagree_raw/haiku",
+            "acc": 0.9307875894988067,
+            "usd": 0.00531731696764973
+          },
+          {
+            "system": "k2_sensor_over_base/counter/haiku",
+            "acc": 0.9498806682577565,
+            "usd": null
+          },
+          {
+            "system": "k2_sensor_over_base/composite/haiku",
+            "acc": 0.9498806682577565,
+            "usd": null
+          },
+          {
+            "system": "union_router_k2_over_base/haiku",
+            "acc": 0.9212410501193318,
+            "usd": null
+          }
+        ],
+        "frontier": [
+          {
+            "system": "judge_everywhere/haiku",
+            "acc": 0.8568019093078759,
+            "usd": 0.0042666095238095255
+          },
+          {
+            "system": "base_alone",
+            "acc": 0.9594272076372315,
+            "usd": 0.004828540697619045
+          }
+        ],
+        "note": "descriptive; accuracy from this block (k=2 majority flags), cost as run (the k=2 collective); k=1 costs are projections in cost_per_decision"
+      },
+      "replicate": true
+    }
+  },
+  "cost_per_decision": {
+    "unit": "USD per decision, mean over priced cells; list prices",
+    "prices_usd_per_mtok": {
+      "DeepSeek-V4-Pro": [
+        1.925,
+        3.828
+      ],
+      "claude-haiku-4-5": [
+        1.0,
+        5.0
+      ],
+      "claude-sonnet-4-6": [
+        3.0,
+        15.0
+      ]
+    },
+    "records_dir": "divergence_study_outputs",
+    "k_sensor": 2,
+    "unit_costs": {
+      "base_3_calls": {
+        "label": "DeepSeek-V4-Pro standard x3",
+        "model": "DeepSeek-V4-Pro",
+        "n_calls_per_cell": 3,
+        "priced": true,
+        "n_cells_priced": 420,
+        "n_cells_missing": 0,
+        "mean_usd": 0.004828540697619045,
+        "mean_prompt_tokens": 1907.1166666666666,
+        "mean_completion_tokens": 302.3357142857143
+      },
+      "judge_haiku_3_calls": {
+        "label": "claude-haiku-4-5 standard x3",
+        "model": "claude-haiku-4-5",
+        "n_calls_per_cell": 3,
+        "priced": true,
+        "n_cells_priced": 420,
+        "n_cells_missing": 0,
+        "mean_usd": 0.0042666095238095255,
+        "mean_prompt_tokens": 1971.1571428571428,
+        "mean_completion_tokens": 459.0904761904762
+      },
+      "judge_sonnet_3_calls": {
+        "label": "claude-sonnet-4-6 standard x3",
+        "model": "claude-sonnet-4-6",
+        "n_calls_per_cell": 3,
+        "priced": true,
+        "n_cells_priced": 420,
+        "n_cells_missing": 0,
+        "mean_usd": 0.011479828571428584,
+        "mean_prompt_tokens": 1974.1571428571428,
+        "mean_completion_tokens": 370.4904761904762
+      },
+      "collective_k1_17_calls": {
+        "label": "DeepSeek-V4-Pro narrative_cot deliberation, sample 0 (17 calls)",
+        "model": "DeepSeek-V4-Pro",
+        "n_calls_per_cell": 17,
+        "priced": true,
+        "n_cells_priced": 0,
+        "n_cells_missing": 420,
+        "mean_usd": null,
+        "mean_prompt_tokens": null,
+        "mean_completion_tokens": null
+      },
+      "collective_k2_34_calls": {
+        "label": "DeepSeek-V4-Pro narrative_cot deliberation, samples 0-1 (34 calls)",
+        "model": "DeepSeek-V4-Pro",
+        "n_calls_per_cell": 34,
+        "priced": true,
+        "n_cells_priced": 0,
+        "n_cells_missing": 420,
+        "mean_usd": null,
+        "mean_prompt_tokens": null,
+        "mean_completion_tokens": null
+      }
+    },
+    "coverage": {
+      "counter": 0.11694510739856802,
+      "composite": 0.18138424821002386,
+      "any_eshnah": 0.11217183770883055,
+      "disagree": 0.0883054892601432,
+      "disagree_raw": 0.11455847255369929,
+      "union": 0.1909307875894988
+    },
+    "coverage_k1_sample0": {
+      "counter": 0.25301204819277107,
+      "composite": 0.3855421686746988,
+      "n_sample0_debates": 415
+    },
+    "systems": {
+      "base_alone": {
+        "formula": "3 base calls",
+        "coverage": null,
+        "usd": 0.004828540697619045
+      },
+      "judge_everywhere": {
+        "haiku": {
+          "formula": "3 judge calls",
+          "coverage": 1.0,
+          "usd": 0.0042666095238095255
+        },
+        "sonnet": {
+          "formula": "3 judge calls",
+          "coverage": 1.0,
+          "usd": 0.011479828571428584
+        }
+      },
+      "solo_signal_router": {
+        "any_eshnah": {
+          "haiku": {
+            "formula": "3 base + cov x 3 judge",
+            "coverage": 0.11217183770883055,
+            "usd": 0.0053071341286907575
+          },
+          "sonnet": {
+            "formula": "3 base + cov x 3 judge",
+            "coverage": 0.11217183770883055,
+            "usd": 0.006116254165058528
+          }
+        },
+        "disagree": {
+          "haiku": {
+            "formula": "3 base + cov x 3 judge",
+            "coverage": 0.0883054892601432,
+            "usd": 0.005205305739101032
+          },
+          "sonnet": {
+            "formula": "3 base + cov x 3 judge",
+            "coverage": 0.0883054892601432,
+            "usd": 0.005842272576241617
+          }
+        },
+        "disagree_raw": {
+          "haiku": {
+            "formula": "3 base + cov x 3 judge",
+            "coverage": 0.11455847255369929,
+            "usd": 0.00531731696764973
+          },
+          "sonnet": {
+            "formula": "3 base + cov x 3 judge",
+            "coverage": 0.11455847255369929,
+            "usd": 0.00614365232394022
+          }
+        }
+      },
+      "collective_k1_sensor": {
+        "counter": {
+          "haiku": {
+            "formula": "17 + cov x 3 judge (cov = k=4 majority flag, as certified)",
+            "coverage": 0.11694510739856802,
+            "usd": null
+          },
+          "sonnet": {
+            "formula": "17 + cov x 3 judge (cov = k=4 majority flag, as certified)",
+            "coverage": 0.11694510739856802,
+            "usd": null
+          }
+        },
+        "composite": {
+          "haiku": {
+            "formula": "17 + cov x 3 judge (cov = k=4 majority flag, as certified)",
+            "coverage": 0.18138424821002386,
+            "usd": null
+          },
+          "sonnet": {
+            "formula": "17 + cov x 3 judge (cov = k=4 majority flag, as certified)",
+            "coverage": 0.18138424821002386,
+            "usd": null
+          }
+        }
+      },
+      "collective_k1_sensor_at_sample0_fire_rate": {
+        "counter": {
+          "haiku": {
+            "formula": "17 + cov x 3 judge (cov = sample-0 debate fire rate)",
+            "coverage": 0.25301204819277107,
+            "usd": null
+          },
+          "sonnet": {
+            "formula": "17 + cov x 3 judge (cov = sample-0 debate fire rate)",
+            "coverage": 0.25301204819277107,
+            "usd": null
+          }
+        },
+        "composite": {
+          "haiku": {
+            "formula": "17 + cov x 3 judge (cov = sample-0 debate fire rate)",
+            "coverage": 0.3855421686746988,
+            "usd": null
+          },
+          "sonnet": {
+            "formula": "17 + cov x 3 judge (cov = sample-0 debate fire rate)",
+            "coverage": 0.3855421686746988,
+            "usd": null
+          }
+        }
+      },
+      "collective_k1_sensor_over_base": {
+        "counter": {
+          "haiku": {
+            "formula": "3 base + 17 + cov x 3 judge",
+            "coverage": 0.11694510739856802,
+            "usd": null
+          },
+          "sonnet": {
+            "formula": "3 base + 17 + cov x 3 judge",
+            "coverage": 0.11694510739856802,
+            "usd": null
+          }
+        },
+        "composite": {
+          "haiku": {
+            "formula": "3 base + 17 + cov x 3 judge",
+            "coverage": 0.18138424821002386,
+            "usd": null
+          },
+          "sonnet": {
+            "formula": "3 base + 17 + cov x 3 judge",
+            "coverage": 0.18138424821002386,
+            "usd": null
+          }
+        }
+      },
+      "union_router": {
+        "haiku": {
+          "formula": "3 base + 17 + cov x 3 judge (counter OR disagree)",
+          "coverage": 0.1909307875894988,
+          "usd": null
+        },
+        "sonnet": {
+          "formula": "3 base + 17 + cov x 3 judge (counter OR disagree)",
+          "coverage": 0.1909307875894988,
+          "usd": null
+        }
+      },
+      "k2_sensor": {
+        "counter": {
+          "haiku": {
+            "formula": "34 + cov x 3 judge",
+            "coverage": 0.11694510739856802,
+            "usd": null
+          },
+          "sonnet": {
+            "formula": "34 + cov x 3 judge",
+            "coverage": 0.11694510739856802,
+            "usd": null
+          }
+        },
+        "composite": {
+          "haiku": {
+            "formula": "34 + cov x 3 judge",
+            "coverage": 0.18138424821002386,
+            "usd": null
+          },
+          "sonnet": {
+            "formula": "34 + cov x 3 judge",
+            "coverage": 0.18138424821002386,
+            "usd": null
+          }
+        }
+      },
+      "k2_sensor_over_base": {
+        "counter": {
+          "haiku": {
+            "formula": "3 base + 34 + cov x 3 judge",
+            "coverage": 0.11694510739856802,
+            "usd": null
+          },
+          "sonnet": {
+            "formula": "3 base + 34 + cov x 3 judge",
+            "coverage": 0.11694510739856802,
+            "usd": null
+          }
+        },
+        "composite": {
+          "haiku": {
+            "formula": "3 base + 34 + cov x 3 judge",
+            "coverage": 0.18138424821002386,
+            "usd": null
+          },
+          "sonnet": {
+            "formula": "3 base + 34 + cov x 3 judge",
+            "coverage": 0.18138424821002386,
+            "usd": null
+          }
+        }
+      },
+      "union_router_k2_over_base": {
+        "haiku": {
+          "formula": "3 base + 34 + cov x 3 judge (counter OR disagree, as run)",
+          "coverage": 0.1909307875894988,
+          "usd": null
+        },
+        "sonnet": {
+          "formula": "3 base + 34 + cov x 3 judge (counter OR disagree, as run)",
+          "coverage": 0.1909307875894988,
+          "usd": null
+        }
+      }
+    },
+    "note": "means only, no intervals; token counts are the providers' own prompt_tokens / completion_tokens as cached by the runners; DeepSeek-V4-Pro's cached completion count excludes any hidden reasoning tokens not reported by the provider"
+  },
+  "parent_artefact": "divergence_study_outputs/router_decomposition_deepseek.json",
+  "inputs": {
+    "rows": "divergence_study_outputs/cg_deliberation_deepseekv4pro_rows.csv",
+    "votes": "divergence_study_outputs/cg_deliberation_deepseekv4pro_votes.csv",
+    "comparator": "divergence_study_outputs/cg_scaffold_combined_rows_k3.csv",
+    "sonnet_rows": "divergence_study_outputs/cg_sonnet_actuator_rows.csv",
+    "extra_comparator": [
+      "divergence_study_outputs/cg_deepseek_standard_k3_rows.csv"
+    ]
+  }
+}
