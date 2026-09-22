@@ -335,17 +335,19 @@ lift or transfer reading.}
 \cmidrule(lr){2-3} \cmidrule(lr){4-5}
 readout & edges on & edges off & edges on & edges off \\
 \midrule
-debates                        & 1,680 & 420 & 420 & 420 \\ % topology_2x2_analysis.json cells.*.n_debates; prereg L4136
-role-lock                      & 0.971 & 0.969 & 0.013 & 0.018 \\ % prereg L4147; cells.*.role_lock
-localisation excess            & +0.291 & +0.318 & +0.014 & +0.001 \\ % prereg L4148; cells.*.objection.localisation_excess
-fire rate, two or more object  & 0.196 & 0.129 & 0.005 & 0.007 \\ % prereg L4149; cells.*.objection.fire_rate
-debates fired                  & 329 & 54 & 2 & 3 \\ % prereg L4151; cells.*.lift.n_fired
-G3 stake concentration         & +0.631 & +0.630 & n/a & n/a \\ % prereg L4150; cells.embodied/*.g3.delta
+debates                        & 1,680 & 1,680 & 420 & 420 \\ % topology_2x2_analysis.json cells.*.n_debates; edges-off at k=4 (16.25 RESULTS); prereg L4136
+role-lock                      & 0.971 & 0.973 & 0.013 & 0.018 \\ % prereg L4147; cells.*.role_lock; 16.25 RESULTS
+localisation excess            & +0.291 & +0.307 & +0.014 & +0.001 \\ % prereg L4148; cells.*.objection.localisation_excess; 16.25 RESULTS
+fire rate, two or more object  & 0.196 & 0.146 & 0.005 & 0.007 \\ % prereg L4149; cells.*.objection.fire_rate; 16.25 RESULTS
+debates fired                  & 329 & 246 & 2 & 3 \\ % prereg L4151; cells.*.lift.n_fired; 16.25 RESULTS (60-fire gate now met)
+G3 stake concentration         & +0.631 & +0.642 & n/a & n/a \\ % prereg L4150; cells.embodied/*.g3.delta; 16.25 RESULTS
 seat majority at opening       & 0.860 & 0.854 & 0.877 & 0.880 \\ % prereg L4153; cells.*.aggregation.seat_majority_r0
 best single seat               & 0.860 & 0.854 & 0.880 & 0.883 \\ % prereg L4154; cells.*.aggregation.best_seat_r0
-majority minus best seat       & +0.000 & +0.000 & -0.002 & -0.002 \\ % prereg L4155, L4182-4186; cells.*.aggregation.majority_minus_best_seat; intervals [+0.000, +0.000] x2, [-0.019, +0.015], [-0.020, +0.015] are in the prose
-collective's verdict           & 0.843 & 0.822 & 0.870 & 0.875 \\ % prereg L4156; cells.*.aggregation.group_verdict_s2
-transfer lift on grok alone    & +0.212 [+0.081, +0.358] & +0.111 [+0.016, +0.217] & not read & not read \\ % prereg L4157, L4164-4167, L4178-4180; cells.embodied/*.transfer_grok_solo
+majority minus best seat       & +0.000 & +0.001 & -0.002 & -0.002 \\ % prereg L4155; cells.*.aggregation.majority_minus_best_seat; intervals near zero throughout, in the prose
+collective's verdict           & 0.843 & 0.834 & 0.870 & 0.875 \\ % prereg L4156; cells.*.aggregation.group_verdict_s2; 16.25 RESULTS
+transfer lift on grok alone    & +0.212 [+0.081, +0.358] & +0.183 [-0.035, +0.448] & not read & not read \\ % prereg L4157; cells.embodied/*.transfer_grok_solo; 16.25 RESULTS
+within-one-loser counter lift, ratio & 9.83x [+0.201, +0.493] & 5.06x [+0.114, +0.347] & not read & not read \\ % 16.15.1 RESULTS (on-edge); 16.25 RESULTS (off-edge, router_decomposition_noedge_k4.json counter_lift_by_stratum.one_loser); the direct test that assignment, not exchange, carries the sensor
+advocate phi within one-loser  & -0.901 & -0.842 [-0.876, -0.802] & n/a & n/a \\ % 16.12 (on-edge, quoted); flooding_analysis_noedge_k4.json table_16_12.rows.one_loser.phi (off-edge, 16.25 RESULTS); both strongly opposed
 \bottomrule
 \end{tabular}
 \end{table}
@@ -576,6 +578,103 @@ of the second design.}
 % html union) are gone.
 \label{fig-routing}
 \end{figure}
+
+\subsection{Who decides changes the verdict, and who is seated changes it too}
+\label{sec-results-decider}
+
+Four ablations vary the graph itself, holding the two locked advocates and
+their account fixed, to ask what the moderator and the seating do to the
+verdict and to the sensor separately.
+
+Replacing the grok moderator with sonnet over byte-identical, locked seats
+raises the collective's verdict accuracy from 0.848 to 0.885,
+$+0.038$ $[+0.014, +0.064]$; replacing it with haiku instead lowers accuracy
+to 0.735, $-0.115$ $[-0.169, -0.060]$, below haiku answering the same items
+alone (0.851).
+% 16.17 RESULTS cells 1 and 2; cg_deliberation_modsonnet_analysis.json,
+% cg_deliberation_modhaiku_analysis.json
+The seats' own behaviour does not move with the moderator. Role-lock is
+identical by construction (the opening statements are replayed), and
+localisation excess (+0.300 sonnet, +0.239 haiku, against +0.291 pooled) and
+the counter's fire rate stay within the range the moderator-free cells
+already show. What moves is the verdict itself and, through it, which
+verdicts the sensor sees. The haiku moderator issues an everyone-or-no-one
+verdict on more than a quarter of debates (0.300 against 0.243 for grok and
+0.176 for sonnet), which floods the counter and collapses its pooled lift
+to $+0.070$ $[-0.026, +0.170]$; the within-one-loser lift, which the
+flooding does not touch, is the reading that survives. The moderator is
+therefore not a neutral aggregator of what the seats already decided. It is
+the node whose own competence sets the verdict and whose own habits about
+naming everyone at fault set how often the sensor is even asked to speak,
+while the seats' structure is invariant to it.
+
+Replacing the three seats themselves with three uninterested readers from
+three vendors (haiku, nano, grok, no assigned side) tests whether the
+same-model bottleneck of Section~\ref{sec-results-voter} is a same-model
+problem or a same-opinion problem. Errors across vendors are far less
+correlated than errors across samples of one model (mean pairwise phi
+$+0.253$ against $+0.65$ pooled), and the majority does approach the
+independence prediction, but the panel's weakest reader (haiku, 0.697) is
+weak enough that the majority still does not clear its best member at the
+opening statement, $+0.011$ $[-0.013, +0.034]$, and after one further round
+it does, $+0.031$ $[+0.005, +0.057]$, the one cell in the programme where a
+three-seat majority beats its best single seat with an interval excluding
+zero.
+% 16.18 RESULTS; multivendor_analysis.json
+Neither reading changes the standing result: the cross-vendor panel is not
+more accurate than three grok readers ($-0.010$ $[-0.033, +0.013]$ on the
+collective's verdict) and not a better answerer than the best model alone
+($-0.055$ $[-0.087, -0.024]$). The panel does produce an objection
+structure with no assigned stake at all (fire 0.401, lift $+0.121$
+$[+0.044, +0.201]$), disagreement among unequal readers rather than dissent
+against interest, and it is weaker on every readout than the embodied
+sensor. Composed as a router ahead of a stronger judge it beats the
+collective alone ($+0.024$ $[+0.009, +0.042]$) but not a single cheap
+judge call of a stronger model, so a decider panel across vendors buys
+nothing a moderator selected for competence does not already buy.
+
+Adding a second, like-biased advocate to the writer's side (four seats: two
+for the writer, one for the counterparty, one uninterested) tests whether
+the sensor is about sides or about seats. The second writer-side seat
+copies its principal's opening verdict on 99.5 percent of debates and its
+objections at $\phi=+0.975$ $[+0.952, +0.995]$, and adds no lift to any
+reconstruction of the counter once the extra seat is accounted for
+(pooled two-of-four lift $+0.294$ $[+0.206, +0.383]$ against the three-seat
+reconstruction's $+0.324$ $[+0.224, +0.422]$, a difference of $-0.030$
+$[-0.111, +0.053]$).
+% 16.19 RESULTS; coalition_analysis.json
+The sensor scales with distinct sides, not with seats. The verdict does
+not: with two seats on one side the collective's accuracy falls by
+$-0.074$ $[-0.117, -0.031]$ and its at-fault rate falls by $-0.121$
+$[-0.154, -0.088]$, concentrated on the items where the writer is at fault
+(0.808 to 0.570 on gold-guilty items). An unequal graph manufactures bias
+at the decider even when every advocate is individually locked to its
+assigned side, which is the one finding in this batch that bears directly
+on deployment: representation in the graph is itself a lever on the
+verdict.
+
+Extending the graph to a third party named in the account but not seated
+in the original three (accounts where the writer's story implicates
+someone else's decision) tests the credible-signal principle's scope
+directly. The writer and counterparty stay locked (0.959); the added
+third-party advocate does not, arguing its assigned stake only 0.800 of
+the time, and its own against-interest objection rate lands well above
+the 0.10 the two-party principle predicts (0.198, against the writer's
+0.081). With three advocates a verdict undermines exactly one of them on
+241 debates and two of them on 72; the against-interest count still works
+within the one-undermined case ($+0.162$ $[+0.051, +0.289]$, 69 fired,
+transfer to grok solo $+0.078$ $[+0.001, +0.160]$) and a plain two-or-more
+counter floods once two advocates are undermined together, exactly as
+predicted (fire 0.353 to 0.861).
+% 16.21 RESULTS; nperspective_analysis.json
+What fails is the one-dimensional reading of the stake: at two-undermined
+debates the co-losers object together only 0.695 of the time, not near
+certainty, because a two-party verdict token does not encode every
+dimension along which a third party's interest can be undermined. The
+sensor degrades gracefully where the graph grows along a new axis; the
+verdict again pays a cost for the extra seat ($-0.045$ $[-0.087, -0.006]$
+against the three-seat cell on the same debates), the same direction 16.19
+found.
 
 \subsection{The extent of the method}
 \label{sec-results-extent}
