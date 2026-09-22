@@ -7634,3 +7634,59 @@ is not merely directional at k = 4, it is quantified, and the exchange's
 contribution (assignment about half, exchange the rest) is now stated
 with a number rather than asserted.
 Nothing above this line is edited.
+
+## Addendum 16.24 RESULTS, stage 2 (Llama-3.3-70B-Instruct k = 2 community; run 2026-09-21 across two passes, one authorised resume for link-outage cell losses; 900 of 900 rows, completeness PASS, guards PASSED; measured spend $18.12 of the $60 ceiling; artefacts `stake_grip_analysis.json`, `cg_deliberation_llama3370binstruct_grip_row.json`, `flooding_analysis_llama.json`, `router_decomposition_llama.json`, `transfer_readouts_llama.json`, `routing_certification_llama.json`)
+
+A third model, a third vendor, an open-weight deployment. 225 surviving
+items (24 of 249 screened out by the registered content-filter screen),
+900 debates, own items and the 206-item intersection with the grok-210
+matched set given in brackets.
+
+Role and structure: role-lock 0.862 [0.869 matched] (grok 0.971, haiku
+0.419); P(at_fault) writer 0.123, counterparty 0.985, neutral 0.733.
+G1 fire 0.128 PASS, G2 reject share 0.015 fail, G3 stake concentration
++0.037 [+0.024, +0.050] fail (grok +0.631); GRIP false. Localisation
+excess -0.090 (negative, unlike grok's +0.291 and haiku's -0.078: fires
+LESS than three independent seats at this rate would, not more).
+All-strata error lift +0.153 [+0.024, +0.277] at 71 fired (gate 60 met);
+S2 accuracy 0.620 (0.680 within one-loser, 0.097 within both-party; the
+collective is a substantially weaker decider on Llama than on grok or
+haiku, driven by a low both-party accuracy).
+
+**The mechanism check.** Advocate phi within one-loser verdicts is
+**positive**, +0.148 [+0.065, +0.227] (grok -0.901, no-edge k=4 -0.842,
+both strongly anti-correlated; haiku-249 +0.246, also positive). Llama
+therefore does not fit either of the two patterns established so far. It
+has grok-like role-lock (0.862, high) but haiku-like phi (positive, the
+two advocates' objections move together rather than in opposition).
+Within-one-loser counter lift is nonetheless positive with a CI excluding
+zero: +0.162 [+0.024, +0.303], ratio 1.53x, 64 fired (gate met). Routed
+minus collective alone (item-clustered): sonnet judge +0.041
+[+0.028, +0.056], haiku judge +0.027 [+0.012, +0.041], both excluding
+zero, in the same range as no-edge k=4 (+0.048) and below grok on-edge
+(+0.070). Routed minus grok-analogue solo base (the 16.22 R1
+certification, own solo standard majority): +0.004 [0.000, +0.011], CI
+includes zero, does NOT replicate; the abstract's "+2.4 points over the
+strongest single model" is grok-specific and the paper must say so.
+Disagreement minus counter: +0.051 [+0.031, +0.074], favouring
+disagreement, the same direction as every other model tested.
+
+**Reading.** The routing gain over the collective is now confirmed on
+four conditions (grok on-edge, grok no-edge, haiku-249, Llama) and has
+never failed to clear a CI excluding zero. But the MECHANISM behind the
+one-loser lift is not uniform. On grok (and on grok with edges cut) the
+advocates are anti-correlated, opposed exactly as the credible-signal
+rule predicts. On haiku and now on Llama, high or moderate role-lock does
+not entail anti-correlation; a second objection sometimes correlates
+positively with the first even when the model holds its assigned side.
+Role-lock alone is therefore not the whole story for whether the
+against-interest mechanism operates; something else, plausibly each
+model's base accuracy or its calibration about when it is wrong, decides
+whether the two advocates' objections are opposed (informative because
+against interest) or merely correlated (informative because both are
+independently noticing a hard case). The lift survives either way, which
+is why routing still works, but the paper's mechanism claim
+("the signal belongs to the assigned roles, not to the conversation")
+should be read alongside this: the signal's SIGN is grok-specific, its
+PRESENCE is not.
+Nothing above this line is edited.
