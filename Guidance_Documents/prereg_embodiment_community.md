@@ -7551,3 +7551,86 @@ reading will be produced and no ToM claim goes into the paper. `data/tombench/`,
 left in place as working, tested code should this become in scope again,
 but no further call is registered under this addendum.
 Nothing above this line is edited.
+
+## Tooling fix, found and fixed before this reading (2026-09-21): `analyze_flooding.py`'s `_aita_block` hardcoded the default `AITA` instrument internally
+
+Reading out this cell first hit a silent-zero bug, not the literal `GUARD
+FAILED` string but a downstream corruption: `_aita_block`, `analyse`, and
+`main`'s call sites hardcoded the default `AITA` instrument's seat names
+(`writer_advocate`, `counterparty`, `neutral_adjudicator`) even when a
+differently-named instrument (`AITA_NOEDGE`, seats suffixed `_noedge`) had
+correctly built the debate dicts. Every `obj_<seat>` lookup inside the
+phi and seat-objection-rate computation therefore missed, silently
+returning zero objections for both advocates on every debate (phi
+`n/a`, the printed 2x2 table `0/0/0/N` for every row) while the
+unrelated guard checks, which route through a different, already
+instrument-aware code path, passed regardless. Traced by hand-computing
+the true writer/counterparty objection table straight from the votes CSV
+(both 180, writer-only 545, counterparty-only 875, neither 80 of 1,680)
+and finding it did not match the script's all-zero output. Fixed by
+threading `inst` through `_aita_block`, `analyse`, and both `main()` call
+sites instead of the module-level `AITA` constant; a regression check
+added to the selftest (a synthetic panel built under `_noedge`-suffixed
+seats must give the same phi values as the default-seat panel) and the
+selftest now includes it. The registered grok cell was re-run before and
+after the fix and reproduces byte for byte (`flooding_analysis.json`, 0
+leaf differences in a full recursive comparison). Script:
+`scripts/analyze_flooding.py`, new `--instrument {aita,aita_noedge}` flag.
+
+## Addendum 16.25 RESULTS, no-edge k = 4 (registered mechanism validation, run 2026-09-14 to 2026-09-21 across two passes interrupted by link outages, both authorised resumes; 1,680 of 1,680 rows, guards PASSED throughout, worst truncation 0.2%, worst NOVERDICT 1.6%; artefacts `topology_2x2_analysis.json` cell `embodied/off`, `flooding_analysis_noedge_k4.json`, `router_decomposition_noedge_k4.json`, `transfer_readouts_noedge_k4.json`, `routing_certification_noedge_k4.json`)
+
+This is the direct test of the theory's central claim in
+`papers/unified/theory.md`: that the dissent edge and the sensor it
+carries come from the assignment of opposed interests and not from the
+seats reading one another. Edges off removes every line of exchange
+between seats (no rebuttal, no restatement of another seat's position);
+each seat sees only the account and, at the label round, the moderator's
+verdict. At k = 1 this cell was under-gated (54 one-loser firings against
+the 60 minimum); at k = 4 it clears the gate.
+
+Role-lock and structure (matched to grok's on-edge cell, values in
+brackets): role-lock 0.973 [0.971]; localisation excess against the
+Poisson-binomial null +0.307 [+0.291]; fire rate P(>=2) 0.146 [0.196];
+G3 stake concentration +0.642 [+0.631]; all-strata error lift (codable)
++0.242 at 246 fired [+0.320 at 329 fired]; seat majority equals best seat
+on every debate, as on-edge; group verdict S2 accuracy 0.834 [0.843];
+transfer of the counter onto grok solo standard +0.183 [+0.212]. Every
+on-edge structural finding survives removing the exchange, at a somewhat
+smaller magnitude, exactly as 16.10 first found at k = 1.
+
+**The mechanism, at power.** Advocate phi within one-loser verdicts
+-0.842 [-0.876, -0.802] with edges off, against -0.901 on-edge (quoted,
+16.12): the two advocates' objections remain strongly anti-correlated,
+meaning still almost always exactly one of them objects and not the
+other, with no channel for them to coordinate or contradict each other
+directly. Within-one-loser counter lift, the 9.8x claim's direct
+replication: P(wrong | fired) 0.282 vs P(wrong | unfired) 0.056, ratio
+5.06x, lift +0.226 [+0.114, +0.347], n = 1,263 one-loser debates, 78
+fired (gate 60 met). The registered on-edge value is 9.83x, +0.348
+[+0.201, +0.493], 93 fired. The lift's sign, its exclusion of zero, and
+its order of magnitude all survive; only its size is reduced, from
+roughly 9.8x to roughly 5.1x wrong-rate ratio. Routed-versus-collective
+(sonnet judge, item-clustered): counter minus collective alone +0.048
+[+0.032, +0.065] with edges off, against +0.070 [+0.048, +0.094] on-edge
+(16.22); the same ordering holds with the haiku judge (+0.027
+[+0.013, +0.042] off-edge). The all-strata lift (+0.242) is only
+moderately reduced from on-edge (+0.320); the within-one-loser lift
+(where the mechanism's discriminating power actually lives) is reduced
+by about half. Both-party phi is -0.235 [-0.364, -0.099] with edges off
+(on-edge -0.628, 16.19's K5 register), also anti-correlated and also
+weaker.
+
+**Reading.** The credible-signal mechanism does not require the seats to
+read each other's arguments. A copy that sees only the account and the
+moderator's verdict objects, or does not, almost entirely on the strength
+of its assigned interest, and the resulting second-objector flag remains
+a real, well-powered, statistically clear error sensor. What the exchange
+between seats adds is roughly half of the within-one-loser discriminating
+power and a proportionate share of the routing gain, not the phenomenon
+itself. This is the strongest available confirmation, at full power, of
+`theory.md` Part 1's prediction P3a and of the paper's sentence "the
+signal belongs to the assigned roles, not to the conversation": the claim
+is not merely directional at k = 4, it is quantified, and the exchange's
+contribution (assignment about half, exchange the rest) is now stated
+with a number rather than asserted.
+Nothing above this line is edited.

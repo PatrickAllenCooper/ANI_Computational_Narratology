@@ -180,6 +180,22 @@ AITA = Instrument(
     correct=aita_correct,
 )
 
+# 16.10 / 16.25: the edges-off cell installs its seats under a "_noedge" suffix
+# (run_crowdgold_topology.install), so the votes CSV's role_id column reads
+# writer_advocate_noedge / counterparty_noedge / neutral_adjudicator_noedge.
+# Same instrument otherwise -- same gold, same verdict coding, same groups.
+AITA_NOEDGE = Instrument(
+    name="aita_grok_deliberation_noedge",
+    advocate_seats=("writer_advocate_noedge", "counterparty_noedge"),
+    neutral_seat="neutral_adjudicator_noedge",
+    types=AITA_TYPES,
+    groups={**{t: (t,) for t in AITA_TYPES},
+            "one_loser": ONE_LOSER, "both_party": BOTH_PARTY,
+            "pooled": ONE_LOSER + BOTH_PARTY},
+    codable=lambda v: code_response(v, "published") is not None,
+    correct=aita_correct,
+)
+
 DILEMMA_TYPES = ("ACTION_A", "ACTION_B")
 DILEMMAS = Instrument(
     name="dilemmas_stage1_grok_deliberation",
@@ -454,19 +470,19 @@ def run_guards(debates: Sequence[dict], inst: Instrument) -> dict:
 # Main analysis
 # ---------------------------------------------------------------------------
 
-def _aita_block(aita_debates: Sequence[dict], *, draws: int, seed: int) -> dict:
+def _aita_block(aita_debates: Sequence[dict], *, draws: int, seed: int, inst: Instrument = AITA) -> dict:
     raw_counts = dict(sorted(Counter(d["s2"] for d in aita_debates).items()))
     aita: dict = {
         "status": "READ",
-        "instrument": AITA.name, "n_raw": len(aita_debates),
+        "instrument": inst.name, "n_raw": len(aita_debates),
         "n_items": len({d["item"] for d in aita_debates}),
         "raw_verdict_counts": raw_counts,
-        "verdict_types": {t: {"n_raw": raw_counts.get(t, 0), "codable_under_collapse": AITA.codable(t),
+        "verdict_types": {t: {"n_raw": raw_counts.get(t, 0), "codable_under_collapse": inst.codable(t),
                               "collapse": code_response(t, "published")}
                           for t in AITA_TYPES},
         "populations": {
-            "s2_codable_16_12": analyse_population(aita_debates, AITA, "s2", draws=draws, seed=seed),
-            "s1_s2_codable_16_15": analyse_population(aita_debates, AITA, "s1s2", draws=draws, seed=seed),
+            "s2_codable_16_12": analyse_population(aita_debates, inst, "s2", draws=draws, seed=seed),
+            "s1_s2_codable_16_15": analyse_population(aita_debates, inst, "s1s2", draws=draws, seed=seed),
         },
     }
     g12 = aita["populations"]["s2_codable_16_12"]["groups"]
@@ -533,7 +549,7 @@ def _unread(debates: Sequence[dict], inst: Instrument, note: Optional[str]) -> d
 
 
 def analyse(aita_debates: Sequence[dict], dilemma_debates: Optional[Sequence[dict]],
-            *, draws: int, seed: int) -> dict:
+            *, draws: int, seed: int, aita_inst: Instrument = AITA) -> dict:
     """Guards run per instrument BEFORE any number is computed. The AITA guard
     governs the registered 16.12 readout and the exit code; the Dilemmas
     companion has its own guard and is recorded UNREAD on its own failure
@@ -551,9 +567,9 @@ def analyse(aita_debates: Sequence[dict], dilemma_debates: Optional[Sequence[dic
         "verdict_type_source": "S2 final integrated verdict (`verdict` column)",
         "objection_source": "votes CSV `objected_r3` per seat; counter = rows CSV `n_objectors` >= 2",
     }
-    guards: dict = {"aita": run_guards(aita_debates, AITA)}
-    res["aita"] = (_aita_block(aita_debates, draws=draws, seed=seed)
-                   if guards["aita"]["passed"] else _unread(aita_debates, AITA, None))
+    guards: dict = {"aita": run_guards(aita_debates, aita_inst)}
+    res["aita"] = (_aita_block(aita_debates, draws=draws, seed=seed, inst=aita_inst)
+                   if guards["aita"]["passed"] else _unread(aita_debates, aita_inst, None))
     if dilemma_debates is not None:
         guards["dilemmas"] = run_guards(dilemma_debates, DILEMMAS)
         res["dilemmas"] = (_dilemma_block(dilemma_debates, draws=draws, seed=seed)
@@ -661,7 +677,8 @@ def print_report(res: dict) -> None:
 # Selftest on synthetic rows: ESH fires on every debate, YTA on none
 # ---------------------------------------------------------------------------
 
-def _synthetic_aita() -> tuple[list[dict], list[dict]]:
+def _synthetic_aita(seats: tuple = ("writer_advocate", "counterparty", "neutral_adjudicator")
+                    ) -> tuple[list[dict], list[dict]]:
     """Hand case, 22 debates on 22 items. YTA x8 (gold YTA, right): exactly
     one advocate objects, the writer on half and the counterparty on the
     other half -> P(2+) = 0, phi = -1. NTA x4 (gold YTA, wrong): the
@@ -672,7 +689,6 @@ def _synthetic_aita() -> tuple[list[dict], list[dict]]:
     both populations) and one NTA (gold NTA, right) with a NOVERDICT S1 (in
     the 16.12 population, out of the 16.15 one)."""
     rows, votes = [], []
-    seats = ("writer_advocate", "counterparty", "neutral_adjudicator")
 
     def add(item, idx, s2, gold, obj, s1=None):
         n_obj = sum(obj)
@@ -745,6 +761,26 @@ def _selftest(draws: int = 300) -> int:
           len(s2) == 21 and len(s1s2) == 20)
     check("n_objectors recomputed from the votes matches the rows column on every debate",
           all(d["n_objectors"] == d["n_objectors_votes"] for d in debates))
+
+    # Regression check, 2026-09-21: _aita_block used to hardcode AITA internally, so an
+    # alternate instrument's debates (correctly built with the right seat names) had their
+    # phi and seat_objection_rate silently zeroed out (wrong, unsuffixed keys looked up
+    # against a dict that only has suffixed keys -- found reading out the 16.25 no-edge
+    # k=4 cell, whose seats carry a "_noedge" suffix). The same synthetic case run through
+    # a differently-named instrument must give the SAME phi values as the default AITA run.
+    noedge_seats = ("writer_advocate_noedge", "counterparty_noedge", "neutral_adjudicator_noedge")
+    aita_noedge_inst = Instrument(name="aita_noedge_selftest", advocate_seats=noedge_seats[:2],
+                                  neutral_seat=noedge_seats[2], types=AITA_TYPES,
+                                  groups=AITA.groups, codable=AITA.codable, correct=AITA.correct)
+    rows_ne, votes_ne = _synthetic_aita(noedge_seats)
+    debates_ne = build_debates(rows_ne, votes_ne, aita_noedge_inst)
+    res_ne = analyse(debates_ne, None, draws=draws, seed=13, aita_inst=aita_noedge_inst)
+    G_ne = res_ne["aita"]["populations"]["s2_codable_16_12"]["groups"]
+    check("a non-default instrument's phi and table are NOT silently zeroed (regression for "
+          "the _aita_block hardcoded-AITA bug)",
+          G_ne["YTA"]["phi_advocates"]["point"] == -1.0
+          and G_ne["YTA"]["phi_advocates"]["table"]["both"] == 0
+          and sum(G_ne["YTA"]["phi_advocates"]["table"].values()) == G_ne["YTA"]["n"] == 8)
 
     res = analyse(debates, None, draws=draws, seed=13)
     G = res["aita"]["populations"]["s2_codable_16_12"]["groups"]
@@ -924,6 +960,8 @@ def main(argv: Sequence[str] | None = None) -> int:
     ap.add_argument("--seed", type=int, default=DEFAULT_SEED)
     ap.add_argument("--rows", type=Path, default=ROWS_PATH)
     ap.add_argument("--votes", type=Path, default=VOTES_PATH)
+    ap.add_argument("--instrument", choices=("aita", "aita_noedge"), default="aita",
+                    help="aita_noedge selects the edges-off cell's _noedge seat ids (16.10/16.25)")
     ap.add_argument("--dilemma-rows", type=Path, default=DILEMMA_ROWS_PATH)
     ap.add_argument("--dilemma-votes", type=Path, default=DILEMMA_VOTES_PATH)
     ap.add_argument("--no-dilemmas", action="store_true",
@@ -933,13 +971,14 @@ def main(argv: Sequence[str] | None = None) -> int:
     if a.selftest:
         return _selftest()
 
-    aita = build_debates(read_csv(a.rows), read_csv(a.votes), AITA)
+    inst = AITA_NOEDGE if a.instrument == "aita_noedge" else AITA
+    aita = build_debates(read_csv(a.rows), read_csv(a.votes), inst)
     dilemmas = None
     if not a.no_dilemmas and a.dilemma_rows.exists() and a.dilemma_votes.exists():
         dilemmas = build_debates(read_csv(a.dilemma_rows), read_csv(a.dilemma_votes), DILEMMAS)
     elif not a.no_dilemmas:
         print(f"dilemma CSVs absent ({a.dilemma_rows}, {a.dilemma_votes}): companion block skipped")
-    res = analyse(aita, dilemmas, draws=a.draws, seed=a.seed)
+    res = analyse(aita, dilemmas, draws=a.draws, seed=a.seed, aita_inst=inst)
     res["inputs"] = {"rows": str(a.rows), "votes": str(a.votes),
                      "dilemma_rows": str(a.dilemma_rows) if dilemmas is not None else None,
                      "dilemma_votes": str(a.dilemma_votes) if dilemmas is not None else None}
