@@ -275,8 +275,8 @@ def _report(res: dict[str, Any]) -> None:
                   f"{v['full_rate']:>9.3f}{100 * v['flip_rate']:>9.0f}%")
     print()
     for g, cell in res["per_generator"].items():
-        if len(cell) < 2:
-            continue
+        if "standard_cot" not in cell or "narrative_cot" not in cell:
+            continue  # a custom --arms run (e.g. a knockout arm set) has neither
         c, n = cell["standard_cot"], cell["narrative_cot"]
         d_ctl = 100 * (n["control_rate"] - c["control_rate"])
         d_full = 100 * (n["full_rate"] - c["full_rate"])

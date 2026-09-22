@@ -7822,3 +7822,75 @@ Sonnet is the one model whose reduction does not survive a change of
 judge under any reading (nano's CI touches zero, Llama's reverses); the
 paper should not claim sonnet's drop is judge-independent.
 Nothing above this line is edited.
+
+## Addendum 17.3 RESULTS (run 2026-09-21; 1,949 of 1,950 generation tasks plus human baseline, 1,799 of 1,800 knockout cells present, one item lost to a single transient generation failure; untruncated re-score run twice, the first crashed in its own report formatter on a custom `--arms` list, a real bug fixed with no lost spend since the underlying judge scores were already cached; guards clean; artefacts `rescore_oeq_validation_knockouts.json`, `knockout_social_analysis.json`, script `scripts/analyze_knockout_social.py`)
+
+The discriminating experiment for P1a: does the represented-counterparty
+account (`theory.tex`, the stakeholder and consequence sections carry the
+reduction) or the competing hedging-register account
+(`theory_grounding_and_judge_rehabilitation.md` section 1.1, the
+uncertainty section carries it) explain the drop in validation.
+Non-response is modest and uniform across the four knockout arms on every
+model (haiku 0 percent, nano 2.0 percent, grok 6.0 to 6.7 percent), no
+arm showing materially more attrition than another on the same model, so
+non-response is not itself informative about which section matters.
+
+Share of the intact NoT reduction each knockout takes back
+(0 means the knockout behaves like intact NoT, the section is not
+load-bearing for validation; 1 means it behaves like standard CoT, the
+section carries the whole reduction), item-clustered bootstrap, pooled
+across the three generators with items clustered within each generator:
+
+| knockout | claude-haiku-4-5 | grok-4-1-fast-reasoning | gpt-5.4-nano | pooled |
+|---|---|---|---|---|
+| drop stakeholders | +0.42 [+0.10, +0.76] | +0.01 [-0.25, +0.22] | -0.14 [-0.45, +0.09] | +0.10 [-0.08, +0.26] |
+| drop consequences | +0.42 [+0.08, +0.74] | -0.07 [-0.37, +0.16] | +0.09 [-0.16, +0.29] | +0.18 [+0.00, +0.33] |
+| drop uncertainty | +0.55 [+0.24, +0.91] | -0.17 [-0.50, +0.06] | -0.00 [-0.28, +0.20] | +0.16 [-0.03, +0.33] |
+| commit first (own rate vs intact) | -0.30 [-0.93, +0.04] | +0.03 [-0.25, +0.26] | +0.03 [-0.24, +0.24] | -0.08 [-0.33, +0.08] |
+
+**Pre-declared reading, applied mechanically to the pooled shares.**
+COUNTERPARTY requires stakeholders or consequences to clear a share CI
+entirely above 0.5 with uncertainty's CI entirely below 0.5: fails (no
+pooled share clears 0.5 in either direction with its CI excluding the
+threshold). HEDGING-REGISTER requires uncertainty's share to be largest
+with a CI excluding zero and both counterparty sections' CIs entirely
+below 0.5: fails (uncertainty's pooled CI includes zero,
+[-0.03, +0.33]). NEITHER requires no knockout's share CI to clear 0.25
+from above: HOLDS, all four pooled CIs cross or fall short of 0.25 from
+above (consequences comes closest, upper bound 0.33, lower bound
+touching 0.00). The branch is **NEITHER**: at this power, removing any
+one section does not measurably retake a quarter or more of the
+reduction, on the pooled reading. Commit-first is **INERT**: its own
+validation rate does not differ from intact NoT with a CI excluding
+zero, [-0.33, +0.08].
+
+**What the pooled null hides.** The three per-generator columns are not
+homogeneous, and averaging them is itself informative. On haiku, every
+one of the three sections shows a large share with a CI mostly excluding
+zero (0.42 to 0.55), meaning haiku's validation reduction is fragile,
+knocking out any one of the three sections gives back close to half of
+it. On grok and nano every share sits near zero with a wide CI including
+zero on every knockout, meaning the reduction there survives losing any
+single section almost intact. The pooled NEITHER verdict is therefore
+not "no section matters anywhere"; it is "which sections matter is
+model-specific, and no single section is universally load-bearing across
+models." This is closer to the ACL paper's own finding on a related
+outcome (no single sub-instruction knockout moves any metric by more
+than a small share, the scaffold's parts are individually accountable
+but jointly redundant for this particular outcome) than to either
+competing account of the mechanism.
+
+**Reading for the theory.** P1a as written (`theory.md`, "the reduction
+should be carried by the sections that represent the other parties") is
+NOT confirmed at the pooled level and is confirmed only on one of three
+models (haiku) where it is confirmed for stakeholders and consequences
+together with, if anything, an equally large share for uncertainty,
+so even on haiku the result does not cleanly favour the
+represented-counterparty account over the hedging-register account; it
+shows the whole scaffold is load-bearing there. The theory paragraph in
+`papers/unified/theory.tex` must be revised to state this rather than
+assert the represented-counterparty mechanism at the section level: the
+ITEM-level evidence (Z2, the counterparty moderator) still holds and is
+unaffected by this result, but the SECTION-level claim about which part
+of the prompt carries the reduction does not generalise past one model.
+Nothing above this line is edited.
