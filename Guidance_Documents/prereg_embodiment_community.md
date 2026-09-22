@@ -8255,3 +8255,19 @@ is speculative and not something this addendum tests causally; it is
 recorded as a hypothesis for a future judge-selection design, not a
 finding.
 Nothing above this line is edited.
+
+## Addendum 16.27 amendment (recorded 2026-09-22 BEFORE the resume call; the same authorised class of fix as the 16.25 amendment): completeness guard failed on link-outage losses, one `--resume` pass
+
+The DeepSeek-V4-Pro community's first pass finished generation but its
+completeness guard FAILED: 840 debates expected, 820 rows, 20 missing,
+all in the `third_person` arm, all traced to the same "Foundry v1
+generation failed after 5 attempts: Connection error" pattern already
+established this session as a link-side failure and not an outcome-
+dependent one (16.25 amendment, same reasoning). The round-level and
+outcome guards both PASSED cleanly on the 820 rows that exist (worst
+truncation 0.0%, worst NOVERDICT 1.2% and 0.0%); only completeness
+failed. Per the same authorised class as 16.25, one `--resume` pass
+replays every cached call by name and generates only the 20 missing
+debates; no number from this cell is read until completeness passes.
+Cost of the fill: 20 debates x 17 calls, well under $1.
+Nothing above this line is edited.
