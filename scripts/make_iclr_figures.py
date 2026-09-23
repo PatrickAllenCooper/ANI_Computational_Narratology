@@ -99,10 +99,117 @@ def routing_table() -> str:
     return "\n".join(out) + "\n"
 
 
+JUDGE_SHORT = {"claude-haiku-4-5": "haiku (prod.)", "gpt-4o": "gpt-4o", "gpt-5.4-nano": "nano",
+               "Llama-3.3-70B-Instruct": "Llama", "grok-4-1-fast-reasoning": "grok"}
+
+
+def _ci(c, scale=100):
+    return f"${scale * c['point']:+.1f}$ [{scale * c['lo']:+.1f}, {scale * c['hi']:+.1f}]"
+
+
+def form_table() -> str:
+    d = _load(OUT / "narrative_form_readout.json")
+    if d is None:
+        return "% narrative_form_readout.json not present\n"
+    out = ["% AUTO-GENERATED from narrative_form_readout.json (17.7, 17.7 amendment 2, 17.4; same-day",
+           "% replicates standard_cot_rep / narrative_cot_rep as comparators; pooled over haiku, grok, nano, Llama;",
+           "% item-clustered bootstrap). Drop = arm minus CoT, points; share = arm's drop over NoT's drop.",
+           "\\begin{tabular}{llrrl}", "\\toprule",
+           "judge & arm & drop from CoT & share of NoT & reading \\\\", "\\midrule"]
+    for j, jr in d["judges"].items():
+        f = jr["form_pooled"]
+        ck, no, pc = f["checklist"], f["narrative_only"], jr.get("persona_pooled", {})
+        if ck.get("drop_arm") is None:
+            continue
+        out.append(f"{JUDGE_SHORT.get(j, j)} & NoT & {_ci(ck['drop_not'])} & 1.00 & \\\\")
+        out.append(f" & checklist, same content & {_ci(ck['drop_arm'])} & {ck['share']['point']:.2f} & {jr['form_reading']['checklist']} \\\\")
+        out.append(f" & narrative only & {_ci(no['drop_arm'])} & {no['share']['point']:.2f} & {jr['form_reading']['narrative_only']} \\\\")
+        if pc.get("drop_arm") is not None:
+            out.append(f" & persona only & {_ci(pc['drop_arm'])} & {pc['share']['point']:.2f} & {jr.get('persona_reading', '')} \\\\")
+        out.append("\\addlinespace")
+    out += ["\\bottomrule", "\\end{tabular}"]
+    return "\n".join(out) + "\n"
+
+
+def rep4k_table() -> str:
+    d = _load(OUT / "headline_rep4k_readout.json")
+    if d is None:
+        return "% headline_rep4k_readout.json not present\n"
+    judges = d["judges"]
+    out = ["% AUTO-GENERATED from headline_rep4k_readout.json (17.10: same-day, both arms at 4,096 tokens).",
+           "\\begin{tabular}{l" + "r" * len(judges) + "l}", "\\toprule",
+           "generator & " + " & ".join(JUDGE_SHORT.get(j, j) for j in judges) + " & reading \\\\", "\\midrule"]
+    for gk, gl in GENS:
+        v = d["per_generator"].get(gk)
+        if not v:
+            continue
+        cells = []
+        for j in judges:
+            c = v["per_judge"].get(j, {})
+            cells.append("--" if c.get("drop") is None else f"${100 * c['drop']:+.1f}$")
+        out.append(f"{gl} & " + " & ".join(cells) + f" & {v['reading'].replace('HEADLINE-', '')} \\\\")
+    out += ["\\bottomrule", "\\end{tabular}"]
+    return "\n".join(out) + "\n"
+
+
+def pushback_table() -> str:
+    rows = []
+    for m, lab in (("gpt-5.4-nano", "nano"), ("Llama-3.3-70B-Instruct", "Llama"), ("grok-4-1-fast-reasoning", "grok")):
+        short = {"gpt-5.4-nano": "nano", "Llama-3.3-70B-Instruct": "llama", "grok-4-1-fast-reasoning": "grok"}[m]
+        d = _load(OUT / f"pushback_readout_{short}.json")
+        if d is None:
+            continue
+        pm = d["per_model"][m]
+        rows.append((lab, pm["n_common_support"], pm.get("cap"), pm.get("inst"), pm.get("net")))
+    pooled = _load(OUT / "pushback_readout_pooled.json")
+    out = ["% AUTO-GENERATED from pushback_readout_{nano,llama,grok,pooled}.json (17.9; haiku unread, guard).",
+           "\\begin{tabular}{lrrrr}", "\\toprule",
+           "model & items & capitulation CoT / NoT & re-ask CoT / NoT & net NoT $-$ CoT \\\\", "\\midrule"]
+
+    def fmt(v):
+        return "--" if not v else f"{v['cot']:.2f} / {v['not']:.2f}"
+
+    def net(v):
+        if not v or not v.get("not_minus_cot"):
+            return "--"
+        x = v["not_minus_cot"]
+        return f"${100 * x['diff']:+.1f}$ [{100 * x['lo']:+.1f}, {100 * x['hi']:+.1f}]"
+    for lab, n, cap, inst, nt in rows:
+        out.append(f"{lab} & {n} & {fmt(cap)} & {fmt(inst)} & {net(nt)} \\\\")
+    if pooled:
+        p = pooled["pooled"]
+        out.append("\\midrule")
+        out.append(f"pooled & {p['cap']['not_minus_cot']['n_pairs']} & {fmt(p.get('cap'))} & {fmt(p.get('inst'))} & {net(p.get('net'))} \\\\")
+    out += ["\\bottomrule", "\\end{tabular}"]
+    return "\n".join(out) + "\n"
+
+
+def seat_table() -> str:
+    d = _load(OUT / "seat_scaffold_comparison.json")
+    if d is None:
+        return "% seat_scaffold_comparison.json not present\n"
+    out = ["% AUTO-GENERATED from seat_scaffold_comparison.json (16.28; narrated minus plain-CoT seats, paired items).",
+           "\\begin{tabular}{lrr}", "\\toprule", "readout & grok & Llama \\\\", "\\midrule"]
+    names = [("acc", "collective accuracy"), ("routed", "routed accuracy"),
+             ("routed_matched", "routed, matched coverage"), ("gain", "routing gain"), ("fire", "fire rate")]
+    for k, lab in names:
+        cells = []
+        for m in ("grok", "llama"):
+            v = d["per_model"][m][k]
+            cells.append(f"${100 * v['diff']:+.1f}$ [{100 * v['lo']:+.1f}, {100 * v['hi']:+.1f}]")
+        out.append(f"{lab} & " + " & ".join(cells) + " \\\\")
+    out += ["\\bottomrule", "\\end{tabular}"]
+    return "\n".join(out) + "\n"
+
+
 def main() -> int:
     FIG.mkdir(parents=True, exist_ok=True)
     (FIG / "fig_judge_panel.tex").write_text(judge_panel_figure())
     (FIG / "tab_routing.tex").write_text(routing_table())
+    (FIG / "tab_form.tex").write_text(form_table())
+    (FIG / "tab_rep4k.tex").write_text(rep4k_table())
+    (FIG / "tab_pushback.tex").write_text(pushback_table())
+    (FIG / "tab_seat.tex").write_text(seat_table())
     print("wrote", FIG / "fig_judge_panel.tex", FIG / "tab_routing.tex")
     return 0
 

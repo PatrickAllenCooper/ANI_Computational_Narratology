@@ -1,3 +1,26 @@
+% ============================================================================================
+% TODO PI -- the abstract's WORDING is kept verbatim at the PI's instruction (only figures may
+% change). Four of its claims are in tension with the overnight results (2026-09-22/23); each
+% is reported plainly in the body, and the PI should decide whether to reword:
+%  (1) "structured as a narrative, which improves their social reasoning abilities": 17.7 finds
+%      the reduction is carried by the structured content, not the narrative form (a
+%      third-person checklist of the same five elements validates LESS than NoT; narration alone
+%      validates MORE than CoT) [confirm pooled reading once grok/Llama land]; 17.9 finds NoT
+%      gives no protection against pushback (raw capitulation higher, net NULL); Z3 finds no
+%      change in verdict-level asker-shielding.
+%  (2) "reduces model sycophancy ... by up to 87%": 87% is the production (haiku) judge on the
+%      June cells (Llama). The drop is judge-dependent (17.8): it holds on 7/7 generators under
+%      the production judge, 6/7 under gpt-4o (the benchmark's validated judge family), 5/7 under
+%      nano, and largely vanishes under the Llama and grok judges; the same-day uncapped
+%      replicate (17.10) gives smaller drops under gpt-4o and a reversal on sonnet. "Sycophancy"
+%      here is the validation register on open-ended advice, not verdicts or pushback.
+%  (3) "improves theory-of-mind ... 3-10 percentage points": PILLAR 2 (co-author), unsupported
+%      by anything in this repository (Addendum 18 measured -4.4 points).
+%  (4) "supports more objective, grounded collective judgments ... 7.0 percentage points": the
+%      routing gain is real and replicates on six conditions, but 16.28 finds plain
+%      chain-of-thought seats equal or better (PLAIN-BETTER), so it is not a property of the
+%      scaffold.
+% ============================================================================================
 \begin{abstract}
 LLMs today are adept at conversation, providing advice and suggestions with apparent empathy and understanding. While the underlying nature of their understanding and the manner of its emergence might be a matter of much debate, the premise that this "understanding" breaks down under more complex social conditions remains largely accepted. The social account of objectivity emphasizes how organized criticism across perspectives can expose individual errors. Based on this account, we introduce a general, lightweight prompt scaffold, structured as a narrative, which improves their social reasoning abilities when compared to standard chain-of-thought. Narration-of-Thought (NoT) guides the model through a first-person narrative that identifies the decision-maker and what they know, considers affected stakeholders and their interests, traces the consequences of available actions, acknowledges uncertainty, and arrives at a decision. We demonstrate that this scaffold can be used in various ways, with experiments in single-agent and multi-agent settings, on a range of nuanced reasoning tasks. We find that using the scaffold reduces model sycophancy in social contexts by up to 87\% relative to standard chain-of-thought,
 % figure updated from 54.5 (gpt-5.4-nano, four models) to 87, the largest relative reduction
@@ -12,3 +35,4 @@ and supports more objective, grounded collective judgments through structured cr
 % (router_decomposition.json composed_sonnet; independently reproduced by verify_pillar3_headline.py)
 Our findings lay the groundwork for further exploring the potential of this scaffold in improving models' social alignment.
 \end{abstract}
+\noindent\todo{PI: abstract wording kept verbatim as instructed; four claims are in tension with the results (see the comment block at the top of sections/abstract.tex and Section~\ref{sec-discussion}).}

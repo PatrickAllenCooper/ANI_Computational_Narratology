@@ -9146,3 +9146,90 @@ a scope boundary. The haiku behaviour (NoT under pushback often restates
 its verdict in prose or asks who the user is in the story) is described,
 not scored.
 Nothing above this line is edited.
+
+## Addenda 17.7 (with amendment 2), 17.4 and 17.10 RESULTS (run 2026-09-22/23; same-day generation of 5,354 OEQ responses across seven generators, every one scored in full by all five 17.8 judges; artefacts `narrative_form_readout.json`, `headline_rep4k_readout.json`, `judge_panel_newarms_<judge>.json`, the `elephant_singleagent_raw_batch_*.csv` files; ~290 judge calls lost to rate limits, about 1% of the Llama judge's and grok judge's scores, reported as missing)
+
+**17.7, form versus content** (pooled over haiku, grok, nano and Llama,
+clustered on the item; every contrast against the same-day
+`standard_cot_rep` and `narrative_cot_rep` at equal caps). Drop from CoT,
+points [95% CI]:
+
+| judge | NoT | checklist, same content | narrative only | persona only | reading (checklist / narrative only / persona) |
+|---|---|---|---|---|---|
+| haiku (production) | -46.1 | -57.5 [-62.7, -52.2] | +12.1 [+8.5, +16.0] | -0.9 [-4.3, +2.4] | CHECKLIST-BETTER / CONTENT-ADDS / PERSONA-INERT |
+| gpt-4o | -23.1 | -45.3 [-50.1, -40.4] | +10.7 [+6.8, +14.8] | +3.3 [+0.3, +6.1] | CHECKLIST-BETTER / CONTENT-ADDS / PERSONA-RAISES |
+| nano | -19.1 | -36.5 [-41.2, -31.7] | +18.7 [+14.7, +23.0] | +5.5 [+1.9, +9.1] | CHECKLIST-BETTER / CONTENT-ADDS / PERSONA-RAISES |
+| Llama | -5.9 | -37.3 [-41.7, -33.0] | +6.8 [+4.2, +9.6] | +1.7 [-0.5, +4.2] | CHECKLIST-BETTER / CONTENT-ADDS / PERSONA-INERT |
+| grok | -11.5 | -37.2 [-41.4, -33.2] | +8.6 [+5.7, +11.8] | +0.9 [-1.2, +3.0] | CHECKLIST-BETTER / CONTENT-ADDS / PERSONA-INERT |
+
+NoT minus checklist: +11.4 [+7.3, +15.3] (production), +22.2 [+18.1,
++26.3] (gpt-4o), +17.4 [+13.2, +21.6] (nano), +31.4 [+27.2, +35.5]
+(Llama), +25.7 [+21.6, +29.9] (grok). **Readings, applied mechanically:
+CHECKLIST-BETTER and CONTENT-ADDS under all five judges (judge-robust as
+the amendment defines it); the persona reading splits (INERT under three
+judges, RAISES under two), so no persona reading is judge-robust, and
+under no judge does the persona lower validation.** The five content
+demands written as a third-person checklist lower validation more than
+the first-person narrative does, by 11 to 31 points depending on the
+judge, and lower it by 37 to 58 points under every judge, including the
+two judges under which NoT's own reduction nearly vanishes. The first-
+person narrative instruction on its own raises validation above plain CoT
+under every judge. No INTEGRATION flag. **Caveat that travels with this
+result.** The rubric scores emotional validation (understanding, validation
+of the person's perspective, warmth), so a third-person checklist may be
+judged less validating partly because its register is cooler, not only
+because it endorses the asker's account less, and this design cannot
+separate the two. The pushback test (17.9), which needs no judge, is where
+a register effect and a commitment effect come apart, and there NoT
+does not resist.
+
+**17.4, length-matched CoT** (haiku and grok; manipulation check passed,
+achieved length 1.04 and 1.19 of NoT). Length-matched minus CoT under the
+production judge: haiku +27.3, grok +2.8; NoT minus length-matched: haiku
+-54.0 [-62.7, -45.3], grok -46.5 [-54.9, -38.0]. Reading LENGTH-INERT under
+the production judge, gpt-4o, nano and grok; UNRESOLVED under the Llama
+judge (grok's gap includes 0 there). Asking chain of thought for the
+scaffold's length does not reproduce the reduction, and on haiku it raises
+validation by 25 to 29 points under three judges.
+
+**17.10, the headline without generation-cap truncation** (both arms at
+4,096 tokens, same day; at most 2 of about 145 responses per cell reach the
+cap). NoT minus CoT, points:
+
+| generator | production | gpt-4o | nano | Llama | grok | reading |
+|---|---|---|---|---|---|---|
+| haiku | -22.0 [-31.3, -12.0] | -14.0 | -1.3 | +5.4 | +12.1 | JUDGE-DEPENDENT |
+| sonnet | -12.7 [-22.0, -3.3] | +8.0 | +8.7 | +8.7 | +12.1 | JUDGE-DEPENDENT |
+| nano | -42.2 [-51.0, -32.7] | -10.2 | -25.9 | -4.1 | -3.4 | JUDGE-DEPENDENT |
+| grok | -44.3 [-53.6, -35.0] | -23.6 | -13.6 | -0.7 | -2.9 | JUDGE-DEPENDENT |
+| Llama | -63.4 [-71.8, -54.9] | -66.2 | -50.7 | -17.7 | -51.8 | HOLDS |
+| Mistral | -57.6 [-66.2, -48.9] | -29.5 | -15.1 | -2.9 | -0.7 | JUDGE-DEPENDENT |
+| DeepSeek | -51.8 [-60.3, -42.6] | -16.3 | -28.4 | +2.1 | -2.1 | JUDGE-DEPENDENT |
+
+Production-judge relative reductions: haiku 38%, sonnet 16%, nano 53%,
+grok 53%, Llama 80%, Mistral 69%, DeepSeek 55%. The uncapped replicate
+reproduces the production-judge headline on all seven generators (the
+cached-cell range 19 to 70 points becomes 13 to 63), so generation-cap
+truncation did not manufacture it. Under gpt-4o it holds on six of seven
+and REVERSES on sonnet (+8.0 [+1.3, +15.3]), as it does under nano (+8.7
+[+0.7, +16.7]), the Llama judge and the grok judge. Only Llama's reduction
+holds under all five judges.
+
+**Reading for the paper.** The social account of objectivity is supported
+by the content of the scaffold, not its narrative form. The reduction in
+judged validation is robust to truncation, to length and to the persona
+line, and it is judge-dependent; it is largest, and judge-robust, on
+Llama; it is not confirmed on sonnet by any judge but the production
+judge, and it reverses there under the other four at the uncapped caps.
+The same content as a third-person checklist lowers judged validation
+more, and robustly across judges, with the register caveat above. The
+abstract's "structured as a narrative" is the part of the design these
+results do not support.
+
+**Batch spend ledger** (overnight batch, cap $250): E1 grok ~$9.5
+(estimated, 21,420 calls at the cache's mean grok deliberation cost),
+E1 Llama ~$16.4 (measured), 17.7/17.4/17.10 generation $16.52 (measured
+tokens), judge calls ~$72.7 (estimated from characters sent; haiku
+~$26.7 including inline scoring, gpt-4o ~$29.4, nano ~$6.5, Llama ~$6.6,
+grok ~$3.6), 17.9 $10.29 (measured). Total ~$125, inside the cap.
+Nothing above this line is edited.

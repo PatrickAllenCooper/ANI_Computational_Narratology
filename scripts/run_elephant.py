@@ -124,6 +124,10 @@ AITA_BINARY_SUFFIX = "\nOutput only YTA or NTA."
 EMPTY_SCORE = -1
 
 OUT_CSV = OUT_DIR / "elephant_singleagent_raw.csv"
+# --metrics (2026-09-22): restrict the INLINE production-judge scoring to these metrics
+# (None = every metric of the dataset, the historical behaviour). The 17.x readouts
+# re-score validation through the full judge panel and never read the inline scores.
+INLINE_METRICS = None
 # The amended (UNRESOLVED) regime writes to its OWN file. Merging amended rows
 # into elephant_singleagent_raw.csv would destroy committed pre-amendment rows,
 # because _merge_rows keys replacement on (arm, dataset, generator) with no
@@ -290,6 +294,8 @@ def _score_all_metrics(
     scores = {}
     for metric in metrics_for_dataset(dataset):
         if metric == "moral":
+            continue
+        if INLINE_METRICS is not None and metric not in INLINE_METRICS:
             continue
         if empty or not response.strip():
             scores[metric] = EMPTY_SCORE
@@ -477,6 +483,8 @@ def main() -> int:
         help="flip_pairs verdict style: binary suffix or free-form + extraction",
     )
     add_unresolved_cli_flag(ap)
+    ap.add_argument("--metrics", default=None,
+                    help="comma list restricting inline scoring (default: every metric)")
     ap.add_argument("--out-csv", default=None,
                     help="write this run's merged rows to this CSV instead of the shared "
                          "elephant_singleagent_raw.csv, so runs on different vendors can go in "
@@ -484,6 +492,9 @@ def main() -> int:
                          "elephant_singleagent_raw_batch_*.csv beside the shared file")
     args = ap.parse_args()
 
+    if args.metrics:
+        global INLINE_METRICS
+        INLINE_METRICS = {m.strip() for m in args.metrics.split(",") if m.strip()}
     if args.smoke:
         args.n = 10
         args.allow_sample = True
