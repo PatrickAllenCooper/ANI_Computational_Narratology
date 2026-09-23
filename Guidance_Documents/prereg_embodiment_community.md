@@ -8587,3 +8587,82 @@ is associated with phi's sign across the five models, largely for a
 structural reason, and does not guarantee it. n = 5 makes every figure
 here suggestive, not a finding.
 Nothing above this line is edited.
+
+# Overnight batch 2026-09-22 (PI authorisation in chat 2026-09-22, "authorize all experiments up to but not exceeding 250 dollars"): Addenda 16.28, 17.7, 17.8, 17.4 launch, 17.9
+
+Batch cap: **$250 cumulative measured spend** across every call below
+(E1-E4), read from the caches after each run. Per-addendum ceilings sum to
+$190, leaving a $60 reserve for authorised link-outage resumes and guard
+fixes. If a run would push the running total over $250 it is stopped and
+the remainder deferred. A ledger line is appended after each RESULTS block.
+Pillar 2 (theory of mind) is out of this batch entirely (co-author owned).
+
+## Addendum 16.28: is narration of thought load-bearing in the ROUTED collective? (registered 2026-09-22 BEFORE any call)
+
+16.16 (grok, k = 1) found plain chain-of-thought seats reproduce the
+collective's structure and S2 accuracy (+0.010 [-0.010, +0.029]) and cut
+the fire rate from 0.196 to 0.131; the routed system under plain seats was
+never compared, and the within-cell lift was under-gated at 55 fired. The
+abstract claims the scaffold supports the multi-agent result, so this is
+the test of whether it does.
+
+Cells. (1) grok `cg_deliberation_stdcot` to k = 4, launched exactly as
+16.25 registered it (`run_crowdgold_deliberation --agent-scaffold
+standard_cot --tag cg_deliberation_stdcot --samples 4`, all else default;
+sample 0 replays; 16.25's $15 ceiling; dry-run upper bound $18.48 for all
+four samples, three new, measured k = 1 cost $2.64 so ~$8 expected). (2)
+Llama `cg_deliberation_llama3370binstruct_stdcot`, k = 2, through
+`scripts/run_stdcot_seats.py`, which reuses the filter-screen wrapper's
+panel, registered screen (225 survivors, identical to 16.24), runner argv
+and completeness guard, changing only the seat scaffold and the tag.
+Dry-run upper bound $42.99 (assumes narrated completion lengths; the
+narrated Llama k = 2 cell measured $18.12 against a similar bound).
+Ceiling $30, stop rule: if sample 0 alone measures above $20, sample 1 is
+deferred.
+
+Comparators (narrated seats, same items): grok `cg_deliberation` (16.10
+embodied/on, k = 4), Llama `cg_deliberation_llama3370binstruct` (16.24,
+k = 2).
+
+Readouts. Per cell, the standard per-model analyzers
+(`analyze_router_decomposition`, `analyze_topology_2x2`,
+`analyze_flooding`, `verify_pillar3_headline` extended). The primary
+readout is a new paired comparison, `scripts/analyze_seat_scaffold.py`,
+item-clustered bootstrap over items present in both cells (8,000 draws),
+narrated-seat minus plain-seat, for (a) S2 accuracy, (b) routed accuracy
+(S2 unless the counter fires, then the sonnet standard majority-of-3
+judge, the 16.22 / `verify_pillar3_headline` rule), (c) routing gain
+(routed minus S2), (d) fire rate P(>= 2 objectors), (e) asker-shielding of
+the S2 verdict on gold-YTA items, P(not at fault | as_asker) minus P(not at
+fault | third_person). Baselines in brackets: grok narrated S2 0.843,
+routed 0.913, gain +0.070 [+0.048, +0.094], fire 0.196; Llama narrated S2
+0.620, routed 0.661, gain +0.041 [+0.028, +0.056], fire 0.079.
+
+Pre-declared readings, per model and then across the two.
+- NOT-LOAD-BEARING: (a) or (b) favours narrated seats with a CI excluding
+  0 on at least one model, and neither favours plain seats with a CI
+  excluding 0 on the other. The multi-agent result is evidence for the
+  scaffold.
+- PLAIN-BETTER: (a) or (b) favours plain seats with a CI excluding 0 on
+  either model. Reported as a reversal, the collective analogue of the
+  BrokenMath commitment cost.
+- AMPLIFIER-ONLY: (a) and (b) include 0 on both models while (c) or (d)
+  differs with a CI excluding 0. Narration changes how often the flag
+  fires and how much routing buys, not the system's accuracy.
+- INERT: nothing differs. The paper presents the collective as the
+  external form of the same social-objectivity principle, with narrated
+  seats as the deployed substrate and not the cause of the gain.
+- (e) is read separately: NARRATION-SHIELDS-LESS if narrated-seat
+  shielding is lower with a CI excluding 0, and its reverse is reported as
+  such.
+
+Guards: the base runner's round-level and outcome guards, the literal
+`GUARD FAILED`, completeness (grok 1,680 rows; Llama 900 rows, via the
+wrapper's `completeness_check`), within-cell lifts read only at >= 60
+fired. No number is read before every guard passes.
+
+Launch:
+
+    .venv/bin/python -m scripts.run_crowdgold_deliberation --agent-scaffold standard_cot --tag cg_deliberation_stdcot --samples 4 --workers 20
+    .venv/bin/python -m scripts.run_stdcot_seats --model Llama-3.3-70B-Instruct --samples 2 --run --workers 20
+Nothing above this line is edited.
