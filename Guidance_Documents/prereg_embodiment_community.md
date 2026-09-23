@@ -8458,3 +8458,88 @@ Launch:
 
     .venv/bin/python -m scripts.run_crowdgold_filter_screen --step deliberate --models Mistral-Large-3-2 --samples 2 --max-tokens-agent 4096 --run --resume --workers 20
 Nothing above this line is edited.
+
+## Addendum 16.26 RESULTS (Mistral-Large-3-2 k = 2 community; run 2026-09-22 across a truncation-guard fix at cap 4096 and one authorised resume for a 91-debate link-outage burst; 868 of 868 rows, completeness PASS, round-level guard PASS at 0.2%/2.3% (was 7.6% at cap 2560, the fix confirmed), outcome guard PASS; measured spend $62.48 total from the cache (the $35.90 sunk cost of the abandoned cap-2560 attempt, whose data is not read, plus approximately $26.2 of new generation for the fix, isolated by summing only the `t4096`-keyed cache files), against a combined ceiling of $105 ($50 original + $55 fix); artefacts `cg_deliberation_mistrallarge32_grip_row.json`, `topology_cell_cg_deliberation_mistrallarge32.json`, `flooding_analysis_mistral.json`, `router_decomposition_mistral.json`, `transfer_readouts_mistral.json`, `routing_certification_mistral.json`, `verify_pillar3_headline_mistral.json`)
+
+A fifth model, a fifth vendor's deployment slot filled (open-weight,
+third of three), 217 surviving items (32 of 249 screened out), 868
+debates.
+
+**Mistral floods.** G1 fire rate **0.929** (stake_grip's own-panel
+figure) to 0.876 (the S1-and-S2-codable population used everywhere
+else), both far above the <= 0.5 gate; GRIP false. This is a more
+extreme version of the pattern this file's registrations already named
+for nano (lock 0.620, fire 0.763): Mistral's advocates object on
+84.9-94.1% of debates depending on stratum (% source:
+`flooding_analysis_mistral.json`, seat objection rates, pooled writer
+0.857, counterparty 0.810, neutral 0.762), higher than nano's flooding
+rate despite Mistral's role-lock (0.708) sitting well above nano's
+(0.620). Flooding therefore does not track role-lock in a simple way
+either, the same conclusion 16.24 drew about phi from a different angle.
+G2 reject share 0.138 PASS. G3 stake concentration +0.154
+[+0.118, +0.191] fail (>= +0.2 required; grok +0.631, Llama +0.037,
+DeepSeek +0.120). Localisation excess +0.015, near zero. All-strata
+error lift +0.167 [+0.097, +0.233] at 760 fired, the largest fired-count
+of any community read out so far. S2 accuracy 0.752 (0.884 within
+one-loser, 0.433 within both-party).
+
+**The mechanism check.** Advocate phi within one-loser verdicts is
+**positive**, +0.208 [+0.119, +0.299] (% source: `flooding_analysis_mistral.json`,
+population s2, one_loser row; cross-checked exactly against
+`emergent_graphs_analysis.json`'s independent computation). This is the
+CORRELATED pattern (haiku +0.246, Llama +0.148), and Mistral's value is
+the largest of the three, not the OPPOSED pattern (grok -0.901, no-edge
+-0.842, DeepSeek -0.093). Despite the near-universal fire rate, the
+within-one-loser counter lift is strong: +0.111 [+0.066, +0.157], ratio
+6.16x, 521 fired, the second-highest ratio measured after grok's own
+9.83x and well above Llama's 1.53x, DeepSeek's 2.27x, and haiku-249's
+1.49x. Routed minus collective alone (item-clustered, % source:
+`router_decomposition_mistral.json`, paired deltas block): sonnet judge
+**+0.214 [+0.169, +0.260]**, haiku judge +0.106 [+0.066, +0.149], both
+excluding zero and both the LARGEST routing gain measured in this
+programme, roughly three times the next largest (grok on-edge +0.070).
+This is expected given the coverage: firing on 87.6% of debates means
+"routing" here is close to "consult the stronger judge on almost
+everything," not the sparse, cheap signal seen on grok (11.7% coverage),
+Llama (7.9%), or DeepSeek (28.1%); the size of the gain should be read
+against that coverage, not as a more efficient router. Routed minus
+Mistral's own solo base (the 16.22 R1 certification, sonnet judge):
+**+0.1221 [+0.0806, +0.1659], CERTIFIED**, excluding zero. Mistral is the
+SECOND model after grok to certify this comparison (Llama and DeepSeek
+both failed to, 0 of 2 before this addendum); under the haiku judge the
+same comparison is +0.0230 [-0.0138, +0.0622], CI includes zero, so the
+certification is judge-dependent the way DeepSeek's was, just with the
+opposite judge succeeding. Disagreement minus counter (sonnet):
+**-0.0553 [-0.0899, -0.0207]**, favouring the COUNTER over disagreement,
+the CI excludes zero and it is negative, the first reversal of this
+comparison's direction in the whole programme (grok, Llama, and DeepSeek
+all favoured disagreement, +0.05 to +0.07 in the opposite sign).
+
+**Reading.** The routing gain over the collective is now confirmed on
+six conditions across five vendors (grok on-edge, grok no-edge,
+haiku-249, Llama, DeepSeek, Mistral) and has never failed to clear a CI
+excluding zero; `verify_pillar3_headline.py --community mistral`
+reproduces every registered value from `router_decomposition_mistral.json`
+independently (all 13 quantities agree, 0 of 868 `n_objectors`
+mismatches). But Mistral is also the community with the least claim to
+SELECTIVE routing: at 87.6% coverage the counter is barely distinguishable
+from routing everything, and the composed-accuracy table confirms it
+(union minus counter is a rounding-level +0.010 [+0.005,+0.017] under
+sonnet, meaning the 12.4% of debates the counter does NOT flag add
+almost nothing over always routing). Mistral is the second model to
+certify routing-beats-solo-base (now 1 of 3 among Llama, DeepSeek,
+Mistral, with grok as the original), which weakens any claim that this
+certification is grok-specific, but the mechanism behind it here is
+different from grok's: grok's certification comes with a sparse, opposed
+counter (11.7% coverage, phi -0.901); Mistral's comes with a saturated,
+correlated counter (87.6% coverage, phi +0.208). The paper should not
+read "routing beats the solo base" as one phenomenon; on the two models
+where it now holds, it arrives by two different routes, selective
+opposition on grok and near-blanket consultation on Mistral. The
+disagreement-beats-counter reversal is the first time in this programme
+that the collective's dedicated sensor has out-performed the solo
+model's own within-model disagreement, worth flagging for the paper's
+routing-mechanism paragraph as a genuine counter-example to the
+"disagreement is at least as good and always cheaper" reading that held
+on every prior model.
+Nothing above this line is edited.

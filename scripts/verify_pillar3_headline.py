@@ -61,6 +61,12 @@ COMMUNITIES = {
                                 "n": 832, "collective": 0.7776, "fire": 0.2812, "n_fired": 234,
                                 "ol_n": 575, "ol_fired": 128, "ol_wrong_fired": 0.102, "ol_wrong_unfired": 0.045,
                                 "ol_ratio": 2.27, "routed": 0.8498, "delta": 0.0722, "lo": 0.0518, "hi": 0.0937}},
+    "mistral": {"rows": "cg_deliberation_mistrallarge32_rows.csv", "votes": "cg_deliberation_mistrallarge32_votes.csv",
+                "judge": "cg_sonnet_actuator_rows.csv", "judge_model": "claude-sonnet-4-6",
+                "registered": {"source": "router_decomposition_mistral.json (16.26, Mistral-Large-3-2)",
+                               "n": 868, "collective": 0.7523, "fire": 0.8756, "n_fired": 760,
+                               "ol_n": 614, "ol_fired": 521, "ol_wrong_fired": 0.132, "ol_wrong_unfired": 0.022,
+                               "ol_ratio": 6.16, "routed": 0.9666, "delta": 0.2144, "lo": 0.1687, "hi": 0.2603}},
 }
 SEATS = ("writer_advocate", "counterparty", "neutral_adjudicator")
 # 2026-09-21: the edges-off cell installs its seats under a "_noedge" suffix

@@ -5580,6 +5580,625 @@
     }
    }
   },
+  "mistral_aita": {
+   "key": "mistral_aita",
+   "tag": "cg_deliberation_mistrallarge32",
+   "label": "Mistral-Large-3-2 AITA, embodied roles, edges on, 217-item filtered panel (16.26)",
+   "model": "Mistral-Large-3-2",
+   "instrument": "aita",
+   "family": "aita",
+   "requested": true,
+   "cell_16_10": null,
+   "seats": {
+    "advocate_1": "writer_advocate",
+    "advocate_2": "counterparty",
+    "third": "neutral_adjudicator"
+   },
+   "verdict_note": "five-token AITA verdict scored by the registered code_response collapse",
+   "guards": {
+    "n_raw": 868,
+    "n_s2_codable": 868,
+    "checks": {
+     "seat_vote_coverage": {
+      "value": 1.0,
+      "limit": 0.99,
+      "ok": true,
+      "structural": true
+     },
+     "n_objectors_matches_per_seat_sum": {
+      "value": 1.0,
+      "limit": 0.99,
+      "ok": true,
+      "structural": true
+     },
+     "mean_n_r3_unparsed": {
+      "value": 0.00576036866359447,
+      "limit": 0.05,
+      "ok": true,
+      "structural": true
+     },
+     "s2_codable_share": {
+      "value": 1.0,
+      "limit": 0.95,
+      "ok": true,
+      "structural": false
+     }
+    },
+    "structural_passed": true,
+    "status": "READ"
+   },
+   "status": "READ",
+   "raw": {
+    "n_debates": 868,
+    "n_items": 217,
+    "n_seats_complete": 868,
+    "n_s2_noncodable": 0,
+    "n_fired_among_noncodable": 0,
+    "fire_rate_noncodable": null,
+    "objection_rate": {
+     "advocate_1": {
+      "seat": "writer_advocate",
+      "n_votes": 868,
+      "objection_rate": 0.8571428571428571
+     },
+     "advocate_2": {
+      "seat": "counterparty",
+      "n_votes": 868,
+      "objection_rate": 0.8099078341013825
+     },
+     "third": {
+      "seat": "neutral_adjudicator",
+      "n_votes": 868,
+      "objection_rate": 0.761520737327189
+     }
+    },
+    "pooled_objection_rate": 0.8095238095238095,
+    "fire_rate": 0.8755760368663594,
+    "n_fired": 760,
+    "objector_counts": {
+     "0": 19,
+     "1": 89,
+     "2": 261,
+     "3": 499
+    },
+    "p_exactly_one": 0.10253456221198157,
+    "raw_verdict_counts": {
+     "ESH": 213,
+     "NAH": 41,
+     "NTA": 356,
+     "YTA": 258
+    }
+   },
+   "populations": {
+    "s2_codable": {
+     "description": "final integrated verdict (S2) codable; the 16.12 population",
+     "n": 868,
+     "n_items": 217,
+     "verdict_counts": {
+      "ESH": 213,
+      "NAH": 41,
+      "NTA": 356,
+      "YTA": 258
+     },
+     "graphs": {
+      "all": {
+       "n": 868,
+       "n_items_kept": 217,
+       "n_items_frame": 217,
+       "nodes": {
+        "advocate_1": {
+         "seat": "writer_advocate",
+         "n_objected": 744,
+         "n": 868,
+         "objection_rate": {
+          "point": 0.8571428571428571,
+          "lo": 0.8271889400921659,
+          "hi": 0.8847926267281107
+         }
+        },
+        "advocate_2": {
+         "seat": "counterparty",
+         "n_objected": 703,
+         "n": 868,
+         "objection_rate": {
+          "point": 0.8099078341013825,
+          "lo": 0.7811059907834101,
+          "hi": 0.8375576036866359
+         }
+        },
+        "third": {
+         "seat": "neutral_adjudicator",
+         "n_objected": 661,
+         "n": 868,
+         "objection_rate": {
+          "point": 0.761520737327189,
+          "lo": 0.7292626728110599,
+          "hi": 0.7926267281105991
+         }
+        }
+       },
+       "edges": {
+        "advocate_1|advocate_2": {
+         "seats": [
+          "writer_advocate",
+          "counterparty"
+         ],
+         "phi": {
+          "point": 0.18819340176899946,
+          "lo": 0.10892971626285639,
+          "hi": 0.26892038300359816
+         },
+         "table": {
+          "both": 625,
+          "advocate_1_only": 119,
+          "advocate_2_only": 78,
+          "neither": 46
+         },
+         "p_both_object": 0.7200460829493087
+        },
+        "advocate_1|third": {
+         "seats": [
+          "writer_advocate",
+          "neutral_adjudicator"
+         ],
+         "phi": {
+          "point": 0.10374479716847029,
+          "lo": 0.03035982992933367,
+          "hi": 0.17661732671723573
+         },
+         "table": {
+          "both": 580,
+          "advocate_1_only": 164,
+          "third_only": 81,
+          "neither": 43
+         },
+         "p_both_object": 0.6682027649769585
+        },
+        "advocate_2|third": {
+         "seats": [
+          "counterparty",
+          "neutral_adjudicator"
+         ],
+         "phi": {
+          "point": 0.12161344062551475,
+          "lo": 0.04843542758228348,
+          "hi": 0.1968268825954039
+         },
+         "table": {
+          "both": 553,
+          "advocate_2_only": 150,
+          "third_only": 108,
+          "neither": 57
+         },
+         "p_both_object": 0.6370967741935484
+        }
+       },
+       "fire_rate": {
+        "point": 0.8755760368663594,
+        "lo": 0.8502304147465438,
+        "hi": 0.8986175115207373,
+        "counter": "stake-blind n_objectors >= 2",
+        "n_fired": 760
+       },
+       "objector_counts": {
+        "0": 19,
+        "1": 89,
+        "2": 261,
+        "3": 499
+       },
+       "p_exactly_one": 0.10253456221198157,
+       "description": "every debate of the population"
+      },
+      "one_loser": {
+       "n": 614,
+       "n_items_kept": 200,
+       "n_items_frame": 217,
+       "nodes": {
+        "advocate_1": {
+         "seat": "writer_advocate",
+         "n_objected": 499,
+         "n": 614,
+         "objection_rate": {
+          "point": 0.8127035830618893,
+          "lo": 0.7738287560581584,
+          "hi": 0.849025974025974
+         }
+        },
+        "advocate_2": {
+         "seat": "counterparty",
+         "n_objected": 487,
+         "n": 614,
+         "objection_rate": {
+          "point": 0.7931596091205212,
+          "lo": 0.7565359477124183,
+          "hi": 0.8285229202037352
+         }
+        },
+        "third": {
+         "seat": "neutral_adjudicator",
+         "n_objected": 466,
+         "n": 614,
+         "objection_rate": {
+          "point": 0.758957654723127,
+          "lo": 0.7211221122112211,
+          "hi": 0.7954911433172303
+         }
+        }
+       },
+       "edges": {
+        "advocate_1|advocate_2": {
+         "seats": [
+          "writer_advocate",
+          "counterparty"
+         ],
+         "phi": {
+          "point": 0.20832492854774814,
+          "lo": 0.11854143138938707,
+          "hi": 0.2985286576178218
+         },
+         "table": {
+          "both": 416,
+          "advocate_1_only": 83,
+          "advocate_2_only": 71,
+          "neither": 44
+         },
+         "p_both_object": 0.6775244299674267
+        },
+        "advocate_1|third": {
+         "seats": [
+          "writer_advocate",
+          "neutral_adjudicator"
+         ],
+         "phi": {
+          "point": 0.1296127419186745,
+          "lo": 0.042756977752605944,
+          "hi": 0.21715555363212996
+         },
+         "table": {
+          "both": 392,
+          "advocate_1_only": 107,
+          "third_only": 74,
+          "neither": 41
+         },
+         "p_both_object": 0.6384364820846905
+        },
+        "advocate_2|third": {
+         "seats": [
+          "counterparty",
+          "neutral_adjudicator"
+         ],
+         "phi": {
+          "point": 0.12585824177553162,
+          "lo": 0.03891716244344988,
+          "hi": 0.2161335518716349
+         },
+         "table": {
+          "both": 383,
+          "advocate_2_only": 104,
+          "third_only": 83,
+          "neither": 44
+         },
+         "p_both_object": 0.6237785016286646
+        }
+       },
+       "fire_rate": {
+        "point": 0.8485342019543974,
+        "lo": 0.8149920255183413,
+        "hi": 0.8798701298701299,
+        "counter": "stake-blind n_objectors >= 2",
+        "n_fired": 521
+       },
+       "objector_counts": {
+        "0": 18,
+        "1": 75,
+        "2": 186,
+        "3": 335
+       },
+       "p_exactly_one": 0.12214983713355049,
+       "description": "final verdict YTA or NTA, exactly one advocate's stake is undermined"
+      },
+      "both_party": {
+       "n": 254,
+       "n_items_kept": 124,
+       "n_items_frame": 217,
+       "nodes": {
+        "advocate_1": {
+         "seat": "writer_advocate",
+         "n_objected": 245,
+         "n": 254,
+         "objection_rate": {
+          "point": 0.9645669291338582,
+          "lo": 0.9330543933054394,
+          "hi": 0.9902912621359223
+         }
+        },
+        "advocate_2": {
+         "seat": "counterparty",
+         "n_objected": 216,
+         "n": 254,
+         "objection_rate": {
+          "point": 0.8503937007874016,
+          "lo": 0.8070866141732284,
+          "hi": 0.8941176470588236
+         }
+        },
+        "third": {
+         "seat": "neutral_adjudicator",
+         "n_objected": 195,
+         "n": 254,
+         "objection_rate": {
+          "point": 0.7677165354330708,
+          "lo": 0.7129629629629629,
+          "hi": 0.8192307692307692
+         }
+        }
+       },
+       "edges": {
+        "advocate_1|advocate_2": {
+         "seats": [
+          "writer_advocate",
+          "counterparty"
+         ],
+         "phi": {
+          "point": 0.03901980702698783,
+          "lo": -0.07136954767127056,
+          "hi": 0.16685812547135148
+         },
+         "table": {
+          "both": 209,
+          "advocate_1_only": 36,
+          "advocate_2_only": 7,
+          "neither": 2
+         },
+         "p_both_object": 0.8228346456692913
+        },
+        "advocate_1|third": {
+         "seats": [
+          "writer_advocate",
+          "neutral_adjudicator"
+         ],
+         "phi": {
+          "point": -0.004566465991512816,
+          "lo": -0.09571233073019957,
+          "hi": 0.10420847142945668
+         },
+         "table": {
+          "both": 188,
+          "advocate_1_only": 57,
+          "third_only": 7,
+          "neither": 2
+         },
+         "p_both_object": 0.7401574803149606
+        },
+        "advocate_2|third": {
+         "seats": [
+          "counterparty",
+          "neutral_adjudicator"
+         ],
+         "phi": {
+          "point": 0.1090796861959281,
+          "lo": -0.013735385738110215,
+          "hi": 0.23551852468325177
+         },
+         "table": {
+          "both": 170,
+          "advocate_2_only": 46,
+          "third_only": 25,
+          "neither": 13
+         },
+         "p_both_object": 0.6692913385826772
+        }
+       },
+       "fire_rate": {
+        "point": 0.9409448818897638,
+        "lo": 0.9133574007220217,
+        "hi": 0.9673469387755103,
+        "counter": "stake-blind n_objectors >= 2",
+        "n_fired": 239
+       },
+       "objector_counts": {
+        "0": 1,
+        "1": 14,
+        "2": 75,
+        "3": 164
+       },
+       "p_exactly_one": 0.05511811023622047,
+       "description": "final verdict ESH or NAH, a both-party verdict"
+      }
+     },
+     "who_loses": {
+      "ESH": {
+       "n": 213,
+       "who_loses": "everyone at fault, a both-party verdict (collapses to at fault)",
+       "objection_rate": {
+        "advocate_1": {
+         "seat": "writer_advocate",
+         "n_objected": 210,
+         "point": 0.9859154929577465,
+         "lo": 0.9682539682539683,
+         "hi": 1.0
+        },
+        "advocate_2": {
+         "seat": "counterparty",
+         "n_objected": 181,
+         "point": 0.8497652582159625,
+         "lo": 0.8009049773755657,
+         "hi": 0.896551724137931
+        },
+        "third": {
+         "seat": "neutral_adjudicator",
+         "n_objected": 158,
+         "point": 0.7417840375586855,
+         "lo": 0.6794258373205742,
+         "hi": 0.803030303030303
+        }
+       },
+       "most_frequent_objector": {
+        "position": "advocate_1",
+        "seat": "writer_advocate",
+        "rate": 0.9859154929577465
+       }
+      },
+      "NAH": {
+       "n": 41,
+       "who_loses": "no one at fault, a both-party verdict (collapses to not at fault)",
+       "objection_rate": {
+        "advocate_1": {
+         "seat": "writer_advocate",
+         "n_objected": 35,
+         "point": 0.8536585365853658,
+         "lo": 0.7105263157894737,
+         "hi": 0.975
+        },
+        "advocate_2": {
+         "seat": "counterparty",
+         "n_objected": 35,
+         "point": 0.8536585365853658,
+         "lo": 0.75,
+         "hi": 0.9642857142857143
+        },
+        "third": {
+         "seat": "neutral_adjudicator",
+         "n_objected": 37,
+         "point": 0.9024390243902439,
+         "lo": 0.8095238095238095,
+         "hi": 0.9767441860465116
+        }
+       },
+       "most_frequent_objector": {
+        "position": "third",
+        "seat": "neutral_adjudicator",
+        "rate": 0.9024390243902439
+       }
+      },
+      "NTA": {
+       "n": 356,
+       "who_loses": "the writer is not at fault, so the counterparty (advocate_2) loses",
+       "objection_rate": {
+        "advocate_1": {
+         "seat": "writer_advocate",
+         "n_objected": 256,
+         "point": 0.7191011235955056,
+         "lo": 0.6685393258426966,
+         "hi": 0.7710437710437711
+        },
+        "advocate_2": {
+         "seat": "counterparty",
+         "n_objected": 271,
+         "point": 0.7612359550561798,
+         "lo": 0.7142857142857143,
+         "hi": 0.807570977917981
+        },
+        "third": {
+         "seat": "neutral_adjudicator",
+         "n_objected": 259,
+         "point": 0.7275280898876404,
+         "lo": 0.6787878787878788,
+         "hi": 0.7758186397984886
+        }
+       },
+       "most_frequent_objector": {
+        "position": "advocate_2",
+        "seat": "counterparty",
+        "rate": 0.7612359550561798
+       }
+      },
+      "YTA": {
+       "n": 258,
+       "who_loses": "the writer is at fault, so the writer's advocate (advocate_1) loses",
+       "objection_rate": {
+        "advocate_1": {
+         "seat": "writer_advocate",
+         "n_objected": 243,
+         "point": 0.9418604651162791,
+         "lo": 0.9080459770114943,
+         "hi": 0.972
+        },
+        "advocate_2": {
+         "seat": "counterparty",
+         "n_objected": 216,
+         "point": 0.8372093023255814,
+         "lo": 0.7878787878787878,
+         "hi": 0.88671875
+        },
+        "third": {
+         "seat": "neutral_adjudicator",
+         "n_objected": 207,
+         "point": 0.8023255813953488,
+         "lo": 0.7445255474452555,
+         "hi": 0.8552631578947368
+        }
+       },
+       "most_frequent_objector": {
+        "position": "advocate_1",
+        "seat": "writer_advocate",
+        "rate": 0.9418604651162791
+       }
+      }
+     }
+    },
+    "s1_s2_codable": {
+     "description": "S1 synthesis and S2 final verdict both codable; the 16.15 population",
+     "n": 868,
+     "n_items": 217,
+     "sensor": {
+      "n_scored": 868,
+      "n_frame": 868,
+      "n_items_frame": 217,
+      "strata": {
+       "all": {
+        "n": 868,
+        "n_fired": 760,
+        "n_unfired": 108,
+        "fire_rate": 0.8755760368663594,
+        "p_wrong_fired": 0.26842105263157895,
+        "p_wrong_unfired": 0.10185185185185185,
+        "ratio": 2.6354066985645934,
+        "lift": {
+         "point": 0.1665692007797271,
+         "lo": 0.09735593220338983,
+         "hi": 0.232945926774704
+        },
+        "ci_excludes_zero": true,
+        "p_wrong_overall": 0.24769585253456222
+       },
+       "one_loser": {
+        "n": 614,
+        "n_fired": 521,
+        "n_unfired": 93,
+        "fire_rate": 0.8485342019543974,
+        "p_wrong_fired": 0.1324376199616123,
+        "p_wrong_unfired": 0.021505376344086023,
+        "ratio": 6.158349328214971,
+        "lift": {
+         "point": 0.11093224361752627,
+         "lo": 0.0655045118949959,
+         "hi": 0.1568970489281938
+        },
+        "ci_excludes_zero": true,
+        "p_wrong_overall": 0.11563517915309446
+       },
+       "both_party": {
+        "n": 254,
+        "n_fired": 239,
+        "n_unfired": 15,
+        "fire_rate": 0.9409448818897638,
+        "p_wrong_fired": 0.5648535564853556,
+        "p_wrong_unfired": 0.6,
+        "ratio": 0.9414225941422594,
+        "lift": {
+         "point": -0.035146443514644354,
+         "lo": -0.2676232064878352,
+         "hi": 0.21557894736842104
+        },
+        "ci_excludes_zero": false,
+        "p_wrong_overall": 0.5669291338582677
+       }
+      }
+     }
+    }
+   }
+  },
   "grok_dilemmas": {
    "key": "grok_dilemmas",
    "tag": "cg_dilemma_stage1",
@@ -11957,6 +12576,7 @@
   "haiku_aita_249": "READ",
   "llama_aita": "READ",
   "deepseek_aita": "READ",
+  "mistral_aita": "READ",
   "grok_dilemmas": "READ_WITH_CAUTION",
   "grok_games_binding_neutral": "READ",
   "grok_games_binding_planner": "READ",

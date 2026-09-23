@@ -1,0 +1,107 @@
+{
+ "community": "mistral",
+ "judge": "claude-sonnet-4-6",
+ "registered": {
+  "source": "router_decomposition_mistral.json (16.26, Mistral-Large-3-2)",
+  "n": 868,
+  "collective": 0.7523,
+  "fire": 0.8756,
+  "n_fired": 760,
+  "ol_n": 614,
+  "ol_fired": 521,
+  "ol_wrong_fired": 0.132,
+  "ol_wrong_unfired": 0.022,
+  "ol_ratio": 6.16,
+  "routed": 0.9666,
+  "delta": 0.2144,
+  "lo": 0.1687,
+  "hi": 0.2603
+ },
+ "recomputed": {
+  "n": 868,
+  "collective": 0.7523041474654378,
+  "fire": 0.8755760368663594,
+  "n_fired": 760,
+  "n_objectors_vote_mismatch": 0,
+  "ol_n": 614,
+  "ol_fired": 521,
+  "ol_wrong_fired": 0.1324376199616123,
+  "ol_wrong_unfired": 0.021505376344086002,
+  "ol_ratio": 6.158349328214977,
+  "routed": 0.966589861751152,
+  "delta": 0.21428571428571427,
+  "lo": 0.17050691244239632,
+  "hi": 0.26152073732718895,
+  "breakdown": {
+   "sample": {
+    "0": {
+     "n": 434,
+     "collective": 0.7419,
+     "routed": 0.9654,
+     "delta": 0.2235,
+     "n_fired": 388
+    },
+    "1": {
+     "n": 434,
+     "collective": 0.7627,
+     "routed": 0.9677,
+     "delta": 0.2051,
+     "n_fired": 372
+    }
+   },
+   "arm": {
+    "as_asker": {
+     "n": 434,
+     "collective": 0.7512,
+     "routed": 0.9585,
+     "delta": 0.2074,
+     "n_fired": 385
+    },
+    "third_person": {
+     "n": 434,
+     "collective": 0.7535,
+     "routed": 0.9747,
+     "delta": 0.2212,
+     "n_fired": 375
+    }
+   },
+   "gold": {
+    "0": {
+     "n": 516,
+     "collective": 0.6764,
+     "routed": 0.9593,
+     "delta": 0.2829,
+     "n_fired": 432
+    },
+    "1": {
+     "n": 352,
+     "collective": 0.8636,
+     "routed": 0.9773,
+     "delta": 0.1136,
+     "n_fired": 328
+    }
+   }
+  }
+ },
+ "tolerances": {
+  "n": 0,
+  "n_fired": 0,
+  "ol_n": 0,
+  "ol_fired": 0,
+  "collective": 0.0015,
+  "fire": 0.0015,
+  "routed": 0.0015,
+  "ol_wrong_fired": 0.0015,
+  "ol_wrong_unfired": 0.0015,
+  "ol_ratio": 0.05,
+  "delta": 0.0015,
+  "lo": 0.006,
+  "hi": 0.006
+ },
+ "all_agree": true,
+ "bootstrap": {
+  "draws": 4000,
+  "seed": 101,
+  "kind": "item-clustered percentile, numpy"
+ }
+}
