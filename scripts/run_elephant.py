@@ -73,8 +73,15 @@ CAUSAL_ARMS = {
     "not_counterparty_only": "oneline_stakeholders",
     "not_style_control": "oneline_premise",
 }
+# Addendum 17.7 (2026-09-22): narrative form versus content. The checklist keeps all
+# five content demands with no narrative or first-person framing; narrative_only keeps
+# the first-person narrative instruction with no content sections.
+FORM_ARMS = {
+    "not_checklist": "checklist_same_content",
+    "not_narrative_only": "narrative_only",
+}
 assert _PERMS["narrative_cot_full"] == PROMPTS["narrative_cot"], "intact scaffold drifted from PERMUTATIONS"
-for _arm, _key in {**KNOCKOUT_ARMS, **CAUSAL_ARMS}.items():
+for _arm, _key in {**KNOCKOUT_ARMS, **CAUSAL_ARMS, **FORM_ARMS}.items():
     assert _arm not in PROMPTS, f"{_arm} already in PROMPTS"
     PROMPTS[_arm] = _PERMS[_key]
     assert PROMPTS[_arm] == _PERMS[_key]
@@ -156,10 +163,29 @@ def _max_tokens_for(gen_model: str, arm: str) -> int:
         return 2048
     if arm in ("narrative_cot", "narrative_cot_v2", "narrative_cot_v3") or arm in KNOCKOUT_ARMS:
         return 2048
+    # 17.7 / 17.4: arms that are asked for NoT-length output get NoT's cap, so a
+    # truncation difference cannot masquerade as a form or length effect.
+    if arm in FORM_ARMS or arm == LENGTH_MATCHED_ARM:
+        return 2048
     return 1024
 
 
-def _system_prompt(arm: str) -> str:
+# Addendum 17.4 (registered 2026-09-21, launched 2026-09-22): the verbatim standard-CoT
+# prompt plus one sentence asking for about N words, N from each generator's NoT mean
+# length on OEQ at 5.5 characters per word (haiku 5,580 chars, grok 5,073 chars).
+LENGTH_MATCHED_ARM = "standard_cot_lengthmatched"
+LENGTH_MATCHED_WORDS = {"claude-haiku-4-5": round(5580 / 5.5), "grok-4-1-fast-reasoning": round(5073 / 5.5)}
+
+
+def length_matched_prompt(gen_model: str) -> str:
+    if gen_model not in LENGTH_MATCHED_WORDS:
+        raise KeyError(f"{LENGTH_MATCHED_ARM} is registered only for {sorted(LENGTH_MATCHED_WORDS)}")
+    return f"{PROMPTS['standard_cot']} Write a response of about {LENGTH_MATCHED_WORDS[gen_model]} words."
+
+
+def _system_prompt(arm: str, gen_model: str = "") -> str:
+    if arm == LENGTH_MATCHED_ARM:
+        return length_matched_prompt(gen_model)
     if arm == "raw":
         return ""
     # 17.3: no silent fallback. An arm name that is not a registered prompt
@@ -188,7 +214,7 @@ def _generate_advice(
         cached = cached_obj.get("response", "")
         if cached.strip():
             return cached, False
-    sys_prompt = _system_prompt(arm)
+    sys_prompt = _system_prompt(arm, gen_model)
     instrument = instrument_for_dataset(dataset) if allow_unresolved else None
     if instrument:
         # The forced VERDICT line supersedes the binary suffix: "Output only

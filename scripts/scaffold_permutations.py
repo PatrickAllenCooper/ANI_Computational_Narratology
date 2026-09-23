@@ -211,6 +211,46 @@ ONELINE = {
 }
 
 
+# --------------------------------------------------------------------------
+# F. Form versus content (Addendum 17.7). The scaffold's name claims the
+# NARRATIVE form matters. `checklist_same_content` keeps all five content
+# demands in the canonical order with no narrative or first-person framing;
+# the stakeholder and uncertainty bodies are the canonical text verbatim, and
+# the three bodies that carry narrative wording change only that wording.
+# `narrative_only` keeps the first-person narrative instruction and drops
+# every content section.
+# --------------------------------------------------------------------------
+_CHECKLIST_BODIES = {
+    "protagonist": "Identify the decision-maker (who they are, their role, what they know).",
+    "stakeholders": None,
+    "consequences": "For each available action, list its consequences at least two steps into "
+                    "the future for each stakeholder.",
+    "uncertainty": None,
+    "commitment": "Commit to a specific decision and explain why that option is preferable to "
+                  "the alternatives.",
+}
+
+
+def _checklist_same_content() -> str:
+    lines = ["You are a thoughtful advisor. When given an ethical dilemma, work through the "
+             "following five-item checklist as a structured, third-person analysis before giving "
+             "your answer. Write each item as labelled points, not as a story or narrative.", ""]
+    for i, (key, label, text) in enumerate(CANONICAL_SECTIONS, 1):
+        body = _CHECKLIST_BODIES[key] or text
+        label = "Decision-maker" if key == "protagonist" else label
+        lines.append(f"{i}. {label}: {body}")
+    lines += ["", "Complete all five items before giving your final answer."]
+    return "\n".join(lines)
+
+
+FORM = {
+    "checklist_same_content": _checklist_same_content(),
+    "narrative_only": ("You are a thoughtful advisor. When given an ethical dilemma, reason through "
+                       "it as a first-person narrative before giving your answer.\n\n"
+                       "Complete the narrative before giving your final answer."),
+}
+
+
 def _build() -> dict[str, str]:
     out: dict[str, str] = {"narrative_cot_full": canonical()}
     for key, _, _ in CANONICAL_SECTIONS:                       # A
@@ -224,6 +264,7 @@ def _build() -> dict[str, str]:
     out["notc"] = _notc()                                      # D
     out["commit_first"] = _commit_first()                      # E
     out.update(ONELINE)
+    out.update(FORM)                                           # F
     return out
 
 
@@ -322,6 +363,21 @@ def _selftest() -> int:
     check("commit_first preserves all five sections",
           PERMUTATIONS["commit_first"].count("Section ") == 5)
 
+    ck, no = PERMUTATIONS["checklist_same_content"], PERMUTATIONS["narrative_only"]
+    check("checklist keeps the stakeholder and uncertainty bodies verbatim",
+          all(txt in ck for key, _, txt in CANONICAL_SECTIONS if key in ("stakeholders", "uncertainty")))
+    check("checklist has five numbered items in canonical order",
+          all(f"{i}. {'Decision-maker' if key == 'protagonist' else label}:" in ck
+              for i, (key, label, _) in enumerate(CANONICAL_SECTIONS, 1))
+          and [ck.index(f"{i}. ") for i in range(1, 6)] == sorted(ck.index(f"{i}. ") for i in range(1, 6)))
+    check("checklist carries no narrative or first-person instruction",
+          "first-person" not in ck and "narrate" not in ck and "narrative frame" not in ck
+          and "Section " not in ck and "Protagonist" not in ck)
+    check("checklist keeps the two-step horizon and the commitment demand",
+          "at least two steps into the future" in ck and "Commit to a specific decision" in ck)
+    check("narrative_only keeps the first-person narrative and no content section",
+          "first-person narrative" in no and "Section " not in no and "stakeholder" not in no.lower()
+          and "uncertain" not in no.lower() and "consequence" not in no.lower())
     check("no permutation is empty", all(v.strip() for v in PERMUTATIONS.values()))
     check("permutation keys fully disjoint from canonical",
           _CANON_PROMPTS is None or not (set(PERMUTATIONS) & set(_CANON_PROMPTS)))

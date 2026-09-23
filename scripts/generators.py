@@ -241,6 +241,20 @@ def _get_openai_client():
     return _OPENAI_CLIENT
 
 
+def _history_messages(history) -> list:
+    """Prior turns as chat messages, oldest first: [(role, content), ...] with role in
+    {"user", "assistant"}. None or empty -> []. Used by multi-turn probes (Addendum 17.9);
+    every single-turn caller passes nothing and builds byte-identical requests."""
+    if not history:
+        return []
+    out = []
+    for role, content in history:
+        if role not in ("user", "assistant"):
+            raise ValueError(f"history role must be user or assistant, got {role!r}")
+        out.append({"role": role, "content": content})
+    return out
+
+
 def _call_openai(
     model: str,
     system: str,
@@ -250,6 +264,7 @@ def _call_openai(
     max_tokens: int,
     reasoning_effort: Optional[str] = None,
     json_mode: bool = False,
+    history=None,
 ) -> GenerationResult:
     client = _get_openai_client()
     last_err: Optional[Exception] = None
@@ -259,6 +274,7 @@ def _call_openai(
             messages = []
             if system and system.strip():
                 messages.append({"role": "system", "content": system})
+            messages.extend(_history_messages(history))
             messages.append({"role": "user", "content": user})
             kwargs: dict = dict(
                 model=model,
@@ -339,6 +355,7 @@ def _call_anthropic(
     *,
     max_tokens: int,
     thinking_budget: int = 0,
+    history=None,
 ) -> GenerationResult:
     """thinking_budget > 0 enables Claude's manual extended thinking
     (Messages API `thinking: {type: enabled, budget_tokens}`), CONFIRMED
@@ -361,7 +378,7 @@ def _call_anthropic(
     payload = {
         "model": model,
         "max_tokens": eff_tokens,
-        "messages": [{"role": "user", "content": user}],
+        "messages": _history_messages(history) + [{"role": "user", "content": user}],
     }
     if thinking_budget:
         payload["thinking"] = {"type": "enabled", "budget_tokens": thinking_budget}
@@ -454,6 +471,7 @@ def _call_xai(
     sample_idx: int,
     max_tokens: int,
     json_mode: bool = False,
+    history=None,
 ) -> GenerationResult:
     """Call a Grok model.  Routes via Azure Foundry /models unless XAI_USE_NATIVE=1."""
     use_native = os.environ.get("XAI_USE_NATIVE", "0") == "1"
@@ -474,6 +492,7 @@ def _call_xai(
             messages = []
             if system and system.strip():
                 messages.append({"role": "system", "content": system})
+            messages.extend(_history_messages(history))
             messages.append({"role": "user", "content": user})
             kwargs: dict = dict(model=model, messages=messages)
             if _is_reasoning(model):
@@ -554,6 +573,7 @@ def _get_foundry_v1_client(surface: Optional[str] = None):
 
 def _foundry_v1_request_kwargs(
     model: str, system: str, user: str, *, max_tokens: int, json_mode: bool = False,
+    history=None,
 ) -> dict:
     """The exact kwargs sent to chat.completions.create. Kept separate so the
     selftest can assert the shape (no seed; temperature present unless
@@ -561,6 +581,7 @@ def _foundry_v1_request_kwargs(
     messages = []
     if system and system.strip():
         messages.append({"role": "system", "content": system})
+    messages.extend(_history_messages(history))
     messages.append({"role": "user", "content": user})
     kwargs: dict = dict(model=model, messages=messages, max_tokens=max_tokens)
     if not os.environ.get("FOUNDRY_V1_NO_TEMPERATURE", ""):
@@ -578,12 +599,14 @@ def _call_foundry_v1(
     max_tokens: int,
     json_mode: bool = False,
     surface: Optional[str] = None,
+    history=None,
 ) -> GenerationResult:
     """Call a Foundry v1 deployment by its exact deployment name."""
     surf = _foundry_v1_surface(surface)
     client = _get_foundry_v1_client(surf)
     kwargs = _foundry_v1_request_kwargs(model, system, user,
-                                        max_tokens=max_tokens, json_mode=json_mode)
+                                        max_tokens=max_tokens, json_mode=json_mode,
+                                        history=history)
     last_err: Optional[Exception] = None
     for attempt in range(5):
         try:
@@ -754,8 +777,13 @@ def generate(
     reasoning_effort: Optional[str] = "medium",
     json_mode: bool = False,
     thinking_budget: int = 0,
+    history=None,
 ) -> GenerationResult:
     """Single entry point for all model families.
+
+    history: optional prior turns [(role, content), ...] placed between the
+    system prompt and `user` (multi-turn probes). Supported on the OpenAI,
+    Anthropic, xAI and Foundry v1 routes; the legacy DeepSeek route refuses it.
 
     Args:
         model: model name string (determines routing).
@@ -778,11 +806,14 @@ def generate(
             model, system, user,
             max_tokens=eff_tokens,
             json_mode=json_mode,
+            history=history,
         )
     if _is_anthropic(model):
         return _call_anthropic(model, system, user, max_tokens=max_tokens,
-                               thinking_budget=thinking_budget)
+                               thinking_budget=thinking_budget, history=history)
     if _is_deepseek(model):
+        if history:
+            raise NotImplementedError("history is not supported on the legacy DeepSeek route")
         eff_tokens = max(max_tokens, 8192) if _is_reasoning(model) else max_tokens
         return _call_deepseek(
             model, system, user,
@@ -796,6 +827,7 @@ def generate(
             sample_idx=sample_idx,
             max_tokens=max_tokens,
             json_mode=json_mode,
+            history=history,
         )
     # Default: OpenAI / Azure-Foundry-OpenAI.  CONFIRMED 2026-08-21: reasoning
     # models on this branch (gpt-5 family) consume completion tokens for
@@ -815,6 +847,7 @@ def generate(
         max_tokens=eff_tokens,
         reasoning_effort=reasoning_effort if _is_reasoning(model) else None,
         json_mode=json_mode,
+        history=history,
     )
 
 
