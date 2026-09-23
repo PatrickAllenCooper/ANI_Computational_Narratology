@@ -8973,3 +8973,58 @@ $250 cap. Runs on different vendors go in parallel, each writing its own
 `elephant_singleagent_raw_batch_<name>.csv` (`run_elephant.py --out-csv`),
 which the readers merge, so no two processes share one CSV.
 Nothing above this line is edited.
+
+## Addendum 16.28 RESULTS (run 2026-09-22; grok `cg_deliberation_stdcot` k = 4, 1,680 of 1,680 rows, guards PASSED, worst truncation 0.0%, worst NOVERDICT 0.7%; Llama `cg_deliberation_llama3370binstruct_stdcot` k = 2, 900 of 900, completeness PASS, guards PASSED, worst NOVERDICT 0.7%; measured spend grok ~$8 (three new samples), Llama ~$16.4 (30,600 cached Llama deliberation calls $34.51 less the narrated cell's $18.12), both inside their ceilings; artefacts `seat_scaffold_comparison.json`, `topology_cell_cg_deliberation_stdcot_k4.json`, `topology_cell_cg_deliberation_llama3370binstruct_stdcot.json`, `router_decomposition_grok_stdcot_k4.json`, `router_decomposition_llama_stdcot.json`, `flooding_analysis_grok_stdcot_k4.json`, `flooding_analysis_llama_stdcot.json`)
+
+Narrated seats minus plain chain-of-thought seats, paired on items,
+item-clustered bootstrap (8,000 draws, seed 20260922), sonnet judge for
+routing (`analyze_seat_scaffold.py`, which imports the independent
+verifier's coding and routing rule and reproduces the registered grok
+narrated collective 0.8426 and routed 0.9129 exactly):
+
+| readout | grok (210 items) | Llama (225 items) |
+|---|---|---|
+| (a) S2 accuracy | 0.843 vs 0.863, -0.020 [-0.037, -0.003] | 0.620 vs 0.662, -0.042 [-0.070, -0.014] |
+| (b) routed accuracy | 0.913 vs 0.917, -0.004 [-0.023, +0.015] | 0.661 vs 0.706, -0.044 [-0.077, -0.011] |
+| (b') routed at matched coverage | 0.897 vs 0.917, -0.020 [-0.038, -0.001] | 0.660 vs 0.706, -0.046 [-0.078, -0.013] |
+| (c) routing gain | 0.070 vs 0.054, +0.016 [+0.000, +0.033] | 0.041 vs 0.043, -0.002 [-0.019, +0.014] |
+| (d) fire rate | 0.195 vs 0.152, +0.043 [+0.018, +0.069] | 0.079 vs 0.077, +0.002 [-0.022, +0.027] |
+| (e) asker-shielding, gold-YTA | 0.023 vs 0.050, -0.027 [-0.084, +0.025] | -0.011 vs 0.011, -0.022 [-0.065, +0.016] |
+
+**Pre-declared reading, applied mechanically: PLAIN-BETTER.** On both
+models the collective's own verdict is more accurate with plain
+chain-of-thought seats, and at matched coverage so is the routed system.
+On grok the narrated seats fire more (0.195 against 0.152, the 16.16
+amplifier finding, now at k = 4), and the extra routing that buys closes
+the unmatched routed-accuracy gap to zero; at equal coverage the plain
+seats route better. On Llama narration changes neither the fire rate nor
+the routing gain and costs four points of accuracy throughout.
+Asker-shielding: NO-DIFFERENCE on both.
+
+The sensor does not need narration. Plain-seat grok: role-lock 0.977
+(narrated 0.971); advocate phi within one-loser -0.905 (-0.901);
+all-strata lift +0.317 [+0.219, +0.419] at 254 fired (+0.320);
+within-one-loser lift +0.269 [+0.118, +0.412] at 72 fired, 6.4x, now
+powered (16.25's k = 1 cell had 55 fired; narrated +0.348, 9.8x);
+routed minus collective +0.054 [+0.035, +0.074] sonnet, +0.027
+[+0.013, +0.043] haiku; routed minus grok's own solo (16.22 R1) +0.019
+[+0.007, +0.036], CERTIFIED (narrated +0.024); transfer to grok solo
++0.209 [+0.046, +0.394] (+0.212). Plain-seat Llama: role-lock 0.927
+(narrated 0.862); all-strata lift +0.248 [+0.124, +0.381] at 69 fired
+(+0.153); within-one-loser lift at 53 fired, under-gated, not read;
+advocate phi +0.144 (+0.148); routed minus collective +0.043 [+0.029,
++0.058] sonnet; R1 does not certify (as narrated).
+
+**Reading for the paper.** The multi-agent result is a property of the
+assigned opposition and the routing rule, not of the scaffold. Narration
+in the seats is an amplifier of objection on grok and a cost to the
+collective's accuracy on both models tested, the collective analogue of
+the BrokenMath commitment cost. The abstract's sentence that using the
+scaffold supports more objective collective judgements, with the 7.0
+point routing gain as its evidence, is not supported as a claim about the
+scaffold: a plain chain-of-thought collective reaches the same routed
+accuracy on grok (0.917 against 0.913) and a higher one on Llama. The
+paper presents the collective as the external form of the same
+social-objectivity principle the scaffold places inside one trace, with
+the scaffold-specific evidence confined to pillar 1.
+Nothing above this line is edited.

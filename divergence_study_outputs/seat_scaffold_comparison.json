@@ -1,0 +1,177 @@
+{
+  "per_model": {
+    "grok": {
+      "acc": {
+        "n_items": 210,
+        "narrated": 0.8426020408163265,
+        "plain": 0.8625850340136055,
+        "diff": -0.019982993197278913,
+        "lo": -0.03741496598639456,
+        "hi": -0.0026360544217687077,
+        "ci_excludes_0": true
+      },
+      "routed": {
+        "n_items": 210,
+        "narrated": 0.9129251700680272,
+        "plain": 0.916638321995465,
+        "diff": -0.003713151927437642,
+        "lo": -0.023073270975056688,
+        "hi": 0.015363520408163255,
+        "ci_excludes_0": false
+      },
+      "routed_matched": {
+        "n_items": 210,
+        "narrated": 0.8969885204081633,
+        "plain": 0.916638321995465,
+        "diff": -0.01964980158730159,
+        "lo": -0.03816460459183674,
+        "hi": -0.0009166808390022914,
+        "ci_excludes_0": true
+      },
+      "gain": {
+        "n_items": 210,
+        "narrated": 0.07032312925170067,
+        "plain": 0.05405328798185941,
+        "diff": 0.016269841269841268,
+        "lo": 1.0441383207784332e-18,
+        "hi": 0.03333333333333333,
+        "ci_excludes_0": true
+      },
+      "fire": {
+        "n_items": 210,
+        "narrated": 0.19532312925170067,
+        "plain": 0.1520124716553288,
+        "diff": 0.04331065759637188,
+        "lo": 0.018112244897959182,
+        "hi": 0.06865150226757369,
+        "ci_excludes_0": true
+      },
+      "shield": {
+        "n_items": 86,
+        "narrated": 0.023255813953488372,
+        "plain": 0.05038759689922481,
+        "diff": -0.027131782945736437,
+        "lo": -0.08430232558139535,
+        "hi": 0.025193798449612403,
+        "ci_excludes_0": false
+      },
+      "n_items_narrated": 210,
+      "n_items_plain": 210,
+      "matched_fire_rate": 0.1515513126491647,
+      "completeness": [
+        {
+          "tag": "cg_deliberation",
+          "rows": 1680,
+          "expected": 1680,
+          "sample_idx": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "pass": true
+        },
+        {
+          "tag": "cg_deliberation_stdcot",
+          "rows": 1680,
+          "expected": 1680,
+          "sample_idx": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "pass": true
+        }
+      ]
+    },
+    "llama": {
+      "acc": {
+        "n_items": 225,
+        "narrated": 0.62,
+        "plain": 0.6622222222222223,
+        "diff": -0.042222222222222223,
+        "lo": -0.07,
+        "hi": -0.014444444444444444,
+        "ci_excludes_0": true
+      },
+      "routed": {
+        "n_items": 225,
+        "narrated": 0.6611111111111111,
+        "plain": 0.7055555555555556,
+        "diff": -0.044444444444444446,
+        "lo": -0.07666666666666666,
+        "hi": -0.011111111111111112,
+        "ci_excludes_0": true
+      },
+      "routed_matched": {
+        "n_items": 225,
+        "narrated": 0.6599666666666667,
+        "plain": 0.7055555555555556,
+        "diff": -0.04558888888888888,
+        "lo": -0.07795333333333333,
+        "hi": -0.01249416666666667,
+        "ci_excludes_0": true
+      },
+      "gain": {
+        "n_items": 225,
+        "narrated": 0.04111111111111111,
+        "plain": 0.043333333333333335,
+        "diff": -0.0022222222222222222,
+        "lo": -0.01888888888888889,
+        "hi": 0.014444444444444444,
+        "ci_excludes_0": false
+      },
+      "fire": {
+        "n_items": 225,
+        "narrated": 0.07888888888888888,
+        "plain": 0.07666666666666666,
+        "diff": 0.0022222222222222222,
+        "lo": -0.022222222222222223,
+        "hi": 0.02666666666666667,
+        "ci_excludes_0": false
+      },
+      "shield": {
+        "n_items": 92,
+        "narrated": -0.010869565217391304,
+        "plain": 0.010869565217391304,
+        "diff": -0.021739130434782608,
+        "lo": -0.06521739130434782,
+        "hi": 0.016304347826086956,
+        "ci_excludes_0": false
+      },
+      "n_items_narrated": 225,
+      "n_items_plain": 225,
+      "matched_fire_rate": 0.07683741648106904,
+      "completeness": [
+        {
+          "tag": "cg_deliberation_llama3370binstruct",
+          "rows": 900,
+          "expected": 900,
+          "sample_idx": [
+            0,
+            1
+          ],
+          "pass": true
+        },
+        {
+          "tag": "cg_deliberation_llama3370binstruct_stdcot",
+          "rows": 900,
+          "expected": 900,
+          "sample_idx": [
+            0,
+            1
+          ],
+          "pass": true
+        }
+      ]
+    }
+  },
+  "reading": {
+    "primary": "PLAIN-BETTER",
+    "shielding": {
+      "grok": "NO-DIFFERENCE",
+      "llama": "NO-DIFFERENCE"
+    }
+  }
+}

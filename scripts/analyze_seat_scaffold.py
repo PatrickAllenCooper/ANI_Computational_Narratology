@@ -231,10 +231,10 @@ def main(argv=None) -> int:
         return _selftest()
     res = run()
     for m, r in res["per_model"].items():
-        print(f"\n== {m}  items narrated {r['n_items_narrated']}  plain {r['n_items_plain']}")
         if "UNREAD" in r:
-            print(f"  UNREAD: {r['completeness']}")
+            print(f"\n== {m}  UNREAD: {r['completeness']}")
             continue
+        print(f"\n== {m}  items narrated {r['n_items_narrated']}  plain {r['n_items_plain']}")
         for k in ("acc", "routed", "routed_matched", "gain", "fire", "shield"):
             v = r[k]
             if v["diff"] is None:

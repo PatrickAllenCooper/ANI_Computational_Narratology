@@ -1,0 +1,121 @@
+{
+  "cells": 900,
+  "calls_per_cell": 17,
+  "moderator_model": "(agent model)",
+  "per_model": {
+    "Llama-3.3-70B-Instruct": {
+      "priced": true,
+      "completion_measured": false,
+      "price_in_per_mtok": 0.71,
+      "price_out_per_mtok": 0.71,
+      "moderator_model": "Llama-3.3-70B-Instruct",
+      "moderator_price_in_per_mtok": 0.71,
+      "moderator_price_out_per_mtok": 0.71,
+      "cells": 900,
+      "calls": 15300,
+      "input_tokens": 47835000,
+      "output_tokens": 12716100,
+      "usd": 42.99,
+      "moderator_usd": 4.37,
+      "rounds": {
+        "r0": {
+          "calls": 2700,
+          "billed_to": "Llama-3.3-70B-Instruct",
+          "prompt_tokens_each": 724,
+          "prompt_tokens_each_regex": 724,
+          "completion_tokens_each": 1311,
+          "input_tokens": 1954800,
+          "output_tokens": 3539700,
+          "price_in_per_mtok": 0.71,
+          "price_out_per_mtok": 0.71,
+          "usd": 3.9
+        },
+        "r1": {
+          "calls": 2700,
+          "billed_to": "Llama-3.3-70B-Instruct",
+          "prompt_tokens_each": 4694,
+          "prompt_tokens_each_regex": 4694,
+          "completion_tokens_each": 1311,
+          "input_tokens": 12673800,
+          "output_tokens": 3539700,
+          "price_in_per_mtok": 0.71,
+          "price_out_per_mtok": 0.71,
+          "usd": 11.51
+        },
+        "r2": {
+          "calls": 2700,
+          "billed_to": "Llama-3.3-70B-Instruct",
+          "prompt_tokens_each": 6006,
+          "prompt_tokens_each_regex": 6006,
+          "completion_tokens_each": 1311,
+          "input_tokens": 16216200,
+          "output_tokens": 3539700,
+          "price_in_per_mtok": 0.71,
+          "price_out_per_mtok": 0.71,
+          "usd": 14.03
+        },
+        "synthesis": {
+          "calls": 900,
+          "billed_to": "Llama-3.3-70B-Instruct",
+          "prompt_tokens_each": 4594,
+          "prompt_tokens_each_regex": 4594,
+          "completion_tokens_each": 450,
+          "input_tokens": 4134600,
+          "output_tokens": 405000,
+          "price_in_per_mtok": 0.71,
+          "price_out_per_mtok": 0.71,
+          "usd": 3.22
+        },
+        "r3_label": {
+          "calls": 2700,
+          "billed_to": "Llama-3.3-70B-Instruct",
+          "prompt_tokens_each": 2558,
+          "prompt_tokens_each_regex": 2558,
+          "completion_tokens_each": 320,
+          "input_tokens": 6906600,
+          "output_tokens": 864000,
+          "price_in_per_mtok": 0.71,
+          "price_out_per_mtok": 0.71,
+          "usd": 5.52
+        },
+        "integration": {
+          "calls": 900,
+          "billed_to": "Llama-3.3-70B-Instruct",
+          "prompt_tokens_each": 1306,
+          "prompt_tokens_each_regex": 1306,
+          "completion_tokens_each": 500,
+          "input_tokens": 1175400,
+          "output_tokens": 450000,
+          "price_in_per_mtok": 0.71,
+          "price_out_per_mtok": 0.71,
+          "usd": 1.15
+        },
+        "r4_vote": {
+          "calls": 2700,
+          "billed_to": "Llama-3.3-70B-Instruct",
+          "prompt_tokens_each": 1768,
+          "prompt_tokens_each_regex": 1768,
+          "completion_tokens_each": 140,
+          "input_tokens": 4773600,
+          "output_tokens": 378000,
+          "price_in_per_mtok": 0.71,
+          "price_out_per_mtok": 0.71,
+          "usd": 3.66
+        }
+      }
+    }
+  },
+  "assumptions": {
+    "r0_r1_r2_completion": "MEASURED per model from cached cg_gen_*narrative_cot* cells on this instrument",
+    "synthesis_completion": 450,
+    "r3_label_completion": 320,
+    "integration_completion": 500,
+    "r4_vote_completion": 140,
+    "prompt_tokens": "computed from real constructed prompts with stand-in prior-round text at the measured length",
+    "tokenizer": "regex approximation ONLY -- tiktoken not installed, so prompt tokens are UNDERCOUNTED by roughly 20-35% and so is the cost",
+    "prices": "redesign doc Sec 8 list rates, UNVERIFIED against vendor pages"
+  },
+  "total_calls": 15300,
+  "total_usd": 42.99,
+  "mde_probe": {}
+}
