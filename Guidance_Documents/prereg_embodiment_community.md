@@ -8428,3 +8428,33 @@ Launch:
     # SPENDS ~$41 projected, ceiling $55 -- its own authorisation, PI-approved above
     .venv/bin/python -m scripts.run_crowdgold_filter_screen --step deliberate --models Mistral-Large-3-2 --samples 2 --max-tokens-agent 4096 --run --resume --workers 20
 Nothing above this line is edited.
+
+## Addendum 16.26 amendment, fix outcome and one further resume (recorded 2026-09-22): round-level guard now PASSES at the raised cap; completeness FAILED on a larger-than-usual link-outage burst, one more authorised `--resume` pass, same class as every prior completeness fix this session
+
+The full regeneration at `--max-tokens-agent 4096` completed. The
+ROUND-LEVEL GUARD now PASSES cleanly (worst truncation 0.3%, worst
+NOVERDICT 2.3%, both well under the 5% limit; the `counterparty`/r0/
+`third_person` cell that drove the original failure at cap 2560 is gone).
+The OUTCOME GUARD also PASSES (0.0%/0.0%). The fix worked as diagnosed.
+
+Completeness FAILED: 868 expected, 777 rows, 91 missing, all
+`third_person`, all the same "Foundry v1 generation failed after 5
+attempts: Connection error" signature seen throughout this session
+(16.25, 16.27, and this addendum's own first pass). This burst is larger
+than any single prior instance (91 vs 20 for DeepSeek, 15 for Mistral's
+own first pass), and its timing (all 91 errors arriving in one
+contiguous block partway through the run, with zero cell completions
+interleaved) lines up with the PI hibernating the laptop mid-run; the
+process itself survived hibernation exactly as observed earlier this
+session (16.27-era note) and resumed generating normally once past the
+gap, recovering to its pre-gap throughput. This is the same authorised
+class of fix as every completeness-only failure this session; per that
+precedent no new ceiling registration is required, only the same
+`--resume` pass, which replays the 777 cached debates for free and
+generates only the 91 missing ones. No number from this cell is read
+until completeness passes.
+
+Launch:
+
+    .venv/bin/python -m scripts.run_crowdgold_filter_screen --step deliberate --models Mistral-Large-3-2 --samples 2 --max-tokens-agent 4096 --run --resume --workers 20
+Nothing above this line is edited.
