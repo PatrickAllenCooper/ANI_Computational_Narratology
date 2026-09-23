@@ -1,0 +1,325 @@
+{
+  "guards": {
+    "claude-haiku-4-5|standard_cot": {
+      "n": 249,
+      "turn1_empty": 0.0,
+      "trunc_turn1": 0.0,
+      "noverdict_turn1": 0.0,
+      "trunc_turn2_pushback": 0.0,
+      "noverdict_turn2_pushback": 0.004016064257028112,
+      "missing_turn2_pushback": 0,
+      "trunc_turn2_neutral": 0.0,
+      "noverdict_turn2_neutral": 0.0,
+      "missing_turn2_neutral": 0,
+      "pass": true
+    },
+    "claude-haiku-4-5|narrative_cot": {
+      "n": 249,
+      "turn1_empty": 0.0,
+      "trunc_turn1": 0.0,
+      "noverdict_turn1": 0.0,
+      "trunc_turn2_pushback": 0.0,
+      "noverdict_turn2_pushback": 0.14056224899598393,
+      "missing_turn2_pushback": 0,
+      "trunc_turn2_neutral": 0.0,
+      "noverdict_turn2_neutral": 0.0,
+      "missing_turn2_neutral": 0,
+      "pass": false
+    }
+  },
+  "per_model": {
+    "claude-haiku-4-5": {
+      "n_items_both_scaffolds": 249,
+      "n_common_support": 119,
+      "turn1_at_fault_rate": {
+        "standard_cot": 0.5140562248995983,
+        "narrative_cot": 0.5783132530120482
+      },
+      "cap": {
+        "cot": 0.2605042016806723,
+        "not": 0.6218487394957983,
+        "not_minus_cot": {
+          "n_clusters": 119,
+          "n_pairs": 119,
+          "diff": 0.36134453781512604,
+          "lo": 0.2689075630252101,
+          "hi": 0.453781512605042,
+          "ci_excludes_0": true
+        }
+      },
+      "cap_gold_yta": {
+        "cot": 0.08695652173913043,
+        "not": 0.5108695652173914,
+        "not_minus_cot": {
+          "n_clusters": 92,
+          "n_pairs": 92,
+          "diff": 0.42391304347826086,
+          "lo": 0.31521739130434784,
+          "hi": 0.532608695652174,
+          "ci_excludes_0": true
+        }
+      },
+      "inst": {
+        "cot": 0.4789915966386555,
+        "not": 0.6386554621848739,
+        "not_minus_cot": {
+          "n_clusters": 119,
+          "n_pairs": 119,
+          "diff": 0.15966386554621848,
+          "lo": 0.06722689075630252,
+          "hi": 0.25210084033613445,
+          "ci_excludes_0": true
+        }
+      },
+      "inst_gold_yta": {
+        "cot": 0.33695652173913043,
+        "not": 0.5652173913043478,
+        "not_minus_cot": {
+          "n_clusters": 92,
+          "n_pairs": 92,
+          "diff": 0.22826086956521738,
+          "lo": 0.11956521739130435,
+          "hi": 0.33695652173913043,
+          "ci_excludes_0": true
+        }
+      },
+      "retreat": {
+        "cot": 0.0,
+        "not": 0.10084033613445378,
+        "not_minus_cot": {
+          "n_clusters": 119,
+          "n_pairs": 119,
+          "diff": 0.10084033613445378,
+          "lo": 0.05042016806722689,
+          "hi": 0.15966386554621848,
+          "ci_excludes_0": true
+        }
+      },
+      "retreat_gold_yta": {
+        "cot": 0.0,
+        "not": 0.13043478260869565,
+        "not_minus_cot": {
+          "n_clusters": 92,
+          "n_pairs": 92,
+          "diff": 0.13043478260869565,
+          "lo": 0.06521739130434782,
+          "hi": 0.20652173913043478,
+          "ci_excludes_0": true
+        }
+      },
+      "net": {
+        "cot": -0.2184873949579832,
+        "not": -0.01680672268907563,
+        "not_minus_cot": {
+          "n_clusters": 119,
+          "n_pairs": 119,
+          "diff": 0.20168067226890757,
+          "lo": 0.10084033613445378,
+          "hi": 0.31092436974789917,
+          "ci_excludes_0": true
+        }
+      },
+      "cap_gold_nta": {
+        "cot": 0.8518518518518519,
+        "not": 1.0,
+        "not_minus_cot": {
+          "n_clusters": 27,
+          "n_pairs": 27,
+          "diff": 0.14814814814814814,
+          "lo": 0.037037037037037035,
+          "hi": 0.2962962962962963,
+          "ci_excludes_0": true
+        }
+      },
+      "inst_gold_nta": {
+        "cot": 0.9629629629629629,
+        "not": 0.8888888888888888,
+        "not_minus_cot": {
+          "n_clusters": 27,
+          "n_pairs": 27,
+          "diff": -0.07407407407407407,
+          "lo": -0.2222222222222222,
+          "hi": 0.07407407407407407,
+          "ci_excludes_0": false
+        }
+      },
+      "retreat_gold_nta": {
+        "cot": 0.0,
+        "not": 0.0,
+        "not_minus_cot": {
+          "n_clusters": 27,
+          "n_pairs": 27,
+          "diff": 0.0,
+          "lo": 0.0,
+          "hi": 0.0,
+          "ci_excludes_0": false
+        }
+      },
+      "reverse": {
+        "cot": 0.0,
+        "not": 0.0,
+        "not_minus_cot": {
+          "n_clusters": 63,
+          "n_pairs": 63,
+          "diff": 0.0,
+          "lo": 0.0,
+          "hi": 0.0,
+          "ci_excludes_0": false
+        }
+      }
+    }
+  },
+  "pooled": {
+    "cap": {
+      "cot": 0.2605042016806723,
+      "not": 0.6218487394957983,
+      "not_minus_cot": {
+        "n_clusters": 119,
+        "n_pairs": 119,
+        "diff": 0.36134453781512604,
+        "lo": 0.2689075630252101,
+        "hi": 0.453781512605042,
+        "ci_excludes_0": true
+      }
+    },
+    "cap_gold_yta": {
+      "cot": 0.08695652173913043,
+      "not": 0.5108695652173914,
+      "not_minus_cot": {
+        "n_clusters": 92,
+        "n_pairs": 92,
+        "diff": 0.42391304347826086,
+        "lo": 0.31521739130434784,
+        "hi": 0.532608695652174,
+        "ci_excludes_0": true
+      }
+    },
+    "inst": {
+      "cot": 0.4789915966386555,
+      "not": 0.6386554621848739,
+      "not_minus_cot": {
+        "n_clusters": 119,
+        "n_pairs": 119,
+        "diff": 0.15966386554621848,
+        "lo": 0.06722689075630252,
+        "hi": 0.25210084033613445,
+        "ci_excludes_0": true
+      }
+    },
+    "inst_gold_yta": {
+      "cot": 0.33695652173913043,
+      "not": 0.5652173913043478,
+      "not_minus_cot": {
+        "n_clusters": 92,
+        "n_pairs": 92,
+        "diff": 0.22826086956521738,
+        "lo": 0.11956521739130435,
+        "hi": 0.33695652173913043,
+        "ci_excludes_0": true
+      }
+    },
+    "retreat": {
+      "cot": 0.0,
+      "not": 0.10084033613445378,
+      "not_minus_cot": {
+        "n_clusters": 119,
+        "n_pairs": 119,
+        "diff": 0.10084033613445378,
+        "lo": 0.05042016806722689,
+        "hi": 0.15966386554621848,
+        "ci_excludes_0": true
+      }
+    },
+    "retreat_gold_yta": {
+      "cot": 0.0,
+      "not": 0.13043478260869565,
+      "not_minus_cot": {
+        "n_clusters": 92,
+        "n_pairs": 92,
+        "diff": 0.13043478260869565,
+        "lo": 0.06521739130434782,
+        "hi": 0.20652173913043478,
+        "ci_excludes_0": true
+      }
+    },
+    "net": {
+      "cot": -0.2184873949579832,
+      "not": -0.01680672268907563,
+      "not_minus_cot": {
+        "n_clusters": 119,
+        "n_pairs": 119,
+        "diff": 0.20168067226890757,
+        "lo": 0.10084033613445378,
+        "hi": 0.31092436974789917,
+        "ci_excludes_0": true
+      }
+    },
+    "cap_gold_nta": {
+      "cot": 0.8518518518518519,
+      "not": 1.0,
+      "not_minus_cot": {
+        "n_clusters": 27,
+        "n_pairs": 27,
+        "diff": 0.14814814814814814,
+        "lo": 0.037037037037037035,
+        "hi": 0.2962962962962963,
+        "ci_excludes_0": true
+      }
+    },
+    "inst_gold_nta": {
+      "cot": 0.9629629629629629,
+      "not": 0.8888888888888888,
+      "not_minus_cot": {
+        "n_clusters": 27,
+        "n_pairs": 27,
+        "diff": -0.07407407407407407,
+        "lo": -0.2222222222222222,
+        "hi": 0.07407407407407407,
+        "ci_excludes_0": false
+      }
+    },
+    "retreat_gold_nta": {
+      "cot": 0.0,
+      "not": 0.0,
+      "not_minus_cot": {
+        "n_clusters": 27,
+        "n_pairs": 27,
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "ci_excludes_0": false
+      }
+    },
+    "reverse": {
+      "cot": 0.0,
+      "not": 0.0,
+      "not_minus_cot": {
+        "n_clusters": 63,
+        "n_pairs": 63,
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "ci_excludes_0": false
+      }
+    },
+    "discrimination": {
+      "standard_cot": 0.7648953301127215,
+      "narrative_cot": 0.48913043478260865
+    }
+  },
+  "completeness": {
+    "claude-haiku-4-5": {
+      "items_expected": 249,
+      "items_with_both_scaffolds": 249
+    }
+  },
+  "guards_pass": false,
+  "floor": false,
+  "reading": {
+    "primary": "GUARD FAILED"
+  },
+  "measured_spend_usd": {
+    "claude-haiku-4-5": 6.87
+  },
+  "measured_spend_total_usd": 6.87
+}

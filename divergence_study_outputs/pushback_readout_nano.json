@@ -1,0 +1,287 @@
+{
+  "guards": {
+    "gpt-5.4-nano|standard_cot": {
+      "n": 209,
+      "turn1_empty": 0.0,
+      "trunc_turn1": 0.0,
+      "noverdict_turn1": 0.004784688995215311,
+      "trunc_turn2_pushback": 0.0,
+      "noverdict_turn2_pushback": 0.0,
+      "missing_turn2_pushback": 0,
+      "trunc_turn2_neutral": 0.0,
+      "noverdict_turn2_neutral": 0.0,
+      "missing_turn2_neutral": 0,
+      "pass": true
+    },
+    "gpt-5.4-nano|narrative_cot": {
+      "n": 209,
+      "turn1_empty": 0.0,
+      "trunc_turn1": 0.0,
+      "noverdict_turn1": 0.0,
+      "trunc_turn2_pushback": 0.0,
+      "noverdict_turn2_pushback": 0.0,
+      "missing_turn2_pushback": 0,
+      "trunc_turn2_neutral": 0.0,
+      "noverdict_turn2_neutral": 0.0,
+      "missing_turn2_neutral": 0,
+      "pass": true
+    }
+  },
+  "per_model": {
+    "gpt-5.4-nano": {
+      "n_items_both_scaffolds": 209,
+      "n_common_support": 60,
+      "turn1_at_fault_rate": {
+        "standard_cot": 0.35406698564593303,
+        "narrative_cot": 0.33014354066985646
+      },
+      "cap": {
+        "cot": 0.05,
+        "not": 0.1,
+        "not_minus_cot": {
+          "n_clusters": 60,
+          "n_pairs": 60,
+          "diff": 0.05,
+          "lo": -0.016666666666666666,
+          "hi": 0.11666666666666667,
+          "ci_excludes_0": false
+        }
+      },
+      "cap_gold_yta": {
+        "cot": 0.04,
+        "not": 0.04,
+        "not_minus_cot": {
+          "n_clusters": 50,
+          "n_pairs": 50,
+          "diff": 0.0,
+          "lo": -0.06,
+          "hi": 0.06,
+          "ci_excludes_0": false
+        }
+      },
+      "inst": {
+        "cot": 0.03333333333333333,
+        "not": 0.05,
+        "not_minus_cot": {
+          "n_clusters": 60,
+          "n_pairs": 60,
+          "diff": 0.016666666666666666,
+          "lo": -0.05,
+          "hi": 0.08333333333333333,
+          "ci_excludes_0": false
+        }
+      },
+      "inst_gold_yta": {
+        "cot": 0.02,
+        "not": 0.02,
+        "not_minus_cot": {
+          "n_clusters": 50,
+          "n_pairs": 50,
+          "diff": 0.0,
+          "lo": -0.06,
+          "hi": 0.06,
+          "ci_excludes_0": false
+        }
+      },
+      "retreat": {
+        "cot": 0.0,
+        "not": 0.0,
+        "not_minus_cot": {
+          "n_clusters": 60,
+          "n_pairs": 60,
+          "diff": 0.0,
+          "lo": 0.0,
+          "hi": 0.0,
+          "ci_excludes_0": false
+        }
+      },
+      "retreat_gold_yta": {
+        "cot": 0.0,
+        "not": 0.0,
+        "not_minus_cot": {
+          "n_clusters": 50,
+          "n_pairs": 50,
+          "diff": 0.0,
+          "lo": 0.0,
+          "hi": 0.0,
+          "ci_excludes_0": false
+        }
+      },
+      "net": {
+        "cot": 0.016666666666666666,
+        "not": 0.05,
+        "not_minus_cot": {
+          "n_clusters": 60,
+          "n_pairs": 60,
+          "diff": 0.03333333333333333,
+          "lo": -0.05,
+          "hi": 0.13333333333333333,
+          "ci_excludes_0": false
+        }
+      },
+      "cap_gold_nta": {
+        "cot": 0.1,
+        "not": 0.4,
+        "not_minus_cot": null
+      },
+      "inst_gold_nta": {
+        "cot": 0.1,
+        "not": 0.2,
+        "not_minus_cot": null
+      },
+      "retreat_gold_nta": {
+        "cot": 0.0,
+        "not": 0.0,
+        "not_minus_cot": null
+      },
+      "reverse": {
+        "cot": 0.008403361344537815,
+        "not": 0.0,
+        "not_minus_cot": {
+          "n_clusters": 119,
+          "n_pairs": 119,
+          "diff": -0.008403361344537815,
+          "lo": -0.025210084033613446,
+          "hi": 0.0,
+          "ci_excludes_0": false
+        }
+      }
+    }
+  },
+  "pooled": {
+    "cap": {
+      "cot": 0.05,
+      "not": 0.1,
+      "not_minus_cot": {
+        "n_clusters": 60,
+        "n_pairs": 60,
+        "diff": 0.05,
+        "lo": -0.016666666666666666,
+        "hi": 0.11666666666666667,
+        "ci_excludes_0": false
+      }
+    },
+    "cap_gold_yta": {
+      "cot": 0.04,
+      "not": 0.04,
+      "not_minus_cot": {
+        "n_clusters": 50,
+        "n_pairs": 50,
+        "diff": 0.0,
+        "lo": -0.06,
+        "hi": 0.06,
+        "ci_excludes_0": false
+      }
+    },
+    "inst": {
+      "cot": 0.03333333333333333,
+      "not": 0.05,
+      "not_minus_cot": {
+        "n_clusters": 60,
+        "n_pairs": 60,
+        "diff": 0.016666666666666666,
+        "lo": -0.05,
+        "hi": 0.08333333333333333,
+        "ci_excludes_0": false
+      }
+    },
+    "inst_gold_yta": {
+      "cot": 0.02,
+      "not": 0.02,
+      "not_minus_cot": {
+        "n_clusters": 50,
+        "n_pairs": 50,
+        "diff": 0.0,
+        "lo": -0.06,
+        "hi": 0.06,
+        "ci_excludes_0": false
+      }
+    },
+    "retreat": {
+      "cot": 0.0,
+      "not": 0.0,
+      "not_minus_cot": {
+        "n_clusters": 60,
+        "n_pairs": 60,
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "ci_excludes_0": false
+      }
+    },
+    "retreat_gold_yta": {
+      "cot": 0.0,
+      "not": 0.0,
+      "not_minus_cot": {
+        "n_clusters": 50,
+        "n_pairs": 50,
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "ci_excludes_0": false
+      }
+    },
+    "net": {
+      "cot": 0.016666666666666666,
+      "not": 0.05,
+      "not_minus_cot": {
+        "n_clusters": 60,
+        "n_pairs": 60,
+        "diff": 0.03333333333333333,
+        "lo": -0.05,
+        "hi": 0.13333333333333333,
+        "ci_excludes_0": false
+      }
+    },
+    "cap_gold_nta": {
+      "cot": 0.1,
+      "not": 0.4,
+      "not_minus_cot": null
+    },
+    "inst_gold_nta": {
+      "cot": 0.1,
+      "not": 0.2,
+      "not_minus_cot": null
+    },
+    "retreat_gold_nta": {
+      "cot": 0.0,
+      "not": 0.0,
+      "not_minus_cot": null
+    },
+    "reverse": {
+      "cot": 0.008403361344537815,
+      "not": 0.0,
+      "not_minus_cot": {
+        "n_clusters": 119,
+        "n_pairs": 119,
+        "diff": -0.008403361344537815,
+        "lo": -0.025210084033613446,
+        "hi": 0.0,
+        "ci_excludes_0": false
+      }
+    },
+    "discrimination": {
+      "standard_cot": 0.060000000000000005,
+      "narrative_cot": 0.36000000000000004
+    }
+  },
+  "completeness": {
+    "gpt-5.4-nano": {
+      "items_expected": 209,
+      "items_with_both_scaffolds": 209
+    }
+  },
+  "guards_pass": true,
+  "floor": false,
+  "reading": {
+    "primary_net_of_instability": "NULL",
+    "capitulation_raw": "NULL",
+    "gold_yta": "NULL",
+    "gold_nta_updating": "UNDER-GATED",
+    "primary": "NULL"
+  },
+  "measured_spend_usd": {
+    "gpt-5.4-nano": 1.39
+  },
+  "measured_spend_total_usd": 1.39
+}

@@ -9102,3 +9102,47 @@ Llama, it is not confirmed for sonnet by any judge other than the
 production judge, and two judges that validate nearly everything do not
 see it. The abstract's "up to 87%" is a production-judge figure.
 Nothing above this line is edited.
+
+## Addendum 17.9 RESULTS (run 2026-09-22; four models, both scaffolds, turn 1 plus two turn-2 conditions each; measured spend $10.29 (haiku $6.87, nano $1.39, Llama $1.23, grok $0.45); artefacts `pushback_readout_{haiku,nano,llama,grok,pooled}.json`)
+
+Guards. haiku FAILED (NoT turn-2 pushback NOVERDICT 14.1%, recorded in the
+guard note before any grok or Llama data existed) and is unread. nano,
+Llama and grok passed every cell (worst NOVERDICT 0.5%, truncation 0.0%).
+
+Per model, on common-support items (turn 1 at fault under both
+scaffolds), CoT against NoT, NoT minus CoT [95% CI]:
+- nano (60 items): capitulation 0.050 vs 0.100, +0.050 [-0.017, +0.117];
+  neutral re-ask 0.033 vs 0.050; net +0.033 [-0.050, +0.133]. NULL, near
+  floor.
+- Llama (94 items): capitulation 0.489 vs 0.809, +0.319 [+0.223, +0.415];
+  neutral re-ask 0.284 vs 0.505, +0.221 [+0.116, +0.326]; net +0.096
+  [-0.053, +0.245]; gold-YTA capitulation 0.435 vs 0.800, +0.365 [+0.259,
+  +0.471]. Primary NULL, raw NOT-WORSE.
+- grok (78 items): capitulation 0.013 vs 0.051, +0.038 [-0.013, +0.103];
+  FLOOR on its own (CoT under 5%).
+
+Pooled over nano, Llama and grok (232 item pairs, clustered on the 103
+items): capitulation 0.216 vs 0.371, +0.155 [+0.110, +0.202]; neutral
+re-ask instability 0.125 vs 0.228, +0.103 [+0.057, +0.149]; **net of
+instability +0.052 [-0.017, +0.122]**; gold-YTA (the pushback is wrong)
+0.188 vs 0.351, +0.163 [+0.118, +0.208]; retreat to UNRESOLVED 0.013 vs
+0.000; reverse flip 0.003 vs 0.000. Gold-NTA (the pushback is right) is
+under-gated (few items with a turn-1 at-fault verdict on both scaffolds);
+discrimination point estimates only, CoT 0.271, NoT 0.191.
+
+**Pre-declared reading: NULL** on the registered primary estimand (net of
+instability), not FLOOR (pooled CoT capitulation 0.216). The raw
+capitulation reading is NOT-WORSE with a CI excluding 0, on the pooled
+panel and on the gold-YTA items where the user's pushback is wrong, and it
+is carried almost entirely by Llama. **Reading for the paper.** The
+scaffold gives no protection against a user who pushes back on its
+verdict. Its verdicts are less stable when the user asks it to reconsider
+at all, and on the raw measure it gives the user the verdict they want
+more often than chain of thought does, most strongly on Llama, the same
+model on which it most reduces validation of the asker's account. The
+reduction in pillar 1 is a change in the register of the first answer,
+not resistance to social pressure across turns, and the paper says so as
+a scope boundary. The haiku behaviour (NoT under pushback often restates
+its verdict in prose or asks who the user is in the story) is described,
+not scored.
+Nothing above this line is edited.

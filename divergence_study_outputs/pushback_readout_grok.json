@@ -1,0 +1,283 @@
+{
+  "guards": {
+    "grok-4-1-fast-reasoning|standard_cot": {
+      "n": 210,
+      "turn1_empty": 0.004761904761904762,
+      "trunc_turn1": 0.0,
+      "noverdict_turn1": 0.004761904761904762,
+      "trunc_turn2_pushback": 0.0,
+      "noverdict_turn2_pushback": 0.0,
+      "missing_turn2_pushback": 1,
+      "trunc_turn2_neutral": 0.0,
+      "noverdict_turn2_neutral": 0.004784688995215311,
+      "missing_turn2_neutral": 1,
+      "pass": true
+    },
+    "grok-4-1-fast-reasoning|narrative_cot": {
+      "n": 210,
+      "turn1_empty": 0.0,
+      "trunc_turn1": 0.0,
+      "noverdict_turn1": 0.0,
+      "trunc_turn2_pushback": 0.0,
+      "noverdict_turn2_pushback": 0.004761904761904762,
+      "missing_turn2_pushback": 0,
+      "trunc_turn2_neutral": 0.0,
+      "noverdict_turn2_neutral": 0.0,
+      "missing_turn2_neutral": 0,
+      "pass": true
+    }
+  },
+  "per_model": {
+    "grok-4-1-fast-reasoning": {
+      "n_items_both_scaffolds": 210,
+      "n_common_support": 78,
+      "turn1_at_fault_rate": {
+        "standard_cot": 0.4142857142857143,
+        "narrative_cot": 0.40476190476190477
+      },
+      "cap": {
+        "cot": 0.01282051282051282,
+        "not": 0.05128205128205128,
+        "not_minus_cot": {
+          "n_clusters": 78,
+          "n_pairs": 78,
+          "diff": 0.038461538461538464,
+          "lo": -0.01282051282051282,
+          "hi": 0.10256410256410256,
+          "ci_excludes_0": false
+        }
+      },
+      "cap_gold_yta": {
+        "cot": 0.0,
+        "not": 0.0410958904109589,
+        "not_minus_cot": {
+          "n_clusters": 73,
+          "n_pairs": 73,
+          "diff": 0.0410958904109589,
+          "lo": 0.0,
+          "hi": 0.0958904109589041,
+          "ci_excludes_0": false
+        }
+      },
+      "inst": {
+        "cot": 0.0,
+        "not": 0.025974025974025976,
+        "not_minus_cot": {
+          "n_clusters": 77,
+          "n_pairs": 77,
+          "diff": 0.025974025974025976,
+          "lo": 0.0,
+          "hi": 0.06493506493506493,
+          "ci_excludes_0": false
+        }
+      },
+      "inst_gold_yta": {
+        "cot": 0.0,
+        "not": 0.027777777777777776,
+        "not_minus_cot": {
+          "n_clusters": 72,
+          "n_pairs": 72,
+          "diff": 0.027777777777777776,
+          "lo": 0.0,
+          "hi": 0.06944444444444445,
+          "ci_excludes_0": false
+        }
+      },
+      "retreat": {
+        "cot": 0.0,
+        "not": 0.0,
+        "not_minus_cot": {
+          "n_clusters": 78,
+          "n_pairs": 78,
+          "diff": 0.0,
+          "lo": 0.0,
+          "hi": 0.0,
+          "ci_excludes_0": false
+        }
+      },
+      "retreat_gold_yta": {
+        "cot": 0.0,
+        "not": 0.0,
+        "not_minus_cot": {
+          "n_clusters": 73,
+          "n_pairs": 73,
+          "diff": 0.0,
+          "lo": 0.0,
+          "hi": 0.0,
+          "ci_excludes_0": false
+        }
+      },
+      "net": {
+        "cot": 0.012987012987012988,
+        "not": 0.025974025974025976,
+        "not_minus_cot": {
+          "n_clusters": 77,
+          "n_pairs": 77,
+          "diff": 0.012987012987012988,
+          "lo": -0.05194805194805195,
+          "hi": 0.07792207792207792,
+          "ci_excludes_0": false
+        }
+      },
+      "cap_gold_nta": {
+        "cot": 0.2,
+        "not": 0.2,
+        "not_minus_cot": null
+      },
+      "inst_gold_nta": {
+        "cot": 0.0,
+        "not": 0.0,
+        "not_minus_cot": null
+      },
+      "retreat_gold_nta": {
+        "cot": 0.0,
+        "not": 0.0,
+        "not_minus_cot": null
+      },
+      "reverse": {
+        "cot": 0.0,
+        "not": 0.0,
+        "not_minus_cot": {
+          "n_clusters": 115,
+          "n_pairs": 115,
+          "diff": 0.0,
+          "lo": 0.0,
+          "hi": 0.0,
+          "ci_excludes_0": false
+        }
+      }
+    }
+  },
+  "pooled": {
+    "cap": {
+      "cot": 0.01282051282051282,
+      "not": 0.05128205128205128,
+      "not_minus_cot": {
+        "n_clusters": 78,
+        "n_pairs": 78,
+        "diff": 0.038461538461538464,
+        "lo": -0.01282051282051282,
+        "hi": 0.10256410256410256,
+        "ci_excludes_0": false
+      }
+    },
+    "cap_gold_yta": {
+      "cot": 0.0,
+      "not": 0.0410958904109589,
+      "not_minus_cot": {
+        "n_clusters": 73,
+        "n_pairs": 73,
+        "diff": 0.0410958904109589,
+        "lo": 0.0,
+        "hi": 0.0958904109589041,
+        "ci_excludes_0": false
+      }
+    },
+    "inst": {
+      "cot": 0.0,
+      "not": 0.025974025974025976,
+      "not_minus_cot": {
+        "n_clusters": 77,
+        "n_pairs": 77,
+        "diff": 0.025974025974025976,
+        "lo": 0.0,
+        "hi": 0.06493506493506493,
+        "ci_excludes_0": false
+      }
+    },
+    "inst_gold_yta": {
+      "cot": 0.0,
+      "not": 0.027777777777777776,
+      "not_minus_cot": {
+        "n_clusters": 72,
+        "n_pairs": 72,
+        "diff": 0.027777777777777776,
+        "lo": 0.0,
+        "hi": 0.06944444444444445,
+        "ci_excludes_0": false
+      }
+    },
+    "retreat": {
+      "cot": 0.0,
+      "not": 0.0,
+      "not_minus_cot": {
+        "n_clusters": 78,
+        "n_pairs": 78,
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "ci_excludes_0": false
+      }
+    },
+    "retreat_gold_yta": {
+      "cot": 0.0,
+      "not": 0.0,
+      "not_minus_cot": {
+        "n_clusters": 73,
+        "n_pairs": 73,
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "ci_excludes_0": false
+      }
+    },
+    "net": {
+      "cot": 0.012987012987012988,
+      "not": 0.025974025974025976,
+      "not_minus_cot": {
+        "n_clusters": 77,
+        "n_pairs": 77,
+        "diff": 0.012987012987012988,
+        "lo": -0.05194805194805195,
+        "hi": 0.07792207792207792,
+        "ci_excludes_0": false
+      }
+    },
+    "cap_gold_nta": {
+      "cot": 0.2,
+      "not": 0.2,
+      "not_minus_cot": null
+    },
+    "inst_gold_nta": {
+      "cot": 0.0,
+      "not": 0.0,
+      "not_minus_cot": null
+    },
+    "retreat_gold_nta": {
+      "cot": 0.0,
+      "not": 0.0,
+      "not_minus_cot": null
+    },
+    "reverse": {
+      "cot": 0.0,
+      "not": 0.0,
+      "not_minus_cot": {
+        "n_clusters": 115,
+        "n_pairs": 115,
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "ci_excludes_0": false
+      }
+    },
+    "discrimination": {
+      "standard_cot": 0.2,
+      "narrative_cot": 0.1589041095890411
+    }
+  },
+  "completeness": {
+    "grok-4-1-fast-reasoning": {
+      "items_expected": 210,
+      "items_with_both_scaffolds": 210
+    }
+  },
+  "guards_pass": true,
+  "floor": true,
+  "reading": {
+    "primary": "FLOOR"
+  },
+  "measured_spend_usd": {
+    "grok-4-1-fast-reasoning": 0.45
+  },
+  "measured_spend_total_usd": 0.45
+}

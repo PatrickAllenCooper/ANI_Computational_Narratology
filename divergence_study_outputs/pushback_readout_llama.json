@@ -1,0 +1,287 @@
+{
+  "guards": {
+    "Llama-3.3-70B-Instruct|standard_cot": {
+      "n": 225,
+      "turn1_empty": 0.0,
+      "trunc_turn1": 0.0,
+      "noverdict_turn1": 0.0,
+      "trunc_turn2_pushback": 0.0,
+      "noverdict_turn2_pushback": 0.0044444444444444444,
+      "missing_turn2_pushback": 0,
+      "trunc_turn2_neutral": 0.0,
+      "noverdict_turn2_neutral": 0.0,
+      "missing_turn2_neutral": 0,
+      "pass": true
+    },
+    "Llama-3.3-70B-Instruct|narrative_cot": {
+      "n": 225,
+      "turn1_empty": 0.0,
+      "trunc_turn1": 0.0,
+      "noverdict_turn1": 0.0,
+      "trunc_turn2_pushback": 0.0,
+      "noverdict_turn2_pushback": 0.0044444444444444444,
+      "missing_turn2_pushback": 0,
+      "trunc_turn2_neutral": 0.0,
+      "noverdict_turn2_neutral": 0.0,
+      "missing_turn2_neutral": 0,
+      "pass": true
+    }
+  },
+  "per_model": {
+    "Llama-3.3-70B-Instruct": {
+      "n_items_both_scaffolds": 225,
+      "n_common_support": 95,
+      "turn1_at_fault_rate": {
+        "standard_cot": 0.48444444444444446,
+        "narrative_cot": 0.4711111111111111
+      },
+      "cap": {
+        "cot": 0.48936170212765956,
+        "not": 0.8085106382978723,
+        "not_minus_cot": {
+          "n_clusters": 94,
+          "n_pairs": 94,
+          "diff": 0.3191489361702128,
+          "lo": 0.22340425531914893,
+          "hi": 0.4148936170212766,
+          "ci_excludes_0": true
+        }
+      },
+      "cap_gold_yta": {
+        "cot": 0.43529411764705883,
+        "not": 0.8,
+        "not_minus_cot": {
+          "n_clusters": 85,
+          "n_pairs": 85,
+          "diff": 0.36470588235294116,
+          "lo": 0.25882352941176473,
+          "hi": 0.47058823529411764,
+          "ci_excludes_0": true
+        }
+      },
+      "inst": {
+        "cot": 0.28421052631578947,
+        "not": 0.5052631578947369,
+        "not_minus_cot": {
+          "n_clusters": 95,
+          "n_pairs": 95,
+          "diff": 0.22105263157894736,
+          "lo": 0.11578947368421053,
+          "hi": 0.3263157894736842,
+          "ci_excludes_0": true
+        }
+      },
+      "inst_gold_yta": {
+        "cot": 0.2441860465116279,
+        "not": 0.45348837209302323,
+        "not_minus_cot": {
+          "n_clusters": 86,
+          "n_pairs": 86,
+          "diff": 0.20930232558139536,
+          "lo": 0.10465116279069768,
+          "hi": 0.32558139534883723,
+          "ci_excludes_0": true
+        }
+      },
+      "retreat": {
+        "cot": 0.031914893617021274,
+        "not": 0.0,
+        "not_minus_cot": {
+          "n_clusters": 94,
+          "n_pairs": 94,
+          "diff": -0.031914893617021274,
+          "lo": -0.07446808510638298,
+          "hi": 0.0,
+          "ci_excludes_0": false
+        }
+      },
+      "retreat_gold_yta": {
+        "cot": 0.03529411764705882,
+        "not": 0.0,
+        "not_minus_cot": {
+          "n_clusters": 85,
+          "n_pairs": 85,
+          "diff": -0.03529411764705882,
+          "lo": -0.08235294117647059,
+          "hi": 0.0,
+          "ci_excludes_0": false
+        }
+      },
+      "net": {
+        "cot": 0.20212765957446807,
+        "not": 0.2978723404255319,
+        "not_minus_cot": {
+          "n_clusters": 94,
+          "n_pairs": 94,
+          "diff": 0.09574468085106383,
+          "lo": -0.05319148936170213,
+          "hi": 0.24468085106382978,
+          "ci_excludes_0": false
+        }
+      },
+      "cap_gold_nta": {
+        "cot": 1.0,
+        "not": 0.8888888888888888,
+        "not_minus_cot": null
+      },
+      "inst_gold_nta": {
+        "cot": 0.6666666666666666,
+        "not": 1.0,
+        "not_minus_cot": null
+      },
+      "retreat_gold_nta": {
+        "cot": 0.0,
+        "not": 0.0,
+        "not_minus_cot": null
+      },
+      "reverse": {
+        "cot": 0.0,
+        "not": 0.0,
+        "not_minus_cot": {
+          "n_clusters": 103,
+          "n_pairs": 103,
+          "diff": 0.0,
+          "lo": 0.0,
+          "hi": 0.0,
+          "ci_excludes_0": false
+        }
+      }
+    }
+  },
+  "pooled": {
+    "cap": {
+      "cot": 0.48936170212765956,
+      "not": 0.8085106382978723,
+      "not_minus_cot": {
+        "n_clusters": 94,
+        "n_pairs": 94,
+        "diff": 0.3191489361702128,
+        "lo": 0.22340425531914893,
+        "hi": 0.4148936170212766,
+        "ci_excludes_0": true
+      }
+    },
+    "cap_gold_yta": {
+      "cot": 0.43529411764705883,
+      "not": 0.8,
+      "not_minus_cot": {
+        "n_clusters": 85,
+        "n_pairs": 85,
+        "diff": 0.36470588235294116,
+        "lo": 0.25882352941176473,
+        "hi": 0.47058823529411764,
+        "ci_excludes_0": true
+      }
+    },
+    "inst": {
+      "cot": 0.28421052631578947,
+      "not": 0.5052631578947369,
+      "not_minus_cot": {
+        "n_clusters": 95,
+        "n_pairs": 95,
+        "diff": 0.22105263157894736,
+        "lo": 0.11578947368421053,
+        "hi": 0.3263157894736842,
+        "ci_excludes_0": true
+      }
+    },
+    "inst_gold_yta": {
+      "cot": 0.2441860465116279,
+      "not": 0.45348837209302323,
+      "not_minus_cot": {
+        "n_clusters": 86,
+        "n_pairs": 86,
+        "diff": 0.20930232558139536,
+        "lo": 0.10465116279069768,
+        "hi": 0.32558139534883723,
+        "ci_excludes_0": true
+      }
+    },
+    "retreat": {
+      "cot": 0.031914893617021274,
+      "not": 0.0,
+      "not_minus_cot": {
+        "n_clusters": 94,
+        "n_pairs": 94,
+        "diff": -0.031914893617021274,
+        "lo": -0.07446808510638298,
+        "hi": 0.0,
+        "ci_excludes_0": false
+      }
+    },
+    "retreat_gold_yta": {
+      "cot": 0.03529411764705882,
+      "not": 0.0,
+      "not_minus_cot": {
+        "n_clusters": 85,
+        "n_pairs": 85,
+        "diff": -0.03529411764705882,
+        "lo": -0.08235294117647059,
+        "hi": 0.0,
+        "ci_excludes_0": false
+      }
+    },
+    "net": {
+      "cot": 0.20212765957446807,
+      "not": 0.2978723404255319,
+      "not_minus_cot": {
+        "n_clusters": 94,
+        "n_pairs": 94,
+        "diff": 0.09574468085106383,
+        "lo": -0.05319148936170213,
+        "hi": 0.24468085106382978,
+        "ci_excludes_0": false
+      }
+    },
+    "cap_gold_nta": {
+      "cot": 1.0,
+      "not": 0.8888888888888888,
+      "not_minus_cot": null
+    },
+    "inst_gold_nta": {
+      "cot": 0.6666666666666666,
+      "not": 1.0,
+      "not_minus_cot": null
+    },
+    "retreat_gold_nta": {
+      "cot": 0.0,
+      "not": 0.0,
+      "not_minus_cot": null
+    },
+    "reverse": {
+      "cot": 0.0,
+      "not": 0.0,
+      "not_minus_cot": {
+        "n_clusters": 103,
+        "n_pairs": 103,
+        "diff": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "ci_excludes_0": false
+      }
+    },
+    "discrimination": {
+      "standard_cot": 0.5647058823529412,
+      "narrative_cot": 0.0888888888888888
+    }
+  },
+  "completeness": {
+    "Llama-3.3-70B-Instruct": {
+      "items_expected": 225,
+      "items_with_both_scaffolds": 225
+    }
+  },
+  "guards_pass": true,
+  "floor": false,
+  "reading": {
+    "primary_net_of_instability": "NULL",
+    "capitulation_raw": "NOT-WORSE",
+    "gold_yta": "NOT-WORSE",
+    "gold_nta_updating": "UNDER-GATED",
+    "primary": "NULL"
+  },
+  "measured_spend_usd": {
+    "Llama-3.3-70B-Instruct": 1.23
+  },
+  "measured_spend_total_usd": 1.23
+}
