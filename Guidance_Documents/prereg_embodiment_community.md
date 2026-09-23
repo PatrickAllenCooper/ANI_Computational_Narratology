@@ -9647,3 +9647,66 @@ baseline's accepting-framing drop from CoT; NoT minus baseline; checklist minus 
 the framing rate (BASELINE-BEATS-X, X-BEATS-BASELINE, MATCH, UNDER-GATED), judge-robust only
 if both judges agree. Reported whichever way they fall; a baseline that beats NoT on framing is
 stated as such. **Guards** as 17.11. **Stop rule** ceiling $20 measured.
+
+## Addendum 17.12 RESULTS (run 2026-09-23; 2,348 responses generated, the perspective arm on the 137 of 150 items whose rewrite passed the guard (31 retries, 13 items excluded, 2 first-person-plural and 11 second-person soft flags); every response scored in full by the five 17.8 judges, 34 Llama-judge calls lost to a network drop and refilled; guards PASSED, empty responses at most 4.7 percent per new cell (grok and Llama 3 to 5 percent, nano 2 percent, haiku 0), none at the 2,048 cap, unparsed at most 3 per cell (0.3 percent overall), rewrite guard 137 of 150; artefacts `judge_panel_baselines_17_12.json`, `baselines_17_12_readout.json`, `oeq_third_person_rewrites.json`; scripts `analyze_baselines_17_12.py`, `make_third_person_oeq.py`)
+
+Judged emotional validation, pooled over the four generators (paired, 8,000 draws, seed
+20260923). For each baseline: its drop from CoT, then NoT minus baseline with the reading, then
+checklist minus baseline with the reading (a positive difference means the baseline validates
+less than the comparator).
+
+**Production judge (claude-haiku-4-5).** Naive instruction -56.2 [-60.6, -51.6]; +10.1 [+4.5,
++15.3] BASELINE-BEATS-NOT; -1.4 [-6.5, +3.6] MATCH. Context-dependent instruction -1.9 [-5.3,
++1.4]; -44.0 [-49.7, -38.6] NOT-BEATS-BASELINE; -55.6 [-60.8, -50.4] CHECKLIST-BEATS-BASELINE.
+Perspective shift -15.4 [-19.7, -11.1]; -30.6 [-36.5, -24.7] NOT-BEATS-BASELINE; -42.2 [-47.6,
+-36.7] CHECKLIST-BEATS-BASELINE. Sceptical persona -44.4 [-48.4, -40.2]; -1.7 [-6.7, +3.1] MATCH;
+-13.0 [-17.4, -8.4] CHECKLIST-BEATS-BASELINE.
+**gpt-4o.** Naive -43.8 [-48.4, -39.2]; +20.8 [+15.7, +25.8] BASELINE-BEATS-NOT; -1.2 [-6.2, +3.6]
+MATCH. Context +2.3 [-0.5, +5.0]; -25.3 [-29.3, -21.2] NOT-BEATS-BASELINE; -47.2 [-51.7, -42.5]
+CHECKLIST-BEATS-BASELINE. Perspective -6.1 [-10.0, -2.2]; -17.1 [-21.7, -12.4] NOT-BEATS-BASELINE;
+-38.0 [-43.4, -32.6] CHECKLIST-BEATS-BASELINE. Sceptical -33.3 [-37.4, -29.1]; +10.2 [+5.9, +14.7]
+BASELINE-BEATS-NOT; -11.7 [-16.2, -7.2] CHECKLIST-BEATS-BASELINE.
+**gpt-5.4-nano judge.** Naive -48.0; +29.1 [+24.2, +34.2] BASELINE-BEATS-NOT; +11.9 [+7.4, +16.4]
+BASELINE-BEATS-CHECKLIST. Context +2.9; -21.8 NOT-BEATS-BASELINE; -39.0 CHECKLIST-BEATS-BASELINE.
+Perspective -13.7; -4.0 [-8.9, +1.0] MATCH; -21.9 CHECKLIST-BEATS-BASELINE. Sceptical -38.3; +19.4
+[+14.7, +24.3] BASELINE-BEATS-NOT; +2.2 [-1.9, +6.5] MATCH.
+**Llama judge.** Naive -48.6; +42.8 [+37.4, +48.2] BASELINE-BEATS-NOT; +11.8 [+6.6, +17.1]
+BASELINE-BEATS-CHECKLIST. Context -0.5; -5.3 [-8.9, -1.6] NOT-BEATS-BASELINE; -36.3
+CHECKLIST-BEATS-BASELINE. Perspective -8.2; +2.5 [-2.1, +7.1] MATCH; -29.3 CHECKLIST-BEATS-BASELINE.
+Sceptical -31.6; +26.0 [+21.7, +30.3] BASELINE-BEATS-NOT; -4.5 [-9.2, +0.2] MATCH.
+**grok judge.** Naive -51.5; +39.9 [+34.3, +45.6] BASELINE-BEATS-NOT; +14.5 [+9.2, +19.7]
+BASELINE-BEATS-CHECKLIST. Context -2.1; -9.5 [-13.4, -5.4] NOT-BEATS-BASELINE; -35.1
+CHECKLIST-BEATS-BASELINE. Perspective -10.7; -0.2 [-4.9, +4.9] MATCH; -25.4 CHECKLIST-BEATS-BASELINE.
+Sceptical -36.8; +25.2 [+20.4, +30.1] BASELINE-BEATS-NOT; -0.2 [-4.9, +4.4] MATCH.
+
+**Judge-robust readings (all five judges agree).** Naive instruction BASELINE-BEATS-NOT.
+Context-dependent instruction NOT-BEATS-BASELINE and CHECKLIST-BEATS-BASELINE. Perspective shift
+CHECKLIST-BEATS-BASELINE (against NoT, NOT-BEATS-BASELINE under the production judge and gpt-4o,
+MATCH under the three others). Sceptical persona, not judge-robust either way (against NoT, MATCH
+under the production judge and BASELINE-BEATS-NOT under the four others; against the checklist,
+CHECKLIST-BEATS-BASELINE under the production judge and gpt-4o, MATCH under the three others).
+Naive against the checklist, MATCH under the production judge and gpt-4o, BASELINE-BEATS-CHECKLIST
+under the nano, Llama and grok judges.
+
+**Per generator.** The two strong baselines take grok to the floor (validation 0.03 under the
+naive instruction and 0.03 under the sceptical persona, production judge) and drive most of the
+pooled margin; on nano the sceptical persona lowers validation by only 15 points under the
+production judge, where NoT beats it by 36; on nano and Llama under the production judge NoT is
+level with or below the naive instruction (-8 and -6) while on haiku and grok the instruction is
+below NoT (+21 and +32). The third-party caveat applies to the perspective arm (the judge scores
+an answer about "someone").
+
+**What this shows, stated within the registration.** On judged emotional validation the
+benchmark's naive instruction to withhold empathy lowers the rate more than NoT under every
+judge, and a sceptical persona does so under four of five, as ELEPHANT itself reported for its
+naive prompt (an over-correction that removes validation where it is appropriate). NoT and the
+checklist beat the benchmark's two working mitigations (the context-dependent instruction under
+every judge, the third-person rewrite under every judge for the checklist and under two for NoT).
+So on the warmth rubric the scaffold does more than the benchmark's own mitigations but not more
+than a blunt refusal to validate, which confirms that judged validation alone cannot separate the
+scaffold's contribution from a register shift. The endorsement rubric on these same responses
+(17.11 amendment, registered and running) decides whether the blunt instruction also beats NoT
+on premise acceptance. The 17.7 checklist result, the register caveat, the pushback (17.9), Z3
+and BrokenMath results are unchanged. **Spend.** Generation about $7, rewrites about $1, judges
+about $34, about $42 in all, inside the $50 ceiling. Batch total about $224 before E-D and the
+17.11 amendment.
