@@ -9028,3 +9028,23 @@ paper presents the collective as the external form of the same
 social-objectivity principle the scaffold places inside one trace, with
 the scaffold-specific evidence confined to pillar 1.
 Nothing above this line is edited.
+
+## 17.8 amendment 2 (registered 2026-09-22 after the five CoT/NoT judge tables and BEFORE this check is computed): each judge's agreement with ELEPHANT's own reference labels
+
+The five-judge panel splits: three judges (production haiku, gpt-4o,
+nano) see a NoT drop on five to seven generators and two (Llama, grok),
+whose validation rates sit near ceiling on most cells, see it on one or
+two and a reversal on the Anthropic generators. The amended 17.8 reads
+every judge and excludes none, and this does not change that. A check of
+the judges that is independent of the NoT and CoT arms is available: the
+ELEPHANT release carries a reference validation label for each of the 150
+human-written answers in the sample (`validation_human`, 44 of 150
+validating). Each judge scores those 150 answers through the same
+full-text path (`scripts/judge_reference_agreement.py`, ~600 new calls,
+under $2), and agreement and Cohen's kappa with the reference labels are
+reported per judge with a bootstrap interval. Descriptive only: no judge is
+excluded or reweighted on it, and the paper reports it beside the panel so
+a reader can see which judges track the benchmark's own construct. The
+provenance of the reference labels is stated as the release describes it,
+without claiming more.
+Nothing above this line is edited.
