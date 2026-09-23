@@ -1,2 +1,137 @@
+% discussion.tex -- ICLR 2027 draft. Every number in the prose is followed by a comment line naming
+% its source (prereg addendum in Guidance_Documents/prereg_embodiment_community.md and/or
+% artefact in divergence_study_outputs/). Prose follows the repository rules (no em dashes,
+% colons, semicolons or lists in running prose). No number here goes beyond the agreed
+% key_messages.md. Model names as in the other sections (haiku = claude-haiku-4-5, sonnet =
+% claude-sonnet-4-6, nano = gpt-5.4-nano, grok = grok-4-1-fast-reasoning, Llama =
+% Llama-3.3-70B-Instruct, Mistral = Mistral-Large-3-2, DeepSeek = DeepSeek-V4-Pro).
+% NOTE FOR THE PI: this section states the evidence as it stands. Where the abstract (fixed wording)
+% is stronger, see the comment block and TODO at the top of sections/abstract.tex.
+% Integrating editor, 2026-09-23: the earlier notes that introduction.tex and pillar1.tex said
+% "37 to 58" and that pillar1.tex called the reduction "a change in the register of a first answer"
+% are resolved (all sections now say 36.5 to 57.5, and pillar1.tex no longer makes the register
+% claim). Tightened for the nine-page limit; the pushback per-model detail (gold-YTA +16.3, Llama
+% 0.80 against 0.44) now lives in sections/pillar1.tex and Appendix app-pushback only.
 \section{Discussion and Limitations}
-\todo{draft pending}
+\label{sec-discussion}
+
+\paragraph{What the evidence supports.}
+The evidence supports the scaffold's principle, organised criticism across
+perspectives, only in a weaker form than we set out to test, and not its
+narrative packaging. Pooled over haiku, grok, nano and Llama, a third-person
+checklist of the same five elements lowers validation relative to
+chain-of-thought by 36.5 to 57.5 points under each of the five judges, more
+than NoT does on each generator under every judge, while the first-person
+narrative instruction alone raises it by 6.8 to 18.7 points. Because the
+rubric scores emotional validation, the checklist may score lower partly for
+a cooler register, which this design cannot separate from less endorsement.
+% prereg Addenda 17.7 and 17.7 amendment 2 RESULTS (CHECKLIST-BETTER and CONTENT-ADDS under all five
+% judges, register caveat); narrative_form_readout.json form_pooled (haiku, grok, nano and Llama
+% against same-day replicates at equal caps; checklist -36.49 nano judge to -57.49 production; NoT
+% minus checklist +11.4 to +31.4, every CI excluding 0; narrative only +6.8 Llama judge to +18.7 nano
+% judge); form_per_generator (NoT minus checklist excludes 0 on all 20 generator-judge pairs; narrative
+% only includes 0 for grok under the production, Llama and grok judges and for Llama under gpt-4o).
+% 36.5 to 57.5 is the direct rounding of -36.49 and -57.49 to one decimal; the prereg 17.7 RESULTS
+% and key_messages.md say 37 to 58, the same values rounded to whole points
+Earlier single-judge tests isolate no single element as the cause
+(Section~\ref{sec-single}).
+% prereg Addendum 17.3 RESULTS (reading NEITHER on pooled shares +0.10, +0.18, +0.16, upper bounds 0.26
+% to 0.33; haiku 0.42 to 0.55), knockout_social_analysis.json; 17.5 RESULTS (+6.1 [+2.1, +10.2] pooled
+% over haiku, grok and nano; haiku +10.0 [+2.0, +18.0], grok and nano intervals include 0; REVERSED
+% label added after the run), counterparty_causal_analysis.json; both production judge only
+In the collective, on grok, the only model whose roles were varied, the
+objections routing uses come from assigned opposition, which in a contrast
+not declared in advance costs 2.1 points of accuracy against identical
+neutral readers. Plain chain-of-thought seats beat narrated ones on both
+models tested, and on the five models of Table~\ref{tab-routing} the
+collective is, descriptively, at or below the same model answering alone,
+which the routed system beats only on haiku and Mistral.
+% prereg Addendum 16.10 RESULTS (H-ROLE, grok only; identical/on fires on 2 of 420 debates;
+% identical/on minus embodied/on +0.021 [+0.004, +0.038], observed, not pre-declared;
+% topology_2x2_analysis.json); 16.28 RESULTS (PLAIN-BETTER on grok and Llama, +2.0 and +4.2 points,
+% seat_scaffold_comparison.json); collective against solo from
+% verify_pillar3_headline_{grok,haiku_249,llama,mistral,deepseek}.json and
+% routing_certification{,_haiku,_llama,_mistral,_deepseek}.json acc_base, routed against solo from
+% figures/tab_routing.tex (haiku 0.891 against 0.862, Mistral 0.967 against 0.843, grok 0.913 against
+% 0.912 read as a match), all descriptive (debates against the solo's answers, no paired interval)
+
+\paragraph{Judges and the construct.}
+The single-agent reduction depends on the judge. It holds on seven, six,
+five, one and two of the seven generators under the production, gpt-4o,
+gpt-5.4-nano, Llama and grok judges, and under all five only on the Llama
+generator.
+% prereg Addendum 17.8 RESULTS (JUDGE-DEPENDENT); judge_panel_full_oeq_<judge>.json (negative with a
+% CI excluding 0 on 7, 6, 5, 1 and 2 of 7 generators)
+The two judges that see little of it rate most responses as validating
+whatever the prompt and agree least, by point estimate, with the benchmark's
+labels (Section~\ref{sec-single}).
+% prereg 17.8 RESULTS (ceiling statistic, Llama 0.79 and grok 0.64 of combinations above 0.85,
+% descriptive) and 17.8 amendment 2; judge_reference_agreement.json (kappa Llama 0.478 [0.358, 0.600]
+% and grok 0.551 [0.402, 0.688] on the 147 answers each could score, haiku 0.587 [0.443, 0.717], nano
+% 0.606 [0.455, 0.746] and gpt-4o 0.792 [0.670, 0.892] on 149; only Llama against gpt-4o has
+% non-overlapping intervals)
+The production judge is also a generator and shares its developer with
+sonnet, and no other judge confirms sonnet's reduction, which all four
+reverse in the regenerated responses.
+% prereg Addenda 17.8 and 17.10 RESULTS; judge_panel_full_oeq_<judge>.json (haiku -10.7 [-19.3, -2.0]
+% gpt-4o, -5.3 ns nano, +5.4 ns Llama judge, +11.4 [+5.4, +18.1] grok judge; sonnet +3.3 ns gpt-4o,
+% +2.0 ns nano, +7.4 Llama judge, +14.0 grok judge); headline_rep4k_readout.json (haiku -14.0 gpt-4o,
+% -1.3 ns nano, +12.1 [+4.7, +19.5] grok judge; sonnet +8.0 [+1.3, +15.3] gpt-4o, +8.7 nano, +8.7 Llama
+% judge, +12.1 grok judge)
+No judge panel can separate register from endorsement, but a judge-free test
+on the crowd-labelled disputes of Section~\ref{sec-collective} separates
+register from commitment, and there the scaffold does not help. Under
+pushback \citep{fanous2025syceval}, NoT, pooled over nano, Llama and grok,
+gives way more often than chain-of-thought (0.37 against 0.22), even where the
+crowd found the user at fault, but it also changes its verdict more when
+merely asked again, and net of that the difference, $+5.2$ points
+$[-1.7, +12.2]$, is indistinguishable from zero.
+% prereg Addendum 17.9 RESULTS (primary NULL, gold-YTA raw NOT-WORSE +16.3 [+11.8, +20.8]);
+% pushback_readout_pooled.json (nano, Llama and grok, 232 item pairs; haiku unread after 14.1 percent of
+% its NoT pushback replies had no parseable verdict)
+On Llama and Mistral NoT also keeps the verdict's shift toward the user as
+writer, and DeepSeek shows none, so the judged reduction does not extend to
+resisting social pressure on a verdict.
+% prereg Z3 RESULTS (z3_sdt_{llama,mistral,deepseek}.json, registered coding; criterion shift CoT and
+% NoT Llama +0.256 and +0.270, Mistral +0.127 and +0.299, DeepSeek -0.077 and +0.008). The
+% propositional boundary (16.15.5, BrokenMath, nano only) is left to the single-agent section, where
+% its registered sentence with all three estimates belongs.
+
+\paragraph{Other limitations.}
+Each generator answered each item once per prompt. Token caps cut off many
+original generations, and regenerating at a cap almost no response reaches
+keeps the production judge's reduction on all seven generators but shrinks it
+on sonnet, and under gpt-4o on Mistral and DeepSeek
+(Section~\ref{sec-single}).
+% prereg Addendum 17.10 registration (cap hits); prereg 16.15.7 RESULTS and pre-spend review
+% amendment (nano NoT non-empty on 116 of 150, the missing 34 the long end), pillar1_headline.json
+% (not_missing 34); one sample per generator, prompt and item (prereg Addendum 17 shared instrument,
+% 17.7 and 17.10 registrations); prereg 17.10 registration (nano keeps its 8,192 reasoning floor) and
+% RESULTS; headline_rep4k_readout.json (at most 2 responses per generator and prompt reach the cap;
+% production judge sonnet -12.7 [-22.0, -3.3]; gpt-4o Mistral -29.5, DeepSeek -16.3) against
+% judge_panel_full_oeq_claude-haiku-4-5.json (sonnet -19.3) and judge_panel_full_oeq_gpt-4o.json
+% (Mistral -41.0, DeepSeek -29.1); prereg 17.8 and 17.10 RESULTS
+Content filters removed disputes each platform refuses, so the collective
+and pushback panels differ across models.
+% per-model content-filter screens, prereg E5 RESULTS (grok 210), 16.23 (haiku 249), 16.24 (Llama 225),
+% 16.26 (Mistral 217) and 16.27 (DeepSeek 210) RESULTS, and the 17.9 registration (nano 209)
+\todo{PILLAR 2 (co-author): one or two sentences on the scope and limits of the theory-of-mind results of Section~\ref{sec-tom}, from the co-author's own experiments.}
+
+\paragraph{Future work.}
+The decisive test crosses first- and third-person voice with narrative and
+checklist form and has blind human raters score endorsement apart from
+warmth. Another is whether any form of the content resists pushback over
+several turns \citep{hong2025sycophancy}, with repeated samples per item. A
+third is whether dissent flags errors where seats lock weakly to their sides,
+as it did not detectably on haiku, and routes them better than a model's own
+sample disagreement \citep{manakul2023selfcheck}, which matched or beat it
+everywhere but Mistral in mostly exploratory readouts
+(Appendix~\ref{app-collective}).
+% prereg 16.23 RESULTS (haiku role-lock 0.419), verify_pillar3_headline_haiku_249.json (one-loser lift
+% +3.5 [-4.1, +12.0]); prereg 16.22 RESULTS (grok R3, registered), routing_certification{,_haiku,_llama,
+% _deepseek,_mistral}.json sonnet-judge disagree_minus_counter, exploratory except grok (grok +0.002
+% [-0.019, +0.024], haiku interval including 0, Llama +0.051 [+0.031, +0.074], DeepSeek +0.017 [+0.002,
+% +0.031], Mistral -0.055 [-0.090, -0.021], where the counter routes 77 percent of cells)
+Until then the evidence supports the principle of organised criticism across
+perspectives \citep{longino1990science} only in this weaker, judge-dependent
+form, and not the narrative that first carried it.

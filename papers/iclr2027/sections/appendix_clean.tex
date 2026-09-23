@@ -1,12 +1,3 @@
-% appendix.tex, ICLR 2027 draft. Every number in the running prose is followed by a comment line
-% naming its source (prereg addendum in Guidance_Documents/prereg_embodiment_community.md and/or
-% artefact in divergence_study_outputs/). Prose follows the repository rules (no em dashes, colons,
-% semicolons or lists in running prose). Tables marked GENERATED were emitted from the artefacts by
-% a script (scratchpad appendix_tables.py, reading the JSON named in each table's comment), not typed
-% by hand; tables under figures/ are \input, never copied.
-% Model names: haiku = claude-haiku-4-5, sonnet = claude-sonnet-4-6, nano = gpt-5.4-nano,
-% grok = grok-4-1-fast-reasoning, Llama = Llama-3.3-70B-Instruct, Mistral = Mistral-Large-3-2,
-% DeepSeek = DeepSeek-V4-Pro, gpt-4o = gpt-4o.
 \section{Appendix}
 \label{app}
 
@@ -29,17 +20,11 @@ emotionally validating under the rubric of the ELEPHANT benchmark
 \citep{cheng25elephant}, which asks whether a response shows understanding,
 validates the person's perspective and expresses care. The items are 150 of
 the benchmark's open-ended personal-advice questions, drawn with seed 44.
-% prereg Addendum 17 shared instrument (~l.7062) and 17.7 registration (~l.8757-8759, seed 44
-% corrects "seed 42"); scripts/load_elephant.py ELEPHANT_SEED = 44; rubric scripts/elephant_scorers.py
-% _validation_prompt
 A drop is the NoT rate minus the CoT rate in percentage points, so a negative
 drop means NoT validates less. Intervals are 95 percent percentile bootstraps
 that resample items and keep every response to an item together, with 8,000
 draws unless stated.
-% pillar1_headline.json bootstrap {b 8000}; scripts/analyze_length_matched_elephant.py _cluster_bootstrap;
-% 17.8 registration (~l.8719-8721)
 
-% ============================================================================================
 \subsection{Five judges and agreement with the benchmark's labels}
 \label{app-judges}
 
@@ -52,9 +37,6 @@ Llama judge and two under the grok judge (Table~\ref{tab-app-judge-drops}). The 
 reading is therefore JUDGE-DEPENDENT, the registered label for anything short
 of a negative drop excluding zero on at least six of seven generators under
 every judge, and only Llama's reduction holds under all five judges.
-% prereg Addendum 17.8 RESULTS (~l.9052-9082), judge_panel_full_oeq_<judge>.json for the five
-% judges (count of generators whose drop has hi < 0: 7, 6, 5, 1, 2); JUDGE-ROBUST / JUDGE-DEPENDENT
-% as redefined in the pre-spend review amendment (~l.8858-8860)
 Under nano the interval includes zero on haiku
 ($-5.3$) and sonnet ($+2.0$), and under gpt-4o it includes zero on sonnet
 ($+3.3$ $[-4.7, +11.3]$). The Llama judge finds a reduction only on Llama
@@ -62,29 +44,21 @@ Under nano the interval includes zero on haiku
 nano ($+13.8$ $[+7.8, +20.7]$). The grok judge finds a reduction on Llama
 ($-49.6$) and DeepSeek ($-5.0$ $[-10.0, -0.7]$) and a rise on haiku ($+11.4$
 $[+5.4, +18.1]$) and sonnet ($+14.0$ $[+8.7, +20.0]$).
-% judge_panel_full_oeq_{gpt-5.4-nano,gpt-4o,Llama-3.3-70B-Instruct,grok-4-1-fast-reasoning}.json
-% per_generator.<gen>.narrative_cot; prereg 17.8 RESULTS reading (~l.9076-9081)
 
 Each judge scored each response through the same full-text path, so the
 scores differ only in which model judges them, and each contrast is paired on
 the items with
 a response in both conditions, 116 to 150 per generator
 (Table~\ref{tab-app-judge-rates}), with bootstrap seed 20260822.
-% prereg 17.8 registration (~l.8705-8721); judge_panel_full_oeq_*.json n_items (nano 116, haiku
-% and sonnet 150 under the production judge)
 Unparsed judge outputs were 0.0 percent for haiku, gpt-4o and nano and 0.3
 percent for the Llama and grok judges, and one Llama-judge call was lost to a
 rate limit.
-% prereg 17.8 RESULTS header (~l.9052); judge_panel_full_oeq_*.json unparsed (6 of about 2,000 for
-% Llama and grok), Llama missing 1
 Scored this way, the production judge reproduces the registered drops
 closely, haiku $-26.7$ exactly, grok $-35.2$ against $-36.0$, Llama $-70.2$
 against $-69.9$, Mistral $-57.6$ against $-58.2$, DeepSeek $-46.1$ against
 $-45.5$, nano $-37.9$ on its 116 paired items against $-41.4$ unpaired, and
 sonnet $-19.3$ against $-22.3$. Apart from nano, whose gap reflects the
 pairing, sonnet's 3.0 points is the largest difference.
-% prereg 17.8 RESULTS (~l.9067-9070); registered values from 16.15.7 RESULTS (~l.4607-4612) and
-% 17.1 RESULTS (~l.7730-7732), pillar1_headline.json
 
 The two judges that find little or no reduction are the two that rate most
 responses validating. Of the fourteen generator-by-prompt validation rates,
@@ -93,23 +67,15 @@ under the Llama judge and 9 (64 percent) under the grok judge, against 7
 percent under haiku and gpt-4o and none under nano, and the Llama judge's
 fourteen rates span only 0.17, or 0.21 on the paired items of
 Table~\ref{tab-app-judge-rates}.
-% judge_panel_full_oeq_*.json ceiling_descriptive (frac_cells_above_0.85 0.786, 0.643, 0.071,
-% 0.071, 0.000; Llama range 0.173); prereg 17.8 RESULTS (~l.9072-9074, "rate most responses
-% validating"); ceiling_descriptive.range 0.173 is on per_generator.<gen>.rates (all scored
-% responses); the paired rate_a / rate_b span 0.759 to 0.971 (0.213)
 A registered screen that would have excluded judges on this statistic was
 removed before any judge-panel call, because it is computed on the very rates whose
 difference is tested, and it survives only as this descriptive number
 (Appendix~\ref{app-prereg}). Agreement with the production judge on the same
 responses is 0.780 for gpt-4o, 0.718 for nano, 0.669 for grok and 0.655 for
 Llama.
-% prereg pre-spend review amendment (~l.8854-8858); judge_panel_full_oeq_*.json
-% agreement_with_production (n 2004, 2004, 1998, 1997)
 The production judge is itself one of the generators and shares a developer
 with a second, sonnet. Sonnet's reduction is confirmed by no judge other than
 the production judge, and haiku's by the production judge and gpt-4o only.
-% Table tab-app-judge-drops rows haiku and sonnet; prereg 17.8 RESULTS reading for the paper
-% (~l.9097-9103)
 
 Agreement with the benchmark's own labels is highest for gpt-4o and lowest for
 the Llama judge (Table~\ref{tab-app-judge-ref}). The ELEPHANT release carries
@@ -119,35 +85,23 @@ checks the judges without involving the NoT or CoT responses. Of the 149, 44,
 or 29.5 percent, are validating by reference, and Cohen's kappa with the
 reference is 0.792 $[0.670, 0.892]$ for gpt-4o, 0.606 for nano, 0.587 for
 haiku, 0.551 for grok and 0.478 $[0.358, 0.600]$ for Llama.
-% prereg 17.8 amendment 2 (~l.9032-9050) and 17.8 RESULTS (~l.9083-9095);
-% judge_reference_agreement.json (n_items 149, reference_rate 0.2953 = 44/149, kappa and bootstrap
-% bounds); scripts/judge_reference_agreement.py keeps answers whose validation label is 0 or 1, and
-% one of the 150 carries none (key_messages.md and the 17.8 amendment 2 text say "44 of 150")
 Only the gpt-4o and Llama judges' intervals do not overlap, and the grok
 judge's kappa is within 0.04 of the production judge's, so the check
 separates gpt-4o from the Llama judge but not the grok judge from the
 production judge or nano.
-% judge_reference_agreement.json kappa_lo / kappa_hi (gpt-4o 0.670-0.892, Llama 0.358-0.600,
-% nano 0.455-0.746, haiku 0.443-0.717, grok 0.402-0.688; grok 0.551 vs haiku 0.587)
 The Llama judge calls 55.1 percent of these human answers validating, against
 23.5 to 38.9 percent for the other four judges.
-% judge_reference_agreement.json judge_rate (Llama 0.551; nano 0.235 to haiku 0.389)
 The check is descriptive. It was registered after the five drop tables were
 seen and before it was computed, and no judge is excluded or reweighted on it.
-% prereg 17.8 amendment 2 (~l.9032-9049)
 It has a limit we cannot remove. The ELEPHANT authors validated a GPT-4o
 judge against expert annotators, reporting at least 0.83 accuracy and a kappa
 of at least 0.65 on every metric \citep{cheng25elephant}, but their primary
 page does not state how the labels on the human-written answers were
 produced, and if they come from that GPT-4o judge then gpt-4o's agreement with
 them is partly by construction.
-% arXiv 2505.13995 primary page, fetched 2026-09-22 (scratchpad results_digest.md, E3 entry); the
-% provenance of the human-answer labels is not stated there
 Read with that limit, the judge that agrees most with the benchmark's labels
 finds the reduction on six of seven generators, all but sonnet, and the Llama
 judge, which agrees least, finds it on one.
-% judge_reference_agreement.json kappa (gpt-4o highest, Llama lowest); judge_panel_full_oeq_*.json
-% counts 6 (gpt-4o) and 1 (Llama)
 
 \begin{table}[t]
 \centering
@@ -157,11 +111,8 @@ registered result, each response's full generated text scored by each judge
 (columns). Many of those responses had been cut at their generation cap
 (Appendix~\ref{app-rep4k}). Haiku is the production judge. The last row counts generators with a negative
 drop whose interval excludes zero.}
-% GENERATED from judge_panel_full_oeq_<judge>.json per_generator.<gen>.narrative_cot (drop, lo, hi);
-% prereg Addendum 17.8 RESULTS table (~l.9056-9065) agrees to 0.1 point
 \label{tab-app-judge-drops}
-\resizebox{\textwidth}{!}{%
-\begin{tabular}{lrrrrr}
+\resizebox{\textwidth}{!}{\begin{tabular}{lrrrrr}
 \toprule
 generator & haiku (production) & gpt-4o & nano & Llama & grok \\
 \midrule
@@ -187,11 +138,8 @@ production judge give the same score. The row of rates above 0.85 gives the
 share of the fourteen generator-by-prompt rates above 0.85, each computed on
 all scored responses in its condition rather than on the paired rates shown,
 and is reported as a description, not used to exclude any judge.}
-% GENERATED from judge_panel_full_oeq_<judge>.json (rate_a = CoT, rate_b = NoT, n_items,
-% agreement_with_production, ceiling_descriptive.frac_cells_above_0.85, unparsed, unparsed_share)
 \label{tab-app-judge-rates}
-\resizebox{\textwidth}{!}{%
-\begin{tabular}{lrrrrr}
+\resizebox{\textwidth}{!}{\begin{tabular}{lrrrrr}
 \toprule
 generator & haiku (production) & gpt-4o & nano & Llama & grok \\
 \midrule
@@ -219,9 +167,6 @@ the share the judge scores validating, agreement the share matching the
 reference. Kappa intervals are percentile bootstrap intervals over answers
 (4,000 draws, seed 20260922). Two answers each drew unparsed outputs from the
 Llama judge and from the grok judge.}
-% GENERATED from judge_reference_agreement.json (n_items 149, reference_rate 0.2953; unparsed 2 for
-% Llama and 2 for grok); scripts/judge_reference_agreement.py boot_kappa (draws 4000, seed 20260922);
-% prereg 17.8 amendment 2 (~l.9032-9050), RESULTS (~l.9083-9095)
 \label{tab-app-judge-ref}
 \begin{tabular}{lrrrr}
 \toprule
@@ -236,7 +181,6 @@ grok & 147 & 0.354 & 0.803 & 0.551 [0.402, 0.688] \\
 \end{tabular}
 \end{table}
 
-% ============================================================================================
 \subsection{The same-day replicate without generation-cap truncation}
 \label{app-rep4k}
 
@@ -249,21 +193,13 @@ gpt-4o and nano into rises with intervals excluding zero
 production judge the drops run from 12.7 points on sonnet to 63.4 on Llama,
 16 to 80 percent of the CoT rate, so truncation during generation did not
 manufacture the production judge's result.
-% prereg Addendum 17.10 RESULTS (~l.9195-9216); headline_rep4k_readout.json per_generator.<gen>
-% .per_judge.claude-haiku-4-5 (drop, relative: sonnet -0.127 / 0.162, Llama -0.634 / 0.796);
-% hi < 0 counts 7, 6, 5, 1, 1 against cached 7, 6, 5, 1, 2; sonnet gpt-4o +8.0 [+1.3, +15.3] and nano
-% +8.7 [+0.7, +16.7] against cached +3.3 [-4.7, +11.3] and +2.0 [-6.7, +10.7]
-% (judge_panel_full_oeq_{gpt-4o,gpt-5.4-nano}.json)
 The pre-declared reading is HEADLINE-HOLDS on Llama alone, whose drop is
 negative with an interval excluding zero under all five judges, and
 HEADLINE-JUDGE-DEPENDENT on the other six generators.
-% headline_rep4k_readout.json per_generator.<gen>.reading; prereg 17.10 registration (~l.8963-8967)
 Counting generators with a negative drop whose interval excludes zero, the
 replicate gives seven under the production judge, six under gpt-4o, five under
 nano and one each under the Llama and grok judges, where the original responses
 gave seven, six, five, one and two.
-% headline_rep4k_readout.json (hi < 0 counts per judge: 7, 6, 5, 1, 1); judge_panel_full_oeq_*.json
-% for the cached counts
 
 The replicate answers a defect in the original responses behind the registered
 result. Those were generated at 1,024 tokens for CoT and 2,048 for NoT, and
@@ -272,41 +208,28 @@ Mistral responses, 68 of 144 DeepSeek responses and 62 of 146 grok responses,
 and NoT on 67 of 140 Mistral responses and 39 of 150 sonnet responses, with
 smaller shares elsewhere, among them 9 of 150 haiku NoT responses and 5 of 150
 sonnet CoT responses.
-% prereg 17.7 amendment 2 and Addendum 17.10 registration (~l.8947-8952); counts from completion
-% tokens in elephant_gen_oeq_<gen>_<arm>_<item>.json; scripts/run_elephant.py _max_tokens_for;
-% haiku NoT 9/150, sonnet CoT 5/150 and DeepSeek NoT 3/141 from the same completion tokens
-% (scratchpad fact_sheet.json p1_core "Generation-cap truncation", not in a RESULTS block)
 Re-scoring the full text restores what the judge sees but not text that was
 never generated. Nano's original responses were generated under a 2,048-token
 budget that included its hidden reasoning, and that budget shows up instead as
 34 empty NoT responses of 150.
-% prereg pre-spend review amendment (~l.8826-8831); pillar1_headline.json (nano NoT missing 34 of 150)
 In the replicate one sonnet NoT response of 150 and two Mistral NoT responses
 of 140 end at the cap and no other response does, nano keeps its
 8,192-token reasoning floor, and the paired items number 138 to 150 per
 generator.
-% headline_rep4k_readout.json per_generator.<gen>.cap (at_cap from finish reasons) and per_judge
-% n_items; prereg 17.10 registration (~l.8955-8957)
 
 On sonnet the replicate turns the production judge's reduction, $-12.7$
 $[-22.0, -3.3]$, into a rise under each of the other four judges, $+8.0$
 $[+1.3, +15.3]$ under gpt-4o, $+8.7$ $[+0.7, +16.7]$
 under nano, $+8.7$ $[+3.4, +14.1]$ under the Llama judge and $+12.1$
 $[+6.7, +18.1]$ under the grok judge.
-% headline_rep4k_readout.json per_generator.claude-sonnet-4-6.per_judge; prereg 17.10 RESULTS
-% (~l.9213-9216)
 Haiku's reduction also becomes a rise under the grok judge, $+12.1$
 $[+4.7, +19.5]$, as it did on the original responses, and under the Llama judge
 its interval includes zero ($+5.4$ $[-0.7, +11.4]$).
-% headline_rep4k_readout.json per_generator.claude-haiku-4-5.per_judge.{grok-4-1-fast-reasoning,
-% Llama-3.3-70B-Instruct}
 Under gpt-4o the reduction holds on the other six generators, haiku $-14.0$
 $[-22.7, -4.7]$, nano $-10.2$ $[-17.7, -3.4]$, grok $-23.6$ $[-32.1, -15.0]$,
 Llama $-66.2$ $[-73.9, -58.5]$, Mistral $-29.5$ $[-37.4, -21.6]$ and DeepSeek
 $-16.3$ $[-24.1, -9.2]$, and on Llama it takes the validation rate from 0.676
 to 0.014, a 98 percent relative reduction.
-% headline_rep4k_readout.json per_generator.<gen>.per_judge.gpt-4o (Llama rate_a 0.676, rate_b 0.014,
-% relative 0.979)
 
 \begin{table}[t]
 \centering
@@ -319,14 +242,10 @@ excluding zero under the production judge and under at least three of the
 other four judges, and JUDGE-DEPENDENT, the registered
 HEADLINE-JUDGE-DEPENDENT, means it is negative under the production judge but
 under fewer than three others.}
-% figures/tab_rep4k.tex, generated by scripts/make_iclr_figures.py rep4k_table from
-% headline_rep4k_readout.json per_generator.<gen>.per_judge (drop, lo, hi) and .reading (prereg
-% Addendum 17.10 registration ~l.8963-8967)
 \label{tab-app-rep4k}
-\resizebox{\textwidth}{!}{\input{figures/tab_rep4k}}
+\resizebox{\textwidth}{!}{\input{figures/tab_rep4k_clean}}
 \end{table}
 
-% ============================================================================================
 \subsection{Form, content, persona and length}
 \label{app-form}
 
@@ -338,12 +257,9 @@ validation by 36.5 to 57.5 points depending on the
 judge, more than NoT does under every one of the five judges, while the
 first-person narrative instruction alone raises validation above CoT under
 every judge, by 6.8 to 18.7 points (Table~\ref{tab-app-form}).
-% prereg Addenda 17.7, 17.4 and 17.10 RESULTS (~l.9152-9177); narrative_form_readout.json
-% judges.<judge>.form_pooled.{checklist,narrative_only}.drop_arm; figures/tab_form.tex
 NoT minus the checklist is $+11.4$ $[+7.3, +15.3]$ under the production judge,
 $+22.2$ under gpt-4o, $+17.4$ under nano, $+25.7$ under the grok judge and
 $+31.4$ $[+27.2, +35.5]$ under the Llama judge.
-% narrative_form_readout.json judges.<judge>.form_pooled.checklist.gap; prereg (~l.9165-9167)
 The readings CHECKLIST-BETTER (NoT minus checklist with an interval above
 zero) and CONTENT-ADDS (NoT minus narrative only with an interval below zero)
 therefore hold
@@ -351,9 +267,6 @@ under all five judges, which is the registered definition of judge-robust for
 these tests, and the checklist lowers validation by about 37 points even under
 the Llama and grok judges, under which NoT's own reduction is small ($-5.9$ and
 $-11.5$).
-% narrative_form_readout.json form_reading and agreement.form_checklist ['CHECKLIST-BETTER'],
-% agreement.form_narrative_only ['CONTENT-ADDS']; prereg pre-spend amendment (~l.8840-8852,
-% ~l.8862-8864); checklist -37.3 (Llama judge) and -37.2 (grok judge); NoT drop_not -5.9 and -11.5
 
 This result carries a caveat that must travel with it. The rubric scores
 emotional validation, meaning understanding, validation of the person's
@@ -365,11 +278,6 @@ different question, whether a verdict holds when the user objects, and there
 NoT does not resist. The checklist also
 removes the first person and the narrative genre together, and the design
 cannot separate voice from genre either.
-% prereg 17.7 amendment (~l.8840-8843) and RESULTS caveat (~l.9177-9184); rubric element "Care"
-% in scripts/elephant_scorers.py _validation_prompt. The RESULTS caveat and key_messages.md say the
-% pushback test is "where the two come apart"; it measures a different outcome on a different
-% instrument, and sections/discussion.tex names the endorsement-versus-warmth test as future work,
-% so that wording is not used here (flagged to the PI)
 
 The persona line does not explain the reduction. CoT opens with ``You are a
 helpful assistant'' and NoT with ``You are a thoughtful advisor'', so every
@@ -378,9 +286,6 @@ swapped moves validation by $-0.9$ $[-4.3, +2.4]$ points under the production
 judge and by $+0.9$ to $+5.5$ under the other judges, an interval including
 zero under three judges and a rise under gpt-4o ($+3.3$ $[+0.3, +6.1]$) and nano
 ($+5.5$ $[+1.9, +9.1]$). Under no judge does the persona lower validation.
-% prereg 17.7 amendment 2 (~l.8933-8945) and RESULTS (~l.9157-9171); narrative_form_readout.json
-% judges.<judge>.persona_pooled.drop_arm and persona_reading (INERT haiku, Llama, grok; RAISES
-% gpt-4o, nano)
 
 Every contrast in Table~\ref{tab-app-form} and in the length control is
 against CoT and NoT regenerated on the same day at a 2,048-token cap, with nano at its 8,192-token reasoning floor,
@@ -391,47 +296,28 @@ tokens on 62 of 146 items.
 At these caps NoT's own pooled reduction is $-46.1$ under the production judge
 but only $-23.1$ under gpt-4o, $-19.1$ under nano, $-11.5$ under the grok judge
 and $-5.9$ under the Llama judge.
-% prereg pre-spend review amendment (~l.8826-8838, nano's 2,048-token total budget, grok CoT cut on
-% 42% of items); 17.1 RESULTS header (~l.7722, Llama cells run 2026-09-21); 17.10 registration
-% (~l.8948-8950, grok CoT 62 of 146); scripts/run_elephant.py REPLICATE_ARMS and
-% _max_tokens_for; narrative_form_readout.json judges.<judge>.form_pooled.checklist.drop_not
 Among these regenerated responses only haiku's reached the cap, on 12 of 150
 NoT responses and 3 of 150 checklist responses, and every condition returned a
 non-empty response on at least 142 of the 150 items.
-% counted for this appendix from finish_reason and response in elephant_gen_oeq_<gen>_<arm>_<item>.json
-% for arms standard_cot_rep, narrative_cot_rep, not_checklist, not_narrative_only, advisor_cot,
-% standard_cot_lengthmatched on the four generators (haiku narrative_cot_rep max_tokens 12 of 150,
-% not_checklist 3 of 150, every other arm 0; fewest records 142, grok and Llama); not in a RESULTS block
 
 On haiku and grok, the two generators tested, length does not explain the
 reduction under four of the five judges. The checklist is shorter than NoT on
 all four generators and still lowers validation more, and the narrative-only
 prompt, shorter than NoT on all four and shorter than the checklist on all but
 Llama (2,966 against 2,905 characters), raises it (Table~\ref{tab-app-lengths}).
-% narrative_form_readout.json lengths_chars (e.g. haiku NoT 5,558, checklist 4,517, narrative only
-% 2,228 characters; Llama not_narrative_only 2,966, not_checklist 2,905); agreement.length
-% ['LENGTH-INERT', 'UNRESOLVED'] (UNRESOLVED under the Llama judge); prereg 17.4 RESULTS (~l.9186-9193)
 The registered length control appends ``Write a response of about $N$
 words'' to the CoT prompt, with $N$ set from the original NoT responses' mean
 length (5,580 and 5,073 characters at 5.5 characters per word, so 1,015 words
 on haiku and 922 on grok), and its responses came out at 1.04 and 1.19 times
 the same-day NoT responses' mean length, inside the registered window of 0.75
 to 1.33.
-% prereg 17.4 registration (~l.7180-7194, 5,580 and 5,073 characters), launch (~l.8733-8741),
-% pre-spend amendment (~l.8870-8875); scripts/run_elephant.py LENGTH_MATCHED_WORDS
-% (round(5580/5.5), round(5073/5.5)); narrative_form_readout.json length_ratio_lengthmatched_over_not
-% (1.037, 1.190, against same-day NoT means 5,558 and 5,066 characters)
 NoT minus length-matched CoT is $-54.0$ $[-62.7, -45.3]$ on haiku and $-46.5$
 $[-54.9, -38.0]$ on grok under the production judge, and the pre-declared
 reading is LENGTH-INERT under four judges and UNRESOLVED under the Llama
 judge, where grok's gap includes zero ($-2.2$ $[-7.3, +2.2]$)
 (Table~\ref{tab-app-length}).
-% narrative_form_readout.json judges.<judge>.length_per_generator.<gen>.gap and length_reading;
-% prereg 17.4 RESULTS (~l.9186-9193)
 Asking haiku for more words raises its validation under every judge, by 25.3
 to 28.7 points under the production judge, gpt-4o and nano.
-% narrative_form_readout.json judges.{claude-haiku-4-5,gpt-4o,gpt-5.4-nano}.length_per_generator
-% .claude-haiku-4-5.drop_arm (+27.3, +25.3, +28.7), Llama judge +9.4, grok judge +18.8
 
 Two earlier registered tests, scored by the production judge alone, find no
 single element of the content that carries the reduction. Removing any one of
@@ -443,11 +329,6 @@ consider everyone affected, with none of NoT's other structure, raises
 validation rather than lowering it, by 6.1 points $[+2.1, +10.2]$ pooled over
 haiku, grok and nano, though its interval excludes zero on haiku alone
 ($+10.0$ $[+2.0, +18.0]$).
-% prereg Addendum 17.3 RESULTS (~l.7826-7896; pooled shares +0.10 [-0.08, +0.26], +0.18 [+0.00, +0.33],
-% +0.16 [-0.03, +0.33], reading NEITHER; haiku shares 0.42, 0.42, 0.55), knockout_social_analysis.json;
-% Addendum 17.5 RESULTS (~l.8017-8041, not_counterparty_only pooled +6.1), counterparty_causal_analysis.json
-% per_generator.<gen>.not_counterparty_only.drop (haiku +10.0 [+2.0, +18.0], grok +2.8 [-2.8, +8.5],
-% nano +5.6 [-1.4, +12.6])
 Both tests have limits. No knockout removes every mention of other people,
 since the consequences section still asks for effects on each stakeholder, the
 one-line instruction replaced the step-by-step sentence rather than adding to
@@ -457,11 +338,6 @@ CoT responses cut at 1,024 tokens on 62 of 146 items. The knockout results
 also omit the compliance, mean response length and bounds on non-response
 that their registration required, and the one-line results omit the
 registered share of NoT's reduction that the instruction recovers.
-% scripts/scaffold_permutations.py PERMUTATIONS['drop_stakeholders'] (consequences text) and
-% ['oneline_stakeholders']; prereg pre-spend amendment (~l.8826-8837); 17.10 registration
-% (~l.8948-8950, grok CoT 62 of 146); counterparty_causal_analysis.json per_generator.grok n_cot 146
-% (the June cell); prereg 17.3 registration (~l.7156-7160), Addendum 17 guards (~l.7080-7081) and
-% 17.5 registration (~l.7988-7994), absent from both RESULTS blocks and artefacts
 
 \begin{figure}[t]
 \centering
@@ -494,10 +370,6 @@ step by step, then give your answer. Write a response of about $N$ words.\\
 \end{minipage}}
 \caption{\textbf{The four comparison system prompts}, verbatim. NoT and CoT
 are in Figure~\ref{fig:prompt}.}
-% scripts/scaffold_permutations.py FORM (checklist_same_content, narrative_only), installed as
-% not_checklist / not_narrative_only in scripts/run_elephant.py FORM_ARMS; scripts/run_elephant.py
-% l.117 (advisor_cot assert) and length_matched_prompt (LENGTH_MATCHED_WORDS round(5580/5.5),
-% round(5073/5.5)); strings printed from the installed modules for this appendix
 \label{fig-app-prompts}
 \end{figure}
 
@@ -512,11 +384,9 @@ means NoT minus the checklist has an interval above zero, CONTENT-ADDS that
 NoT minus narrative only has an interval below zero, PERSONA-INERT that the
 persona's change has an interval including zero, and PERSONA-RAISES an
 interval above zero.}
-% figures/tab_form.tex, generated from narrative_form_readout.json (prereg 17.7, 17.7 amendment 2);
-% set at \footnotesize without scaling, column separation narrowed so it fits the text width
 \label{tab-app-form}
 \setlength{\tabcolsep}{4pt}
-\input{figures/tab_form}
+\input{figures/tab_form_clean}
 \end{table}
 
 \begin{table}[t]
@@ -529,11 +399,8 @@ means the second is below zero with its interval excluding zero on both
 generators. The readings are ordered. LENGTH-CARRIES, which none returns,
 would need the first to have an interval below zero and reach half of NoT's
 drop on either generator, and UNRESOLVED means that neither reading holds.}
-% GENERATED from narrative_form_readout.json judges.<judge>.length_per_generator.<gen>.{drop_arm,gap}
-% and length_reading; prereg 17.4 (registration ~l.7180-7194, readings ~l.8870-8875, RESULTS ~l.9186-9193)
 \label{tab-app-length}
-\resizebox{\textwidth}{!}{%
-\begin{tabular}{lrrrrl}
+\resizebox{\textwidth}{!}{\begin{tabular}{lrrrrl}
 \toprule
  & \multicolumn{2}{c}{haiku} & \multicolumn{2}{c}{grok} & \\
 \cmidrule(lr){2-3}\cmidrule(lr){4-5}
@@ -553,7 +420,6 @@ grok & $+18.8$ $[+12.8, +25.5]$ & $-14.8$ $[-20.8, -9.4]$ & $+3.7$ $[+0.0, +7.5]
 \small
 \caption{Mean response length in characters per condition, same-day
 generations. The length-matched condition was run on haiku and grok only.}
-% GENERATED from narrative_form_readout.json lengths_chars (<gen>|<arm>)
 \label{tab-app-lengths}
 \begin{tabular}{lrrrrrr}
 \toprule
@@ -567,7 +433,6 @@ Llama & 2{,}911 & 3{,}885 & 2{,}905 & 2{,}966 & 3{,}072 & n/a \\
 \end{tabular}
 \end{table}
 
-% ============================================================================================
 \subsection{Pushback}
 \label{app-pushback}
 
@@ -576,14 +441,11 @@ registered primary measure, capitulation net of the instability that a
 neutral request to reconsider produces, NoT minus CoT is $+5.2$ points
 $[-1.7, +12.2]$ pooled over nano, Llama and grok, a NULL reading
 (Table~\ref{tab-app-pushback}).
-% prereg Addendum 17.9 RESULTS (~l.9106-9136); pushback_readout_pooled.json pooled.net and
-% reading.primary NULL; figures/tab_pushback.tex
 On the raw measure NoT gives the user the verdict they asked for more often
 than CoT, 0.371 against 0.216 ($+15.5$ $[+11.0, +20.2]$), including on the items
 where the crowd found the user at fault and the pushback is therefore wrong
 ($+16.3$ $[+11.8, +20.8]$), and it also changes its verdict more often when
 merely asked to reconsider, 0.228 against 0.125 ($+10.3$ $[+5.7, +14.9]$).
-% pushback_readout_pooled.json pooled.cap, cap_gold_yta, inst (232 item pairs clustered on 103 items)
 
 The test needs no judge. Each model reads a dispute from the crowd-labelled
 panel of Section~\ref{sec-collective}, written with the user as the writer,
@@ -600,9 +462,6 @@ or the neutral re-ask
 ``Can you reconsider and give me your verdict again?''
 \end{quote}
 and its second verdict is parsed mechanically.
-% scripts/run_pushback.py CONDITIONS (verbatim), ARM as_asker, build_system via
-% scripts/run_crowdgold_aita.build_system (scaffold head + glossary + verdict instruction);
-% prereg 17.9 registration (~l.8786-8795) and pre-spend amendment (~l.8877-8892)
 Capitulation is the share of first verdicts finding the user at fault (YTA or
 ESH) that become not at fault (NTA or NAH) after the pushback, instability is
 the same share after the neutral re-ask, and both are computed on the items on
@@ -610,32 +469,22 @@ which both prompts gave an at-fault first verdict, so the two prompts are
 compared on the same items. Both turns are capped at 2,560 tokens, with nano
 at its 8,192-token reasoning floor, and the pooled bootstrap resamples items
 across models with seed 20260922.
-% scripts/run_pushback.py docstring, MAX_TOKENS 2560, DRAWS 8000, SEED 20260922; scripts/generators.py
-% generate() (eff_tokens = max(max_tokens, 8192) for reasoning models on the OpenAI route); prereg 17.9
-% registration (~l.8789-8790) and amendment (~l.8880-8883)
 
 Llama carries the pooled rise in raw capitulation. On its 95 common items, with first-verdict
 at-fault rates of 0.484 under CoT and 0.471 under NoT, Llama capitulates on
 0.489 of verdicts under CoT and 0.809 under NoT ($+31.9$ $[+22.3, +41.5]$ over
 the 94 items with a parseable second verdict), and on 0.435 against 0.800
 where the pushback is wrong.
-% pushback_readout_llama.json per_model.Llama-3.3-70B-Instruct (n_common_support 95,
-% turn1_at_fault_rate, cap n_pairs 94, cap_gold_yta n_pairs 85)
 Its instability under the neutral re-ask also rises, from 0.284 to 0.505, so
 its net contrast is $+9.6$ $[-5.3, +24.5]$.
-% pushback_readout_llama.json per_model.Llama-3.3-70B-Instruct.inst and .net
 Nano capitulates rarely, on 0.05 of verdicts under CoT and 0.10 under NoT on
 60 items (net $+3.3$ $[-5.0, +13.3]$), and grok almost never, 0.013 under CoT
 and 0.051 under NoT on 78 items, which on its own is below the registered
 floor of 5 percent CoT capitulation.
-% pushback_readout_nano.json and pushback_readout_grok.json per_model (cap, net, n_common_support);
-% prereg 17.9 RESULTS (~l.9114-9122) and registration floor (~l.8805-8806)
 The pooled CoT capitulation rate of 0.216 is above that floor, so the pooled
 comparison is read. Where the pushback is right, because the crowd found the
 user not at fault, too few items had an at-fault first verdict under both
 prompts for the contrast to be read.
-% pushback_readout_pooled.json pooled.cap.cot, reading.gold_nta_updating UNDER-GATED; prereg 17.9
-% RESULTS (~l.9129-9131)
 
 Haiku is unread. Its NoT replies to the pushback had no parseable verdict on
 35 of 249 items (14.1 percent), above the registered guard of 5 percent,
@@ -644,18 +493,10 @@ or asked why the user wanted a reconsideration. The rule that a model with
 any failed guard is excluded from the pooled readout was recorded after the
 haiku and nano results had been seen and before any grok or Llama data
 existed.
-% prereg 17.9 guard note (~l.8910-8928, header "after the haiku and nano cells and BEFORE any grok
-% or Llama 17.9 call", nano reading NULL recorded in the same note); pushback_readout_haiku.json
-% guards claude-haiku-4-5|narrative_cot noverdict_turn2_pushback 0.1406
 NoT's lower validation of the first answer therefore does not extend to
 resistance to social pressure across turns, and on Llama, where NoT reduces
 validation most, it also raises raw capitulation most, though not net of its
 instability ($+9.6$ $[-5.3, +24.5]$).
-% pushback_readout_llama.json per_model.Llama-3.3-70B-Instruct.net; prereg 17.9 RESULTS
-% (~l.9137-9147); Table tab-app-judge-drops Llama row. The 17.9 "reading for the paper" says the
-% reduction "is a change in the register of the first answer"; key_messages.md says only that part
-% of it "may be register", and this test cannot show which, so the weaker wording is used here
-% (flagged to the PI)
 
 \begin{table}[t]
 \centering
@@ -670,14 +511,10 @@ verdict after the pushback. The pooled row counts model-item pairs, 232 for
 capitulation (60, 94 and 78) and for re-ask (60, 95 and 77, grok lacking a
 re-ask verdict on one item), and 231 for the net contrast, which needs both
 second verdicts. Haiku failed the no-verdict guard and is not shown.}
-% figures/tab_pushback.tex, generated from pushback_readout_{nano,llama,grok,pooled}.json
-% (prereg Addendum 17.9); pooled n_pairs cap 232 = 60 + 94 + 78, inst 232 = 60 + 95 + 77,
-% net 231 = 60 + 94 + 77 (per_model grok inst and net n_pairs 77)
 \label{tab-app-pushback}
-\input{figures/tab_pushback}
+\input{figures/tab_pushback_clean}
 \end{table}
 
-% ============================================================================================
 \subsection{Narrated versus plain seats}
 \label{app-seat}
 
@@ -687,8 +524,6 @@ PLAIN-BETTER reading (Table~\ref{tab-app-seat}). Narrated minus plain, the
 collective's own verdict is $-2.0$ points $[-3.7, -0.3]$ on grok and $-4.2$
 $[-7.0, -1.4]$ on Llama, and the routed verdict at matched coverage is $-2.0$
 $[-3.8, -0.1]$ and $-4.6$ $[-7.8, -1.2]$.
-% prereg Addendum 16.28 RESULTS (~l.8977-9002); seat_scaffold_comparison.json per_model.{grok,llama}
-% .{acc,routed_matched}, reading.primary PLAIN-BETTER; figures/tab_seat.tex
 
 The plain-seat collectives follow the protocol of
 Section~\ref{sec-collective} with only the seats' system prompt changed to the
@@ -696,15 +531,12 @@ CoT prompt, on the same items as the narrated collectives, 210 on grok with
 four debates per item under each of the two framings (the user as the writer,
 and a third-person account) and 225 on Llama with two, and every guard
 passed with 1,680 and 900 debates complete.
-% prereg 16.28 registration (~l.8609-8625) and RESULTS header (~l.8977); seat_scaffold_comparison.json
-% completeness (1,680 and 900 rows)
 The comparison is paired on items with bootstrap seed 20260922. Routing sends
 the debates in which at least two seats object to the moderator's synthesis to
 sonnet as a stronger judge, and matched coverage first thins the narrated
 collective's flags at random to the plain collective's fire rate, over 200
 seeds, because a collective that flags more buys routed accuracy by consulting
 the judge more often.
-% prereg 16.28 RESULTS (~l.8979-8983) and pre-spend amendment (~l.8894-8899); scripts/analyze_seat_scaffold.py
 
 Narration makes grok's seats object more, with a fire rate of 0.195 against
 0.152 ($+4.3$ $[+1.8, +6.9]$), which moves its routing gain from 5.4 to 7.0
@@ -713,9 +545,6 @@ and, without matched coverage, brings its routed accuracy to within 0.4 points
 of the plain seats' ($-0.4$ $[-2.3, +1.5]$). On Llama narration has no
 detectable effect on the fire rate ($+0.2$ $[-2.2, +2.7]$) or the routing gain
 ($-0.2$ $[-1.9, +1.4]$).
-% seat_scaffold_comparison.json per_model.grok.{fire,gain,routed} (gain diff +0.016 [+0.000, +0.033],
-% lo 1.0e-18), per_model.llama.{fire,gain} (fire +0.002 [-0.022, +0.027], gain -0.002
-% [-0.019, +0.014]); prereg 16.28 RESULTS row (c)
 The dissent sensor survives without narration on grok. Plain seats lock to
 their sides, with opening at-fault rates 0.977 apart against 0.971 narrated,
 on verdicts that blame exactly one party their advocates' objections stay
@@ -724,20 +553,14 @@ second objection still marks errors 6.4 times
 as often ($+26.9$ points $[+11.8, +41.2]$ over 72 flagged debates, against 9.8
 times with narration). On Llama the same readout had 53 flagged debates, under
 the registered minimum of 60, and is not read.
-% prereg 16.28 RESULTS (~l.9004-9016; advocate phi within one-loser -0.905, narrated -0.901);
-% topology_cell_cg_deliberation_stdcot_k4.json,
-% flooding_analysis_grok_stdcot_k4.json, router_decomposition_grok_stdcot_k4.json;
-% router_decomposition_llama_stdcot.json (53 fired, under-gated)
 Neither model shows a difference in asker-shielding, the extra rate at which
 the verdict excuses a writer the crowd found at fault when the user is the
 writer, $-2.7$ $[-8.4, +2.5]$ on 86 items for grok and $-2.2$ $[-6.5, +1.6]$ on
 92 for Llama.
-% seat_scaffold_comparison.json per_model.<m>.shield, reading.shielding NO-DIFFERENCE
 An earlier comparison with one debate per item and framing on grok had found plain seats
 no worse ($+1.0$ $[-1.0, +2.9]$, plain minus narrated) with a lower fire rate
 (0.131 against 0.196), and this registered comparison was designed to test
 the routed system, which that one did not.
-% prereg 16.16 RESULTS as summarised in the 16.28 registration (~l.8602-8607)
 
 \begin{table}[t]
 \centering
@@ -747,21 +570,16 @@ intervals paired on items (grok 210, Llama 225). Routed accuracy sends
 debates with at least two objecting seats to sonnet. Matched coverage thins
 the narrated flags to the plain fire rate before routing. The routing gain is
 routed minus collective accuracy.}
-% figures/tab_seat.tex, generated from seat_scaffold_comparison.json (prereg Addendum 16.28)
 \label{tab-app-seat}
-\input{figures/tab_seat}
+\input{figures/tab_seat_clean}
 \end{table}
 
-% ============================================================================================
-% Moved here from sections/pillar3.tex by the integrating editor (2026-09-23) for the page limit.
 \subsection{The collective's dissent and routing against the solo model}
 \label{app-collective}
 
 After each platform's content-filter screen the collective's panel keeps 210
 items on grok, 249 on haiku, 225 on Llama, 217 on Mistral and 210 on
 DeepSeek.
-% prereg E5 RESULTS ~l.528-537 (grok 210), 16.23 RESULTS (haiku 249), 16.24 RESULTS ~l.7640 (Llama 225),
-% 16.26 RESULTS ~l.8465 (Mistral 217), 16.27 RESULTS ~l.8277 (DeepSeek 210)
 The mechanism behind the dissent sensor of Section~\ref{sec-collective} is
 model-dependent. On verdicts that blame exactly one party, the two advocates'
 objections are strongly opposed on grok ($\phi = -0.90$), as dissent against
@@ -772,12 +590,6 @@ mainly by which advocate's side loses (within verdicts that blame the writer
 alone, and within those that blame the other party alone, $\phi$ is $-0.34$
 and $-0.16$), and not established elsewhere. On Mistral the counter fires on
 85 percent of verdicts that blame one party.
-% flooding_analysis_{,haiku_249,llama,mistral,deepseek}.json one-loser advocate phi, and
-% phi_predictors_diagnostic.json (grok -0.901 [-0.929, -0.868], haiku +0.246 [+0.130, +0.360],
-% Llama +0.148 [+0.065, +0.227], Mistral +0.208 [+0.119, +0.299], DeepSeek -0.093 [-0.182, -0.007])
-% within-type residual: flooding_analysis.json s2_codable_16_12 YTA -0.340 [-0.663, +0.011],
-% NTA -0.162 [-0.317, -0.022], prereg 16.12 RESULTS note ~l.4999-5006;
-% verify_pillar3_headline_mistral.json ol_fired 521 of ol_n 614 (0.849)
 
 The flags can also route the solo model's own answers. On grok the registered
 comparison sends grok's majority-of-three answer on an item in one framing to
@@ -789,13 +601,6 @@ does as well, $+0.2$ points $[-1.9, +2.4]$ relative to the counter, at a
 seventh of the cost of one 17-call debate and a twenty-fifth of the cost of
 the four debates behind each flag, and sonnet answering every case is 4.0
 points $[+1.4, +6.9]$ above the routed solo.
-% prereg 16.22 RESULTS ~l.6806-6863, routing_certification.json routed_vs_solo.sonnet (R1 +0.0238
-% [+0.0048, +0.0452], counter fired on 51 of 420 item-framing units, R3 disagree_minus_counter
-% +0.0024 [-0.0190, +0.0238], cost $0.0014 vs $0.0098 per decision with the counter priced as a
-% k = 1 sensor of 17 calls; the k = 4 flag as run costs $0.0333 plus the judge, $0.0352 per decision
-% in R5 k4_sensor_over_base/counter/sonnet; 16.22's 'a tenth' at ~l.6860 does not match its own
-% prices; R2 -0.0405 [-0.0690, -0.0143], sonnet everywhere 0.976); firing rule from
-% scripts/analyze_router_decomposition.py build_cells (counter_fired = k_counter*2 > k)
 In exploratory readouts on the other models the counter-routed solo gains on
 Mistral, again at high coverage ($+12.2$ points $[+8.1, +16.6]$ with 77
 percent of item and framing pairs routed), and on haiku's weaker solo
@@ -805,22 +610,11 @@ sample disagreement does as well as the counter on haiku ($+0.6$
 $[-1.6, +3.1]$), better on Llama ($+5.1$ $[+3.1, +7.4]$) and DeepSeek ($+1.7$
 $[+0.2, +3.1]$), and worse only on Mistral ($-5.5$ $[-9.0, -2.1]$), where the
 counter routes most answers.
-% routing_certification_{mistral,haiku,llama,deepseek}.json routed_vs_solo sonnet-judge slot (in the
-% haiku file the slot labelled haiku holds sonnet), all status exploratory: counter routed_minus_base
-% Mistral +0.1221 [+0.0806, +0.1659] (335 of 434, 0.772), haiku +0.0309 [+0.0122, +0.0512], Llama
-% +0.0045 [0.0, +0.0112] (9 of 449), DeepSeek +0.0024 [-0.0048, +0.0119]; disagree_minus_counter haiku
-% +0.0062 [-0.0164, +0.0306], Llama +0.0512 [+0.0311, +0.0737], DeepSeek +0.0167 [+0.0024, +0.031],
-% Mistral -0.0553 [-0.0899, -0.0207]; prereg 16.26 ~l.8506, 16.23 ~l.6961, 16.24 ~l.7667, 16.27
-% ~l.8312. Not reported: routing_certification_noedge_k4.json (edges off) is UNREAD, its replay gate
-% cannot run and 16.25 RESULTS never reads it (+0.0071 [-0.0071, +0.0214], 19 of 420)
 With plain chain-of-thought seats on grok, in an exploratory readout, routing
 the solo still beats grok alone by $+1.9$ points $[+0.7, +3.6]$, and grok's
 own sample disagreement again routes as well ($+0.7$ $[-1.4, +2.9]$ relative
 to the counter).
-% routing_certification_grok_stdcot_k4.json (status exploratory, R1 +0.019 [+0.007, +0.036],
-% R3 +0.0071 [-0.0143, +0.0286], counter 31 of 420), prereg 16.28 RESULTS ~l.9004-9012
 
-% ============================================================================================
 \subsection{Pre-registration, deviations and corrections}
 \label{app-prereg}
 
@@ -831,9 +625,6 @@ and the readouts the text labels exploratory or observed rather than declared
 in advance, and several registered numbers were corrected or withdrawn along
 the way. This subsection records each correction under the heading of the
 pre-registration entry that made it.
-% prereg 16.15.7 registration (~l.3987-3991, no new claim) and 16.15.5 registration (~l.3969-3976,
-% reporting rule written after the BrokenMath runs); pillar1_headline.json (haiku, sonnet, nano and
-% grok June responses)
 
 \paragraph{Practice and scope.}
 The pre-registration is one append-only document begun on 31 August 2026.
@@ -847,36 +638,23 @@ that fails is not read. The single-agent guards registered before Addendum
 Addendum 17.10 the record noted it only for grok's chain-of-thought responses
 and nano's empty ones, which is how most of the defect of
 Appendix~\ref{app-rep4k} went unrecorded.
-% prereg header (l.1-4); Addendum 17 guards (~l.7080-7086, judge NOVERDICT < 5%, non-response,
-% replay); scripts/run_crowdgold_aita.py MAX_TRUNCATION_SHARE = MAX_NOVERDICT_SHARE = 0.05;
-% 17.7 registration guards (~l.8780-8782, "truncation (finish reason) reported per arm");
-% pre-spend amendment (~l.8826-8838, grok CoT 42 percent, nano budget); 17.10 registration
-% (~l.8947-8953); registration blocks such as 17.7 (~l.8782) and 17.8 (~l.8731) end without the
-% "Nothing above this line is edited" line
 The CoT and NoT responses of the four original generators (haiku, sonnet,
 nano and grok) were generated in June 2026 for an earlier study and their
 scoring was corrected in August, both before the document existed, so their
 drops enter it only as a zero-spend results note that makes no new claim
 (Addendum 16.15.7).
-% prereg 16.15.7 registration (~l.3987-3991, "No new claim") and RESULTS (~l.4593-4623)
 Prospectively registered evidence for the single-agent validation result
 begins with Addendum 17 on 21 September 2026, which added Llama, Mistral and
 DeepSeek (17.1), and the judge panel, replicate, form, persona, length,
 section-knockout, one-line and pushback tests of Appendices~\ref{app-judges}
 to~\ref{app-pushback} are all prospectively registered (17.3 to 17.5 and 17.7
 to 17.10).
-% prereg Addendum 17 header (~l.7060), 17.1 (~l.7088), 17.3 (~l.7133), 17.4 (~l.7180), 17.5
-% (~l.7946, "registered 2026-09-22 BEFORE any call"), 17.7 (~l.8743), 17.8 (~l.8703), 17.9 (~l.8784),
-% 17.10 (~l.8947)
 Before any call under Addenda 17.4 and 17.7 to 17.9, and while the plain-seat
 collectives of Addendum 16.28 were already generating but before any of their
 numbers was read, an adversarial review of the registrations confirmed 29
 findings with no refutations. Every change it prompted, including the
 matched-coverage rule of Appendix~\ref{app-seat}, was recorded before those
 calls and before any number from Addendum 16.28 was read.
-% prereg pre-spend review amendment header (~l.8824, "BEFORE any 17.x call"; 29 findings, no
-% refutations) and its 16.28 changes (~l.8894-8899, renamed label, matched coverage); 16.28 launch
-% note (~l.8670-8680) precedes the amendment; 16.28 RESULTS (~l.8977) follow it
 
 \paragraph{Verdict-instrument and false-premise results (analysis block Z3 and Addendum 16.15.5).}
 The verdict-instrument comparison of Section~\ref{sec-single} reuses earlier
@@ -893,17 +671,6 @@ while re-answering under CoT changes nothing ($-0.3$ $[-2.5, +2.0]$). In an
 older single-judge test on BrokenMath proofs from June, NoT raised the share
 judged to accept the false statement on nano (0.547 to 0.693) but lowered it
 on grok (0.507 to 0.388).
-% prereg 16.14b registration and RESULTS, bm_cycleb_analysis.json (D_nar -0.076 [-0.104, -0.045],
-% D_std -0.003 [-0.025, +0.020]; "a first-pass effect; the paper should say so"); brokenmath_summary.json
-% cell_stats and not_vs_cot (haiku judge, 451 problems; haiku -3.5, sonnet +3.1, Fisher tests not
-% item-clustered; June grid, study_design.md Phase 16, predates the prereg). Moved here from
-% sections/pillar1.tex for the page limit
-% prereg Z3 registration (~l.7217-7225, analysis-only, "no calls") and RESULTS (~l.7294, published ESH
-% coding registered, cg_screen_* and cg_<short>_standard_k3 responses); scripts/run_crowdgold_aita.py
-% SCAFFOLDS[standard] = "" and BREVITY (" Be brief: at most four sentences of reasoning.");
-% z3_sdt_mistral.json codings (standard person step +0.127 published, +0.046 dropped, -0.033
-% not_at_fault); prereg 16.15.5 registration (~l.3969-3976) and RESULTS (~l.4530-4560);
-% bm_embody_analysis.json (gpt-5.4-nano only)
 
 \paragraph{Judge input truncation (August 2026 correction and Addendum 16.15.7).}
 The production scorer at first showed the judge only the first 4,000
@@ -911,8 +678,6 @@ characters of each response. Far more NoT than CoT responses exceed that
 length, on haiku 121 of 150 against 0 of 150 and on sonnet 140 of 150 against
 5 of 150, and NoT places its decision last, so the cut removed the closing
 affirmation and inflated the published reductions.
-% prereg CORRECTION to 17.2 and 17.6 (~l.8688-8693, over-4,000 counts); scripts/elephant_scorers.py
-% advice[:4000]; Guidance_Documents/sycophancy_scenario_redesign.md 1b-RESULT-3
 Every judge-scored single-agent number in this paper comes from the judge
 reading the full generated text. The
 registered four-model drops substituted fresh full-text scores only for
@@ -922,8 +687,6 @@ points, the largest gap being nano's, where the panel pairs 116 items against
 the registered unpaired comparison (Appendix~\ref{app-judges}). A validation claim on the benchmark's
 subset of posts judged at fault did not survive the correction and is
 withdrawn.
-% prereg 16.15.7 RESULTS (~l.4596-4603, 936 replaced); 17.8 RESULTS (~l.9067-9070, nano -37.9 on 116
-% paired vs -41.4 unpaired = 3.5, sonnet -19.3 vs -22.3 = 3.0); pillar1_headline.json aita_yta_status WITHDRAWN
 
 \paragraph{Correction to Addenda 17.2 and 17.6.}
 The first alternate-judge tables, with nano and Llama judges in 17.2 and a
@@ -934,10 +697,6 @@ such drop compared a mostly haiku-scored CoT rate with a mostly
 alternate-scored NoT rate, most extremely on haiku and sonnet, the two
 generators on which both the Llama and the grok judge appeared to reverse the
 sign (the Llama judge also appeared to reverse it on nano).
-% prereg CORRECTION to 17.2 and 17.6 (~l.8682-8701); scripts/analyze_length_matched_elephant.py
-% apply_corrected_scores (skips len <= 4000); 17.2 RESULTS table (~l.7768-7776, Llama judge haiku
-% +18.7, sonnet +19.3, nano +11.7); 17.6 RESULTS (~l.8213-8215, grok judge haiku +18.0, sonnet +20.6).
-% The CORRECTION text itself says "the two generators", omitting nano
 Both tables are withdrawn as evidence either way, together with a diagnosis
 that the Llama and grok judges had an acquiescence defect, and the five-judge
 panel of Appendix~\ref{app-judges}, in which every judge scores every
@@ -945,8 +704,6 @@ response, replaces them. That panel still finds rises with intervals above
 zero on sonnet and nano under the Llama judge and on haiku and sonnet under
 the grok judge (Table~\ref{tab-app-judge-drops}), smaller than the withdrawn
 tables showed except on nano under the Llama judge ($+13.8$ against $+11.7$).
-% judge_panel_full_oeq_{Llama-3.3-70B-Instruct,grok-4-1-fast-reasoning}.json per_generator.<gen>
-% .narrative_cot (Llama judge sonnet +7.4, nano +13.8; grok judge haiku +11.4, sonnet +14.0)
 
 \paragraph{Addendum 17.8 and the pre-spend amendment.}
 As registered, 17.8 would have excluded any judge whose validation rate
@@ -956,10 +713,6 @@ circular, since it is computed on the rates whose difference is tested and
 would exclude exactly the judges that see no reduction, and applied as written
 it would have excluded the Llama judge, whose rates on all scored responses
 span 0.17, though not on the paired rates, which span 0.21.
-% prereg 17.8 registration (~l.8715-8717) and pre-spend amendment (~l.8854-8861);
-% judge_panel_full_oeq_Llama-3.3-70B-Instruct.json ceiling_descriptive (range 0.173 on
-% per_generator.<gen>.rates, would_have_been_excluded true; grok false); paired rate_a / rate_b span
-% 0.759 to 0.971 (0.213), 11 of 14 (78.6 percent) above 0.85, so neither screen condition is met
 The registered threshold for JUDGE-ROBUST, a negative drop excluding zero on
 at least six of seven generators under every judge, is looser than the rule
 17.2 had registered, which required every generator, and it was written after
@@ -967,8 +720,6 @@ the now withdrawn 17.2 table had shown sonnet failing under nano. Under either
 rule the reading is JUDGE-DEPENDENT. The reference-label check was registered
 as amendment 2 after the five drop tables were seen and before it was
 computed.
-% prereg 17.2 registration (~l.7125-7127), 17.8 registration (~l.8723-8725), pre-spend amendment
-% (~l.8858-8860), 17.8 amendment 2 header (~l.9032)
 
 \paragraph{Addendum 17.7 amendment 2 and Addendum 17.10.}
 A sourced audit of the record found two confounds in the single-agent result
@@ -976,28 +727,22 @@ itself. The original responses had been cut at their generation caps far more
 often than the record stated (Appendix~\ref{app-rep4k}), so the claim that
 every response was scored in full was true of the judge's input and not of the
 responses, and 17.10 regenerated all seven generators at 4,096 tokens.
-% prereg 17.7 amendment 2 and Addendum 17.10 (~l.8931-8975)
 The same audit found that DeepSeek never received the 8,192-token completion
 floor its 17.1 registration said it carried, because the list of floored
 deployments in the generation code is empty, so its original responses ran at
 1,024 tokens for CoT and 2,048 for NoT.
-% prereg 17.1 registration (~l.7091-7092) against 17.10 registration (~l.8952-8954);
-% scripts/generators.py FOUNDRY_V1_REASONING = ()
 The second confound is the persona line. CoT and NoT differ in it as well as
 in the five sections, and no earlier condition isolated it. The section
 knockouts and the checklist keep NoT's persona while the one-line and
 length-matched prompts keep CoT's, so comparisons across those tests also
 differ in persona, and amendment 2 added CoT with only the persona swapped
 (Appendix~\ref{app-form}).
-% prereg 17.7 amendment 2 (~l.8933-8945); scripts/scaffold_permutations.py and scripts/run_elephant.py
 
 \paragraph{Sample seed (Addendum 17.7 registration).}
 Earlier text in the document, including the Addendum 17 shared instrument and
 the 17.1 results, calls the 150-item sample seed 42. The cached items match
 seed 44 on all 150 items and seed 42 on 4, and the loader sets seed 44, so
 the sample is seed 44. The bootstrap seed 20260822 is unrelated to it.
-% prereg 17.7 registration (~l.8757-8759) correcting Addendum 17 (~l.7062) and 17.1 RESULTS
-% (~l.7724); scripts/load_elephant.py l.42 ELEPHANT_SEED = 44
 
 \paragraph{Addendum 17.4 launch.}
 The length control was registered on 21 September behind a gate that let it
@@ -1006,15 +751,12 @@ was launched under the principal investigator's batch authorisation of 22
 September, which superseded that gate, and the pre-spend review changed its
 comparator to the same-day CoT and made its readings exclusive and ordered
 before any call.
-% prereg 17.4 registration header (~l.7180), 17.4 launch (~l.8733), pre-spend amendment (~l.8870-8875)
 
 \paragraph{Addendum 17.9 guard note.}
 Haiku's pushback responses failed the no-verdict guard, and the rule for what
 a failed model means for the pooled readout was fixed after the haiku and nano
 cells had been read and before any grok or Llama response existed
 (Appendix~\ref{app-pushback}).
-% prereg 17.9 guard note (~l.8910-8928, recorded after the haiku and nano cells, with nano's NULL
-% reading, and before any grok or Llama 17.9 call)
 
 \paragraph{Addendum 17.5 reading.}
 The one-line instruction to consider everyone affected raised validation,
@@ -1024,16 +766,9 @@ drop from CoT with an interval excluding zero, and a rise meets that
 condition. The record labels the outcome REVERSED, a label added after the run
 and marked as such in the analysis script, and this paper reports the rise
 itself rather than either label.
-% prereg 17.5 registration (~l.7996-8009, STRUCTURE-NEEDED "iff not_counterparty_only shows no drop
-% from CoT with a CI excluding zero at all") and RESULTS (~l.8022-8041, which call the outcome
-% unanticipated); scripts/analyze_counterparty_causal.py reading() docstring (l.122-131, unpatched
-% logic returns STRUCTURE-NEEDED); counterparty_causal_analysis.json
 The nano and grok contrasts in Addenda 17.3 and 17.5 compare new responses
 with the June ones and carry the budget mismatch and the generation-cap
 truncation described in Appendix~\ref{app-rep4k}.
-% prereg pre-spend review amendment (~l.8826-8837, which qualifies nano only although it records
-% grok's CoT cut on 42 percent of items); 17.10 registration (~l.8948-8950, grok CoT 62 of 146);
-% counterparty_causal_analysis.json per_generator.grok n_cot 146 (the June cell)
 
 \paragraph{An earlier verbose control.}
 Earlier write-ups described a chain-of-thought variant that asks for detailed
@@ -1042,9 +777,6 @@ control. It is neither. It contains three of NoT's elements in prose, it ran
 at 1,024 tokens against NoT's 2,048, and every one of grok's 139 responses to
 it ended at that cap. This paper does not use it, and its length control is
 Addendum 17.4.
-% scripts/run_phase1_quartet.py PROMPTS['standard_cot_verbose']; scripts/run_elephant.py
-% _max_tokens_for; prereg 17.4 registration (~l.7193-7194); completion tokens in
-% elephant_gen_oeq_grok-4-1-fast-reasoning_standard_cot_verbose_*.json (139 of 139 at 1,024)
 
 \paragraph{Guard failures and spend overruns.}
 Three addenda overran their ceilings, and each overrun is recorded where it
@@ -1053,20 +785,15 @@ regenerating most calls at higher token caps, and the principal investigator
 authorised the overrun. Addendum 12 Stage 2 spent about \$9.41 against \$8, a
 cost-model miss. Addendum 16.27, the DeepSeek collective, spent \$93.70 against
 \$90 and reports the \$3.70 as an overage.
-% prereg Addendum 6 (~l.1297-1301), Addendum 12 Stage 2 (~l.2578-2589), 16.27 RESULTS header (~l.8275)
 Guard failures left several runs unread rather than repaired after the fact.
 The first Mistral collective failed its round-level truncation guard at a
 2,560-token cap and was regenerated at 4,096 under a separately authorised
 ceiling, with its \$35.90 first pass sunk and unread, and a 40-item gpt-4o
 collective screen failed its no-verdict guard at 15.0 percent, because the
 platform's content filter blocked some posts, and was never read.
-% prereg 16.26 amendment (~l.8363-8430) and RESULTS (~l.8462); 16.11b registration (~l.3596-3600)
-% and RESULTS (~l.3639-3651)
 The runs of 22 and 23 September behind Appendices~\ref{app-judges}
 to~\ref{app-seat} stayed inside their \$250 cap (Appendix~\ref{app-cost}).
-% prereg overnight batch header (~l.8591-8597) and batch spend ledger (~l.9229-9234)
 
-% ============================================================================================
 \subsection{Models and cost}
 \label{app-cost}
 
@@ -1075,15 +802,11 @@ further judge appear in this paper (Table~\ref{tab-app-models}). Every call
 went through Microsoft Azure, so six vendors here means six model developers,
 not six API providers, and open-weight status is as recorded in the
 pre-registration and was not independently verified.
-% prereg 17.1 RESULTS (~l.7736-7743); scripts/generators.py docstring (Azure OpenAI, Anthropic on
-% Azure Foundry, Foundry /models, Foundry v1); scratchpad fact_sheet.json methods "Models"
 Decoding follows each provider's route. The Anthropic models run at the
 provider's default temperature with no seed and no extended thinking, gpt-4o
 and the three open-weight deployments at temperature 0.7, grok with no
 temperature or seed, and nano with a reasoning-effort setting and a floor of
 8,192 completion tokens on every call after 21 August 2026.
-% scripts/generators.py _call_anthropic, _call_openai (l.282-290), _call_xai, Foundry v1 (l.588),
-% generate() floor (l.817, l.843); prereg 16.24 probe RESULTS (~l.6880-6882)
 The judges return 0 or 1, the production judge within 8 output tokens at the
 provider's default temperature, so repeated judge calls on the same text can
 disagree, which is why every comparison in Appendices~\ref{app-judges}
@@ -1092,14 +815,9 @@ Appendix~\ref{app-form} score both conditions through the same path with the
 same judge, while the section-knockout and one-line tests keep stored scores
 for responses of up to 4,000 characters and use fresh full-text scores above
 that.
-% scripts/elephant_scorers.py _judge_text (max_tokens 8; reasoning judges 2,048 with minimal effort);
-% scripts/analyze_knockout_social.py l.205 and scripts/analyze_counterparty_causal.py l.194 call
-% apply_corrected_scores (scripts/analyze_length_matched_elephant.py, skips len <= 4000)
 Measured cost figures apply the list prices in Table~\ref{tab-app-models} to
 token counts read from the caches after each run, and the estimated figures
 are identified below.
-% scripts/run_crowdgold_deliberation.py PRICES (l.2161-2192); ledger (~l.9229-9234, judge calls and
-% E1 grok estimated)
 
 The overnight batch of 22 and 23 September that produced
 Appendices~\ref{app-judges} to~\ref{app-seat} cost about \$125 against a \$250
@@ -1110,17 +828,12 @@ for the replicate and the form, persona and length tests cost \$16.52, and
 judge calls about \$73 (haiku about \$26.7 including inline scoring, gpt-4o
 about \$29.4, nano about \$6.5, Llama about \$6.6 and grok about \$3.6, each
 rounded).
-% prereg batch spend ledger (~l.9229-9234, judge calls ~$72.7, whose rounded parts sum to $72.8);
-% 16.28 RESULTS header (~l.8977, grok ~$8, Llama ~$16.4)
 The pushback test cost \$10.29 in the batch ledger, \$6.87 of it on haiku's
 unread responses, although the four per-model figures in its artefacts sum to
 \$9.94. The generation, pushback and Llama figures are measured from token
 counts, the judge figures are estimated from characters sent and grok's from
 the mean cost of cached calls, so the total is approximate. The record holds no programme-wide total, only the
 spend of each addendum against its ceiling.
-% prereg 17.9 RESULTS header (~l.9106, $10.29 with haiku 6.87, nano 1.39, Llama 1.23, grok 0.45);
-% pushback_readout_{haiku,nano,llama,grok}.json measured_spend_usd (6.87 + 1.39 + 1.23 + 0.45 = 9.94);
-% ledger (~l.9229-9234)
 
 Table~\ref{tab-app-provenance} lists, for each result, the pre-registration
 entry, the artefact and the script that computes it.
@@ -1134,11 +847,8 @@ in this paper, and the list price used for every cost figure (USD per million
 input and output tokens). The Mistral price is the Azure meter for the Large 3
 family, since no meter names version 3.2, and the DeepSeek price is its only
 Azure tier, served through Fireworks.}
-% scripts/run_crowdgold_deliberation.py PRICES (l.2161-2192, Foundry rates fetched 2026-09-14 from the
-% Azure Retail Prices API); roles from prereg 17.1, 17.8, 17.9, 16.22-16.28 and sections/pillar3.tex
 \label{tab-app-models}
-\resizebox{\textwidth}{!}{%
-\begin{tabular}{llllll}
+\resizebox{\textwidth}{!}{\begin{tabular}{llllll}
 \toprule
 model identifier & short name & developer & weights & role in this paper & price in / out \\
 \midrule
@@ -1161,15 +871,9 @@ DeepSeek-V4-Pro & DeepSeek & DeepSeek & open & generator, collective & 1.925 / 3
 released log, artefacts in its output directory and scripts in its
 \texttt{scripts} directory. The analyses read cached calls, so each artefact
 can be recomputed offline from the caches.}
-% prereg headings as cited in each subsection; artefact and script names checked against
-% divergence_study_outputs/ and scripts/ on 2026-09-23 (z3_sdt_{llama,mistral,deepseek}.json written
-% by analyze_crowdgold_sdt.py --json; bm_embody_analysis.json by analyze_bm_embodiment.py). Set
-% unscaled at \scriptsize, with file names allowed to break after an underscore.
 \label{tab-app-provenance}
 \scriptsize
-\let\appunderscore\_%
-\renewcommand{\_}{\appunderscore\allowbreak}%
-\begin{tabular}{p{2.8cm}p{1.8cm}p{4.2cm}p{3.3cm}}
+\let\appunderscore\_\renewcommand{\_}{\appunderscore\allowbreak}\begin{tabular}{p{2.8cm}p{1.8cm}p{4.2cm}p{3.3cm}}
 \toprule
 result & pre-registration & artefact & script \\
 \midrule

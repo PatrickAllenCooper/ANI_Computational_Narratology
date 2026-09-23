@@ -1,0 +1,69 @@
+\section{Discussion and Limitations}
+\label{sec-discussion}
+
+\paragraph{What the evidence supports.}
+The evidence supports the scaffold's principle, organised criticism across
+perspectives, only in a weaker form than we set out to test, and not its
+narrative packaging. Pooled over haiku, grok, nano and Llama, a third-person
+checklist of the same five elements lowers validation relative to
+chain-of-thought by 36.5 to 57.5 points under each of the five judges, more
+than NoT does on each generator under every judge, while the first-person
+narrative instruction alone raises it by 6.8 to 18.7 points. Because the
+rubric scores emotional validation, the checklist may score lower partly for
+a cooler register, which this design cannot separate from less endorsement.
+Earlier single-judge tests isolate no single element as the cause
+(Section~\ref{sec-single}).
+In the collective, on grok, the only model whose roles were varied, the
+objections routing uses come from assigned opposition, which in a contrast
+not declared in advance costs 2.1 points of accuracy against identical
+neutral readers. Plain chain-of-thought seats beat narrated ones on both
+models tested, and on the five models of Table~\ref{tab-routing} the
+collective is, descriptively, at or below the same model answering alone,
+which the routed system beats only on haiku and Mistral.
+
+\paragraph{Judges and the construct.}
+The single-agent reduction depends on the judge. It holds on seven, six,
+five, one and two of the seven generators under the production, gpt-4o,
+gpt-5.4-nano, Llama and grok judges, and under all five only on the Llama
+generator.
+The two judges that see little of it rate most responses as validating
+whatever the prompt and agree least, by point estimate, with the benchmark's
+labels (Section~\ref{sec-single}).
+The production judge is also a generator and shares its developer with
+sonnet, and no other judge confirms sonnet's reduction, which all four
+reverse in the regenerated responses.
+No judge panel can separate register from endorsement, but a judge-free test
+on the crowd-labelled disputes of Section~\ref{sec-collective} separates
+register from commitment, and there the scaffold does not help. Under
+pushback \citep{fanous2025syceval}, NoT, pooled over nano, Llama and grok,
+gives way more often than chain-of-thought (0.37 against 0.22), even where the
+crowd found the user at fault, but it also changes its verdict more when
+merely asked again, and net of that the difference, $+5.2$ points
+$[-1.7, +12.2]$, is indistinguishable from zero.
+On Llama and Mistral NoT also keeps the verdict's shift toward the user as
+writer, and DeepSeek shows none, so the judged reduction does not extend to
+resisting social pressure on a verdict.
+
+\paragraph{Other limitations.}
+Each generator answered each item once per prompt. Token caps cut off many
+original generations, and regenerating at a cap almost no response reaches
+keeps the production judge's reduction on all seven generators but shrinks it
+on sonnet, and under gpt-4o on Mistral and DeepSeek
+(Section~\ref{sec-single}).
+Content filters removed disputes each platform refuses, so the collective
+and pushback panels differ across models.
+\todo{PILLAR 2 (co-author): one or two sentences on the scope and limits of the theory-of-mind results of Section~\ref{sec-tom}, from the co-author's own experiments.}
+
+\paragraph{Future work.}
+The decisive test crosses first- and third-person voice with narrative and
+checklist form and has blind human raters score endorsement apart from
+warmth. Another is whether any form of the content resists pushback over
+several turns \citep{hong2025sycophancy}, with repeated samples per item. A
+third is whether dissent flags errors where seats lock weakly to their sides,
+as it did not detectably on haiku, and routes them better than a model's own
+sample disagreement \citep{manakul2023selfcheck}, which matched or beat it
+everywhere but Mistral in mostly exploratory readouts
+(Appendix~\ref{app-collective}).
+Until then the evidence supports the principle of organised criticism across
+perspectives \citep{longino1990science} only in this weaker, judge-dependent
+form, and not the narrative that first carried it.

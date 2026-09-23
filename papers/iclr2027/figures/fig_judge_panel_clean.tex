@@ -1,0 +1,66 @@
+\begin{tikzpicture}
+\begin{axis}[width=\columnwidth, height=6.2cm, xmin=-85, xmax=25,
+  xlabel={NoT $-$ standard CoT, validation rate (points)},
+  ytick={0,1,2,3,4,5,6},
+  yticklabels={haiku,sonnet,nano,grok,Llama,Mistral,DeepSeek}, y dir=reverse,
+  ymin=-0.6, ymax=6.6, xmajorgrids, axis lines*=left, yticklabel style={font=\small},
+  legend style={font=\scriptsize, at={(0.5,1.02)}, anchor=south, legend columns=5, draw=none},
+  legend cell align=left]
+\addplot[black, dashed, forget plot] coordinates {(0,-0.6) (0,6.6)};
+\addplot[only marks, mark=*, mark size=1.7pt, color=teal!75!black, error bars/.cd, x dir=both, x explicit, error bar style={line width=0.5pt}]
+  coordinates {
+    (-26.7,-0.28) -= (10.0,0) += (10.0,0)
+    (-19.3,0.72) -= (8.7,0) += (8.7,0)
+    (-37.9,1.72) -= (10.3,0) += (10.3,0)
+    (-35.2,2.72) -= (9.0,0) += (8.3,0)
+    (-70.2,3.72) -= (7.8,0) += (7.8,0)
+    (-57.6,4.72) -= (8.6,0) += (8.6,0)
+    (-46.1,5.72) -= (8.5,0) += (8.5,0)
+  };
+\addlegendentry{haiku (production)}
+\addplot[only marks, mark=square*, mark size=1.7pt, color=orange!85!black, error bars/.cd, x dir=both, x explicit, error bar style={line width=0.5pt}]
+  coordinates {
+    (-10.7,-0.14) -= (8.7,0) += (8.7,0)
+    (3.3,0.86) -= (8.0,0) += (8.0,0)
+    (-10.3,1.86) -= (8.6,0) += (8.6,0)
+    (-23.4,2.86) -= (8.3,0) += (8.3,0)
+    (-64.5,3.86) -= (8.5,0) += (8.5,0)
+    (-41.0,4.86) -= (8.6,0) += (8.6,0)
+    (-29.1,5.86) -= (7.8,0) += (7.8,0)
+  };
+\addlegendentry{gpt-4o}
+\addplot[only marks, mark=triangle*, mark size=1.7pt, color=violet!80!black, error bars/.cd, x dir=both, x explicit, error bar style={line width=0.5pt}]
+  coordinates {
+    (-5.3,0.00) -= (10.0,0) += (10.0,0)
+    (2.0,1.00) -= (8.7,0) += (8.7,0)
+    (-13.8,2.00) -= (10.3,0) += (10.3,0)
+    (-11.7,3.00) -= (8.3,0) += (7.6,0)
+    (-42.6,4.00) -= (8.5,0) += (9.2,0)
+    (-18.0,5.00) -= (9.4,0) += (9.4,0)
+    (-22.7,6.00) -= (9.2,0) += (9.2,0)
+  };
+\addlegendentry{nano}
+\addplot[only marks, mark=diamond*, mark size=1.7pt, color=gray!80!black, error bars/.cd, x dir=both, x explicit, error bar style={line width=0.5pt}]
+  coordinates {
+    (5.4,0.14) -= (5.4,0) += (5.4,0)
+    (7.4,1.14) -= (5.4,0) += (6.0,0)
+    (13.8,2.14) -= (6.0,0) += (6.9,0)
+    (-2.8,3.14) -= (5.6,0) += (5.6,0)
+    (-11.3,4.14) -= (7.8,0) += (7.8,0)
+    (-5.1,5.14) -= (6.6,0) += (6.6,0)
+    (0.0,6.14) -= (3.6,0) += (3.6,0)
+  };
+\addlegendentry{Llama}
+\addplot[only marks, mark=pentagon*, mark size=1.7pt, color=red!70!black, error bars/.cd, x dir=both, x explicit, error bar style={line width=0.5pt}]
+  coordinates {
+    (11.4,0.28) -= (6.0,0) += (6.7,0)
+    (14.0,1.28) -= (5.3,0) += (6.0,0)
+    (4.3,2.28) -= (9.5,0) += (9.5,0)
+    (0.7,3.28) -= (4.9,0) += (4.9,0)
+    (-49.6,4.28) -= (8.5,0) += (9.2,0)
+    (2.9,5.28) -= (6.6,0) += (6.6,0)
+    (-5.0,6.28) -= (5.0,0) += (4.3,0)
+  };
+\addlegendentry{grok}
+\end{axis}
+\end{tikzpicture}

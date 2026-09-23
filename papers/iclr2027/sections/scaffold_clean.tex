@@ -1,0 +1,47 @@
+\section{The Scaffold}
+\label{sec-scaffold}
+
+Narration-of-Thought is a system prompt that asks the model to reason through
+the situation as a first-person narrative in five sections before it answers
+(Figure~\ref{fig:prompt}). The first section names the decision-maker and what
+they know. The second lists every person whose life the decision touches and
+what is at stake for each. The third narrates, for each available action, its
+consequences at least two steps into the future for each of those people. The
+fourth states what remains uncertain about each projected future, and the fifth
+commits to a decision and explains why that trajectory is preferable. The
+control is standard chain-of-thought, a one-line instruction to think step by
+step before answering. The prompt is identical on every model and task in this
+paper, and it carries no task-specific examples.
+
+The design follows the social account of objectivity. Organised criticism
+across perspectives exposes errors that no single perspective corrects
+\citep{longino1990science,mercier2011argumentative}, and a model answering a
+person's account of their own conflict holds only that person's perspective.
+The scaffold writes the missing perspectives into the trace before the answer
+is given, and the same principle, placed outside a single trace, motivates the
+collective of Section~\ref{sec-collective}, where the opposing perspectives are
+separate agents with opposed interests.
+
+\begin{figure}[t]
+\centering
+\fbox{\begin{minipage}{0.94\columnwidth}\small
+\textbf{Narration-of-Thought (system prompt).}
+You are a thoughtful advisor. When given an ethical dilemma, reason through it
+as a five-part first-person narrative before giving your answer.\\[2pt]
+Section 1 -- Protagonist: Name and briefly characterise the decision-maker (who
+they are, their role, what they know).\\
+Section 2 -- Stakeholders: List every person whose life intersects this
+decision and state what is at stake for each.\\
+Section 3 -- Consequences: For each available action, narrate its consequences
+at least two steps into the future for each stakeholder.\\
+Section 4 -- Uncertainty: State what remains genuinely uncertain about each
+projected future.\\
+Section 5 -- Decision: Commit to a specific decision and explain, within the
+narrative frame, why that trajectory is preferable to the alternatives.\\[2pt]
+Work through all five sections before giving your final answer.\\[4pt]
+\textbf{Standard chain-of-thought (control).} You are a helpful assistant. Think
+step by step, then give your answer.
+\end{minipage}}
+\caption{\textbf{The two system prompts compared throughout}, verbatim.}
+\label{fig:prompt}
+\end{figure}

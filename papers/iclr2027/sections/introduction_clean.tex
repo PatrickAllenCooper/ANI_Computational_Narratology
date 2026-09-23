@@ -1,0 +1,99 @@
+\section{Introduction}
+\label{sec-intro}
+
+Large language models give advice with apparent empathy and understanding,
+yet they agree with their users more than the evidence warrants
+\citep{perez2023discovering,sharma23}. In personal advice this takes a social
+form, validating the person asking \citep{cheng25elephant}.
+
+The social account of objectivity locates objectivity in organised criticism
+across perspectives rather than in any single reasoner
+\citep{longino1990science,popper2011open}, and a model answering one person's
+account holds only that person's perspective. Narration-of-Thought (NoT), a
+lightweight system prompt, asks the model to write the missing perspectives
+into its reasoning as a first-person narrative of the decision-maker, the
+stakeholders, the consequences of each available action and what remains
+uncertain, ending in a decision (Section~\ref{sec-scaffold}), and we compare
+it with standard chain-of-thought \citep[CoT,][]{wei22,kojima22}. A collective
+places the perspectives in separate agents with opposed interests and sends
+the cases on which they dissent to a stronger judge
+(Section~\ref{sec-collective}).
+
+We measure how often a judge model scores a response as emotionally
+validating the asker, showing understanding, respect for their perspective
+and care, on 150 open-ended advice questions from ELEPHANT
+\citep{cheng25elephant} and seven answering models (generators) from six
+vendors, three of them open-weight (Section~\ref{sec-single}).
+Under claude-haiku-4-5 (haiku), the judge that scored our earlier results and
+itself a generator, NoT lowers this rate on all seven, by 13 to 63 percentage
+points (16 to 80 percent of the CoT rate) when their responses are
+regenerated in one run under a length limit almost none reach, and by 19 to
+70 points on the original responses, many of which a length limit had cut
+short, up to 88 percent on Llama-3.3-70B-Instruct (Llama), 87 in an earlier
+pass of the same judge.
+With five judges each reading the full text of every original response, the
+reduction holds on seven, six and five generators under haiku, gpt-4o (not a
+generator) and gpt-5.4-nano, but on only one and two under Llama and
+grok-4-1-fast-reasoning (grok) as judges, which rate most responses
+validating either way and each reverse it on two generators
+(Figure~\ref{fig:judges}).
+In both sets of responses it holds under all five judges only on the Llama
+generator. On claude-sonnet-4-6 (sonnet), from the haiku judge's own vendor,
+no other judge finds it and in the regenerated set all four reverse it, and
+on haiku's own answers only gpt-4o confirms it and the grok judge reverses it
+in both sets.
+
+The reduction comes with the scaffold's structured content as a whole, not
+its narrative form. Pooled over four generators, the same five elements
+written as a third-person checklist lower judged validation by 36.5 to 57.5
+points under every judge, more than NoT does, while the first-person
+narrative instruction alone raises it.
+Neither NoT's opening persona nor, on the two generators tested and under
+four of the five judges, asking CoT for NoT's length reproduces the
+reduction.
+Under the haiku judge no single section is shown to carry a quarter of it,
+and one line asking the model to consider everyone affected raises validation.
+Because the rubric scores emotional validation, part of the reduction may be
+a cooler register rather than less endorsement of the asker. NoT also gives no
+protection against pushback. Asked who is at fault in a dispute and then
+challenged, it abandons its verdict more often than CoT (37 against 22
+percent pooled over three models, mostly on Llama, with a fourth unread after
+failing a quality check), and net of its instability when merely asked to
+reconsider, the difference is indistinguishable from zero.
+Nor does it remove the shift of its verdicts toward the asker on the two of
+three models that show one.
+
+\todo{PILLAR 2 (co-author): one or two sentences summarising the theory-of-mind results of Section~\ref{sec-tom}, sourced from the co-author's own experiments.}
+
+In the collective, three copies of one model, each reasoning with NoT,
+debate first-person conflict accounts as an advocate for each party and a
+neutral adjudicator, a fourth copy writes the verdict, and a near-unanimous
+crowd vote sets the correct one.
+In descriptive comparisons its verdict is no more accurate than the same
+model answering alone on five models, though two smaller earlier comparisons
+point the other way, but on four of them its dissent is a sensor. On grok's
+verdicts that blame exactly one party, the collective is wrong 9.8 times as
+often when a second of its three agents objects as when at most one
+does, against 1.5 to 6.2 times on three other models, and no difference is
+detectable on haiku.
+Sending the debates it flags to sonnet raises accuracy over the collective on
+all five models, by 7.0 points on grok, yet descriptively the routed
+collective only matches grok
+answering alone, stays below Llama and DeepSeek-V4-Pro answering alone, and
+on grok falls short of sonnet answering every case.
+Neither result needs narration. On grok and Llama, the two models tested,
+agents that reason by plain CoT make the collective more accurate than
+narrating agents, by 2.0 and 4.2 points, and at least as accurate after
+routing, and on grok they keep a weaker sensor (6.4 against 9.8 times) and a
+smaller routing gain (5.4 against 7.0 points).
+
+We contribute registered controls showing that the scaffold's
+judge-dependent effect on judged validation, which may partly be a cooler
+register, comes from its structured content and not its narrative form, a
+five-judge evaluation that states every claim per judge, and evidence that
+opposed agents make a poor decider but a usable sensor of their own errors, a
+sensor that on grok survives without the scaffold. Every experiment run after
+our registration log opened was registered in it, append-only, before its
+model calls, and Appendix~\ref{app-prereg} records what was added after data
+were seen, the overrun ceilings and the results that predate the log.
+Unregistered analyses are labelled exploratory.
