@@ -79,7 +79,14 @@ def run(judges) -> dict:
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--judges", default=",".join(DEFAULT_JUDGES))
+    ap.add_argument("--arm-suffix", default="",
+                    help="17.10 amendment run 2: '_b' reads standard_cot_rep4k_b / narrative_cot_rep4k_b "
+                         "and writes headline_rep4k_b_readout.json")
     a = ap.parse_args(argv)
+    global COT, NOT, OUT
+    if a.arm_suffix:
+        COT, NOT = COT + a.arm_suffix, NOT + a.arm_suffix
+        OUT = Path(f"divergence_study_outputs/headline_rep4k{a.arm_suffix}_readout.json")
     res = run([j for j in a.judges.split(",") if j])
     for g, v in res["per_generator"].items():
         cap = v["cap"]

@@ -49,6 +49,15 @@ from scripts.rescore_elephant_untruncated import BUILDERS, RAW, _key, load_quest
 from scripts.elephant_scorers import SCORER_SYSTEM
 
 METRIC = "validation"
+
+
+def qfor(r: dict, questions: dict) -> str:
+    """The question the judge is shown: the item's own text, or, for the 17.12
+    perspective-shift arm, the third-person rewrite the model actually answered."""
+    if r.get("arm") == "cot_perspective_shift":
+        from scripts.run_elephant import third_person_query
+        return third_person_query(r["item_id"])
+    return questions[r["item_id"]]
 PRODUCTION_JUDGE = "claude-haiku-4-5"
 DEFAULT_JUDGES = ("claude-haiku-4-5", "gpt-5.4-nano", "Llama-3.3-70B-Instruct",
                   "grok-4-1-fast-reasoning", "gpt-4o")
@@ -91,8 +100,8 @@ def plan(rows: list[dict], judges: Sequence[str], questions: dict) -> dict:
     from scripts.run_crowdgold_deliberation import PRICES
     out = {}
     for j in judges:
-        todo = [r for r in rows if cached_score(questions[r["item_id"]], r["response"], j) is None]
-        chars = sum(len(SCORER_SYSTEM) + len(BUILDERS[METRIC](questions[r["item_id"]], r["response"]))
+        todo = [r for r in rows if cached_score(qfor(r, questions), r["response"], j) is None]
+        chars = sum(len(SCORER_SYSTEM) + len(BUILDERS[METRIC](qfor(r, questions), r["response"]))
                     for r in todo)
         tin = chars / 4.0
         reasoning = j in ("gpt-5.4-nano", "grok-4-1-fast-reasoning")
@@ -107,10 +116,10 @@ def plan(rows: list[dict], judges: Sequence[str], questions: dict) -> dict:
 def score_all(rows: list[dict], judge: str, questions: dict, workers: int) -> int:
     """One failed call (after the backend's own retries) is counted and skipped, never
     allowed to stop the loop; the affected response stays unscored (reported as missing)."""
-    todo = [r for r in rows if cached_score(questions[r["item_id"]], r["response"], judge) is None]
+    todo = [r for r in rows if cached_score(qfor(r, questions), r["response"], judge) is None]
     done = failed = 0
     with ThreadPoolExecutor(max_workers=workers) as ex:
-        futs = [ex.submit(score_at, METRIC, questions[r["item_id"]], r["response"], judge, None) for r in todo]
+        futs = [ex.submit(score_at, METRIC, qfor(r, questions), r["response"], judge, None) for r in todo]
         for f in as_completed(futs):
             try:
                 f.result()
@@ -130,7 +139,7 @@ def table(rows: list[dict], judge: str, questions: dict) -> dict:
     cells: dict = defaultdict(dict)
     unparsed = missing = 0
     for r in rows:
-        s = cached_score(questions[r["item_id"]], r["response"], judge)
+        s = cached_score(qfor(r, questions), r["response"], judge)
         if s is None:
             missing += 1
             continue

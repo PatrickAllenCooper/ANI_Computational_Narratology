@@ -100,13 +100,42 @@ PERSONA_ARM = "advisor_cot"
 GENEROUS_ARMS = {
     "standard_cot_rep4k": "standard_cot",
     "narrative_cot_rep4k": "narrative_cot",
+    # 17.10 amendment, run 2 (registered 2026-09-23, review round 1 E-C): a second independent
+    # same-day generation at the same 4,096 cap on claude-sonnet-4-6 and claude-haiku-4-5 only,
+    # under NEW arm names so nothing replays from the run-1 caches.
+    "standard_cot_rep4k_b": "standard_cot",
+    "narrative_cot_rep4k_b": "narrative_cot",
 }
 GENEROUS_CAP = 4096
+# Addendum 17.12 (registered 2026-09-23, review round 1 E-B): prompting baselines. Three
+# system-prompt arms come byte-identical from scaffold_permutations.BASELINES; the
+# perspective-shift arm keeps the verbatim standard-CoT system prompt and answers the query
+# rewritten into the third person (ELEPHANT Appendix G.2, one fixed rewriter, gpt-4o), read
+# from REWRITES_PATH, which scripts/make_third_person_oeq.py writes with its guards.
+BASELINE_ARMS = {
+    "cot_prepend_naive": "cot_prepend_naive",
+    "cot_prepend_context": "cot_prepend_context",
+    "cot_sceptical": "cot_sceptical",
+}
+PERSPECTIVE_ARM = "cot_perspective_shift"
+REWRITES_PATH = OUT_DIR / "oeq_third_person_rewrites.json"
+_REWRITES: dict | None = None
+
+
+def third_person_query(item_id: str) -> str:
+    """The third-person rewrite of an OEQ item, or KeyError if the guard excluded it."""
+    global _REWRITES
+    if _REWRITES is None:
+        d = json.loads(REWRITES_PATH.read_text())
+        _REWRITES = {k: v["rewrite"] for k, v in d["items"].items() if v.get("accepted")}
+    return _REWRITES[item_id]
 assert _PERMS["narrative_cot_full"] == PROMPTS["narrative_cot"], "intact scaffold drifted from PERMUTATIONS"
-for _arm, _key in {**KNOCKOUT_ARMS, **CAUSAL_ARMS, **FORM_ARMS}.items():
+for _arm, _key in {**KNOCKOUT_ARMS, **CAUSAL_ARMS, **FORM_ARMS, **BASELINE_ARMS}.items():
     assert _arm not in PROMPTS, f"{_arm} already in PROMPTS"
     PROMPTS[_arm] = _PERMS[_key]
     assert PROMPTS[_arm] == _PERMS[_key]
+assert PERSPECTIVE_ARM not in PROMPTS
+PROMPTS[PERSPECTIVE_ARM] = PROMPTS["standard_cot"]
 for _arm, _src in {**REPLICATE_ARMS, **GENEROUS_ARMS}.items():
     assert _arm not in PROMPTS, f"{_arm} already in PROMPTS"
     PROMPTS[_arm] = PROMPTS[_src]
@@ -202,6 +231,8 @@ def _max_tokens_for(gen_model: str, arm: str) -> int:
     if arm in GENEROUS_ARMS:
         return GENEROUS_CAP
     if arm in FORM_ARMS or arm in REPLICATE_ARMS or arm in (LENGTH_MATCHED_ARM, PERSONA_ARM):
+        return 2048
+    if arm in BASELINE_ARMS or arm == PERSPECTIVE_ARM:      # 17.12: the 17.7 cap
         return 2048
     return 1024
 
@@ -321,6 +352,12 @@ def _run_cell(
 ) -> dict:
     aita_binary = dataset == "flip_pairs" and moral_mode == "binary"
     out_dataset = "flip_pairs_free" if dataset == "flip_pairs" and moral_mode == "free_form" else dataset
+    if arm == PERSPECTIVE_ARM:
+        if dataset != "oeq":
+            raise KeyError(f"{PERSPECTIVE_ARM} is registered for oeq only")
+        # 17.12: the model answers the third-person rewrite; the inline judge sees the same
+        # rewritten query, as ELEPHANT scored its perspective-shift mitigation.
+        prompt = third_person_query(item_id)
     response, empty = _generate_advice(
         prompt, gen_model, arm, out_dataset, item_id,
         aita_binary=aita_binary,
