@@ -19,81 +19,91 @@ places the perspectives in separate agents with opposed interests and sends
 the cases on which they dissent to a stronger judge
 (Section~\ref{sec-collective}).
 
-We measure how often a judge model scores a response as emotionally
-validating the asker, showing understanding, respect for their perspective
-and care, on 150 open-ended advice questions from ELEPHANT
-\citep{cheng25elephant} and seven answering models (generators) from six
-vendors, three of them open-weight (Section~\ref{sec-single}).
-Under claude-haiku-4-5 (haiku), the judge that scored our earlier results and
-itself a generator, NoT lowers this rate on all seven, by 13 to 63 percentage
-points (16 to 80 percent of the CoT rate) when their responses are
-regenerated in one run under a length limit almost none reach, and by 19 to
-70 points on the original responses, many of which a length limit had cut
-short, up to 88 percent on Llama-3.3-70B-Instruct (Llama), 87 in an earlier
-pass of the same judge.
-With five judges each reading the full text of every original response, the
-reduction holds on seven, six and five generators under haiku, gpt-4o (not a
-generator) and gpt-5.4-nano, but on only one and two under Llama and
-grok-4-1-fast-reasoning (grok) as judges, which rate most responses
-validating either way and each reverse it on two generators
-(Figure~\ref{fig:judges}).
-In both sets of responses it holds under all five judges only on the Llama
-generator. On claude-sonnet-4-6 (sonnet), from the haiku judge's own vendor,
-no other judge finds it and in the regenerated set all four reverse it, and
-on haiku's own answers only gpt-4o confirms it and the grok judge reverses it
-in both sets.
+This paper makes four claims. Table~\ref{tab-claims} states each, the
+collective's in three rows, with where it holds, where it fails and the
+reading fixed before the data were seen. On 150 open-ended advice questions
+from ELEPHANT \citep{cheng25elephant}, NoT lowers the rate at which our
+production judge, claude-haiku-4-5 (haiku), scores an answer as emotionally
+validating the asker on all seven answering models (generators), by 13 to 63
+points, a relative reduction of 16 to 80 percent, but the reduction depends
+on the judge and holds under all five of ours only on Llama-3.3-70B-Instruct
+(Llama) (Section~\ref{sec-single}).
+The reduction comes with the scaffold's structured content and not its
+narrative form, since the same content as a third-person checklist lowers
+judged validation more than NoT under every judge, by 36.5 to 57.5 points
+pooled over four generators, while the narrative instruction alone raises it,
+and because the rubric scores emotional validation part of the reduction may
+be a cooler register.
+NoT gives no protection against pushback on a verdict, capitulating more
+often than CoT on the raw measure, 0.37 against 0.22 pooled over three
+models, and no differently net of its own instability, $+5.2$ points
+$[-1.7, +12.2]$.
+In the collective, judged against near-unanimous crowd verdicts on
+first-person conflict accounts, opposed agents make a poor decider,
+descriptively at or below the same model answering alone on five models, but
+a usable sensor of their own errors, since on grok-4-1-fast-reasoning (grok)
+the collective is wrong 9.8 times as often when a second agent objects as
+when at most one does.
+Sending the flagged debates to a stronger judge raises accuracy over the
+collective on all five models, by 7.0 points on grok, though not above grok
+answering alone, and plain chain-of-thought seats make the collective more
+accurate than narrating ones on both models tested
+(Section~\ref{sec-collective}).
+\todo{PILLAR 2 (co-author): one sentence stating the theory-of-mind claim of Section~\ref{sec-tom} and one row of Table~\ref{tab-claims}, from the co-author's own experiments, which are expected to support the abstract's 3 to 10 point figure fully.}
+Every experiment run after our registration log opened was registered in
+it, append-only, before its model calls, and Appendix~\ref{app-prereg}
+records what was added after data were seen, the overrun ceilings and the
+results that predate the log. Unregistered analyses are labelled
+exploratory.
 
-The reduction comes with the scaffold's structured content as a whole, not
-its narrative form. Pooled over four generators, the same five elements
-written as a third-person checklist lower judged validation by 36.5 to 57.5
-points under every judge, more than NoT does, while the first-person
-narrative instruction alone raises it.
-Neither NoT's opening persona nor, on the two generators tested and under
-four of the five judges, asking CoT for NoT's length reproduces the
-reduction.
-Under the haiku judge no single section is shown to carry a quarter of it,
-and one line asking the model to consider everyone affected raises validation.
-Because the rubric scores emotional validation, part of the reduction may be
-a cooler register rather than less endorsement of the asker. NoT also gives no
-protection against pushback. Asked who is at fault in a dispute and then
-challenged, it abandons its verdict more often than CoT (37 against 22
-percent pooled over three models, mostly on Llama, with a fourth unread after
-failing a quality check), and net of its instability when merely asked to
-reconsider, the difference is indistinguishable from zero.
-Nor does it remove the shift of its verdicts toward the asker on the two of
-three models that show one.
-
-\todo{PILLAR 2 (co-author): one or two sentences summarising the theory-of-mind results of Section~\ref{sec-tom}, sourced from the co-author's own experiments.}
-
-In the collective, three copies of one model, each reasoning with NoT,
-debate first-person conflict accounts as an advocate for each party and a
-neutral adjudicator, a fourth copy writes the verdict, and a near-unanimous
-crowd vote sets the correct one.
-In descriptive comparisons its verdict is no more accurate than the same
-model answering alone on five models, though two smaller earlier comparisons
-point the other way, but on four of them its dissent is a sensor. On grok's
-verdicts that blame exactly one party, the collective is wrong 9.8 times as
-often when a second of its three agents objects as when at most one
-does, against 1.5 to 6.2 times on three other models, and no difference is
-detectable on haiku.
-Sending the debates it flags to sonnet raises accuracy over the collective on
-all five models, by 7.0 points on grok, yet descriptively the routed
-collective only matches grok
-answering alone, stays below Llama and DeepSeek-V4-Pro answering alone, and
-on grok falls short of sonnet answering every case.
-Neither result needs narration. On grok and Llama, the two models tested,
-agents that reason by plain CoT make the collective more accurate than
-narrating agents, by 2.0 and 4.2 points, and at least as accurate after
-routing, and on grok they keep a weaker sensor (6.4 against 9.8 times) and a
-smaller routing gain (5.4 against 7.0 points).
-
-We contribute registered controls showing that the scaffold's
-judge-dependent effect on judged validation, which may partly be a cooler
-register, comes from its structured content and not its narrative form, a
-five-judge evaluation that states every claim per judge, and evidence that
-opposed agents make a poor decider but a usable sensor of their own errors, a
-sensor that on grok survives without the scaffold. Every experiment run after
-our registration log opened was registered in it, append-only, before its
-model calls, and Appendix~\ref{app-prereg} records what was added after data
-were seen, the overrun ceilings and the results that predate the log.
-Unregistered analyses are labelled exploratory.
+\begin{table}[t]
+\centering
+\footnotesize
+\caption{Each claim of this paper, where it holds, where it fails or is
+qualified, and the reading fixed in the registration log before the data
+were seen (Appendix~\ref{app-prereg}). Model names are shortened after first
+use, haiku (claude-haiku-4-5), sonnet (claude-sonnet-4-6), nano
+(gpt-5.4-nano), grok (grok-4-1-fast-reasoning), Llama
+(Llama-3.3-70B-Instruct), Mistral (Mistral-Large-3-2) and DeepSeek
+(DeepSeek-V4-Pro), and the judges are haiku (the production judge), gpt-4o,
+nano, Llama and grok.}
+\label{tab-claims}
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{2.2cm}>{\raggedright\arraybackslash}p{4.35cm}>{\raggedright\arraybackslash}p{4.35cm}>{\raggedright\arraybackslash}p{2.35cm}@{}}
+\toprule
+claim & where it holds & where it fails or is qualified & registered reading \\
+\midrule
+NoT lowers judged validation of the asker &
+all seven generators under the production judge, by 13 to 63 points regenerated and 19 to 70 on the original responses, six under gpt-4o and five under nano &
+one or two generators under the Llama and grok judges, which rate most answers validating either way, sonnet reversed under the four other judges in the regeneration, all five judges agree on Llama alone &
+judge-dependent, holds under every judge on Llama only \\
+\addlinespace
+its structured content, not its narrative form, carries the reduction &
+pooled over haiku, grok, nano and Llama under all five judges, the checklist 36.5 to 57.5 points below CoT and narration alone 6.8 to 18.7 points above it &
+cannot separate a cooler register from less endorsement, the persona line is inert or raises validation, length is inert on two generators under four judges and unresolved under the Llama judge &
+checklist better and content adds under every judge, persona never lowers, length inert \\
+\addlinespace
+NoT gives no protection against pushback on a verdict &
+raw capitulation higher, 0.37 against 0.22 pooled over nano, Llama and grok, also where the crowd found the user at fault &
+net of NoT's own instability the difference is $+5.2$ $[-1.7, +12.2]$, carried by Llama with nano and grok near the floor, haiku unread after a quality guard &
+null on the primary, not worse on raw capitulation \\
+\addlinespace
+a second objection flags the collective's errors &
+grok, wrong 9.8 times as often on verdicts blaming one party, and Mistral, DeepSeek and Llama at 6.2, 2.3 and 1.5 times, each interval excluding zero &
+haiku, 1.5 times with an interval including zero, and the collective is descriptively at or below its own solo on all five models &
+lift excludes zero on four of five models \\
+\addlinespace
+routing flagged debates to a stronger judge raises accuracy &
+over the collective on all six conditions of Table~\ref{tab-routing}, by $+3.7$ to $+21.4$ points, $+7.0$ $[+4.8, +9.4]$ on grok &
+not above grok, Llama or DeepSeek answering alone, and below sonnet answering every case, by 4.0 points on grok even when the flags route grok's own solo verdicts &
+gain over the collective on every condition, below sonnet everywhere \\
+\addlinespace
+plain chain-of-thought seats do at least as well as narrated ones &
+grok and Llama, the two models tested, plain more accurate by 2.0 and 4.2 points, the grok sensor surviving at 6.4 times &
+narration raises grok's fire rate and routing gain ($+1.6$ $[+0.0, +3.3]$) without raising routed accuracy, and Llama's plain-seat sensor is under-gated and not read &
+plain better on both models \\
+\addlinespace
+\multicolumn{4}{@{}p{13.6cm}@{}}{\todo{PILLAR 2 (co-author): the theory-of-mind claim, where it holds, where it fails and its registered reading, from the co-author's own experiments.}} \\
+\bottomrule
+\end{tabular}
+\end{table}

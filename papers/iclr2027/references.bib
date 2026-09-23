@@ -1512,6 +1512,20 @@
   year      = {2022}
 }
 
+% Added 2026-09-23 for reviewer W18 (name and acronym collision with our Narration-of-Thought, NoT).
+% Fetched at the primary pages https://aclanthology.org/2024.findings-emnlp.963/ (Findings of EMNLP
+% 2024, Miami, November 2024, pages 16507-16530, DOI 10.18653/v1/2024.findings-emnlp.963) and
+% https://arxiv.org/abs/2410.05558 (v1 7 Oct 2024, v2 17 Nov 2024) on 2026-09-23. The paper
+% abbreviates its method NoT; it generates temporal graphs by recounting an event set as a narrative.
+@inproceedings{zhang2024narrativeofthought,
+  title     = {{Narrative-of-Thought}: Improving Temporal Reasoning of Large Language Models via Recounted Narratives},
+  author    = {Zhang, Xinliang Frederick and Beauchamp, Nick and Wang, Lu},
+  booktitle = {Findings of the Association for Computational Linguistics: EMNLP 2024},
+  pages     = {16507--16530},
+  year      = {2024},
+  doi       = {10.18653/v1/2024.findings-emnlp.963}
+}
+
 @inproceedings{chiu24,
   title     = {{D}aily{D}ilemmas: {R}evealing {V}alue {P}references of {LLM}s with {Q}uandaries of {D}aily {L}ife},
   author    = {Chiu, Yu Ying and Jiang, Liwei and Choi, Yejin},
@@ -1572,6 +1586,97 @@
   url    = {https://github.com/deepseek-ai/DeepSeek-V3}
 }
 
+% Entries below added 2026-09-23 (bibliography pass for the uncited models and the Scruples
+% dataset). Each primary page was fetched with WebFetch on 2026-09-23.
+
+% gpt-4o. Primary page: OpenAI model documentation
+% https://developers.openai.com/api/docs/models/gpt-4o (fetched 2026-09-23; default snapshot
+% gpt-4o-2024-08-06, knowledge cutoff 2023-10-01). The generators.py judge alias is "gpt-4o".
+@misc{openai_gpt4o,
+  title  = {{GPT-4o}},
+  author = {{OpenAI}},
+  year   = {2024},
+  url    = {https://developers.openai.com/api/docs/models/gpt-4o}
+}
+
+% gpt-4o system card. Primary page: arXiv abstract https://arxiv.org/abs/2410.21276
+% (fetched 2026-09-23; submitted 2024-10-25, credited to OpenAI).
+@misc{openai_gpt4o_systemcard,
+  title  = {{GPT-4o System Card}},
+  author = {{OpenAI}},
+  year   = {2024},
+  eprint = {2410.21276},
+  archivePrefix = {arXiv},
+  url    = {https://arxiv.org/abs/2410.21276}
+}
+
+% Llama-3.3-70B-Instruct. Primary page: Meta's official model card
+% https://huggingface.co/meta-llama/Llama-3.3-70B-Instruct (fetched 2026-09-23; release date
+% December 6, 2024; Llama 3.3 Community License). Served here as the Azure AI Foundry deployment
+% Llama-3.3-70B-Instruct (scripts/generators.py FOUNDRY_V1_MODELS).
+@misc{meta_llama33,
+  title  = {{Llama 3.3 70B Instruct} Model Card},
+  author = {{Meta}},
+  year   = {2024},
+  url    = {https://huggingface.co/meta-llama/Llama-3.3-70B-Instruct}
+}
+
+% Mistral Large 3. Primary pages: Mistral AI's official model card
+% https://huggingface.co/mistralai/Mistral-Large-3-675B-Instruct-2512 (fetched 2026-09-23;
+% 675B total / 41B active parameters, Apache 2.0, version 2512 = December 2025) and the
+% announcement https://mistral.ai/news/mistral-3/ (fetched 2026-09-23; dated December 2, 2025).
+% CAVEAT for the PI: the paper's model name Mistral-Large-3-2 is the Azure AI Foundry deployment
+% name (scripts/generators.py FOUNDRY_V1_MODELS; probe_foundry_Mistral-Large-3-2_openai_v1.json).
+% On 2026-09-23 neither docs.mistral.ai/getting-started/models nor the Microsoft Learn Foundry
+% catalogue (models-sold-directly-by-azure, updated 2026-09-04, which lists only Mistral-Large-3)
+% names a "3.2" version, and ai.azure.com/catalog/models/Mistral-Large-3-2 returned no data, so
+% this entry cites Mistral Large 3 (25.12) on the assumption that the deployment serves it.
+@misc{mistral_large3,
+  title  = {{Mistral Large 3} Model Card},
+  author = {{Mistral AI}},
+  year   = {2025},
+  url    = {https://huggingface.co/mistralai/Mistral-Large-3-675B-Instruct-2512}
+}
+
+% DeepSeek-V4-Pro. Primary page: DeepSeek's official model card
+% https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro (fetched 2026-09-23; 1.6T total / 49B
+% activated parameters, one-million-token context, MIT license). DeepSeek's PDF model card
+% https://fe-static.deepseek.com/chat/transparency/deepseek-V4-model-card-EN.pdf (fetched
+% 2026-09-23) gives the release date April 24, 2026. Served here as the Azure AI Foundry
+% deployment DeepSeek-V4-Pro (scripts/generators.py FOUNDRY_V1_MODELS).
+@misc{deepseek_v4pro,
+  title  = {{DeepSeek-V4-Pro} Model Card},
+  author = {{DeepSeek-AI}},
+  year   = {2026},
+  url    = {https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro}
+}
+
+% DeepSeek-V4 technical report. Primary page: arXiv abstract https://arxiv.org/abs/2606.19348
+% (fetched 2026-09-23; submitted 2026-04-26, credited to DeepSeek-AI).
+@misc{deepseek_v4_report,
+  title  = {{DeepSeek-V4}: Towards Highly Efficient Million-Token Context Intelligence},
+  author = {{DeepSeek-AI}},
+  year   = {2026},
+  eprint = {2606.19348},
+  archivePrefix = {arXiv},
+  url    = {https://arxiv.org/abs/2606.19348}
+}
+
+% Scruples (the Anecdotes corpus used for the collective's disputes). Primary pages: AAAI
+% proceedings https://ojs.aaai.org/index.php/AAAI/article/view/17589 (fetched 2026-09-23;
+% vol. 35 no. 15, pp. 13470-13479, doi 10.1609/aaai.v35i15.17589) and the arXiv abstract
+% https://arxiv.org/abs/2008.09094 (fetched 2026-09-23; v2 2021-03-24, "Accepted to AAAI 2021").
+@inproceedings{lourie2021scruples,
+  title     = {{Scruples}: A Corpus of Community Ethical Judgments on 32,000 Real-Life Anecdotes},
+  author    = {Lourie, Nicholas and Le Bras, Ronan and Choi, Yejin},
+  booktitle = {Proceedings of the AAAI Conference on Artificial Intelligence},
+  volume    = {35},
+  pages     = {13470--13479},
+  year      = {2021},
+  doi       = {10.1609/aaai.v35i15.17589},
+  url       = {https://ojs.aaai.org/index.php/AAAI/article/view/17589}
+}
+
 @misc{chiu24data,
   title  = {{DailyDilemmas} Dataset},
   author = {Chiu, Yu Ying and Jiang, Liwei and Choi, Yejin},
@@ -1585,6 +1690,17 @@
   author    = {Jin, Zhijing and Levine, Sydney and Gonzalez, Fernando and Kamal, Ojasv and Sap, Maarten and Sachan, Mrinmaya and Mihalcea, Rada and Tenenbaum, Joshua B. and Sch{\"o}lkopf, Bernhard},
   booktitle = {Advances in Neural Information Processing Systems (NeurIPS)},
   year      = {2022}
+}
+
+% wilf2024simtom added 2026-09-23 (reviewer W38). Verified at https://arxiv.org/abs/2311.10227 and
+% https://aclanthology.org/2024.acl-long.451/ on 2026-09-23 (ACL Anthology author form used).
+@inproceedings{wilf2024simtom,
+  title     = {Think Twice: Perspective-Taking Improves Large Language Models' Theory-of-Mind Capabilities},
+  author    = {Wilf, Alex and Lee, Sihyun and Liang, Paul Pu and Morency, Louis-Philippe},
+  booktitle = {Proceedings of the 62nd Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)},
+  pages     = {8292--8308},
+  year      = {2024},
+  doi       = {10.18653/v1/2024.acl-long.451}
 }
 
 @article{wu24_vot,
@@ -2159,6 +2275,50 @@
   url    = {https://arxiv.org/abs/2511.11789}
 }
 
+% ----------------------------------------------------------------------------
+% LLM-as-judge biases (self-preference, position, verbosity, self-enhancement). Added 2026-09-23
+% (W19) for the judge-panel positioning in Related Work; each arXiv abstract page was fetched with
+% WebFetch on 2026-09-23 and the title, author order, latest version and comments line read there.
+% ----------------------------------------------------------------------------
+% Fetched 2026-09-23: https://arxiv.org/abs/2404.13076 (v1, submitted 15 April 2024; the abstract
+% page lists no venue, so cited as a preprint)
+@misc{panickssery2024selfrecognition,
+  title  = {{LLM} Evaluators Recognize and Favor Their Own Generations},
+  author = {Panickssery, Arjun and Bowman, Samuel R. and Feng, Shi},
+  year   = {2024},
+  eprint = {2404.13076},
+  archivePrefix = {arXiv},
+  url    = {https://arxiv.org/abs/2404.13076}
+}
+
+% Fetched 2026-09-23: https://arxiv.org/abs/2410.21819 (v2, 21 June 2025; comments line reads
+% "Accepted at NeurIPS 2024 Safe Generative AI Workshop")
+@misc{wataoka2024selfpreference,
+  title  = {Self-Preference Bias in {LLM}-as-a-Judge},
+  author = {Wataoka, Koki and Takahashi, Tsubasa and Ri, Ryokan},
+  year   = {2024},
+  eprint = {2410.21819},
+  archivePrefix = {arXiv},
+  note   = {NeurIPS 2024 Safe Generative AI Workshop, per the arXiv comments line},
+  url    = {https://arxiv.org/abs/2410.21819}
+}
+
+% Fetched 2026-09-23: https://arxiv.org/abs/2306.05685 (v4, 24 December 2023; comments line reads
+% "NeurIPS 2023 Datasets and Benchmarks Track"); the proceedings page was not fetched
+@inproceedings{zheng2023judging,
+  title     = {Judging {LLM}-as-a-Judge with {MT-Bench} and {Chatbot Arena}},
+  author    = {Zheng, Lianmin and Chiang, Wei-Lin and Sheng, Ying and Zhuang, Siyuan and Wu, Zhanghao and Zhuang, Yonghao and Lin, Zi and Li, Zhuohan and Li, Dacheng and Xing, Eric P. and Zhang, Hao and Gonzalez, Joseph E. and Stoica, Ion},
+  booktitle = {Advances in Neural Information Processing Systems 36 (NeurIPS 2023), Datasets and Benchmarks Track},
+  year      = {2023},
+  note      = {arXiv:2306.05685},
+  url       = {https://arxiv.org/abs/2306.05685}
+}
+
+% ----------------------------------------------------------------------------
+% Model cascades, deferral and single-model uncertainty signals (cited in Related Work and in
+% Appendix app-collective from 2026-09-23, W19). Entries verified at the primary pages recorded in
+% papers/embodied_sensor/related_works_verified.json (2026-09-14).
+% ----------------------------------------------------------------------------
 @misc{chen2023frugal,
   title  = {{FrugalGPT}: How to Use Large Language Models While Reducing Cost and Improving Performance},
   author = {Chen, Lingjiao and Zaharia, Matei and Zou, James},

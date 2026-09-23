@@ -1,0 +1,1207 @@
+{
+ "script": "scripts/analyze_readouts_17_3_17_5.py",
+ "generated": "2026-09-23T13:52:30",
+ "registered": {
+  "17.3": "prereg 17.3 registration ~L7156-7160; Addendum 17 shared guards ~L7080-7081",
+  "17.5": "prereg 17.5 registration ~L7992-7994"
+ },
+ "inputs": {
+  "raw_csv": "divergence_study_outputs/elephant_singleagent_raw.csv",
+  "oeq_csv": "data/elephant/OEQ.csv",
+  "rescore_cache": "divergence_study_outputs/elephant_rescore_validation_claude-haiku-4-5_full_<sha1[:16]>.json",
+  "counterparty_coding": "divergence_study_outputs/elephant_cp_<item>.json"
+ },
+ "hygiene": {
+  "forbidden_modules_loaded": [],
+  "socket_guard": true
+ },
+ "corrected_scores": {
+  "judge": "claude-haiku-4-5",
+  "limit_chars": 4000,
+  "eligible_over_limit": 2232,
+  "replaced": 2232,
+  "missing_from_cache": 0
+ },
+ "definitions": {
+  "nonresponse_pct": "100 * (150 - non-empty responses) / 150 per (generator, arm); absent items count",
+  "compliance_pct": "share of non-empty responses containing every mandated section label as a lowercase substring (sections_present rule); descriptive only, not a mechanism",
+  "mean_len_chars": "mean response length in characters over non-empty responses",
+  "rate_pct_manski_lo/hi": "validation rate with every unscored item (of 150) imputed as not validating / validating",
+  "contrast manski_lo/hi": "[a_lo - b_hi, a_hi - b_lo] in points, the 16.15.7 _bounds convention",
+  "share_recovered": "(CoT rate - arm rate) / (CoT rate - intact NoT rate) on items scored in all three arms; 1 = the arm reproduces NoT's whole reduction, 0 = none, negative = the arm raises validation above CoT",
+  "share_taken_back": "1 - share_recovered (the 17.3 convention: 0 = like intact NoT, 1 = like CoT)",
+  "pooled share": "unweighted mean of per-generator shares, items clustered within generator, item-clustered percentile bootstrap"
+ },
+ "caveats": [
+  "nano's CoT and intact NoT are the June cells generated under a 2,048-token total budget before the 8,192 reasoning floor; the 17.3 and 17.5 nano contrasts carry that budget mismatch (pre-spend amendment).",
+  "grok's cached CoT was cut at 1,024 tokens on 42% of items; it is the CoT baseline in every grok share and contrast here.",
+  "Compliance is the crude substring rule and is a descriptive; the 17.3 registration says it is not a mechanism.",
+  "A share_recovered outside [0, 1] is expected for not_counterparty_only, whose rate lies above CoT (17.5 REVERSED).",
+  "Scores are the production judge's (claude-haiku-4-5) untruncated re-scores; no other judge covers these arms."
+ ],
+ "knockouts_17_3": {
+  "per_generator": {
+   "claude-haiku-4-5": {
+    "standard_cot": {
+     "n_rows": 150,
+     "n_absent": 0,
+     "n_empty": 0,
+     "n_nonempty": 150,
+     "n_scored": 150,
+     "nonresponse_pct": 0.0,
+     "mean_len_chars": 1691.8533333333332,
+     "median_len_chars": 1574.5,
+     "mean_sections_present": 0.26666666666666666,
+     "mandated_labels": [],
+     "n_compliant": null,
+     "compliance_pct": null,
+     "n_missing": 0,
+     "rate_pct_complete_case": 62.66666666666667,
+     "rate_pct_manski_lo": 62.66666666666667,
+     "rate_pct_manski_hi": 62.66666666666667
+    },
+    "narrative_cot": {
+     "n_rows": 150,
+     "n_absent": 0,
+     "n_empty": 0,
+     "n_nonempty": 150,
+     "n_scored": 150,
+     "nonresponse_pct": 0.0,
+     "mean_len_chars": 5579.846666666666,
+     "median_len_chars": 5475.5,
+     "mean_sections_present": 4.733333333333333,
+     "mandated_labels": [
+      "protagonist",
+      "stakeholder",
+      "consequence",
+      "uncertain",
+      "decision"
+     ],
+     "n_compliant": 140,
+     "compliance_pct": 93.33333333333333,
+     "n_missing": 0,
+     "rate_pct_complete_case": 36.0,
+     "rate_pct_manski_lo": 36.0,
+     "rate_pct_manski_hi": 36.0,
+     "not_minus_cot_pp": {
+      "complete_case": -26.66666666666667,
+      "manski_lo": -26.66666666666667,
+      "manski_hi": -26.66666666666667
+     }
+    },
+    "not_drop_stakeholders": {
+     "n_rows": 150,
+     "n_absent": 0,
+     "n_empty": 0,
+     "n_nonempty": 150,
+     "n_scored": 150,
+     "nonresponse_pct": 0.0,
+     "mean_len_chars": 5280.08,
+     "median_len_chars": 5061.5,
+     "mean_sections_present": 3.9,
+     "mandated_labels": [
+      "protagonist",
+      "consequence",
+      "uncertain",
+      "decision"
+     ],
+     "n_compliant": 141,
+     "compliance_pct": 94.0,
+     "n_missing": 0,
+     "rate_pct_complete_case": 47.333333333333336,
+     "rate_pct_manski_lo": 47.333333333333336,
+     "rate_pct_manski_hi": 47.333333333333336,
+     "knock_minus_intact_pp": {
+      "complete_case": 11.333333333333336,
+      "manski_lo": 11.333333333333336,
+      "manski_hi": 11.333333333333336
+     },
+     "knock_minus_cot_pp": {
+      "complete_case": -15.333333333333336,
+      "manski_lo": -15.333333333333336,
+      "manski_hi": -15.333333333333336
+     }
+    },
+    "not_drop_consequences": {
+     "n_rows": 150,
+     "n_absent": 0,
+     "n_empty": 0,
+     "n_nonempty": 150,
+     "n_scored": 150,
+     "nonresponse_pct": 0.0,
+     "mean_len_chars": 4114.806666666666,
+     "median_len_chars": 4005.5,
+     "mean_sections_present": 4.1,
+     "mandated_labels": [
+      "protagonist",
+      "stakeholder",
+      "uncertain",
+      "decision"
+     ],
+     "n_compliant": 146,
+     "compliance_pct": 97.33333333333333,
+     "n_missing": 0,
+     "rate_pct_complete_case": 47.333333333333336,
+     "rate_pct_manski_lo": 47.333333333333336,
+     "rate_pct_manski_hi": 47.333333333333336,
+     "knock_minus_intact_pp": {
+      "complete_case": 11.333333333333336,
+      "manski_lo": 11.333333333333336,
+      "manski_hi": 11.333333333333336
+     },
+     "knock_minus_cot_pp": {
+      "complete_case": -15.333333333333336,
+      "manski_lo": -15.333333333333336,
+      "manski_hi": -15.333333333333336
+     }
+    },
+    "not_drop_uncertainty": {
+     "n_rows": 150,
+     "n_absent": 0,
+     "n_empty": 0,
+     "n_nonempty": 150,
+     "n_scored": 150,
+     "nonresponse_pct": 0.0,
+     "mean_len_chars": 5000.026666666667,
+     "median_len_chars": 4727.0,
+     "mean_sections_present": 4.006666666666667,
+     "mandated_labels": [
+      "protagonist",
+      "stakeholder",
+      "consequence",
+      "decision"
+     ],
+     "n_compliant": 142,
+     "compliance_pct": 94.66666666666667,
+     "n_missing": 0,
+     "rate_pct_complete_case": 50.66666666666667,
+     "rate_pct_manski_lo": 50.66666666666667,
+     "rate_pct_manski_hi": 50.66666666666667,
+     "knock_minus_intact_pp": {
+      "complete_case": 14.666666666666671,
+      "manski_lo": 14.666666666666671,
+      "manski_hi": 14.666666666666671
+     },
+     "knock_minus_cot_pp": {
+      "complete_case": -12.0,
+      "manski_lo": -12.0,
+      "manski_hi": -12.0
+     }
+    },
+    "not_commit_first": {
+     "n_rows": 150,
+     "n_absent": 0,
+     "n_empty": 0,
+     "n_nonempty": 150,
+     "n_scored": 150,
+     "nonresponse_pct": 0.0,
+     "mean_len_chars": 5992.326666666667,
+     "median_len_chars": 5827.5,
+     "mean_sections_present": 4.72,
+     "mandated_labels": [
+      "protagonist",
+      "stakeholder",
+      "consequence",
+      "uncertain",
+      "decision"
+     ],
+     "n_compliant": 139,
+     "compliance_pct": 92.66666666666667,
+     "n_missing": 0,
+     "rate_pct_complete_case": 28.000000000000004,
+     "rate_pct_manski_lo": 28.000000000000004,
+     "rate_pct_manski_hi": 28.000000000000004,
+     "knock_minus_intact_pp": {
+      "complete_case": -7.9999999999999964,
+      "manski_lo": -7.9999999999999964,
+      "manski_hi": -7.9999999999999964
+     },
+     "knock_minus_cot_pp": {
+      "complete_case": -34.66666666666667,
+      "manski_lo": -34.66666666666667,
+      "manski_hi": -34.66666666666667
+     }
+    }
+   },
+   "grok-4-1-fast-reasoning": {
+    "standard_cot": {
+     "n_rows": 150,
+     "n_absent": 0,
+     "n_empty": 4,
+     "n_nonempty": 146,
+     "n_scored": 146,
+     "nonresponse_pct": 2.6666666666666665,
+     "mean_len_chars": 3814.609589041096,
+     "median_len_chars": 4031.0,
+     "mean_sections_present": 0.2328767123287671,
+     "mandated_labels": [],
+     "n_compliant": null,
+     "compliance_pct": null,
+     "n_missing": 4,
+     "rate_pct_complete_case": 81.5068493150685,
+     "rate_pct_manski_lo": 79.33333333333333,
+     "rate_pct_manski_hi": 82.0
+    },
+    "narrative_cot": {
+     "n_rows": 150,
+     "n_absent": 0,
+     "n_empty": 5,
+     "n_nonempty": 145,
+     "n_scored": 145,
+     "nonresponse_pct": 3.3333333333333335,
+     "mean_len_chars": 5072.703448275862,
+     "median_len_chars": 5170,
+     "mean_sections_present": 3.2758620689655173,
+     "mandated_labels": [
+      "protagonist",
+      "stakeholder",
+      "consequence",
+      "uncertain",
+      "decision"
+     ],
+     "n_compliant": 92,
+     "compliance_pct": 63.44827586206897,
+     "n_missing": 5,
+     "rate_pct_complete_case": 45.51724137931035,
+     "rate_pct_manski_lo": 44.0,
+     "rate_pct_manski_hi": 47.333333333333336,
+     "not_minus_cot_pp": {
+      "complete_case": -35.989607935758144,
+      "manski_lo": -38.0,
+      "manski_hi": -31.999999999999993
+     }
+    },
+    "not_drop_stakeholders": {
+     "n_rows": 150,
+     "n_absent": 0,
+     "n_empty": 9,
+     "n_nonempty": 141,
+     "n_scored": 141,
+     "nonresponse_pct": 6.0,
+     "mean_len_chars": 4892.290780141844,
+     "median_len_chars": 5020,
+     "mean_sections_present": 3.0141843971631204,
+     "mandated_labels": [
+      "protagonist",
+      "consequence",
+      "uncertain",
+      "decision"
+     ],
+     "n_compliant": 89,
+     "compliance_pct": 63.12056737588652,
+     "n_missing": 9,
+     "rate_pct_complete_case": 46.808510638297875,
+     "rate_pct_manski_lo": 44.0,
+     "rate_pct_manski_hi": 50.0,
+     "knock_minus_intact_pp": {
+      "complete_case": 1.2912692589875263,
+      "manski_lo": -3.3333333333333357,
+      "manski_hi": 6.0
+     },
+     "knock_minus_cot_pp": {
+      "complete_case": -34.69833867677062,
+      "manski_lo": -38.0,
+      "manski_hi": -29.33333333333333
+     }
+    },
+    "not_drop_consequences": {
+     "n_rows": 150,
+     "n_absent": 0,
+     "n_empty": 9,
+     "n_nonempty": 141,
+     "n_scored": 141,
+     "nonresponse_pct": 6.0,
+     "mean_len_chars": 4281.475177304965,
+     "median_len_chars": 4343,
+     "mean_sections_present": 2.631205673758865,
+     "mandated_labels": [
+      "protagonist",
+      "stakeholder",
+      "uncertain",
+      "decision"
+     ],
+     "n_compliant": 89,
+     "compliance_pct": 63.12056737588652,
+     "n_missing": 9,
+     "rate_pct_complete_case": 43.97163120567376,
+     "rate_pct_manski_lo": 41.333333333333336,
+     "rate_pct_manski_hi": 47.333333333333336,
+     "knock_minus_intact_pp": {
+      "complete_case": -1.5456101736365895,
+      "manski_lo": -6.0,
+      "manski_hi": 3.3333333333333357
+     },
+     "knock_minus_cot_pp": {
+      "complete_case": -37.535218109394734,
+      "manski_lo": -40.666666666666664,
+      "manski_hi": -31.999999999999993
+     }
+    },
+    "not_drop_uncertainty": {
+     "n_rows": 150,
+     "n_absent": 0,
+     "n_empty": 9,
+     "n_nonempty": 141,
+     "n_scored": 141,
+     "nonresponse_pct": 6.0,
+     "mean_len_chars": 4959.858156028369,
+     "median_len_chars": 5052,
+     "mean_sections_present": 2.8156028368794326,
+     "mandated_labels": [
+      "protagonist",
+      "stakeholder",
+      "consequence",
+      "decision"
+     ],
+     "n_compliant": 97,
+     "compliance_pct": 68.79432624113475,
+     "n_missing": 9,
+     "rate_pct_complete_case": 40.42553191489361,
+     "rate_pct_manski_lo": 38.0,
+     "rate_pct_manski_hi": 44.0,
+     "knock_minus_intact_pp": {
+      "complete_case": -5.091709464416738,
+      "manski_lo": -9.333333333333336,
+      "manski_hi": 0.0
+     },
+     "knock_minus_cot_pp": {
+      "complete_case": -41.08131740017488,
+      "manski_lo": -44.0,
+      "manski_hi": -35.33333333333333
+     }
+    },
+    "not_commit_first": {
+     "n_rows": 149,
+     "n_absent": 1,
+     "n_empty": 10,
+     "n_nonempty": 139,
+     "n_scored": 139,
+     "nonresponse_pct": 7.333333333333333,
+     "mean_len_chars": 5056.892086330935,
+     "median_len_chars": 5151,
+     "mean_sections_present": 3.2805755395683454,
+     "mandated_labels": [
+      "protagonist",
+      "stakeholder",
+      "consequence",
+      "uncertain",
+      "decision"
+     ],
+     "n_compliant": 89,
+     "compliance_pct": 64.02877697841727,
+     "n_missing": 11,
+     "rate_pct_complete_case": 48.201438848920866,
+     "rate_pct_manski_lo": 44.666666666666664,
+     "rate_pct_manski_hi": 52.0,
+     "knock_minus_intact_pp": {
+      "complete_case": 2.684197469610517,
+      "manski_lo": -2.6666666666666714,
+      "manski_hi": 8.0
+     },
+     "knock_minus_cot_pp": {
+      "complete_case": -33.30541046614763,
+      "manski_lo": -37.333333333333336,
+      "manski_hi": -27.33333333333333
+     }
+    }
+   },
+   "gpt-5.4-nano": {
+    "standard_cot": {
+     "n_rows": 150,
+     "n_absent": 0,
+     "n_empty": 5,
+     "n_nonempty": 145,
+     "n_scored": 145,
+     "nonresponse_pct": 3.3333333333333335,
+     "mean_len_chars": 4345.606896551724,
+     "median_len_chars": 4315,
+     "mean_sections_present": 0.5517241379310345,
+     "mandated_labels": [],
+     "n_compliant": null,
+     "compliance_pct": null,
+     "n_missing": 5,
+     "rate_pct_complete_case": 75.86206896551724,
+     "rate_pct_manski_lo": 73.33333333333333,
+     "rate_pct_manski_hi": 76.66666666666667
+    },
+    "narrative_cot": {
+     "n_rows": 150,
+     "n_absent": 0,
+     "n_empty": 34,
+     "n_nonempty": 116,
+     "n_scored": 116,
+     "nonresponse_pct": 22.666666666666668,
+     "mean_len_chars": 6336.698275862069,
+     "median_len_chars": 6435.0,
+     "mean_sections_present": 4.5344827586206895,
+     "mandated_labels": [
+      "protagonist",
+      "stakeholder",
+      "consequence",
+      "uncertain",
+      "decision"
+     ],
+     "n_compliant": 105,
+     "compliance_pct": 90.51724137931035,
+     "n_missing": 34,
+     "rate_pct_complete_case": 34.48275862068966,
+     "rate_pct_manski_lo": 26.666666666666668,
+     "rate_pct_manski_hi": 49.333333333333336,
+     "not_minus_cot_pp": {
+      "complete_case": -41.37931034482758,
+      "manski_lo": -50.0,
+      "manski_hi": -23.999999999999993
+     }
+    },
+    "not_drop_stakeholders": {
+     "n_rows": 150,
+     "n_absent": 0,
+     "n_empty": 3,
+     "n_nonempty": 147,
+     "n_scored": 147,
+     "nonresponse_pct": 2.0,
+     "mean_len_chars": 6786.56462585034,
+     "median_len_chars": 6748,
+     "mean_sections_present": 4.163265306122449,
+     "mandated_labels": [
+      "protagonist",
+      "consequence",
+      "uncertain",
+      "decision"
+     ],
+     "n_compliant": 139,
+     "compliance_pct": 94.5578231292517,
+     "n_missing": 3,
+     "rate_pct_complete_case": 28.57142857142857,
+     "rate_pct_manski_lo": 28.000000000000004,
+     "rate_pct_manski_hi": 30.0,
+     "knock_minus_intact_pp": {
+      "complete_case": -5.911330049261089,
+      "manski_lo": -21.333333333333332,
+      "manski_hi": 3.333333333333332
+     },
+     "knock_minus_cot_pp": {
+      "complete_case": -47.29064039408867,
+      "manski_lo": -48.66666666666667,
+      "manski_hi": -43.33333333333333
+     }
+    },
+    "not_drop_consequences": {
+     "n_rows": 150,
+     "n_absent": 0,
+     "n_empty": 3,
+     "n_nonempty": 147,
+     "n_scored": 147,
+     "nonresponse_pct": 2.0,
+     "mean_len_chars": 5861.544217687075,
+     "median_len_chars": 5713,
+     "mean_sections_present": 3.802721088435374,
+     "mandated_labels": [
+      "protagonist",
+      "stakeholder",
+      "uncertain",
+      "decision"
+     ],
+     "n_compliant": 132,
+     "compliance_pct": 89.79591836734694,
+     "n_missing": 3,
+     "rate_pct_complete_case": 38.095238095238095,
+     "rate_pct_manski_lo": 37.333333333333336,
+     "rate_pct_manski_hi": 39.33333333333333,
+     "knock_minus_intact_pp": {
+      "complete_case": 3.6124794745484365,
+      "manski_lo": -12.0,
+      "manski_hi": 12.66666666666666
+     },
+     "knock_minus_cot_pp": {
+      "complete_case": -37.76683087027914,
+      "manski_lo": -39.333333333333336,
+      "manski_hi": -34.0
+     }
+    },
+    "not_drop_uncertainty": {
+     "n_rows": 150,
+     "n_absent": 0,
+     "n_empty": 3,
+     "n_nonempty": 147,
+     "n_scored": 147,
+     "nonresponse_pct": 2.0,
+     "mean_len_chars": 6511.210884353742,
+     "median_len_chars": 6353,
+     "mean_sections_present": 3.931972789115646,
+     "mandated_labels": [
+      "protagonist",
+      "stakeholder",
+      "consequence",
+      "decision"
+     ],
+     "n_compliant": 133,
+     "compliance_pct": 90.47619047619048,
+     "n_missing": 3,
+     "rate_pct_complete_case": 34.01360544217687,
+     "rate_pct_manski_lo": 33.33333333333333,
+     "rate_pct_manski_hi": 35.333333333333336,
+     "knock_minus_intact_pp": {
+      "complete_case": -0.4691531785127907,
+      "manski_lo": -16.000000000000007,
+      "manski_hi": 8.666666666666668
+     },
+     "knock_minus_cot_pp": {
+      "complete_case": -41.84846352334037,
+      "manski_lo": -43.33333333333334,
+      "manski_hi": -37.99999999999999
+     }
+    },
+    "not_commit_first": {
+     "n_rows": 150,
+     "n_absent": 0,
+     "n_empty": 3,
+     "n_nonempty": 147,
+     "n_scored": 147,
+     "nonresponse_pct": 2.0,
+     "mean_len_chars": 7435.761904761905,
+     "median_len_chars": 7442,
+     "mean_sections_present": 4.517006802721088,
+     "mandated_labels": [
+      "protagonist",
+      "stakeholder",
+      "consequence",
+      "uncertain",
+      "decision"
+     ],
+     "n_compliant": 132,
+     "compliance_pct": 89.79591836734694,
+     "n_missing": 3,
+     "rate_pct_complete_case": 35.374149659863946,
+     "rate_pct_manski_lo": 34.66666666666667,
+     "rate_pct_manski_hi": 36.666666666666664,
+     "knock_minus_intact_pp": {
+      "complete_case": 0.8913910391742874,
+      "manski_lo": -14.666666666666664,
+      "manski_hi": 9.999999999999996
+     },
+     "knock_minus_cot_pp": {
+      "complete_case": -40.48791930565329,
+      "manski_lo": -42.0,
+      "manski_hi": -36.666666666666664
+     }
+    }
+   }
+  },
+  "pooled_rows": {
+   "standard_cot": {
+    "n_rows": 450,
+    "n_absent": 0,
+    "n_empty": 9,
+    "n_nonempty": 441,
+    "n_scored": 441,
+    "nonresponse_pct": 2.0,
+    "mean_len_chars": 3267.1746031746034,
+    "median_len_chars": 3473,
+    "mean_sections_present": 0.3492063492063492,
+    "compliance_pct": null,
+    "n_compliant": null
+   },
+   "narrative_cot": {
+    "n_rows": 450,
+    "n_absent": 0,
+    "n_empty": 39,
+    "n_nonempty": 411,
+    "n_scored": 411,
+    "nonresponse_pct": 8.666666666666666,
+    "mean_len_chars": 5614.540145985401,
+    "median_len_chars": 5626,
+    "mean_sections_present": 4.1630170316301705,
+    "compliance_pct": 81.99513381995133,
+    "n_compliant": 337
+   },
+   "not_drop_stakeholders": {
+    "n_rows": 450,
+    "n_absent": 0,
+    "n_empty": 12,
+    "n_nonempty": 438,
+    "n_scored": 438,
+    "nonresponse_pct": 2.6666666666666665,
+    "mean_len_chars": 5660.844748858448,
+    "median_len_chars": 5468.5,
+    "mean_sections_present": 3.7031963470319633,
+    "compliance_pct": 84.24657534246575,
+    "n_compliant": 369
+   },
+   "not_drop_consequences": {
+    "n_rows": 450,
+    "n_absent": 0,
+    "n_empty": 12,
+    "n_nonempty": 438,
+    "n_scored": 438,
+    "nonresponse_pct": 2.6666666666666665,
+    "mean_len_chars": 4754.6940639269405,
+    "median_len_chars": 4560.0,
+    "mean_sections_present": 3.5273972602739727,
+    "compliance_pct": 83.78995433789954,
+    "n_compliant": 367
+   },
+   "not_drop_uncertainty": {
+    "n_rows": 450,
+    "n_absent": 0,
+    "n_empty": 12,
+    "n_nonempty": 438,
+    "n_scored": 438,
+    "nonresponse_pct": 2.6666666666666665,
+    "mean_len_chars": 5494.273972602739,
+    "median_len_chars": 5323.0,
+    "mean_sections_present": 3.598173515981735,
+    "compliance_pct": 84.93150684931507,
+    "n_compliant": 372
+   },
+   "not_commit_first": {
+    "n_rows": 449,
+    "n_absent": 1,
+    "n_empty": 13,
+    "n_nonempty": 436,
+    "n_scored": 436,
+    "nonresponse_pct": 3.111111111111111,
+    "mean_len_chars": 6180.766055045871,
+    "median_len_chars": 5955.5,
+    "mean_sections_present": 4.192660550458716,
+    "compliance_pct": 82.56880733944953,
+    "n_compliant": 360
+   }
+  }
+ },
+ "counterparty_17_5": {
+  "coding": {
+   "present": 110,
+   "absent": 40,
+   "coded": 150
+  },
+  "bootstrap": {
+   "b": 8000,
+   "seed": 20260922,
+   "min_items_per_generator": 10,
+   "min_items_pooled_per_generator": 5
+  },
+  "per_generator": {
+   "not_counterparty_only": {
+    "claude-haiku-4-5": {
+     "all": {
+      "share_recovered": {
+       "point": -0.37499999999999983,
+       "lo": -0.9999999999999993,
+       "hi": -0.0545454545454546,
+       "se": 0.23962925392322726
+      },
+      "share_taken_back": {
+       "point": 1.3749999999999998,
+       "lo": 1.0545454545454547,
+       "hi": 1.9999999999999993
+      },
+      "items": 150,
+      "b": 8000,
+      "degenerate": 0,
+      "rates_pct_on_these_items": {
+       "cot": 62.66666666666667,
+       "intact_not": 36.0,
+       "arm": 72.66666666666667
+      }
+     },
+     "counterparty_present": {
+      "share_recovered": {
+       "point": -0.3076923076923078,
+       "lo": -0.8181818181818179,
+       "hi": -0.022727272727272596,
+       "se": 0.20015133134070906
+      },
+      "share_taken_back": {
+       "point": 1.307692307692308,
+       "lo": 1.0227272727272725,
+       "hi": 1.818181818181818
+      },
+      "items": 110,
+      "b": 8000,
+      "degenerate": 0,
+      "rates_pct_on_these_items": {
+       "cot": 68.18181818181817,
+       "intact_not": 32.72727272727273,
+       "arm": 79.0909090909091
+      }
+     },
+     "counterparty_absent": {
+      "share_recovered": {
+       "point": -3.0000000000000067,
+       "lo": -5.000000000000007,
+       "hi": 5.999999999999994,
+       "se": 2.38999920816877
+      },
+      "share_taken_back": {
+       "point": 4.000000000000007,
+       "lo": -4.999999999999994,
+       "hi": 6.000000000000007
+      },
+      "items": 40,
+      "b": 8000,
+      "degenerate": 849,
+      "rates_pct_on_these_items": {
+       "cot": 47.5,
+       "intact_not": 45.0,
+       "arm": 55.00000000000001
+      }
+     },
+     "rate_pct_own_items": 72.66666666666667,
+     "n_own_items": 150
+    },
+    "grok-4-1-fast-reasoning": {
+     "all": {
+      "share_recovered": {
+       "point": -0.08333333333333336,
+       "lo": -0.28260869565217395,
+       "hi": 0.08571428571428541,
+       "se": 0.09434009174338949
+      },
+      "share_taken_back": {
+       "point": 1.0833333333333333,
+       "lo": 0.9142857142857146,
+       "hi": 1.2826086956521738
+      },
+      "items": 140,
+      "b": 8000,
+      "degenerate": 0,
+      "rates_pct_on_these_items": {
+       "cot": 80.71428571428572,
+       "intact_not": 46.42857142857143,
+       "arm": 83.57142857142857
+      }
+     },
+     "counterparty_present": {
+      "share_recovered": {
+       "point": -0.08888888888888898,
+       "lo": -0.3,
+       "hi": 0.08108108108108114,
+       "se": 0.09685510160902372
+      },
+      "share_taken_back": {
+       "point": 1.088888888888889,
+       "lo": 0.9189189189189189,
+       "hi": 1.3
+      },
+      "items": 101,
+      "b": 8000,
+      "degenerate": 0,
+      "rates_pct_on_these_items": {
+       "cot": 85.14851485148515,
+       "intact_not": 40.5940594059406,
+       "arm": 89.10891089108911
+      }
+     },
+     "counterparty_absent": {
+      "share_recovered": {
+       "point": 0.0,
+       "lo": -1.9999999999999958,
+       "hi": 1.6666666666666652,
+       "se": 0.7385649138177016
+      },
+      "share_taken_back": {
+       "point": 1.0,
+       "lo": -0.6666666666666652,
+       "hi": 2.9999999999999956
+      },
+      "items": 39,
+      "b": 8000,
+      "degenerate": 663,
+      "rates_pct_on_these_items": {
+       "cot": 69.23076923076923,
+       "intact_not": 61.53846153846154,
+       "arm": 69.23076923076923
+      }
+     },
+     "rate_pct_own_items": 83.33333333333334,
+     "n_own_items": 144
+    },
+    "gpt-5.4-nano": {
+     "all": {
+      "share_recovered": {
+       "point": -0.18604651162790697,
+       "lo": -0.4772727272727273,
+       "hi": 0.021739130434782403,
+       "se": 0.12651733552876118
+      },
+      "share_taken_back": {
+       "point": 1.1860465116279069,
+       "lo": 0.9782608695652176,
+       "hi": 1.4772727272727273
+      },
+      "items": 114,
+      "b": 8000,
+      "degenerate": 0,
+      "rates_pct_on_these_items": {
+       "cot": 71.9298245614035,
+       "intact_not": 34.21052631578947,
+       "arm": 78.94736842105263
+      }
+     },
+     "counterparty_present": {
+      "share_recovered": {
+       "point": -0.14285714285714282,
+       "lo": -0.4444444444444442,
+       "hi": 0.07692307692307696,
+       "se": 0.13360245939914397
+      },
+      "share_taken_back": {
+       "point": 1.1428571428571428,
+       "lo": 0.923076923076923,
+       "hi": 1.4444444444444442
+      },
+      "items": 76,
+      "b": 8000,
+      "degenerate": 0,
+      "rates_pct_on_these_items": {
+       "cot": 77.63157894736842,
+       "intact_not": 31.57894736842105,
+       "arm": 84.21052631578947
+      }
+     },
+     "counterparty_absent": {
+      "share_recovered": {
+       "point": -0.3750000000000001,
+       "lo": -2.499999999999997,
+       "hi": 0.18181818181818196,
+       "se": 0.8745365616794032
+      },
+      "share_taken_back": {
+       "point": 1.375,
+       "lo": 0.818181818181818,
+       "hi": 3.499999999999997
+      },
+      "items": 38,
+      "b": 8000,
+      "degenerate": 67,
+      "rates_pct_on_these_items": {
+       "cot": 60.526315789473685,
+       "intact_not": 39.473684210526315,
+       "arm": 68.42105263157895
+      }
+     },
+     "rate_pct_own_items": 81.63265306122449,
+     "n_own_items": 147
+    }
+   },
+   "not_style_control": {
+    "claude-haiku-4-5": {
+     "all": {
+      "share_recovered": {
+       "point": -0.12499999999999994,
+       "lo": -0.6562500000000001,
+       "hi": 0.20000000000000018,
+       "se": 0.22131306658385286
+      },
+      "share_taken_back": {
+       "point": 1.125,
+       "lo": 0.7999999999999998,
+       "hi": 1.65625
+      },
+      "items": 150,
+      "b": 8000,
+      "degenerate": 0,
+      "rates_pct_on_these_items": {
+       "cot": 62.66666666666667,
+       "intact_not": 36.0,
+       "arm": 66.0
+      }
+     },
+     "counterparty_present": {
+      "share_recovered": {
+       "point": -0.05128205128205131,
+       "lo": -0.46666666666666634,
+       "hi": 0.21568627450980388,
+       "se": 0.17350414449598217
+      },
+      "share_taken_back": {
+       "point": 1.0512820512820513,
+       "lo": 0.7843137254901962,
+       "hi": 1.4666666666666663
+      },
+      "items": 110,
+      "b": 8000,
+      "degenerate": 0,
+      "rates_pct_on_these_items": {
+       "cot": 68.18181818181817,
+       "intact_not": 32.72727272727273,
+       "arm": 70.0
+      }
+     },
+     "counterparty_absent": {
+      "share_recovered": {
+       "point": -3.0000000000000067,
+       "lo": -5.999999999999996,
+       "hi": 6.999999999999994,
+       "se": 2.758909463432125
+      },
+      "share_taken_back": {
+       "point": 4.000000000000007,
+       "lo": -5.999999999999994,
+       "hi": 6.999999999999996
+      },
+      "items": 40,
+      "b": 8000,
+      "degenerate": 849,
+      "rates_pct_on_these_items": {
+       "cot": 47.5,
+       "intact_not": 45.0,
+       "arm": 55.00000000000001
+      }
+     },
+     "rate_pct_own_items": 66.0,
+     "n_own_items": 150
+    },
+    "grok-4-1-fast-reasoning": {
+     "all": {
+      "share_recovered": {
+       "point": -0.020408163265306048,
+       "lo": -0.20000000000000018,
+       "hi": 0.14285714285714268,
+       "se": 0.08753554841108398
+      },
+      "share_taken_back": {
+       "point": 1.0204081632653061,
+       "lo": 0.8571428571428573,
+       "hi": 1.2000000000000002
+      },
+      "items": 140,
+      "b": 8000,
+      "degenerate": 0,
+      "rates_pct_on_these_items": {
+       "cot": 80.71428571428572,
+       "intact_not": 45.714285714285715,
+       "arm": 81.42857142857143
+      }
+     },
+     "counterparty_present": {
+      "share_recovered": {
+       "point": -0.022222222222222244,
+       "lo": -0.1999999999999999,
+       "hi": 0.13157894736842088,
+       "se": 0.08373700264046176
+      },
+      "share_taken_back": {
+       "point": 1.0222222222222221,
+       "lo": 0.8684210526315791,
+       "hi": 1.2
+      },
+      "items": 101,
+      "b": 8000,
+      "degenerate": 0,
+      "rates_pct_on_these_items": {
+       "cot": 85.14851485148515,
+       "intact_not": 40.5940594059406,
+       "arm": 86.13861386138613
+      }
+     },
+     "counterparty_absent": {
+      "share_recovered": {
+       "point": 0.0,
+       "lo": -2.0,
+       "hi": 1.9999999999999958,
+       "se": 0.886131902642785
+      },
+      "share_taken_back": {
+       "point": 1.0,
+       "lo": -0.9999999999999958,
+       "hi": 3.0
+      },
+      "items": 39,
+      "b": 8000,
+      "degenerate": 423,
+      "rates_pct_on_these_items": {
+       "cot": 69.23076923076923,
+       "intact_not": 58.97435897435898,
+       "arm": 69.23076923076923
+      }
+     },
+     "rate_pct_own_items": 80.55555555555556,
+     "n_own_items": 144
+    },
+    "gpt-5.4-nano": {
+     "all": {
+      "share_recovered": {
+       "point": 0.1627906976744185,
+       "lo": -0.07317073170731699,
+       "hi": 0.36363636363636365,
+       "se": 0.11223788592285497
+      },
+      "share_taken_back": {
+       "point": 0.8372093023255816,
+       "lo": 0.6363636363636364,
+       "hi": 1.073170731707317
+      },
+      "items": 114,
+      "b": 8000,
+      "degenerate": 0,
+      "rates_pct_on_these_items": {
+       "cot": 71.9298245614035,
+       "intact_not": 34.21052631578947,
+       "arm": 65.78947368421053
+      }
+     },
+     "counterparty_present": {
+      "share_recovered": {
+       "point": 0.3142857142857143,
+       "lo": 0.108108108108108,
+       "hi": 0.5217391304347827,
+       "se": 0.10403194088338291
+      },
+      "share_taken_back": {
+       "point": 0.6857142857142857,
+       "lo": 0.4782608695652173,
+       "hi": 0.891891891891892
+      },
+      "items": 76,
+      "b": 8000,
+      "degenerate": 0,
+      "rates_pct_on_these_items": {
+       "cot": 77.63157894736842,
+       "intact_not": 31.57894736842105,
+       "arm": 63.1578947368421
+      }
+     },
+     "counterparty_absent": {
+      "share_recovered": {
+       "point": -0.5,
+       "lo": -3.0000000000000044,
+       "hi": 0.1999999999999998,
+       "se": 1.127497575590016
+      },
+      "share_taken_back": {
+       "point": 1.5,
+       "lo": 0.8000000000000003,
+       "hi": 4.000000000000004
+      },
+      "items": 38,
+      "b": 8000,
+      "degenerate": 67,
+      "rates_pct_on_these_items": {
+       "cot": 60.526315789473685,
+       "intact_not": 39.473684210526315,
+       "arm": 71.05263157894737
+      }
+     },
+     "rate_pct_own_items": 67.3469387755102,
+     "n_own_items": 147
+    }
+   }
+  },
+  "pooled": {
+   "not_counterparty_only": {
+    "all": {
+     "share_recovered": {
+      "point": -0.21479328165374673,
+      "lo": -0.44598765432098786,
+      "hi": -0.07491675915649283,
+      "se": 0.09561145950505065
+     },
+     "share_taken_back": {
+      "point": 1.2147932816537468,
+      "lo": 1.0749167591564928,
+      "hi": 1.4459876543209877
+     },
+     "items": 404,
+     "b": 8000,
+     "degenerate": 0
+    },
+    "counterparty_present": {
+     "share_recovered": {
+      "point": -0.17981277981277988,
+      "lo": -0.3831308251598107,
+      "hi": -0.041471013686435944,
+      "se": 0.08647079624723078
+     },
+     "share_taken_back": {
+      "point": 1.1798127798127798,
+      "lo": 1.041471013686436,
+      "hi": 1.3831308251598107
+     },
+     "items": 287,
+     "b": 8000,
+     "degenerate": 0
+    },
+    "counterparty_absent": {
+     "share_recovered": {
+      "point": -1.1250000000000022,
+      "lo": -2.111111111111114,
+      "hi": 1.7666666666666646,
+      "se": 0.887840874805053
+     },
+     "share_taken_back": {
+      "point": 2.125000000000002,
+      "lo": -0.7666666666666646,
+      "hi": 3.111111111111114
+     },
+     "items": 117,
+     "b": 8000,
+     "degenerate": 0
+    }
+   },
+   "not_style_control": {
+    "all": {
+     "share_recovered": {
+      "point": 0.005794178136370838,
+      "lo": -0.1955015268968757,
+      "hi": 0.1487804878048782,
+      "se": 0.08704298912531666
+     },
+     "share_taken_back": {
+      "point": 0.9942058218636292,
+      "lo": 0.8512195121951218,
+      "hi": 1.1955015268968756
+     },
+     "items": 404,
+     "b": 8000,
+     "degenerate": 0
+    },
+    "counterparty_present": {
+     "share_recovered": {
+      "point": 0.08026048026048024,
+      "lo": -0.08442265795206964,
+      "hi": 0.20580772261623326,
+      "se": 0.07379488502797764
+     },
+     "share_taken_back": {
+      "point": 0.9197395197395197,
+      "lo": 0.7941922773837667,
+      "hi": 1.0844226579520697
+     },
+     "items": 287,
+     "b": 8000,
+     "degenerate": 0
+    },
+    "counterparty_absent": {
+     "share_recovered": {
+      "point": -1.166666666666669,
+      "lo": -2.404761904761906,
+      "hi": 2.166666666666666,
+      "se": 1.0512250205894018
+     },
+     "share_taken_back": {
+      "point": 2.1666666666666687,
+      "lo": -1.166666666666666,
+      "hi": 3.404761904761906
+     },
+     "items": 117,
+     "b": 8000,
+     "degenerate": 1
+    }
+   }
+  }
+ },
+ "crosscheck": {
+  "knockout_social_analysis": {
+   "cells_compared": 30,
+   "max_abs_diff": 0.0,
+   "match": true
+  },
+  "counterparty_causal_analysis": {
+   "cells_compared": 12,
+   "max_abs_diff": 0.0,
+   "match": true
+  }
+ }
+}

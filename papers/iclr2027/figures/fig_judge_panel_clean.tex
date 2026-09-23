@@ -1,35 +1,93 @@
 \begin{tikzpicture}
-\begin{axis}[width=\columnwidth, height=6.2cm, xmin=-85, xmax=25,
-  xlabel={NoT $-$ standard CoT, validation rate (points)},
-  ytick={0,1,2,3,4,5,6},
-  yticklabels={haiku,sonnet,nano,grok,Llama,Mistral,DeepSeek}, y dir=reverse,
-  ymin=-0.6, ymax=6.6, xmajorgrids, axis lines*=left, yticklabel style={font=\small},
-  legend style={font=\scriptsize, at={(0.5,1.02)}, anchor=south, legend columns=5, draw=none},
-  legend cell align=left]
+\begin{axis}[name=left, scale only axis, title={Regenerated, 4,096-token cap}, title style={font=\small, yshift=-3pt}, width=0.40\columnwidth, height=5.0cm, xmin=-85, xmax=25, xlabel={NoT $-$ CoT, validation rate (points)}, xlabel style={font=\small}, ytick={0,1,2,3,4,5,6}, ymin=-0.6, ymax=6.6, y dir=reverse, xmajorgrids, axis lines*=left, tick label style={font=\small}, yticklabels={haiku,sonnet,nano,grok,Llama,Mistral,DeepSeek}, legend style={font=\scriptsize, at={(0.02,0.99)}, anchor=north west, draw=none, fill=none, row sep=-3pt}, legend cell align=left]
+\fill[gray!9] (axis cs:-85,-0.5) rectangle (axis cs:25,0.5);
+\fill[gray!9] (axis cs:-85,1.5) rectangle (axis cs:25,2.5);
+\fill[gray!9] (axis cs:-85,3.5) rectangle (axis cs:25,4.5);
+\fill[gray!9] (axis cs:-85,5.5) rectangle (axis cs:25,6.5);
 \addplot[black, dashed, forget plot] coordinates {(0,-0.6) (0,6.6)};
-\addplot[only marks, mark=*, mark size=1.7pt, color=teal!75!black, error bars/.cd, x dir=both, x explicit, error bar style={line width=0.5pt}]
+\addplot[only marks, mark=*, mark size=2.3pt, color=black, mark options={fill=black, line width=0.7pt}, error bars/.cd, x dir=both, x explicit, error bar style={line width=0.55pt}]
   coordinates {
-    (-26.7,-0.28) -= (10.0,0) += (10.0,0)
-    (-19.3,0.72) -= (8.7,0) += (8.7,0)
-    (-37.9,1.72) -= (10.3,0) += (10.3,0)
-    (-35.2,2.72) -= (9.0,0) += (8.3,0)
-    (-70.2,3.72) -= (7.8,0) += (7.8,0)
-    (-57.6,4.72) -= (8.6,0) += (8.6,0)
-    (-46.1,5.72) -= (8.5,0) += (8.5,0)
+    (-22.0,-0.32) -= (9.3,0) += (10.0,0)
+    (-12.7,0.68) -= (9.3,0) += (9.3,0)
+    (-42.2,1.68) -= (8.8,0) += (9.5,0)
+    (-44.3,2.68) -= (9.3,0) += (9.3,0)
+    (-63.4,3.68) -= (8.5,0) += (8.5,0)
+    (-57.6,4.68) -= (8.6,0) += (8.6,0)
+    (-51.8,5.68) -= (8.5,0) += (9.2,0)
   };
 \addlegendentry{haiku (production)}
-\addplot[only marks, mark=square*, mark size=1.7pt, color=orange!85!black, error bars/.cd, x dir=both, x explicit, error bar style={line width=0.5pt}]
+\addplot[only marks, mark=square, mark size=2.3pt, color=orange!85!black, mark options={fill=white, line width=0.7pt}, error bars/.cd, x dir=both, x explicit, error bar style={line width=0.55pt}]
   coordinates {
-    (-10.7,-0.14) -= (8.7,0) += (8.7,0)
-    (3.3,0.86) -= (8.0,0) += (8.0,0)
-    (-10.3,1.86) -= (8.6,0) += (8.6,0)
-    (-23.4,2.86) -= (8.3,0) += (8.3,0)
-    (-64.5,3.86) -= (8.5,0) += (8.5,0)
-    (-41.0,4.86) -= (8.6,0) += (8.6,0)
-    (-29.1,5.86) -= (7.8,0) += (7.8,0)
+    (-14.0,-0.16) -= (8.7,0) += (9.3,0)
+    (8.0,0.84) -= (6.7,0) += (7.3,0)
+    (-10.2,1.84) -= (7.5,0) += (6.8,0)
+    (-23.6,2.84) -= (8.6,0) += (8.6,0)
+    (-66.2,3.84) -= (7.7,0) += (7.7,0)
+    (-29.5,4.84) -= (7.9,0) += (7.9,0)
+    (-16.3,5.84) -= (7.8,0) += (7.1,0)
   };
 \addlegendentry{gpt-4o}
-\addplot[only marks, mark=triangle*, mark size=1.7pt, color=violet!80!black, error bars/.cd, x dir=both, x explicit, error bar style={line width=0.5pt}]
+\addplot[only marks, mark=triangle, mark size=2.3pt, color=violet!80!black, mark options={fill=white, line width=0.7pt}, error bars/.cd, x dir=both, x explicit, error bar style={line width=0.55pt}]
+  coordinates {
+    (-1.3,0.00) -= (9.3,0) += (9.3,0)
+    (8.7,1.00) -= (8.0,0) += (8.0,0)
+    (-25.9,2.00) -= (8.8,0) += (8.8,0)
+    (-13.6,3.00) -= (9.3,0) += (9.3,0)
+    (-50.7,4.00) -= (9.2,0) += (8.5,0)
+    (-15.1,5.00) -= (7.9,0) += (7.9,0)
+    (-28.4,6.00) -= (9.9,0) += (9.2,0)
+  };
+\addlegendentry{nano}
+\addplot[only marks, mark=diamond, mark size=2.3pt, color=gray!60!black, mark options={fill=white, line width=0.7pt}, error bars/.cd, x dir=both, x explicit, error bar style={line width=0.55pt}]
+  coordinates {
+    (5.4,0.16) -= (6.0,0) += (6.0,0)
+    (8.7,1.16) -= (5.4,0) += (5.4,0)
+    (-4.1,2.16) -= (7.6,0) += (6.9,0)
+    (-0.7,3.16) -= (5.8,0) += (5.8,0)
+    (-17.7,4.16) -= (7.8,0) += (7.1,0)
+    (-2.9,5.16) -= (5.8,0) += (5.8,0)
+    (2.1,6.16) -= (4.3,0) += (5.0,0)
+  };
+\addlegendentry{Llama}
+\addplot[only marks, mark=pentagon, mark size=2.3pt, color=red!70!black, mark options={fill=white, line width=0.7pt}, error bars/.cd, x dir=both, x explicit, error bar style={line width=0.55pt}]
+  coordinates {
+    (12.1,0.32) -= (7.4,0) += (7.4,0)
+    (12.1,1.32) -= (5.4,0) += (6.0,0)
+    (-3.4,2.32) -= (6.2,0) += (6.2,0)
+    (-2.9,3.32) -= (5.1,0) += (5.1,0)
+    (-51.8,4.32) -= (9.2,0) += (9.2,0)
+    (-0.7,5.32) -= (6.5,0) += (6.5,0)
+    (-2.1,6.32) -= (5.7,0) += (5.0,0)
+  };
+\addlegendentry{grok}
+\end{axis}
+\begin{axis}[name=right, scale only axis, title={Original responses}, title style={font=\small, yshift=-3pt}, width=0.40\columnwidth, height=5.0cm, xmin=-85, xmax=25, xlabel={NoT $-$ CoT, validation rate (points)}, xlabel style={font=\small}, ytick={0,1,2,3,4,5,6}, ymin=-0.6, ymax=6.6, y dir=reverse, xmajorgrids, axis lines*=left, tick label style={font=\small}, yticklabels={,,}, at={(left.east)}, anchor=west, xshift=0.45cm]
+\fill[gray!9] (axis cs:-85,-0.5) rectangle (axis cs:25,0.5);
+\fill[gray!9] (axis cs:-85,1.5) rectangle (axis cs:25,2.5);
+\fill[gray!9] (axis cs:-85,3.5) rectangle (axis cs:25,4.5);
+\fill[gray!9] (axis cs:-85,5.5) rectangle (axis cs:25,6.5);
+\addplot[black, dashed, forget plot] coordinates {(0,-0.6) (0,6.6)};
+\addplot[only marks, mark=*, mark size=2.3pt, color=black, mark options={fill=black, line width=0.7pt}, error bars/.cd, x dir=both, x explicit, error bar style={line width=0.55pt}]
+  coordinates {
+    (-26.7,-0.32) -= (10.0,0) += (10.0,0)
+    (-19.3,0.68) -= (8.7,0) += (8.7,0)
+    (-37.9,1.68) -= (10.3,0) += (10.3,0)
+    (-35.2,2.68) -= (9.0,0) += (8.3,0)
+    (-70.2,3.68) -= (7.8,0) += (7.8,0)
+    (-57.6,4.68) -= (8.6,0) += (8.6,0)
+    (-46.1,5.68) -= (8.5,0) += (8.5,0)
+  };
+\addplot[only marks, mark=square, mark size=2.3pt, color=orange!85!black, mark options={fill=white, line width=0.7pt}, error bars/.cd, x dir=both, x explicit, error bar style={line width=0.55pt}]
+  coordinates {
+    (-10.7,-0.16) -= (8.7,0) += (8.7,0)
+    (3.3,0.84) -= (8.0,0) += (8.0,0)
+    (-10.3,1.84) -= (8.6,0) += (8.6,0)
+    (-23.4,2.84) -= (8.3,0) += (8.3,0)
+    (-64.5,3.84) -= (8.5,0) += (8.5,0)
+    (-41.0,4.84) -= (8.6,0) += (8.6,0)
+    (-29.1,5.84) -= (7.8,0) += (7.8,0)
+  };
+\addplot[only marks, mark=triangle, mark size=2.3pt, color=violet!80!black, mark options={fill=white, line width=0.7pt}, error bars/.cd, x dir=both, x explicit, error bar style={line width=0.55pt}]
   coordinates {
     (-5.3,0.00) -= (10.0,0) += (10.0,0)
     (2.0,1.00) -= (8.7,0) += (8.7,0)
@@ -39,28 +97,25 @@
     (-18.0,5.00) -= (9.4,0) += (9.4,0)
     (-22.7,6.00) -= (9.2,0) += (9.2,0)
   };
-\addlegendentry{nano}
-\addplot[only marks, mark=diamond*, mark size=1.7pt, color=gray!80!black, error bars/.cd, x dir=both, x explicit, error bar style={line width=0.5pt}]
+\addplot[only marks, mark=diamond, mark size=2.3pt, color=gray!60!black, mark options={fill=white, line width=0.7pt}, error bars/.cd, x dir=both, x explicit, error bar style={line width=0.55pt}]
   coordinates {
-    (5.4,0.14) -= (5.4,0) += (5.4,0)
-    (7.4,1.14) -= (5.4,0) += (6.0,0)
-    (13.8,2.14) -= (6.0,0) += (6.9,0)
-    (-2.8,3.14) -= (5.6,0) += (5.6,0)
-    (-11.3,4.14) -= (7.8,0) += (7.8,0)
-    (-5.1,5.14) -= (6.6,0) += (6.6,0)
-    (0.0,6.14) -= (3.6,0) += (3.6,0)
+    (5.4,0.16) -= (5.4,0) += (5.4,0)
+    (7.4,1.16) -= (5.4,0) += (6.0,0)
+    (13.8,2.16) -= (6.0,0) += (6.9,0)
+    (-2.8,3.16) -= (5.6,0) += (5.6,0)
+    (-11.3,4.16) -= (7.8,0) += (7.8,0)
+    (-5.1,5.16) -= (6.6,0) += (6.6,0)
+    (0.0,6.16) -= (3.6,0) += (3.6,0)
   };
-\addlegendentry{Llama}
-\addplot[only marks, mark=pentagon*, mark size=1.7pt, color=red!70!black, error bars/.cd, x dir=both, x explicit, error bar style={line width=0.5pt}]
+\addplot[only marks, mark=pentagon, mark size=2.3pt, color=red!70!black, mark options={fill=white, line width=0.7pt}, error bars/.cd, x dir=both, x explicit, error bar style={line width=0.55pt}]
   coordinates {
-    (11.4,0.28) -= (6.0,0) += (6.7,0)
-    (14.0,1.28) -= (5.3,0) += (6.0,0)
-    (4.3,2.28) -= (9.5,0) += (9.5,0)
-    (0.7,3.28) -= (4.9,0) += (4.9,0)
-    (-49.6,4.28) -= (8.5,0) += (9.2,0)
-    (2.9,5.28) -= (6.6,0) += (6.6,0)
-    (-5.0,6.28) -= (5.0,0) += (4.3,0)
+    (11.4,0.32) -= (6.0,0) += (6.7,0)
+    (14.0,1.32) -= (5.3,0) += (6.0,0)
+    (4.3,2.32) -= (9.5,0) += (9.5,0)
+    (0.7,3.32) -= (4.9,0) += (4.9,0)
+    (-49.6,4.32) -= (8.5,0) += (9.2,0)
+    (2.9,5.32) -= (6.6,0) += (6.6,0)
+    (-5.0,6.32) -= (5.0,0) += (4.3,0)
   };
-\addlegendentry{grok}
 \end{axis}
 \end{tikzpicture}

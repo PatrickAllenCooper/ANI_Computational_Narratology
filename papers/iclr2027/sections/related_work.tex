@@ -1,70 +1,103 @@
 % related_work.tex -- ICLR 2027 draft, condensed from the PI's seven paragraphs (every
 % citation kept; keys resolve in references.bib, merged from the verified unified and
 % embodied_sensor bibliographies). Sentences that stated a single-model finding as general
-% are scoped to the model on which it was measured. No new citations were added.
+% are scoped to the model on which it was measured.
 % Condensed again for the nine-page limit (integrating editor, 2026-09-23): every citation key
 % of the previous version is still cited, and no claim was strengthened.
+% W19 (2026-09-23): three LLM-as-judge bias citations added (panickssery2024selfrecognition,
+% wataoka2024selfpreference, zheng2023judging; arXiv abstract pages fetched with WebFetch that day,
+% entries and fetch notes in references.bib) and the cascade, deferral and single-model uncertainty
+% keys already in references.bib (verified 2026-09-14, papers/embodied_sensor/related_works_verified.json)
+% cited for the first time; paid for inside this section by tighter wording, with every earlier
+% citation kept and no reported failure weakened.
 \section{Related Work}
 \label{sec-related}
 
 \paragraph{Sycophancy is a trained bias, and it is steerable.}
-Preference-tuned models agree with the user more often than the evidence
-warrants, more so with scale and with the user's confidence
+Preference-tuned models agree with the user more than the evidence warrants,
+more so with scale and user confidence
 \citep{perez2023discovering,sharma23}, validate the asker's own account of a
 conflict \citep{cheng25elephant} and revise correct answers under pushback
 \citep{fanous2025syceval,malmqvist24}. Sycophancy is a linear direction in
-activation space \citep{rimsky2024caa} and behaves as a persona-level trait,
-so an off-the-shelf sceptical persona recovers most of what targeted steering
+activation space \citep{rimsky2024caa} and a persona-level trait, so an
+off-the-shelf sceptical persona recovers most of what targeted steering
 achieves \citep{chen2025persona,kelkar2026devil}, and synthetic fine-tuning
 data reduce it \citep{wei2023synthetic}. If sycophancy is a stance the model
-adopts, assigning another stance inside the model's trace is the natural
-control.
+adopts, the scaffold we test assigns other stances inside the model's own
+trace, and we compare it with chain-of-thought, not with a sceptical persona.
+% W40 (2026-09-23): the condensed sentence "assigning another stance ... is the natural control"
+% read as announcing a sceptical-stance control arm. No sceptical or contrarian persona arm exists in
+% the registration log (grep sceptic/skeptic/contrarian/devil/kelkar, no hits); the only persona control is
+% CoT with NoT's "thoughtful advisor" line (prereg 17.7 amendment 2, narrative_form_readout.json
+% judges.<judge>.persona_pooled, PERSONA-INERT under three judges and PERSONA-RAISES under two),
+% reported in Section sec-pillar1. The PI's original wording was "assigning a different stance is the
+% natural control, and the scaffold assigns one inside the model's own trace".
+The model judges that score sycophancy favour their own generations, among
+other biases
+\citep{panickssery2024selfrecognition,wataoka2024selfpreference,zheng2023judging},
+so we state every claim per judge and check each against reference labels
+(Section~\ref{sec-single}).
+% W19 (2026-09-23): panickssery2024selfrecognition (arXiv 2404.13076, self-recognition and
+% self-preference), wataoka2024selfpreference (arXiv 2410.21819, self-preference bias) and
+% zheng2023judging (arXiv 2306.05685, position, verbosity and self-enhancement bias) added
+% 2026-09-23, each abstract page fetched with WebFetch that day; the per-judge reporting and the
+% reference-label check are prereg 17.8 RESULTS and 17.8 amendment 2
+% (judge_panel_full_oeq_<judge>.json, judge_reference_agreement.json), Section sec-single
 
 \paragraph{Role assignment controls what a model says, at a cost.}
 Assigning a character or an interest reliably moves a model's output
 \citep{shanahan2023roleplay,li2023camel}, although persona prompts explain
-little variance in simulated survey judgement \citep{hu2024persona}, can
-degrade zero-shot reasoning \citep{kim2025persona}, carry implicit biases
-\citep{gupta2024bias,deshpande2023toxicity} and amplify sycophancy when the
-persona is agreeable \citep{shah2026toonice}, while multi-persona prompting
-within one model improves some tasks \citep{wang2024spp}. Closest to our
+little variance in simulated surveys \citep{hu2024persona}, can degrade
+zero-shot reasoning \citep{kim2025persona}, carry implicit biases
+\citep{gupta2024bias,deshpande2023toxicity} and amplify sycophancy when
+agreeable \citep{shah2026toonice}, while multi-persona prompting in one model
+helps some tasks \citep{wang2024spp}. Closest to our
 collective, \citet{dietrich2026roles} assign opposed advocates, a balanced
 seat and a supervisor and measure how far each advocate's output is fixed by
 its role. We find this role-lock near total on one model and below one half
-on another, and a seat whose verdict its role fixes carries no information
-about the case.
+on another.
 % role-lock grok 0.971 (16.10), Llama 0.862 (16.24), DeepSeek 0.816 (16.27), Mistral 0.708 (16.26), haiku 0.419 (16.23)
 
 \paragraph{Debate places truth at the judge, not in the debaters.}
-Scalable oversight puts opposed agents before a judge \citep{irving18}, and
-judges become more accurate watching a debate than consulting one advocate
-\citep{michael2023debate,khan2024debating}, but the gain over a judge answering
-alone appears only under information asymmetry \citep{kenton2024scalable}.
-Debate among copies of one model improves some benchmarks
+Scalable oversight puts opposed agents before a judge \citep{irving18}, who
+gains from watching a debate rather than one advocate
+\citep{michael2023debate,khan2024debating}, but only over a judge answering
+alone under information asymmetry \citep{kenton2024scalable}.
+Debate among copies of one model helps some benchmarks
 \citep{du23,liang2024divergent,chan2023chateval} and fails to beat
-self-consistency on others \citep{smit2024mad,wang2024rethinking}, and formal
-accounts explain why. Same-model debate converges to the majority already in
-the room \citep{estornell2024multillm}, homogeneous agents with uniform updates
-cannot reliably improve expected correctness \citep{zhu2026demystifying}, and
-exchange preserves expectations where voting does not
-\citep{choi2025debateorvote}.
-Disagreement has also served as a signal, in cross-examination that detects
-factual errors \citep{cohen2023lmvslm} and in prover and verifier games
-\citep{kirchner2024prover}. We assign opposed interests rather than opposed
-answers, so no advocate is right by construction, and ask what their
-disagreement carries.
+self-consistency \citep{wang2023selfconsistency} on others
+\citep{smit2024mad,wang2024rethinking}, since same-model debate converges to
+the majority already in the room \citep{estornell2024multillm}, homogeneous
+agents with uniform updates cannot reliably improve expected correctness
+\citep{zhu2026demystifying}, and exchange preserves expectations where voting
+does not \citep{choi2025debateorvote}.
+Disagreement has also served as a signal, in cross-examination
+\citep{cohen2023lmvslm}, in prover and verifier games
+\citep{kirchner2024prover} and, as sample disagreement or stated confidence
+\citep{manakul2023selfcheck,farquhar2024semantic,xiong2024confidence}, as the
+rule by which cascades escalate a cheap model's uncertain cases
+\citep{chen2023frugal,jitkrittum2023deferral,gupta2024cascades,yue2024cascades,aggarwal2024automix,jung2025escalate,wang2026defer}.
+We assign opposed interests rather than opposed answers, so no advocate is
+right by construction, and ask whether their disagreement routes errors
+better than the model's own.
+% W19 (2026-09-23): the cascade, deferral and single-model uncertainty keys (chen2023frugal,
+% jitkrittum2023deferral, gupta2024cascades, yue2024cascades, aggarwal2024automix, jung2025escalate,
+% wang2026defer, wang2023selfconsistency, farquhar2024semantic, xiong2024confidence) were verified at
+% their primary pages on 2026-09-14 (papers/embodied_sensor/related_works_verified.json); the
+% comparison the last sentence frames is prereg 16.22 RESULTS R3 (routing_certification.json
+% routed_vs_solo.sonnet disagree_minus_counter +0.0024 [-0.0190, +0.0238]) with exploratory readouts
+% in routing_certification_{haiku,llama,mistral,deepseek}.json, reported in Section sec-collective
+% and Appendix app-collective
 
 \paragraph{Communication topology and aggregation.}
 Work on multi-agent topology scales and optimises agent graphs
 \citep{qian2025macnet,zhuge2024gptswarm,liu2024dylan}, finds sparse ones
-competitive at lower cost \citep{li2024sparse}, and finds that topology
-governs how errors propagate
-\citep{shen2025propagation,han2026conformity}, that agents conform to
-majorities \citep{zhang2024socialpsych,weng2025conformity}, that correlated
-errors limit aggregation \citep{kim2025correlated} and that heterogeneous
-panels beat homogeneous ones \citep{wang2025moa}, with recent work on
-effective team size, unguided homogeneous debate and when a minority should
-overturn a majority
+competitive at lower cost \citep{li2024sparse}, finds that topology governs
+how errors propagate \citep{shen2025propagation,han2026conformity}, that
+agents conform to majorities \citep{zhang2024socialpsych,weng2025conformity},
+that correlated errors limit aggregation \citep{kim2025correlated} and that
+heterogeneous panels beat homogeneous ones \citep{wang2025moa}, and studies
+team size, unguided homogeneous debate and minority overrides
 \citep{bertalanic2026ringelmann,bertalanic2026costconsensus,he2026minoritysentinel}.
 Aggregation theory states when pooling judgements helps, under correlated
 votes \citep{ladha1992condorcet,boland1989majority}, unequal competence
@@ -75,22 +108,22 @@ diversity \citep{zollman2010epistemic,hong2004groups,thompson2014diversity},
 small deliberating groups \citep{navajas2018aggregated} and shared biases
 \citep{prelec2017solution}, and where it cannot \citep{list2002aggregating}.
 Where this literature measures accuracy or cost, we measure the structure of
-dissent and whether it transfers across generators.
+dissent and its transfer across generators.
 
 \paragraph{The argumentative theory and the social account of objectivity.}
-Human reasoning may have evolved for argument, with individuals producing
-biased advocacy and truth emerging on the evaluation side of an exchange
+Human reasoning may have evolved for argument, with biased advocacy from
+individuals and truth emerging at evaluation
 \citep{mercier2011argumentative,mercier2017enigma}, since arguments rather
 than confidence move groups \citep{trouche2014arguments} while individuals are
-lazy about their own arguments \citep{trouche2016selective}, though the
-evidence for the collective half is the weaker \citep{mercier2016predictions}.
+lazy about their own \citep{trouche2016selective}, though the collective half
+has the weaker evidence \citep{mercier2016predictions}.
 Assigned devil's advocacy helps less than authentic dissent
 \citep{nemeth2001devil}, though structured conflict beats consensus
 \citep{schweiger1986group,schwenk1990effects}. Objectivity is a
 property of a community's structure of criticism rather than of any member
-\citep{longino1990science,longino2002fate,popper2011open}, and the scaffold
-places that structure inside a single trace while the collective places it
-across agents. Mediation and mechanism design study agents with divergent
+\citep{longino1990science,longino2002fate,popper2011open}, which the scaffold
+places inside one trace and the collective across agents. Mediation and
+mechanism design study agents with divergent
 interests
 \citep{dafoe2020cooperative,akata2025repeated,piatti2024cooperate,leon2026personas,tewolde2026coopeval},
 where a correlating third party can reach outcomes no equilibrium of the

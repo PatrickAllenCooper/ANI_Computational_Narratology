@@ -12,13 +12,28 @@
 % are resolved (all sections now say 36.5 to 57.5, and pillar1.tex no longer makes the register
 % claim). Tightened for the nine-page limit; the pushback per-model detail (gold-YTA +16.3, Llama
 % 0.80 against 0.44) now lives in sections/pillar1.tex and Appendix app-pushback only.
+% 2026-09-23 (W29): content-not-form conclusion scoped to judged validation and the collective; single
+% ToM slot in the summary of evidence, merged from Other limitations.
+% 2026-09-23 (W34): the "once per prompt" sentence in Other limitations now states the run-to-run
+% comparison (Appendix app-rep4k, run_stability_readout.json, added after the runs, not registered).
+% The single-judge pointer sentence was cut to pay for W29 and W34; its finding stays in Section 4
+% (pillar1.tex, the knockout and one-line paragraph, which point to Appendix app-form) and its source
+% comment is kept below. The Introduction rewritten on 2026-09-23 no longer states that finding, so
+% Section 4 is its only main-text home. The merged ToM slot was compressed on the continue pass
+% (W29 lever for an overflowing page 9); no reported result was cut.
 \section{Discussion and Limitations}
 \label{sec-discussion}
 
 \paragraph{What the evidence supports.}
-The evidence supports the scaffold's principle, organised criticism across
-perspectives, only in a weaker form than we set out to test, and not its
-narrative packaging. Pooled over haiku, grok, nano and Llama, a third-person
+On judged validation and in the collective, the two settings in which we
+separated the scaffold's content from its form, the evidence supports its
+principle, organised criticism across perspectives, only in a weaker form
+than we set out to test, and not its narrative packaging.
+% Scope (W29): the content-against-form decomposition exists on judged validation only (prereg 17.7,
+% narrative_form_readout.json) and the narrated-against-plain seat contrast in the collective only
+% (16.28, seat_scaffold_comparison.json); no form contrast on theory of mind anywhere in the record
+% (pillar 2 is the co-author's; Addendum 18 stage 1 compared NoT with CoT only, ruled out of scope)
+Pooled over haiku, grok, nano and Llama, a third-person
 checklist of the same five elements lowers validation relative to
 chain-of-thought by 36.5 to 57.5 points under each of the five judges, more
 than NoT does on each generator under every judge, while the first-person
@@ -33,8 +48,10 @@ a cooler register, which this design cannot separate from less endorsement.
 % only includes 0 for grok under the production, Llama and grok judges and for Llama under gpt-4o).
 % 36.5 to 57.5 is the direct rounding of -36.49 and -57.49 to one decimal; the prereg 17.7 RESULTS
 % and key_messages.md say 37 to 58, the same values rounded to whole points
-Earlier single-judge tests isolate no single element as the cause
-(Section~\ref{sec-single}).
+% The sentence "Earlier single-judge tests isolate no single element as the cause (Section sec-single)"
+% was cut on 2026-09-23 (W29 and W34) to pay for the additions in this section. The finding stays in
+% Section 4 (pillar1.tex, the knockout and one-line paragraph, pointing to Appendix app-form); the
+% Introduction rewritten the same day no longer states it. Its sources:
 % prereg Addendum 17.3 RESULTS (reading NEITHER on pooled shares +0.10, +0.18, +0.16, upper bounds 0.26
 % to 0.33; haiku 0.42 to 0.55), knockout_social_analysis.json; 17.5 RESULTS (+6.1 [+2.1, +10.2] pooled
 % over haiku, grok and nano; haiku +10.0 [+2.0, +18.0], grok and nano intervals include 0; REVERSED
@@ -54,6 +71,9 @@ which the routed system beats only on haiku and Mistral.
 % routing_certification{,_haiku,_llama,_mistral,_deepseek}.json acc_base, routed against solo from
 % figures/tab_routing.tex (haiku 0.891 against 0.862, Mistral 0.967 against 0.843, grok 0.913 against
 % 0.912 read as a match), all descriptive (debates against the solo's answers, no paired interval)
+\todo{PILLAR 2 (co-author): Section~\ref{sec-tom}'s theory-of-mind result for NoT against chain-of-thought (the abstract's 3 to 10 points, to be supported fully by the co-author), its scope and limits, and whether any contrast there separates content from form. If none does, say the decomposition above was tested on judged validation and the collective only.}
+% Single ToM slot of this section (W29, 2026-09-23), merged from Other limitations. No ToM number is
+% written here; the Addendum 18 stage-1 figure stays in the comment of pillar2_tom.tex only.
 
 \paragraph{Judges and the construct.}
 The single-agent reduction depends on the judge. It holds on seven, six,
@@ -98,11 +118,19 @@ resisting social pressure on a verdict.
 % its registered sentence with all three estimates belongs.
 
 \paragraph{Other limitations.}
-Each generator answered each item once per prompt. Token caps cut off many
-original generations, and regenerating at a cap almost no response reaches
-keeps the production judge's reduction on all seven generators but shrinks it
-on sonnet, and under gpt-4o on Mistral and DeepSeek
-(Section~\ref{sec-single}).
+Each generator answered each item once per prompt in each run. Token caps
+cut off many original generations, and the two or three runs per generator,
+the later ones at caps almost no response reaches, compared after the fact
+(Appendix~\ref{app-rep4k}), keep the production judge's reduction with an
+interval excluding zero on every generator in every run but shrink it on
+sonnet, and under gpt-4o on Mistral and DeepSeek, while the Llama judge's
+reversal on nano does not recur in either same-day run.
+% run_stability_readout.json (scripts/analyze_run_stability.py; added after the runs, NOT registered):
+% production judge hi < 0 in every run on 7 of 7 generators (two runs on sonnet, Mistral and DeepSeek,
+% three on haiku, nano, grok and Llama); nano under the Llama judge +13.8 [+7.8, +20.7] on the original
+% responses (116 paired items), -4.1 [-10.2, +2.0] at 2,048 and -4.1 [-11.7, +2.8] at 4,096.
+% Shrinkage and caps (the former "Token caps ..." sentence, merged here on 2026-09-23 for the page
+% budget, its Section sec-single pointer replaced by the Appendix app-rep4k pointer):
 % prereg Addendum 17.10 registration (cap hits); prereg 16.15.7 RESULTS and pre-spend review
 % amendment (nano NoT non-empty on 116 of 150, the missing 34 the long end), pillar1_headline.json
 % (not_missing 34); one sample per generator, prompt and item (prereg Addendum 17 shared instrument,
@@ -115,7 +143,8 @@ Content filters removed disputes each platform refuses, so the collective
 and pushback panels differ across models.
 % per-model content-filter screens, prereg E5 RESULTS (grok 210), 16.23 (haiku 249), 16.24 (Llama 225),
 % 16.26 (Mistral 217) and 16.27 (DeepSeek 210) RESULTS, and the 17.9 registration (nano 209)
-\todo{PILLAR 2 (co-author): one or two sentences on the scope and limits of the theory-of-mind results of Section~\ref{sec-tom}, from the co-author's own experiments.}
+% The ToM placeholder that stood here was merged into the single slot in "What the evidence supports"
+% (W29, 2026-09-23).
 
 \paragraph{Future work.}
 The decisive test crosses first- and third-person voice with narrative and
@@ -132,6 +161,7 @@ everywhere but Mistral in mostly exploratory readouts
 % _deepseek,_mistral}.json sonnet-judge disagree_minus_counter, exploratory except grok (grok +0.002
 % [-0.019, +0.024], haiku interval including 0, Llama +0.051 [+0.031, +0.074], DeepSeek +0.017 [+0.002,
 % +0.031], Mistral -0.055 [-0.090, -0.021], where the counter routes 77 percent of cells)
-Until then the evidence supports the principle of organised criticism across
-perspectives \citep{longino1990science} only in this weaker, judge-dependent
-form, and not the narrative that first carried it.
+Until then, on judged validation and in the collective, the evidence supports
+the principle of organised criticism across perspectives
+\citep{longino1990science} only in this weaker, judge-dependent form, and not
+the narrative that first carried it.

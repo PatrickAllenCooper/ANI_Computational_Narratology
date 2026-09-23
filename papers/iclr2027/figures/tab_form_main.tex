@@ -1,0 +1,18 @@
+% AUTO-GENERATED from narrative_form_readout.json (17.7, 17.7 amendment 2, 17.4). Block 1: prompt
+% minus same-day CoT (standard_cot_rep), points, pooled over haiku, grok, nano and Llama, item-clustered
+% bootstrap (form_pooled.<arm>.drop_arm, form_pooled.checklist.drop_not, persona_pooled.drop_arm).
+% Block 2: NoT minus length-matched CoT per generator (length_per_generator.<gen>.gap); the length
+% prompt ran on haiku and grok only, so it has no pooled value. Columns in the 17.8 panel order.
+\begin{tabular}{lrrrrr}
+\toprule
+prompt $-$ same-day CoT & haiku (prod.) & gpt-4o & nano & Llama & grok \\
+\midrule
+NoT & $-46.1$ $[-51.5, -40.5]$ & $-23.1$ $[-27.3, -18.9]$ & $-19.1$ $[-23.9, -14.3]$ & $-5.9$ $[-9.3, -2.6]$ & $-11.5$ $[-15.4, -7.6]$ \\
+checklist, same content & $-57.5$ $[-62.7, -52.2]$ & $-45.3$ $[-50.1, -40.4]$ & $-36.5$ $[-41.2, -31.7]$ & $-37.3$ $[-41.7, -33.0]$ & $-37.2$ $[-41.4, -33.2]$ \\
+narrative only & $+12.1$ $[+8.5, +16.0]$ & $+10.7$ $[+6.8, +14.8]$ & $+18.7$ $[+14.7, +23.0]$ & $+6.8$ $[+4.2, +9.6]$ & $+8.6$ $[+5.7, +11.8]$ \\
+persona only & $-0.9$ $[-4.3, +2.4]$ & $+3.3$ $[+0.3, +6.1]$ & $+5.5$ $[+1.9, +9.1]$ & $+1.7$ $[-0.5, +4.2]$ & $+0.9$ $[-1.2, +3.0]$ \\
+\midrule
+NoT $-$ length-matched CoT, haiku & $-54.0$ $[-62.7, -45.3]$ & $-33.3$ $[-41.3, -26.0]$ & $-32.7$ $[-41.3, -24.0]$ & $-13.4$ $[-19.5, -8.1]$ & $-14.8$ $[-20.8, -9.4]$ \\
+NoT $-$ length-matched CoT, grok & $-46.5$ $[-54.9, -38.0]$ & $-21.8$ $[-29.6, -14.1]$ & $-21.8$ $[-28.9, -14.8]$ & $-2.2$ $[-7.3, +2.2]$ & $-6.7$ $[-12.7, -1.5]$ \\
+\bottomrule
+\end{tabular}

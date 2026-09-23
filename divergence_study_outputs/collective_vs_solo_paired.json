@@ -1,0 +1,1033 @@
+{
+ "note": "Collective and routed collective against the same model's solo standard majority-of-3, paired per (framing, item) cell, item-clustered percentile bootstrap. Zero model calls; every number replayed from cached CSV rows. See the module docstring of scripts/analyze_collective_vs_solo.py.",
+ "estimator": {
+  "kind": "paired item-clustered percentile bootstrap, ratio of per-item sums (verify_pillar3_headline.boot_delta)",
+  "draws": 4000,
+  "seed": 101,
+  "replicate_seed": 13,
+  "judge": "claude-sonnet-4-6 standard majority-of-3 from cg_sonnet_actuator_rows.csv",
+  "framings": [
+   "third_person",
+   "as_asker"
+  ],
+  "routed_rule": "per debate: S2 unless n_objectors >= 2, then the judge majority (tie -> S2)",
+  "solo_rule": "standard-CoT majority of three cached samples per (framing, item); tie -> cell dropped"
+ },
+ "conditions": {
+  "grok": {
+   "label": "grok-4-1-fast-reasoning, narrated seats, k = 4 (16.15.1 / 16.22 panel)",
+   "model": "grok-4-1-fast-reasoning",
+   "seats": "narrated",
+   "k": 4,
+   "sources": {
+    "rows": "cg_deliberation_rows.csv",
+    "solo": "cg_scaffold_combined_rows_k3.csv",
+    "judge": "cg_sonnet_actuator_rows.csv"
+   },
+   "table_all_debates": {
+    "n_rows": 1680,
+    "n_uncodable_dropped": 3,
+    "n_debates": 1677,
+    "collective": 0.8426,
+    "routed": 0.9129,
+    "fire": 0.1956,
+    "n_solo_cells_total": 498,
+    "n_solo_cells_codable": 482,
+    "solo_acc_all_codable_cells": 0.9129
+   },
+   "paired": {
+    "n_paired_debates": 1677,
+    "n_paired_cells": 420,
+    "n_items": 210,
+    "n_debates_without_solo": 0,
+    "collective_minus_solo_debate_weighted": {
+     "delta": -0.0692,
+     "lo": -0.0965,
+     "hi": -0.0424,
+     "points": -6.9,
+     "points_lo": -9.7,
+     "points_hi": -4.2,
+     "ci_excludes_zero": true,
+     "n_records": 1677,
+     "n_items": 210
+    },
+    "routed_minus_solo_debate_weighted": {
+     "delta": 0.0012,
+     "lo": -0.0257,
+     "hi": 0.0299,
+     "points": 0.1,
+     "points_lo": -2.6,
+     "points_hi": 3.0,
+     "ci_excludes_zero": false,
+     "n_records": 1677,
+     "n_items": 210
+    },
+    "collective_minus_solo_cell_weighted": {
+     "delta": -0.0696,
+     "lo": -0.0982,
+     "hi": -0.0429,
+     "points": -7.0,
+     "points_lo": -9.8,
+     "points_hi": -4.3,
+     "ci_excludes_zero": true,
+     "n_records": 420,
+     "n_items": 210
+    },
+    "routed_minus_solo_cell_weighted": {
+     "delta": 0.0008,
+     "lo": -0.0264,
+     "hi": 0.028,
+     "points": 0.1,
+     "points_lo": -2.6,
+     "points_hi": 2.8,
+     "ci_excludes_zero": false,
+     "n_records": 420,
+     "n_items": 210
+    },
+    "solo_acc_paired_cells": 0.9119,
+    "collective_acc_paired_debates": 0.8426,
+    "routed_acc_paired_debates": 0.9129,
+    "collective_acc_paired_cells_cell_weighted": 0.8423,
+    "routed_acc_paired_cells_cell_weighted": 0.9127,
+    "n_fired_paired": 328,
+    "by_framing_descriptive": {
+     "third_person": {
+      "n_debates": 839,
+      "collective": 0.8355,
+      "routed": 0.9166,
+      "solo_debate_weighted": 0.9142,
+      "collective_minus_solo_points": -7.9,
+      "routed_minus_solo_points": 0.2
+     },
+     "as_asker": {
+      "n_debates": 838,
+      "collective": 0.8496,
+      "routed": 0.9093,
+      "solo_debate_weighted": 0.9093,
+      "collective_minus_solo_points": -6.0,
+      "routed_minus_solo_points": 0.0
+     }
+    },
+    "replicate_seed_13": {
+     "collective_minus_solo_debate_weighted": {
+      "lo": -0.0972,
+      "hi": -0.0429,
+      "points_lo": -9.7,
+      "points_hi": -4.3,
+      "ci_excludes_zero": true
+     },
+     "routed_minus_solo_debate_weighted": {
+      "lo": -0.0262,
+      "hi": 0.0292,
+      "points_lo": -2.6,
+      "points_hi": 2.9,
+      "ci_excludes_zero": false
+     },
+     "collective_minus_solo_cell_weighted": {
+      "lo": -0.0982,
+      "hi": -0.0423,
+      "points_lo": -9.8,
+      "points_hi": -4.2,
+      "ci_excludes_zero": true
+     },
+     "routed_minus_solo_cell_weighted": {
+      "lo": -0.0266,
+      "hi": 0.03,
+      "points_lo": -2.7,
+      "points_hi": 3.0,
+      "ci_excludes_zero": false
+     }
+    }
+   },
+   "cross_checks": {
+    "verify_pillar3_headline": {
+     "file": "verify_pillar3_headline_grok.json",
+     "n": 1677,
+     "collective": 0.8426,
+     "routed": 0.9129,
+     "n_agree": true,
+     "collective_agree": true,
+     "routed_agree": true
+    },
+    "routing_certification": {
+     "file": "routing_certification.json",
+     "n_cells": 420,
+     "acc_base": 0.9119,
+     "solo_acc_agree": true,
+     "n_cells_agree": true,
+     "note": "acc_base is the same solo majority-of-3 on that artefact's cell population; the 16.22 R1 routed-minus-base figure there uses the cell-level firing rule and is not recomputed here"
+    }
+   }
+  },
+  "haiku": {
+   "label": "claude-haiku-4-5, narrated seats, k = 1, 249 items (16.23)",
+   "model": "claude-haiku-4-5",
+   "seats": "narrated",
+   "k": 1,
+   "sources": {
+    "rows": "cg_deliberation_haiku_249_rows.csv",
+    "solo": "cg_scaffold_combined_rows_k3.csv",
+    "judge": "cg_sonnet_actuator_rows.csv"
+   },
+   "table_all_debates": {
+    "n_rows": 491,
+    "n_uncodable_dropped": 4,
+    "n_debates": 487,
+    "collective": 0.8542,
+    "routed": 0.8912,
+    "fire": 0.193,
+    "n_solo_cells_total": 498,
+    "n_solo_cells_codable": 497,
+    "solo_acc_all_codable_cells": 0.8571
+   },
+   "paired": {
+    "n_paired_debates": 486,
+    "n_paired_cells": 486,
+    "n_items": 249,
+    "n_debates_without_solo": 1,
+    "collective_minus_solo_debate_weighted": {
+     "delta": -0.0062,
+     "lo": -0.0472,
+     "hi": 0.0351,
+     "points": -0.6,
+     "points_lo": -4.7,
+     "points_hi": 3.5,
+     "ci_excludes_zero": false,
+     "n_records": 486,
+     "n_items": 249
+    },
+    "routed_minus_solo_debate_weighted": {
+     "delta": 0.0309,
+     "lo": -0.0082,
+     "hi": 0.0702,
+     "points": 3.1,
+     "points_lo": -0.8,
+     "points_hi": 7.0,
+     "ci_excludes_zero": false,
+     "n_records": 486,
+     "n_items": 249
+    },
+    "collective_minus_solo_cell_weighted": {
+     "delta": -0.0062,
+     "lo": -0.0473,
+     "hi": 0.0349,
+     "points": -0.6,
+     "points_lo": -4.7,
+     "points_hi": 3.5,
+     "ci_excludes_zero": false,
+     "n_records": 486,
+     "n_items": 249
+    },
+    "routed_minus_solo_cell_weighted": {
+     "delta": 0.0309,
+     "lo": -0.0082,
+     "hi": 0.0711,
+     "points": 3.1,
+     "points_lo": -0.8,
+     "points_hi": 7.1,
+     "ci_excludes_zero": false,
+     "n_records": 486,
+     "n_items": 249
+    },
+    "solo_acc_paired_cells": 0.8621,
+    "collective_acc_paired_debates": 0.856,
+    "routed_acc_paired_debates": 0.893,
+    "collective_acc_paired_cells_cell_weighted": 0.856,
+    "routed_acc_paired_cells_cell_weighted": 0.893,
+    "n_fired_paired": 94,
+    "by_framing_descriptive": {
+     "third_person": {
+      "n_debates": 246,
+      "collective": 0.8374,
+      "routed": 0.8862,
+      "solo_debate_weighted": 0.8537,
+      "collective_minus_solo_points": -1.6,
+      "routed_minus_solo_points": 3.3
+     },
+     "as_asker": {
+      "n_debates": 240,
+      "collective": 0.875,
+      "routed": 0.9,
+      "solo_debate_weighted": 0.8708,
+      "collective_minus_solo_points": 0.4,
+      "routed_minus_solo_points": 2.9
+     }
+    },
+    "replicate_seed_13": {
+     "collective_minus_solo_debate_weighted": {
+      "lo": -0.0455,
+      "hi": 0.0333,
+      "points_lo": -4.6,
+      "points_hi": 3.3,
+      "ci_excludes_zero": false
+     },
+     "routed_minus_solo_debate_weighted": {
+      "lo": -0.0082,
+      "hi": 0.0717,
+      "points_lo": -0.8,
+      "points_hi": 7.2,
+      "ci_excludes_zero": false
+     },
+     "collective_minus_solo_cell_weighted": {
+      "lo": -0.0469,
+      "hi": 0.0335,
+      "points_lo": -4.7,
+      "points_hi": 3.3,
+      "ci_excludes_zero": false
+     },
+     "routed_minus_solo_cell_weighted": {
+      "lo": -0.0062,
+      "hi": 0.0697,
+      "points_lo": -0.6,
+      "points_hi": 7.0,
+      "ci_excludes_zero": false
+     }
+    }
+   },
+   "cross_checks": {
+    "verify_pillar3_headline": {
+     "file": "verify_pillar3_headline_haiku_249.json",
+     "n": 487,
+     "collective": 0.8542,
+     "routed": 0.8912,
+     "n_agree": true,
+     "collective_agree": true,
+     "routed_agree": true
+    },
+    "routing_certification": {
+     "file": "routing_certification_haiku.json",
+     "n_cells": 486,
+     "acc_base": 0.8621,
+     "solo_acc_agree": true,
+     "n_cells_agree": true,
+     "note": "acc_base is the same solo majority-of-3 on that artefact's cell population; the 16.22 R1 routed-minus-base figure there uses the cell-level firing rule and is not recomputed here"
+    }
+   }
+  },
+  "llama": {
+   "label": "Llama-3.3-70B-Instruct, narrated seats, k = 2 (16.24)",
+   "model": "Llama-3.3-70B-Instruct",
+   "seats": "narrated",
+   "k": 2,
+   "sources": {
+    "rows": "cg_deliberation_llama3370binstruct_rows.csv",
+    "solo": "cg_llama_standard_k3_rows.csv",
+    "judge": "cg_sonnet_actuator_rows.csv"
+   },
+   "table_all_debates": {
+    "n_rows": 900,
+    "n_uncodable_dropped": 3,
+    "n_debates": 897,
+    "collective": 0.6198,
+    "routed": 0.6611,
+    "fire": 0.0792,
+    "n_solo_cells_total": 498,
+    "n_solo_cells_codable": 477,
+    "solo_acc_all_codable_cells": 0.8407
+   },
+   "paired": {
+    "n_paired_debates": 895,
+    "n_paired_cells": 449,
+    "n_items": 225,
+    "n_debates_without_solo": 2,
+    "collective_minus_solo_debate_weighted": {
+     "delta": -0.2223,
+     "lo": -0.2795,
+     "hi": -0.1656,
+     "points": -22.2,
+     "points_lo": -27.9,
+     "points_hi": -16.6,
+     "ci_excludes_zero": true,
+     "n_records": 895,
+     "n_items": 225
+    },
+    "routed_minus_solo_debate_weighted": {
+     "delta": -0.1821,
+     "lo": -0.2369,
+     "hi": -0.1274,
+     "points": -18.2,
+     "points_lo": -23.7,
+     "points_hi": -12.7,
+     "ci_excludes_zero": true,
+     "n_records": 895,
+     "n_items": 225
+    },
+    "collective_minus_solo_cell_weighted": {
+     "delta": -0.2216,
+     "lo": -0.2789,
+     "hi": -0.1652,
+     "points": -22.2,
+     "points_lo": -27.9,
+     "points_hi": -16.5,
+     "ci_excludes_zero": true,
+     "n_records": 449,
+     "n_items": 225
+    },
+    "routed_minus_solo_cell_weighted": {
+     "delta": -0.1815,
+     "lo": -0.235,
+     "hi": -0.1281,
+     "points": -18.2,
+     "points_lo": -23.5,
+     "points_hi": -12.8,
+     "ci_excludes_zero": true,
+     "n_records": 449,
+     "n_items": 225
+    },
+    "solo_acc_paired_cells": 0.8419,
+    "collective_acc_paired_debates": 0.6201,
+    "routed_acc_paired_debates": 0.6603,
+    "collective_acc_paired_cells_cell_weighted": 0.6203,
+    "routed_acc_paired_cells_cell_weighted": 0.6604,
+    "n_fired_paired": 69,
+    "by_framing_descriptive": {
+     "third_person": {
+      "n_debates": 448,
+      "collective": 0.6228,
+      "routed": 0.654,
+      "solo_debate_weighted": 0.817,
+      "collective_minus_solo_points": -19.4,
+      "routed_minus_solo_points": -16.3
+     },
+     "as_asker": {
+      "n_debates": 447,
+      "collective": 0.6174,
+      "routed": 0.6667,
+      "solo_debate_weighted": 0.868,
+      "collective_minus_solo_points": -25.1,
+      "routed_minus_solo_points": -20.1
+     }
+    },
+    "replicate_seed_13": {
+     "collective_minus_solo_debate_weighted": {
+      "lo": -0.279,
+      "hi": -0.165,
+      "points_lo": -27.9,
+      "points_hi": -16.5,
+      "ci_excludes_zero": true
+     },
+     "routed_minus_solo_debate_weighted": {
+      "lo": -0.2358,
+      "hi": -0.1277,
+      "points_lo": -23.6,
+      "points_hi": -12.8,
+      "ci_excludes_zero": true
+     },
+     "collective_minus_solo_cell_weighted": {
+      "lo": -0.2784,
+      "hi": -0.1644,
+      "points_lo": -27.8,
+      "points_hi": -16.4,
+      "ci_excludes_zero": true
+     },
+     "routed_minus_solo_cell_weighted": {
+      "lo": -0.2355,
+      "hi": -0.1269,
+      "points_lo": -23.5,
+      "points_hi": -12.7,
+      "ci_excludes_zero": true
+     }
+    }
+   },
+   "cross_checks": {
+    "verify_pillar3_headline": {
+     "file": "verify_pillar3_headline_llama.json",
+     "n": 897,
+     "collective": 0.6198,
+     "routed": 0.6611,
+     "n_agree": true,
+     "collective_agree": true,
+     "routed_agree": true
+    },
+    "routing_certification": {
+     "file": "routing_certification_llama.json",
+     "n_cells": 449,
+     "acc_base": 0.8419,
+     "solo_acc_agree": true,
+     "n_cells_agree": true,
+     "note": "acc_base is the same solo majority-of-3 on that artefact's cell population; the 16.22 R1 routed-minus-base figure there uses the cell-level firing rule and is not recomputed here"
+    }
+   }
+  },
+  "mistral": {
+   "label": "Mistral-Large-3-2, narrated seats, k = 2 (16.26)",
+   "model": "Mistral-Large-3-2",
+   "seats": "narrated",
+   "k": 2,
+   "sources": {
+    "rows": "cg_deliberation_mistrallarge32_rows.csv",
+    "solo": "cg_mistral_standard_k3_rows.csv",
+    "judge": "cg_sonnet_actuator_rows.csv"
+   },
+   "table_all_debates": {
+    "n_rows": 868,
+    "n_uncodable_dropped": 0,
+    "n_debates": 868,
+    "collective": 0.7523,
+    "routed": 0.9666,
+    "fire": 0.8756,
+    "n_solo_cells_total": 498,
+    "n_solo_cells_codable": 478,
+    "solo_acc_all_codable_cells": 0.8389
+   },
+   "paired": {
+    "n_paired_debates": 868,
+    "n_paired_cells": 434,
+    "n_items": 217,
+    "n_debates_without_solo": 0,
+    "collective_minus_solo_debate_weighted": {
+     "delta": -0.091,
+     "lo": -0.1313,
+     "hi": -0.0518,
+     "points": -9.1,
+     "points_lo": -13.1,
+     "points_hi": -5.2,
+     "ci_excludes_zero": true,
+     "n_records": 868,
+     "n_items": 217
+    },
+    "routed_minus_solo_debate_weighted": {
+     "delta": 0.1233,
+     "lo": 0.0806,
+     "hi": 0.1682,
+     "points": 12.3,
+     "points_lo": 8.1,
+     "points_hi": 16.8,
+     "ci_excludes_zero": true,
+     "n_records": 868,
+     "n_items": 217
+    },
+    "collective_minus_solo_cell_weighted": {
+     "delta": -0.091,
+     "lo": -0.1325,
+     "hi": -0.0518,
+     "points": -9.1,
+     "points_lo": -13.2,
+     "points_hi": -5.2,
+     "ci_excludes_zero": true,
+     "n_records": 434,
+     "n_items": 217
+    },
+    "routed_minus_solo_cell_weighted": {
+     "delta": 0.1233,
+     "lo": 0.0795,
+     "hi": 0.1682,
+     "points": 12.3,
+     "points_lo": 7.9,
+     "points_hi": 16.8,
+     "ci_excludes_zero": true,
+     "n_records": 434,
+     "n_items": 217
+    },
+    "solo_acc_paired_cells": 0.8433,
+    "collective_acc_paired_debates": 0.7523,
+    "routed_acc_paired_debates": 0.9666,
+    "collective_acc_paired_cells_cell_weighted": 0.7523,
+    "routed_acc_paired_cells_cell_weighted": 0.9666,
+    "n_fired_paired": 760,
+    "by_framing_descriptive": {
+     "third_person": {
+      "n_debates": 434,
+      "collective": 0.7535,
+      "routed": 0.9747,
+      "solo_debate_weighted": 0.8433,
+      "collective_minus_solo_points": -9.0,
+      "routed_minus_solo_points": 13.1
+     },
+     "as_asker": {
+      "n_debates": 434,
+      "collective": 0.7512,
+      "routed": 0.9585,
+      "solo_debate_weighted": 0.8433,
+      "collective_minus_solo_points": -9.2,
+      "routed_minus_solo_points": 11.5
+     }
+    },
+    "replicate_seed_13": {
+     "collective_minus_solo_debate_weighted": {
+      "lo": -0.1302,
+      "hi": -0.0495,
+      "points_lo": -13.0,
+      "points_hi": -5.0,
+      "ci_excludes_zero": true
+     },
+     "routed_minus_solo_debate_weighted": {
+      "lo": 0.0806,
+      "hi": 0.1682,
+      "points_lo": 8.1,
+      "points_hi": 16.8,
+      "ci_excludes_zero": true
+     },
+     "collective_minus_solo_cell_weighted": {
+      "lo": -0.1313,
+      "hi": -0.0518,
+      "points_lo": -13.1,
+      "points_hi": -5.2,
+      "ci_excludes_zero": true
+     },
+     "routed_minus_solo_cell_weighted": {
+      "lo": 0.0818,
+      "hi": 0.1682,
+      "points_lo": 8.2,
+      "points_hi": 16.8,
+      "ci_excludes_zero": true
+     }
+    }
+   },
+   "cross_checks": {
+    "verify_pillar3_headline": {
+     "file": "verify_pillar3_headline_mistral.json",
+     "n": 868,
+     "collective": 0.7523,
+     "routed": 0.9666,
+     "n_agree": true,
+     "collective_agree": true,
+     "routed_agree": true
+    },
+    "routing_certification": {
+     "file": "routing_certification_mistral.json",
+     "n_cells": 434,
+     "acc_base": 0.8433,
+     "solo_acc_agree": true,
+     "n_cells_agree": true,
+     "note": "acc_base is the same solo majority-of-3 on that artefact's cell population; the 16.22 R1 routed-minus-base figure there uses the cell-level firing rule and is not recomputed here"
+    }
+   }
+  },
+  "deepseek": {
+   "label": "DeepSeek-V4-Pro, narrated seats, k = 2 (16.27)",
+   "model": "DeepSeek-V4-Pro",
+   "seats": "narrated",
+   "k": 2,
+   "sources": {
+    "rows": "cg_deliberation_deepseekv4pro_rows.csv",
+    "solo": "cg_deepseek_standard_k3_rows.csv",
+    "judge": "cg_sonnet_actuator_rows.csv"
+   },
+   "table_all_debates": {
+    "n_rows": 840,
+    "n_uncodable_dropped": 8,
+    "n_debates": 832,
+    "collective": 0.7776,
+    "routed": 0.8498,
+    "fire": 0.2812,
+    "n_solo_cells_total": 498,
+    "n_solo_cells_codable": 477,
+    "solo_acc_all_codable_cells": 0.9644
+   },
+   "paired": {
+    "n_paired_debates": 830,
+    "n_paired_cells": 419,
+    "n_items": 210,
+    "n_debates_without_solo": 2,
+    "collective_minus_solo_debate_weighted": {
+     "delta": -0.1807,
+     "lo": -0.2188,
+     "hi": -0.1444,
+     "points": -18.1,
+     "points_lo": -21.9,
+     "points_hi": -14.4,
+     "ci_excludes_zero": true,
+     "n_records": 830,
+     "n_items": 210
+    },
+    "routed_minus_solo_debate_weighted": {
+     "delta": -0.1084,
+     "lo": -0.1413,
+     "hi": -0.0769,
+     "points": -10.8,
+     "points_lo": -14.1,
+     "points_hi": -7.7,
+     "ci_excludes_zero": true,
+     "n_records": 830,
+     "n_items": 210
+    },
+    "collective_minus_solo_cell_weighted": {
+     "delta": -0.1826,
+     "lo": -0.22,
+     "hi": -0.1464,
+     "points": -18.3,
+     "points_lo": -22.0,
+     "points_hi": -14.6,
+     "ci_excludes_zero": true,
+     "n_records": 419,
+     "n_items": 210
+    },
+    "routed_minus_solo_cell_weighted": {
+     "delta": -0.1098,
+     "lo": -0.142,
+     "hi": -0.0786,
+     "points": -11.0,
+     "points_lo": -14.2,
+     "points_hi": -7.9,
+     "ci_excludes_zero": true,
+     "n_records": 419,
+     "n_items": 210
+    },
+    "solo_acc_paired_cells": 0.9594,
+    "collective_acc_paired_debates": 0.7783,
+    "routed_acc_paired_debates": 0.8506,
+    "collective_acc_paired_cells_cell_weighted": 0.7768,
+    "routed_acc_paired_cells_cell_weighted": 0.8496,
+    "n_fired_paired": 234,
+    "by_framing_descriptive": {
+     "third_person": {
+      "n_debates": 415,
+      "collective": 0.759,
+      "routed": 0.8337,
+      "solo_debate_weighted": 0.9518,
+      "collective_minus_solo_points": -19.3,
+      "routed_minus_solo_points": -11.8
+     },
+     "as_asker": {
+      "n_debates": 415,
+      "collective": 0.7976,
+      "routed": 0.8675,
+      "solo_debate_weighted": 0.9663,
+      "collective_minus_solo_points": -16.9,
+      "routed_minus_solo_points": -9.9
+     }
+    },
+    "replicate_seed_13": {
+     "collective_minus_solo_debate_weighted": {
+      "lo": -0.2188,
+      "hi": -0.1441,
+      "points_lo": -21.9,
+      "points_hi": -14.4,
+      "ci_excludes_zero": true
+     },
+     "routed_minus_solo_debate_weighted": {
+      "lo": -0.1406,
+      "hi": -0.0763,
+      "points_lo": -14.1,
+      "points_hi": -7.6,
+      "ci_excludes_zero": true
+     },
+     "collective_minus_solo_cell_weighted": {
+      "lo": -0.2201,
+      "hi": -0.1456,
+      "points_lo": -22.0,
+      "points_hi": -14.6,
+      "ci_excludes_zero": true
+     },
+     "routed_minus_solo_cell_weighted": {
+      "lo": -0.1429,
+      "hi": -0.0786,
+      "points_lo": -14.3,
+      "points_hi": -7.9,
+      "ci_excludes_zero": true
+     }
+    }
+   },
+   "cross_checks": {
+    "verify_pillar3_headline": {
+     "file": "verify_pillar3_headline_deepseek.json",
+     "n": 832,
+     "collective": 0.7776,
+     "routed": 0.8498,
+     "n_agree": true,
+     "collective_agree": true,
+     "routed_agree": true
+    },
+    "routing_certification": {
+     "file": "routing_certification_deepseek.json",
+     "n_cells": 419,
+     "acc_base": 0.9594,
+     "solo_acc_agree": true,
+     "n_cells_agree": true,
+     "note": "acc_base is the same solo majority-of-3 on that artefact's cell population; the 16.22 R1 routed-minus-base figure there uses the cell-level firing rule and is not recomputed here"
+    }
+   }
+  },
+  "grok_plain": {
+   "label": "grok-4-1-fast-reasoning, plain chain-of-thought seats, k = 4 (16.28)",
+   "model": "grok-4-1-fast-reasoning",
+   "seats": "plain",
+   "k": 4,
+   "sources": {
+    "rows": "cg_deliberation_stdcot_rows.csv",
+    "solo": "cg_scaffold_combined_rows_k3.csv",
+    "judge": "cg_sonnet_actuator_rows.csv"
+   },
+   "table_all_debates": {
+    "n_rows": 1680,
+    "n_uncodable_dropped": 4,
+    "n_debates": 1676,
+    "collective": 0.8634,
+    "routed": 0.9171,
+    "fire": 0.1516,
+    "n_solo_cells_total": 498,
+    "n_solo_cells_codable": 482,
+    "solo_acc_all_codable_cells": 0.9129
+   },
+   "paired": {
+    "n_paired_debates": 1676,
+    "n_paired_cells": 420,
+    "n_items": 210,
+    "n_debates_without_solo": 0,
+    "collective_minus_solo_debate_weighted": {
+     "delta": -0.0483,
+     "lo": -0.0769,
+     "hi": -0.0197,
+     "points": -4.8,
+     "points_lo": -7.7,
+     "points_hi": -2.0,
+     "ci_excludes_zero": true,
+     "n_records": 1676,
+     "n_items": 210
+    },
+    "routed_minus_solo_debate_weighted": {
+     "delta": 0.0054,
+     "lo": -0.0226,
+     "hi": 0.0346,
+     "points": 0.5,
+     "points_lo": -2.3,
+     "points_hi": 3.5,
+     "ci_excludes_zero": false,
+     "n_records": 1676,
+     "n_items": 210
+    },
+    "collective_minus_solo_cell_weighted": {
+     "delta": -0.0498,
+     "lo": -0.0786,
+     "hi": -0.0212,
+     "points": -5.0,
+     "points_lo": -7.9,
+     "points_hi": -2.1,
+     "ci_excludes_zero": true,
+     "n_records": 420,
+     "n_items": 210
+    },
+    "routed_minus_solo_cell_weighted": {
+     "delta": 0.0044,
+     "lo": -0.0236,
+     "hi": 0.0327,
+     "points": 0.4,
+     "points_lo": -2.4,
+     "points_hi": 3.3,
+     "ci_excludes_zero": false,
+     "n_records": 420,
+     "n_items": 210
+    },
+    "solo_acc_paired_cells": 0.9119,
+    "collective_acc_paired_debates": 0.8634,
+    "routed_acc_paired_debates": 0.9171,
+    "collective_acc_paired_cells_cell_weighted": 0.8621,
+    "routed_acc_paired_cells_cell_weighted": 0.9163,
+    "n_fired_paired": 254,
+    "by_framing_descriptive": {
+     "third_person": {
+      "n_debates": 839,
+      "collective": 0.8522,
+      "routed": 0.9166,
+      "solo_debate_weighted": 0.9142,
+      "collective_minus_solo_points": -6.2,
+      "routed_minus_solo_points": 0.2
+     },
+     "as_asker": {
+      "n_debates": 837,
+      "collective": 0.8746,
+      "routed": 0.9176,
+      "solo_debate_weighted": 0.9092,
+      "collective_minus_solo_points": -3.5,
+      "routed_minus_solo_points": 0.8
+     }
+    },
+    "replicate_seed_13": {
+     "collective_minus_solo_debate_weighted": {
+      "lo": -0.0761,
+      "hi": -0.0197,
+      "points_lo": -7.6,
+      "points_hi": -2.0,
+      "ci_excludes_zero": true
+     },
+     "routed_minus_solo_debate_weighted": {
+      "lo": -0.0226,
+      "hi": 0.0351,
+      "points_lo": -2.3,
+      "points_hi": 3.5,
+      "ci_excludes_zero": false
+     },
+     "collective_minus_solo_cell_weighted": {
+      "lo": -0.0784,
+      "hi": -0.0212,
+      "points_lo": -7.8,
+      "points_hi": -2.1,
+      "ci_excludes_zero": true
+     },
+     "routed_minus_solo_cell_weighted": {
+      "lo": -0.0224,
+      "hi": 0.0343,
+      "points_lo": -2.2,
+      "points_hi": 3.4,
+      "ci_excludes_zero": false
+     }
+    }
+   },
+   "cross_checks": {
+    "seat_scaffold_comparison": {
+     "file": "seat_scaffold_comparison.json",
+     "slot": "grok",
+     "collective_plain": 0.8626,
+     "routed_plain": 0.9166,
+     "collective_agree": true,
+     "routed_agree": true,
+     "note": "16.28 artefact; item-level means, so a few thousandths of slack against the debate mean"
+    },
+    "routing_certification": {
+     "file": "routing_certification_grok_stdcot_k4.json",
+     "n_cells": 420,
+     "acc_base": 0.9119,
+     "solo_acc_agree": true,
+     "n_cells_agree": true,
+     "note": "acc_base is the same solo majority-of-3 on that artefact's cell population; the 16.22 R1 routed-minus-base figure there uses the cell-level firing rule and is not recomputed here"
+    }
+   }
+  },
+  "llama_plain": {
+   "label": "Llama-3.3-70B-Instruct, plain chain-of-thought seats, k = 2 (16.28)",
+   "model": "Llama-3.3-70B-Instruct",
+   "seats": "plain",
+   "k": 2,
+   "sources": {
+    "rows": "cg_deliberation_llama3370binstruct_stdcot_rows.csv",
+    "solo": "cg_llama_standard_k3_rows.csv",
+    "judge": "cg_sonnet_actuator_rows.csv"
+   },
+   "table_all_debates": {
+    "n_rows": 900,
+    "n_uncodable_dropped": 2,
+    "n_debates": 898,
+    "collective": 0.6637,
+    "routed": 0.7071,
+    "fire": 0.0768,
+    "n_solo_cells_total": 498,
+    "n_solo_cells_codable": 477,
+    "solo_acc_all_codable_cells": 0.8407
+   },
+   "paired": {
+    "n_paired_debates": 896,
+    "n_paired_cells": 449,
+    "n_items": 225,
+    "n_debates_without_solo": 2,
+    "collective_minus_solo_debate_weighted": {
+     "delta": -0.1786,
+     "lo": -0.2316,
+     "hi": -0.1292,
+     "points": -17.9,
+     "points_lo": -23.2,
+     "points_hi": -12.9,
+     "ci_excludes_zero": true,
+     "n_records": 896,
+     "n_items": 225
+    },
+    "routed_minus_solo_debate_weighted": {
+     "delta": -0.135,
+     "lo": -0.1872,
+     "hi": -0.0881,
+     "points": -13.5,
+     "points_lo": -18.7,
+     "points_hi": -8.8,
+     "ci_excludes_zero": true,
+     "n_records": 896,
+     "n_items": 225
+    },
+    "collective_minus_solo_cell_weighted": {
+     "delta": -0.1793,
+     "lo": -0.2305,
+     "hi": -0.13,
+     "points": -17.9,
+     "points_lo": -23.1,
+     "points_hi": -13.0,
+     "ci_excludes_zero": true,
+     "n_records": 449,
+     "n_items": 225
+    },
+    "routed_minus_solo_cell_weighted": {
+     "delta": -0.1359,
+     "lo": -0.1856,
+     "hi": -0.0878,
+     "points": -13.6,
+     "points_lo": -18.6,
+     "points_hi": -8.8,
+     "ci_excludes_zero": true,
+     "n_records": 449,
+     "n_items": 225
+    },
+    "solo_acc_paired_cells": 0.8419,
+    "collective_acc_paired_debates": 0.6641,
+    "routed_acc_paired_debates": 0.7076,
+    "collective_acc_paired_cells_cell_weighted": 0.6626,
+    "routed_acc_paired_cells_cell_weighted": 0.706,
+    "n_fired_paired": 69,
+    "by_framing_descriptive": {
+     "third_person": {
+      "n_debates": 447,
+      "collective": 0.6711,
+      "routed": 0.7025,
+      "solo_debate_weighted": 0.8188,
+      "collective_minus_solo_points": -14.8,
+      "routed_minus_solo_points": -11.6
+     },
+     "as_asker": {
+      "n_debates": 449,
+      "collective": 0.657,
+      "routed": 0.7127,
+      "solo_debate_weighted": 0.8664,
+      "collective_minus_solo_points": -20.9,
+      "routed_minus_solo_points": -15.4
+     }
+    },
+    "replicate_seed_13": {
+     "collective_minus_solo_debate_weighted": {
+      "lo": -0.2285,
+      "hi": -0.1282,
+      "points_lo": -22.9,
+      "points_hi": -12.8,
+      "ci_excludes_zero": true
+     },
+     "routed_minus_solo_debate_weighted": {
+      "lo": -0.1837,
+      "hi": -0.0861,
+      "points_lo": -18.4,
+      "points_hi": -8.6,
+      "ci_excludes_zero": true
+     },
+     "collective_minus_solo_cell_weighted": {
+      "lo": -0.231,
+      "hi": -0.1281,
+      "points_lo": -23.1,
+      "points_hi": -12.8,
+      "ci_excludes_zero": true
+     },
+     "routed_minus_solo_cell_weighted": {
+      "lo": -0.1864,
+      "hi": -0.0856,
+      "points_lo": -18.6,
+      "points_hi": -8.6,
+      "ci_excludes_zero": true
+     }
+    }
+   },
+   "cross_checks": {
+    "seat_scaffold_comparison": {
+     "file": "seat_scaffold_comparison.json",
+     "slot": "llama",
+     "collective_plain": 0.6622,
+     "routed_plain": 0.7056,
+     "collective_agree": true,
+     "routed_agree": true,
+     "note": "16.28 artefact; item-level means, so a few thousandths of slack against the debate mean"
+    },
+    "routing_certification": {
+     "file": "routing_certification_llama_stdcot.json",
+     "n_cells": 449,
+     "acc_base": 0.8419,
+     "solo_acc_agree": true,
+     "n_cells_agree": true,
+     "note": "acc_base is the same solo majority-of-3 on that artefact's cell population; the 16.22 R1 routed-minus-base figure there uses the cell-level firing rule and is not recomputed here"
+    }
+   }
+  }
+ }
+}

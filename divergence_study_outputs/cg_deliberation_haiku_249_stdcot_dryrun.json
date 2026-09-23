@@ -1,0 +1,131 @@
+{
+  "cells": 498,
+  "calls_per_cell": 17,
+  "moderator_model": "(agent model)",
+  "per_model": {
+    "claude-haiku-4-5": {
+      "priced": true,
+      "completion_measured": true,
+      "price_in_per_mtok": 1.0,
+      "price_out_per_mtok": 5.0,
+      "moderator_model": "claude-haiku-4-5",
+      "moderator_price_in_per_mtok": 1.0,
+      "moderator_price_out_per_mtok": 5.0,
+      "cells": 498,
+      "calls": 8466,
+      "input_tokens": 24922410,
+      "output_tokens": 6520812,
+      "usd": 57.53,
+      "moderator_usd": 5.14,
+      "rounds": {
+        "r0": {
+          "calls": 1494,
+          "billed_to": "claude-haiku-4-5",
+          "prompt_tokens_each": 724,
+          "prompt_tokens_each_regex": 724,
+          "completion_tokens_each": 1196,
+          "input_tokens": 1081656,
+          "output_tokens": 1786824,
+          "price_in_per_mtok": 1.0,
+          "price_out_per_mtok": 5.0,
+          "usd": 10.02
+        },
+        "r1": {
+          "calls": 1494,
+          "billed_to": "claude-haiku-4-5",
+          "prompt_tokens_each": 4349,
+          "prompt_tokens_each_regex": 4349,
+          "completion_tokens_each": 1196,
+          "input_tokens": 6497406,
+          "output_tokens": 1786824,
+          "price_in_per_mtok": 1.0,
+          "price_out_per_mtok": 5.0,
+          "usd": 15.43
+        },
+        "r2": {
+          "calls": 1494,
+          "billed_to": "claude-haiku-4-5",
+          "prompt_tokens_each": 5546,
+          "prompt_tokens_each_regex": 5546,
+          "completion_tokens_each": 1196,
+          "input_tokens": 8285724,
+          "output_tokens": 1786824,
+          "price_in_per_mtok": 1.0,
+          "price_out_per_mtok": 5.0,
+          "usd": 17.22
+        },
+        "synthesis": {
+          "calls": 498,
+          "billed_to": "claude-haiku-4-5",
+          "prompt_tokens_each": 4249,
+          "prompt_tokens_each_regex": 4249,
+          "completion_tokens_each": 450,
+          "input_tokens": 2116002,
+          "output_tokens": 224100,
+          "price_in_per_mtok": 1.0,
+          "price_out_per_mtok": 5.0,
+          "usd": 3.24
+        },
+        "r3_label": {
+          "calls": 1494,
+          "billed_to": "claude-haiku-4-5",
+          "prompt_tokens_each": 2443,
+          "prompt_tokens_each_regex": 2443,
+          "completion_tokens_each": 320,
+          "input_tokens": 3649842,
+          "output_tokens": 478080,
+          "price_in_per_mtok": 1.0,
+          "price_out_per_mtok": 5.0,
+          "usd": 6.04
+        },
+        "integration": {
+          "calls": 498,
+          "billed_to": "claude-haiku-4-5",
+          "prompt_tokens_each": 1306,
+          "prompt_tokens_each_regex": 1306,
+          "completion_tokens_each": 500,
+          "input_tokens": 650388,
+          "output_tokens": 249000,
+          "price_in_per_mtok": 1.0,
+          "price_out_per_mtok": 5.0,
+          "usd": 1.9
+        },
+        "r4_vote": {
+          "calls": 1494,
+          "billed_to": "claude-haiku-4-5",
+          "prompt_tokens_each": 1768,
+          "prompt_tokens_each_regex": 1768,
+          "completion_tokens_each": 140,
+          "input_tokens": 2641392,
+          "output_tokens": 209160,
+          "price_in_per_mtok": 1.0,
+          "price_out_per_mtok": 5.0,
+          "usd": 3.69
+        }
+      }
+    }
+  },
+  "assumptions": {
+    "r0_r1_r2_completion": "MEASURED per model from cached cg_gen_*narrative_cot* cells on this instrument",
+    "synthesis_completion": 450,
+    "r3_label_completion": 320,
+    "integration_completion": 500,
+    "r4_vote_completion": 140,
+    "prompt_tokens": "computed from real constructed prompts with stand-in prior-round text at the measured length",
+    "tokenizer": "regex approximation ONLY -- tiktoken not installed, so prompt tokens are UNDERCOUNTED by roughly 20-35% and so is the cost",
+    "prices": "redesign doc Sec 8 list rates, UNVERIFIED against vendor pages"
+  },
+  "total_calls": 8466,
+  "total_usd": 57.53,
+  "mde_probe": {
+    "claude-haiku-4-5": {
+      "estimator": "person-step criterion DiD, item-clustered bootstrap",
+      "proxy_arms": "narrative_cot vs standard_cot_verbose (both cached)",
+      "coding": "published",
+      "n_items": 249,
+      "ci_width": 0.5002153853520968,
+      "mde_half_width": 0.2501076926760484,
+      "is_a_lower_bound": true
+    }
+  }
+}

@@ -8,6 +8,17 @@
 \usepackage{booktabs}
 \usepackage{graphicx}
 \usepackage{amsmath}
+\usepackage{array}
+% When a page holds only floats (the two tables that close the appendix, or whichever of them the
+% end-of-document flush pushes onto a page of its own), stack them from the top of the page instead
+% of spreading LaTeX's default float-page glue around them, which otherwise centres a lone table
+% or leaves large gaps between two. Whether such a page exists depends on the appendix's final
+% length; when the tables sit as top floats above text this changes nothing.
+\makeatletter
+\setlength{\@fptop}{0pt}
+\setlength{\@fpsep}{10pt plus 4pt}
+\setlength{\@fpbot}{0pt plus 1fil}
+\makeatother
 
 % Optional math commands from https://github.com/goodfeli/dlbook_notation.
 \input{math_commands.tex}

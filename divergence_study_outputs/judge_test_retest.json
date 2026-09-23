@@ -1,0 +1,1267 @@
+{
+ "artefact": "judge_test_retest.json",
+ "script": "scripts/analyze_judge_test_retest.py",
+ "generated": "2026-09-23T13:47:49",
+ "judge": "claude-haiku-4-5",
+ "metric": "validation",
+ "design": "Each non-empty OEQ CoT/NoT response scored twice by the production judge through the same system prompt, rubric builder and max_tokens: draw 1 = production scorer cache (elephant_score_validation_<judge>_*, input advice[:4000]); draw 2 = 17.8 full-text pass (elephant_rescore_validation_<judge>_full_*, input full advice). Responses of at most 4,000 characters have byte-identical judge input in both draws and form the test-retest set.",
+ "sources": {
+  "raw_csv": "divergence_study_outputs/elephant_singleagent_raw.csv",
+  "batch_csvs_merged": [
+   "elephant_singleagent_raw_batch_1710_haiku.csv",
+   "elephant_singleagent_raw_batch_1710_mistral_deepseek.csv",
+   "elephant_singleagent_raw_batch_1710_nano.csv",
+   "elephant_singleagent_raw_batch_1710_sonnet.csv",
+   "elephant_singleagent_raw_batch_177_1710_grok.csv",
+   "elephant_singleagent_raw_batch_177_1710_llama.csv"
+  ],
+  "batch_rows_overriding_default_cells": {},
+  "questions": "data/elephant/OEQ.csv, seed 44, n 150 (offline re-draw of load_elephant)",
+  "draw1_namespace": "elephant_score_validation_claude-haiku-4-5_<sha1[:16] of metric|question[:500]|advice[:2000]|judge>.json",
+  "draw2_namespace": "elephant_rescore_validation_claude-haiku-4-5_full_<sha1[:16] of metric|question|advice|judge|lim=full>.json"
+ },
+ "bootstrap": {
+  "draws": 8000,
+  "seed": 20260822,
+  "cluster": "item_id (pooled, by_generator, by_arm); each item appears once per cell"
+ },
+ "counts": {
+  "rows_nonempty": 2004,
+  "draw1_present": 2004,
+  "draw2_present": 2004,
+  "draw1_unparsed": 1,
+  "draw2_unparsed": 0,
+  "both_parsed": 2003,
+  "identical_input_pairs": 814,
+  "truncated_input_pairs_excluded": 1189
+ },
+ "pooled": {
+  "n": 814,
+  "n_items": 150,
+  "agreement": 0.969,
+  "kappa": 0.932,
+  "rate_draw1": 0.658,
+  "rate_draw2": 0.65,
+  "shift_draw2_minus_draw1_points": -0.9,
+  "flips_1to0": 16,
+  "flips_0to1": 9,
+  "flip_rate": 0.031,
+  "thin": false,
+  "kappa_ci95": [
+   0.906,
+   0.956
+  ],
+  "kappa_ci_draws_defined": 8000,
+  "agreement_ci95": [
+   0.957,
+   0.98
+  ],
+  "shift_ci95_points": [
+   -2.0,
+   0.3
+  ]
+ },
+ "pooled_strict_le2000": {
+  "note": "responses of at most 2,000 characters, where the draw-1 cache key hashes the whole response rather than a 2,000-character prefix",
+  "n": 307,
+  "n_items": 145,
+  "agreement": 0.967,
+  "kappa": 0.929,
+  "rate_draw1": 0.645,
+  "rate_draw2": 0.632,
+  "shift_draw2_minus_draw1_points": -1.3,
+  "flips_1to0": 7,
+  "flips_0to1": 3,
+  "flip_rate": 0.033,
+  "thin": false,
+  "kappa_ci95": [
+   0.876,
+   0.971
+  ],
+  "kappa_ci_draws_defined": 8000,
+  "agreement_ci95": [
+   0.943,
+   0.987
+  ],
+  "shift_ci95_points": [
+   -3.2,
+   0.3
+  ]
+ },
+ "by_arm": {
+  "standard_cot": {
+   "n": 652,
+   "n_items": 150,
+   "agreement": 0.971,
+   "kappa": 0.924,
+   "rate_draw1": 0.747,
+   "rate_draw2": 0.739,
+   "shift_draw2_minus_draw1_points": -0.8,
+   "flips_1to0": 12,
+   "flips_0to1": 7,
+   "flip_rate": 0.029,
+   "thin": false,
+   "kappa_ci95": [
+    0.887,
+    0.955
+   ],
+   "kappa_ci_draws_defined": 8000,
+   "agreement_ci95": [
+    0.957,
+    0.983
+   ],
+   "shift_ci95_points": [
+    -2.0,
+    0.5
+   ]
+  },
+  "narrative_cot": {
+   "n": 162,
+   "n_items": 99,
+   "agreement": 0.963,
+   "kappa": 0.911,
+   "rate_draw1": 0.302,
+   "rate_draw2": 0.29,
+   "shift_draw2_minus_draw1_points": -1.2,
+   "flips_1to0": 4,
+   "flips_0to1": 2,
+   "flip_rate": 0.037,
+   "thin": false,
+   "kappa_ci95": [
+    0.833,
+    0.972
+   ],
+   "kappa_ci_draws_defined": 8000,
+   "agreement_ci95": [
+    0.93,
+    0.988
+   ],
+   "shift_ci95_points": [
+    -4.5,
+    1.7
+   ]
+  }
+ },
+ "by_generator": {
+  "claude-haiku-4-5": {
+   "n": 179,
+   "n_items": 150,
+   "agreement": 0.933,
+   "kappa": 0.864,
+   "rate_draw1": 0.575,
+   "rate_draw2": 0.553,
+   "shift_draw2_minus_draw1_points": -2.2,
+   "flips_1to0": 8,
+   "flips_0to1": 4,
+   "flip_rate": 0.067,
+   "thin": false,
+   "kappa_ci95": [
+    0.787,
+    0.932
+   ],
+   "kappa_ci_draws_defined": 8000,
+   "agreement_ci95": [
+    0.895,
+    0.967
+   ],
+   "shift_ci95_points": [
+    -6.1,
+    1.6
+   ]
+  },
+  "claude-sonnet-4-6": {
+   "n": 155,
+   "n_items": 145,
+   "agreement": 0.974,
+   "kappa": 0.937,
+   "rate_draw1": 0.716,
+   "rate_draw2": 0.703,
+   "shift_draw2_minus_draw1_points": -1.3,
+   "flips_1to0": 3,
+   "flips_0to1": 1,
+   "flip_rate": 0.026,
+   "thin": false,
+   "kappa_ci95": [
+    0.869,
+    0.985
+   ],
+   "kappa_ci_draws_defined": 8000,
+   "agreement_ci95": [
+    0.947,
+    0.994
+   ],
+   "shift_ci95_points": [
+    -3.9,
+    1.3
+   ]
+  },
+  "gpt-5.4-nano": {
+   "n": 61,
+   "n_items": 59,
+   "agreement": 0.984,
+   "kappa": 0.961,
+   "rate_draw1": 0.689,
+   "rate_draw2": 0.705,
+   "shift_draw2_minus_draw1_points": 1.6,
+   "flips_1to0": 0,
+   "flips_0to1": 1,
+   "flip_rate": 0.016,
+   "thin": false,
+   "kappa_ci95": [
+    0.865,
+    1.0
+   ],
+   "kappa_ci_draws_defined": 8000,
+   "agreement_ci95": [
+    0.949,
+    1.0
+   ],
+   "shift_ci95_points": [
+    0.0,
+    5.1
+   ]
+  },
+  "grok-4-1-fast-reasoning": {
+   "n": 99,
+   "n_items": 73,
+   "agreement": 0.97,
+   "kappa": 0.916,
+   "rate_draw1": 0.768,
+   "rate_draw2": 0.758,
+   "shift_draw2_minus_draw1_points": -1.0,
+   "flips_1to0": 2,
+   "flips_0to1": 1,
+   "flip_rate": 0.03,
+   "thin": false,
+   "kappa_ci95": [
+    0.794,
+    1.0
+   ],
+   "kappa_ci_draws_defined": 8000,
+   "agreement_ci95": [
+    0.931,
+    1.0
+   ],
+   "shift_ci95_points": [
+    -4.4,
+    2.1
+   ]
+  },
+  "Llama-3.3-70B-Instruct": {
+   "n": 223,
+   "n_items": 139,
+   "agreement": 0.987,
+   "kappa": 0.973,
+   "rate_draw1": 0.547,
+   "rate_draw2": 0.543,
+   "shift_draw2_minus_draw1_points": -0.4,
+   "flips_1to0": 2,
+   "flips_0to1": 1,
+   "flip_rate": 0.013,
+   "thin": false,
+   "kappa_ci95": [
+    0.938,
+    1.0
+   ],
+   "kappa_ci_draws_defined": 8000,
+   "agreement_ci95": [
+    0.969,
+    1.0
+   ],
+   "shift_ci95_points": [
+    -2.2,
+    0.9
+   ]
+  },
+  "Mistral-Large-3-2": {
+   "n": 27,
+   "n_items": 26,
+   "agreement": 1.0,
+   "kappa": 1.0,
+   "rate_draw1": 0.704,
+   "rate_draw2": 0.704,
+   "shift_draw2_minus_draw1_points": 0.0,
+   "flips_1to0": 0,
+   "flips_0to1": 0,
+   "flip_rate": 0.0,
+   "thin": false,
+   "kappa_ci95": [
+    1.0,
+    1.0
+   ],
+   "kappa_ci_draws_defined": 8000,
+   "agreement_ci95": [
+    1.0,
+    1.0
+   ],
+   "shift_ci95_points": [
+    0.0,
+    0.0
+   ]
+  },
+  "DeepSeek-V4-Pro": {
+   "n": 70,
+   "n_items": 69,
+   "agreement": 0.971,
+   "kappa": 0.841,
+   "rate_draw1": 0.9,
+   "rate_draw2": 0.9,
+   "shift_draw2_minus_draw1_points": 0.0,
+   "flips_1to0": 1,
+   "flips_0to1": 1,
+   "flip_rate": 0.029,
+   "thin": false,
+   "kappa_ci95": [
+    0.549,
+    1.0
+   ],
+   "kappa_ci_draws_defined": 7997,
+   "agreement_ci95": [
+    0.928,
+    1.0
+   ],
+   "shift_ci95_points": [
+    -4.3,
+    4.3
+   ]
+  }
+ },
+ "per_cell": {
+  "claude-haiku-4-5": {
+   "standard_cot": {
+    "n": 150,
+    "n_items": 150,
+    "agreement": 0.933,
+    "kappa": 0.859,
+    "rate_draw1": 0.627,
+    "rate_draw2": 0.613,
+    "shift_draw2_minus_draw1_points": -1.3,
+    "flips_1to0": 6,
+    "flips_0to1": 4,
+    "flip_rate": 0.067,
+    "thin": false,
+    "kappa_ci95": [
+     0.767,
+     0.934
+    ],
+    "kappa_ci_draws_defined": 8000,
+    "agreement_ci95": [
+     0.893,
+     0.973
+    ],
+    "shift_ci95_points": [
+     -5.3,
+     2.7
+    ],
+    "n_scored_both_draws": 150,
+    "n_truncated_input_excluded": 0,
+    "interval_days": {
+     "n": 150,
+     "median": 106.1,
+     "min": 106.0,
+     "max": 106.1
+    }
+   },
+   "narrative_cot": {
+    "n": 29,
+    "n_items": 29,
+    "agreement": 0.931,
+    "kappa": 0.828,
+    "rate_draw1": 0.31,
+    "rate_draw2": 0.241,
+    "shift_draw2_minus_draw1_points": -6.9,
+    "flips_1to0": 2,
+    "flips_0to1": 0,
+    "flip_rate": 0.069,
+    "thin": false,
+    "kappa_ci95": [
+     0.532,
+     1.0
+    ],
+    "kappa_ci_draws_defined": 8000,
+    "agreement_ci95": [
+     0.828,
+     1.0
+    ],
+    "shift_ci95_points": [
+     -17.2,
+     0.0
+    ],
+    "n_scored_both_draws": 150,
+    "n_truncated_input_excluded": 121,
+    "interval_days": {
+     "n": 29,
+     "median": 106.1,
+     "min": 106.0,
+     "max": 106.1
+    }
+   }
+  },
+  "claude-sonnet-4-6": {
+   "standard_cot": {
+    "n": 145,
+    "n_items": 145,
+    "agreement": 0.979,
+    "kappa": 0.949,
+    "rate_draw1": 0.724,
+    "rate_draw2": 0.703,
+    "shift_draw2_minus_draw1_points": -2.1,
+    "flips_1to0": 3,
+    "flips_0to1": 0,
+    "flip_rate": 0.021,
+    "thin": false,
+    "kappa_ci95": [
+     0.884,
+     1.0
+    ],
+    "kappa_ci_draws_defined": 8000,
+    "agreement_ci95": [
+     0.952,
+     1.0
+    ],
+    "shift_ci95_points": [
+     -4.8,
+     0.0
+    ],
+    "n_scored_both_draws": 150,
+    "n_truncated_input_excluded": 5,
+    "interval_days": {
+     "n": 145,
+     "median": 106.1,
+     "min": 106.0,
+     "max": 106.1
+    }
+   },
+   "narrative_cot": {
+    "n": 10,
+    "n_items": 10,
+    "agreement": 0.9,
+    "kappa": 0.783,
+    "rate_draw1": 0.6,
+    "rate_draw2": 0.7,
+    "shift_draw2_minus_draw1_points": 10.0,
+    "flips_1to0": 0,
+    "flips_0to1": 1,
+    "flip_rate": 0.1,
+    "thin": true,
+    "kappa_ci95": [
+     0.2,
+     1.0
+    ],
+    "kappa_ci_draws_defined": 7952,
+    "agreement_ci95": [
+     0.7,
+     1.0
+    ],
+    "shift_ci95_points": [
+     0.0,
+     30.0
+    ],
+    "n_scored_both_draws": 149,
+    "n_truncated_input_excluded": 139,
+    "interval_days": {
+     "n": 10,
+     "median": 106.1,
+     "min": 106.0,
+     "max": 106.1
+    }
+   }
+  },
+  "gpt-5.4-nano": {
+   "standard_cot": {
+    "n": 57,
+    "n_items": 57,
+    "agreement": 0.982,
+    "kappa": 0.96,
+    "rate_draw1": 0.667,
+    "rate_draw2": 0.684,
+    "shift_draw2_minus_draw1_points": 1.8,
+    "flips_1to0": 0,
+    "flips_0to1": 1,
+    "flip_rate": 0.018,
+    "thin": false,
+    "kappa_ci95": [
+     0.862,
+     1.0
+    ],
+    "kappa_ci_draws_defined": 8000,
+    "agreement_ci95": [
+     0.947,
+     1.0
+    ],
+    "shift_ci95_points": [
+     0.0,
+     5.3
+    ],
+    "n_scored_both_draws": 145,
+    "n_truncated_input_excluded": 88,
+    "interval_days": {
+     "n": 57,
+     "median": 106.1,
+     "min": 106.0,
+     "max": 106.1
+    }
+   },
+   "narrative_cot": {
+    "n": 4,
+    "n_items": 4,
+    "agreement": 1.0,
+    "kappa": null,
+    "rate_draw1": 1.0,
+    "rate_draw2": 1.0,
+    "shift_draw2_minus_draw1_points": 0.0,
+    "flips_1to0": 0,
+    "flips_0to1": 0,
+    "flip_rate": 0.0,
+    "thin": true,
+    "kappa_ci95": null,
+    "agreement_ci95": [
+     1.0,
+     1.0
+    ],
+    "shift_ci95_points": [
+     0.0,
+     0.0
+    ],
+    "n_scored_both_draws": 116,
+    "n_truncated_input_excluded": 112,
+    "interval_days": {
+     "n": 4,
+     "median": 106.1,
+     "min": 106.1,
+     "max": 106.1
+    }
+   }
+  },
+  "grok-4-1-fast-reasoning": {
+   "standard_cot": {
+    "n": 71,
+    "n_items": 71,
+    "agreement": 0.958,
+    "kappa": 0.863,
+    "rate_draw1": 0.817,
+    "rate_draw2": 0.803,
+    "shift_draw2_minus_draw1_points": -1.4,
+    "flips_1to0": 2,
+    "flips_0to1": 1,
+    "flip_rate": 0.042,
+    "thin": false,
+    "kappa_ci95": [
+     0.68,
+     1.0
+    ],
+    "kappa_ci_draws_defined": 8000,
+    "agreement_ci95": [
+     0.901,
+     1.0
+    ],
+    "shift_ci95_points": [
+     -5.6,
+     2.8
+    ],
+    "n_scored_both_draws": 146,
+    "n_truncated_input_excluded": 75,
+    "interval_days": {
+     "n": 71,
+     "median": 106.1,
+     "min": 106.0,
+     "max": 106.1
+    }
+   },
+   "narrative_cot": {
+    "n": 28,
+    "n_items": 28,
+    "agreement": 1.0,
+    "kappa": 1.0,
+    "rate_draw1": 0.643,
+    "rate_draw2": 0.643,
+    "shift_draw2_minus_draw1_points": 0.0,
+    "flips_1to0": 0,
+    "flips_0to1": 0,
+    "flip_rate": 0.0,
+    "thin": false,
+    "kappa_ci95": [
+     1.0,
+     1.0
+    ],
+    "kappa_ci_draws_defined": 8000,
+    "agreement_ci95": [
+     1.0,
+     1.0
+    ],
+    "shift_ci95_points": [
+     0.0,
+     0.0
+    ],
+    "n_scored_both_draws": 145,
+    "n_truncated_input_excluded": 117,
+    "interval_days": {
+     "n": 28,
+     "median": 106.1,
+     "min": 106.0,
+     "max": 106.1
+    }
+   }
+  },
+  "Llama-3.3-70B-Instruct": {
+   "standard_cot": {
+    "n": 138,
+    "n_items": 138,
+    "agreement": 1.0,
+    "kappa": 1.0,
+    "rate_draw1": 0.804,
+    "rate_draw2": 0.804,
+    "shift_draw2_minus_draw1_points": 0.0,
+    "flips_1to0": 0,
+    "flips_0to1": 0,
+    "flip_rate": 0.0,
+    "thin": false,
+    "kappa_ci95": [
+     1.0,
+     1.0
+    ],
+    "kappa_ci_draws_defined": 8000,
+    "agreement_ci95": [
+     1.0,
+     1.0
+    ],
+    "shift_ci95_points": [
+     0.0,
+     0.0
+    ],
+    "n_scored_both_draws": 144,
+    "n_truncated_input_excluded": 6,
+    "interval_days": {
+     "n": 138,
+     "median": 1.4,
+     "min": 1.4,
+     "max": 1.4
+    }
+   },
+   "narrative_cot": {
+    "n": 85,
+    "n_items": 85,
+    "agreement": 0.965,
+    "kappa": 0.837,
+    "rate_draw1": 0.129,
+    "rate_draw2": 0.118,
+    "shift_draw2_minus_draw1_points": -1.2,
+    "flips_1to0": 2,
+    "flips_0to1": 1,
+    "flip_rate": 0.035,
+    "thin": false,
+    "kappa_ci95": [
+     0.612,
+     1.0
+    ],
+    "kappa_ci_draws_defined": 8000,
+    "agreement_ci95": [
+     0.918,
+     1.0
+    ],
+    "shift_ci95_points": [
+     -5.9,
+     2.4
+    ],
+    "n_scored_both_draws": 141,
+    "n_truncated_input_excluded": 56,
+    "interval_days": {
+     "n": 85,
+     "median": 1.4,
+     "min": 1.4,
+     "max": 1.4
+    }
+   }
+  },
+  "Mistral-Large-3-2": {
+   "standard_cot": {
+    "n": 24,
+    "n_items": 24,
+    "agreement": 1.0,
+    "kappa": 1.0,
+    "rate_draw1": 0.75,
+    "rate_draw2": 0.75,
+    "shift_draw2_minus_draw1_points": 0.0,
+    "flips_1to0": 0,
+    "flips_0to1": 0,
+    "flip_rate": 0.0,
+    "thin": false,
+    "kappa_ci95": [
+     1.0,
+     1.0
+    ],
+    "kappa_ci_draws_defined": 7992,
+    "agreement_ci95": [
+     1.0,
+     1.0
+    ],
+    "shift_ci95_points": [
+     0.0,
+     0.0
+    ],
+    "n_scored_both_draws": 142,
+    "n_truncated_input_excluded": 118,
+    "interval_days": {
+     "n": 24,
+     "median": 1.4,
+     "min": 1.4,
+     "max": 1.4
+    }
+   },
+   "narrative_cot": {
+    "n": 3,
+    "n_items": 3,
+    "agreement": 1.0,
+    "kappa": 1.0,
+    "rate_draw1": 0.333,
+    "rate_draw2": 0.333,
+    "shift_draw2_minus_draw1_points": 0.0,
+    "flips_1to0": 0,
+    "flips_0to1": 0,
+    "flip_rate": 0.0,
+    "thin": true,
+    "kappa_ci95": [
+     1.0,
+     1.0
+    ],
+    "kappa_ci_draws_defined": 5305,
+    "agreement_ci95": [
+     1.0,
+     1.0
+    ],
+    "shift_ci95_points": [
+     0.0,
+     0.0
+    ],
+    "n_scored_both_draws": 140,
+    "n_truncated_input_excluded": 137,
+    "interval_days": {
+     "n": 3,
+     "median": 1.4,
+     "min": 1.4,
+     "max": 1.4
+    }
+   }
+  },
+  "DeepSeek-V4-Pro": {
+   "standard_cot": {
+    "n": 67,
+    "n_items": 67,
+    "agreement": 0.97,
+    "kappa": 0.734,
+    "rate_draw1": 0.94,
+    "rate_draw2": 0.94,
+    "shift_draw2_minus_draw1_points": 0.0,
+    "flips_1to0": 1,
+    "flips_0to1": 1,
+    "flip_rate": 0.03,
+    "thin": false,
+    "kappa_ci95": [
+     0.0,
+     1.0
+    ],
+    "kappa_ci_draws_defined": 7960,
+    "agreement_ci95": [
+     0.925,
+     1.0
+    ],
+    "shift_ci95_points": [
+     -4.5,
+     4.5
+    ],
+    "n_scored_both_draws": 144,
+    "n_truncated_input_excluded": 77,
+    "interval_days": {
+     "n": 67,
+     "median": 1.4,
+     "min": 1.4,
+     "max": 1.4
+    }
+   },
+   "narrative_cot": {
+    "n": 3,
+    "n_items": 3,
+    "agreement": 1.0,
+    "kappa": null,
+    "rate_draw1": 0.0,
+    "rate_draw2": 0.0,
+    "shift_draw2_minus_draw1_points": 0.0,
+    "flips_1to0": 0,
+    "flips_0to1": 0,
+    "flip_rate": 0.0,
+    "thin": true,
+    "kappa_ci95": null,
+    "agreement_ci95": [
+     1.0,
+     1.0
+    ],
+    "shift_ci95_points": [
+     0.0,
+     0.0
+    ],
+    "n_scored_both_draws": 141,
+    "n_truncated_input_excluded": 138,
+    "interval_days": {
+     "n": 3,
+     "median": 1.4,
+     "min": 1.4,
+     "max": 1.4
+    }
+   }
+  }
+ },
+ "not_test_retest_truncated_vs_full": {
+  "label": "NOT test-retest: draw 1 saw advice[:4000], draw 2 saw the full response; disagreement here mixes truncation with judge noise",
+  "pooled": {
+   "n": 1189,
+   "n_items": 150,
+   "agreement": 0.829,
+   "kappa": 0.659,
+   "rate_draw1": 0.437,
+   "rate_draw2": 0.508,
+   "shift_draw2_minus_draw1_points": 7.1,
+   "flips_1to0": 59,
+   "flips_0to1": 144,
+   "flip_rate": 0.171,
+   "thin": false,
+   "kappa_ci95": [
+    0.617,
+    0.701
+   ],
+   "kappa_ci_draws_defined": 8000,
+   "agreement_ci95": [
+    0.808,
+    0.851
+   ],
+   "shift_ci95_points": [
+    4.8,
+    9.4
+   ]
+  },
+  "per_cell": {
+   "claude-haiku-4-5": {
+    "standard_cot": {
+     "n": 0
+    },
+    "narrative_cot": {
+     "n": 121,
+     "n_items": 121,
+     "agreement": 0.802,
+     "kappa": 0.547,
+     "rate_draw1": 0.256,
+     "rate_draw2": 0.372,
+     "shift_draw2_minus_draw1_points": 11.6,
+     "flips_1to0": 5,
+     "flips_0to1": 19,
+     "flip_rate": 0.198,
+     "thin": false,
+     "kappa_ci95": [
+      0.388,
+      0.692
+     ],
+     "kappa_ci_draws_defined": 8000,
+     "agreement_ci95": [
+      0.727,
+      0.868
+     ],
+     "shift_ci95_points": [
+      4.1,
+      19.0
+     ]
+    }
+   },
+   "claude-sonnet-4-6": {
+    "standard_cot": {
+     "n": 5,
+     "n_items": 5,
+     "agreement": 1.0,
+     "kappa": 1.0,
+     "rate_draw1": 0.8,
+     "rate_draw2": 0.8,
+     "shift_draw2_minus_draw1_points": 0.0,
+     "flips_1to0": 0,
+     "flips_0to1": 0,
+     "flip_rate": 0.0,
+     "thin": true,
+     "kappa_ci95": [
+      1.0,
+      1.0
+     ],
+     "kappa_ci_draws_defined": 5411,
+     "agreement_ci95": [
+      1.0,
+      1.0
+     ],
+     "shift_ci95_points": [
+      0.0,
+      0.0
+     ]
+    },
+    "narrative_cot": {
+     "n": 139,
+     "n_items": 139,
+     "agreement": 0.777,
+     "kappa": 0.554,
+     "rate_draw1": 0.46,
+     "rate_draw2": 0.496,
+     "shift_draw2_minus_draw1_points": 3.6,
+     "flips_1to0": 13,
+     "flips_0to1": 18,
+     "flip_rate": 0.223,
+     "thin": false,
+     "kappa_ci95": [
+      0.41,
+      0.684
+     ],
+     "kappa_ci_draws_defined": 8000,
+     "agreement_ci95": [
+      0.705,
+      0.842
+     ],
+     "shift_ci95_points": [
+      -4.3,
+      11.5
+     ]
+    }
+   },
+   "gpt-5.4-nano": {
+    "standard_cot": {
+     "n": 88,
+     "n_items": 88,
+     "agreement": 0.898,
+     "kappa": 0.664,
+     "rate_draw1": 0.807,
+     "rate_draw2": 0.818,
+     "shift_draw2_minus_draw1_points": 1.1,
+     "flips_1to0": 4,
+     "flips_0to1": 5,
+     "flip_rate": 0.102,
+     "thin": false,
+     "kappa_ci95": [
+      0.438,
+      0.854
+     ],
+     "kappa_ci_draws_defined": 8000,
+     "agreement_ci95": [
+      0.83,
+      0.955
+     ],
+     "shift_ci95_points": [
+      -5.7,
+      8.0
+     ]
+    },
+    "narrative_cot": {
+     "n": 112,
+     "n_items": 112,
+     "agreement": 0.777,
+     "kappa": 0.452,
+     "rate_draw1": 0.241,
+     "rate_draw2": 0.321,
+     "shift_draw2_minus_draw1_points": 8.0,
+     "flips_1to0": 8,
+     "flips_0to1": 17,
+     "flip_rate": 0.223,
+     "thin": false,
+     "kappa_ci95": [
+      0.263,
+      0.622
+     ],
+     "kappa_ci_draws_defined": 8000,
+     "agreement_ci95": [
+      0.696,
+      0.848
+     ],
+     "shift_ci95_points": [
+      -0.9,
+      17.0
+     ]
+    }
+   },
+   "grok-4-1-fast-reasoning": {
+    "standard_cot": {
+     "n": 75,
+     "n_items": 75,
+     "agreement": 0.867,
+     "kappa": 0.561,
+     "rate_draw1": 0.813,
+     "rate_draw2": 0.813,
+     "shift_draw2_minus_draw1_points": 0.0,
+     "flips_1to0": 5,
+     "flips_0to1": 5,
+     "flip_rate": 0.133,
+     "thin": false,
+     "kappa_ci95": [
+      0.291,
+      0.787
+     ],
+     "kappa_ci_draws_defined": 8000,
+     "agreement_ci95": [
+      0.787,
+      0.933
+     ],
+     "shift_ci95_points": [
+      -8.0,
+      8.0
+     ]
+    },
+    "narrative_cot": {
+     "n": 117,
+     "n_items": 117,
+     "agreement": 0.778,
+     "kappa": 0.503,
+     "rate_draw1": 0.205,
+     "rate_draw2": 0.41,
+     "shift_draw2_minus_draw1_points": 20.5,
+     "flips_1to0": 1,
+     "flips_0to1": 25,
+     "flip_rate": 0.222,
+     "thin": false,
+     "kappa_ci95": [
+      0.352,
+      0.653
+     ],
+     "kappa_ci_draws_defined": 8000,
+     "agreement_ci95": [
+      0.701,
+      0.855
+     ],
+     "shift_ci95_points": [
+      12.8,
+      28.2
+     ]
+    }
+   },
+   "Llama-3.3-70B-Instruct": {
+    "standard_cot": {
+     "n": 6,
+     "n_items": 6,
+     "agreement": 1.0,
+     "kappa": 1.0,
+     "rate_draw1": 0.833,
+     "rate_draw2": 0.833,
+     "shift_draw2_minus_draw1_points": 0.0,
+     "flips_1to0": 0,
+     "flips_0to1": 0,
+     "flip_rate": 0.0,
+     "thin": true,
+     "kappa_ci95": [
+      1.0,
+      1.0
+     ],
+     "kappa_ci_draws_defined": 5350,
+     "agreement_ci95": [
+      1.0,
+      1.0
+     ],
+     "shift_ci95_points": [
+      0.0,
+      0.0
+     ]
+    },
+    "narrative_cot": {
+     "n": 56,
+     "n_items": 56,
+     "agreement": 0.875,
+     "kappa": 0.3,
+     "rate_draw1": 0.125,
+     "rate_draw2": 0.071,
+     "shift_draw2_minus_draw1_points": -5.4,
+     "flips_1to0": 5,
+     "flips_0to1": 2,
+     "flip_rate": 0.125,
+     "thin": false,
+     "kappa_ci95": [
+      -0.072,
+      0.659
+     ],
+     "kappa_ci_draws_defined": 7999,
+     "agreement_ci95": [
+      0.786,
+      0.946
+     ],
+     "shift_ci95_points": [
+      -14.3,
+      3.6
+     ]
+    }
+   },
+   "Mistral-Large-3-2": {
+    "standard_cot": {
+     "n": 118,
+     "n_items": 118,
+     "agreement": 0.89,
+     "kappa": 0.684,
+     "rate_draw1": 0.771,
+     "rate_draw2": 0.78,
+     "shift_draw2_minus_draw1_points": 0.8,
+     "flips_1to0": 6,
+     "flips_0to1": 7,
+     "flip_rate": 0.11,
+     "thin": false,
+     "kappa_ci95": [
+      0.507,
+      0.832
+     ],
+     "kappa_ci_draws_defined": 8000,
+     "agreement_ci95": [
+      0.831,
+      0.941
+     ],
+     "shift_ci95_points": [
+      -5.1,
+      6.8
+     ]
+    },
+    "narrative_cot": {
+     "n": 137,
+     "n_items": 137,
+     "agreement": 0.869,
+     "kappa": 0.481,
+     "rate_draw1": 0.102,
+     "rate_draw2": 0.19,
+     "shift_draw2_minus_draw1_points": 8.8,
+     "flips_1to0": 3,
+     "flips_0to1": 15,
+     "flip_rate": 0.131,
+     "thin": false,
+     "kappa_ci95": [
+      0.264,
+      0.671
+     ],
+     "kappa_ci_draws_defined": 8000,
+     "agreement_ci95": [
+      0.81,
+      0.92
+     ],
+     "shift_ci95_points": [
+      2.9,
+      14.6
+     ]
+    }
+   },
+   "DeepSeek-V4-Pro": {
+    "standard_cot": {
+     "n": 77,
+     "n_items": 77,
+     "agreement": 0.948,
+     "kappa": 0.473,
+     "rate_draw1": 0.948,
+     "rate_draw2": 0.948,
+     "shift_draw2_minus_draw1_points": 0.0,
+     "flips_1to0": 2,
+     "flips_0to1": 2,
+     "flip_rate": 0.052,
+     "thin": false,
+     "kappa_ci95": [
+      -0.036,
+      0.882
+     ],
+     "kappa_ci_draws_defined": 7986,
+     "agreement_ci95": [
+      0.896,
+      0.987
+     ],
+     "shift_ci95_points": [
+      -5.2,
+      5.2
+     ]
+    },
+    "narrative_cot": {
+     "n": 138,
+     "n_items": 138,
+     "agreement": 0.739,
+     "kappa": 0.478,
+     "rate_draw1": 0.341,
+     "rate_draw2": 0.5,
+     "shift_draw2_minus_draw1_points": 15.9,
+     "flips_1to0": 7,
+     "flips_0to1": 29,
+     "flip_rate": 0.261,
+     "thin": false,
+     "kappa_ci95": [
+      0.336,
+      0.614
+     ],
+     "kappa_ci_draws_defined": 8000,
+     "agreement_ci95": [
+      0.667,
+      0.812
+     ],
+     "shift_ci95_points": [
+      8.0,
+      23.9
+     ]
+    }
+   }
+  }
+ },
+ "drop_by_draw_on_identical_input_items": {
+  "note": "NoT minus CoT (points) on items whose both responses are identical-input pairs, under draw 1 and draw 2; a selected subsample of short responses, descriptive only",
+  "claude-haiku-4-5": {
+   "n_items": 29,
+   "drop_draw1_points": -17.2,
+   "drop_draw2_points": -24.1,
+   "difference_points": -6.9,
+   "thin": false
+  },
+  "claude-sonnet-4-6": {
+   "n_items": 10,
+   "drop_draw1_points": -10.0,
+   "drop_draw2_points": 0.0,
+   "difference_points": 10.0,
+   "thin": true
+  },
+  "gpt-5.4-nano": {
+   "n_items": 2,
+   "drop_draw1_points": 50.0,
+   "drop_draw2_points": 50.0,
+   "difference_points": 0.0,
+   "thin": true
+  },
+  "grok-4-1-fast-reasoning": {
+   "n_items": 26,
+   "drop_draw1_points": -3.8,
+   "drop_draw2_points": -3.8,
+   "difference_points": 0.0,
+   "thin": false
+  },
+  "Llama-3.3-70B-Instruct": {
+   "n_items": 84,
+   "drop_draw1_points": -63.1,
+   "drop_draw2_points": -64.3,
+   "difference_points": -1.2,
+   "thin": false
+  },
+  "Mistral-Large-3-2": {
+   "n_items": 1,
+   "drop_draw1_points": -100.0,
+   "drop_draw2_points": -100.0,
+   "difference_points": 0.0,
+   "thin": true
+  },
+  "DeepSeek-V4-Pro": {
+   "n_items": 1,
+   "drop_draw1_points": -100.0,
+   "drop_draw2_points": -100.0,
+   "difference_points": 0.0,
+   "thin": true
+  }
+ },
+ "interval_days": {
+  "note": "days between the two cache files' mtimes (descriptive)",
+  "pooled": {
+   "n": 814,
+   "median": 106.1,
+   "min": 1.4,
+   "max": 106.1
+  }
+ },
+ "caveats": [
+  "Draw 1 and draw 2 are the production run and the 17.8 pass, not two same-day calls: months apart for the four original generators (June 2026 vs 2026-09-22), a day apart for the three open-weight deployments (2026-09-21 vs 2026-09-22); the judge string was the same, the provider's serving of it is not verifiable from the caches.",
+  "The draw-1 cache key hashes only the first 2,000 characters of the response; for 2,000 < length <= 4,000 the pairing is on that prefix. Distinct generations sharing a 2,000-character prefix are not expected; pooled_strict_le2000 is the check.",
+  "Test-retest pairs are the responses of at most 4,000 characters, a length-selected subset; per-cell coverage varies from a few responses to the whole cell (see per_cell.n and n_truncated_input_excluded).",
+  "Responses over 4,000 characters were scored on different inputs in the two draws and are not test-retest pairs; their block is kept only to show that truncation adds disagreement beyond noise."
+ ],
+ "elapsed_seconds": 5.9
+}
