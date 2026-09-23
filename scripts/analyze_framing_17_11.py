@@ -83,6 +83,45 @@ def reading(per_judge: dict) -> str:
     return "FRAMING-MIXED"
 
 
+BASELINES = ("cot_prepend_naive", "cot_prepend_context", "cot_perspective_shift", "cot_sceptical")
+
+
+def _reading(c: dict, x: str) -> str:
+    """17.12 definitions applied to the framing rate (17.11 amendment)."""
+    if c.get("drop_arm") is None:
+        return "UNDER-GATED"
+    if c["gap"]["lo"] > 0:
+        return f"BASELINE-BEATS-{x.upper()}"
+    if c["gap"]["hi"] < 0:
+        return f"{x.upper()}-BEATS-BASELINE"
+    return "MATCH"
+
+
+def run_baselines(judges) -> dict:
+    """17.11 amendment: the four 17.12 baseline arms on the framing rate, against CoT, NoT and the
+    checklist, pooled over the four generators and per generator; readings per the 17.12
+    definitions; judge-robust only if both judges agree."""
+    rfj.METRIC = "framing"
+    q = load_questions("oeq", n=150)
+    rows = rfj.load_rows(GENS4, (COT, NOT, CHECK) + BASELINES)
+    out = {"judges": {}}
+    comps = {"not": NOT, "checklist": CHECK}
+    for j in judges:
+        cells, bad = scores(rows, j, q)
+        jr = {"rates": {f"{g}|{a}": float(np.mean(list(cells[(g, a)].values()))) for g in GENS4 for a in (COT, NOT, CHECK) + BASELINES if cells.get((g, a))},
+              "unparsed_or_missing": {f"{g}|{a}": bad.get((g, a), 0) for g in GENS4 for a in BASELINES},
+              "pooled": {}, "per_generator": {}, "readings": {}}
+        for b in BASELINES:
+            jr["pooled"][b] = {x: contrast(cells, GENS4, COT, b, not_arm=arm, draws=DRAWS, seed=SEED) for x, arm in comps.items()}
+            jr["per_generator"][b] = {g: {x: contrast(cells, (g,), COT, b, not_arm=arm, draws=DRAWS, seed=SEED) for x, arm in comps.items()} for g in GENS4}
+            jr["readings"][b] = {x: _reading(jr["pooled"][b][x], x) for x in comps}
+        out["judges"][j] = jr
+    out["judge_robust"] = {b: {x: (len({out["judges"][j]["readings"][b][x] for j in judges}) == 1
+                                   and next(iter({out["judges"][j]["readings"][b][x] for j in judges})))
+                               for x in comps} for b in BASELINES}
+    return out
+
+
 def run(judges) -> dict:
     rfj.METRIC = "framing"
     q = load_questions("oeq", n=150)
@@ -131,6 +170,11 @@ def _selftest() -> int:
     check("a rise under NoT with a checklist drop reads FRAMING-MIXED", reading({"a": rises, "b": rises}) == "FRAMING-MIXED")
     narr = dict(moves, narrative_only_minus_cot=c(-0.2, -0.3, -0.1))
     check("narrative-only also dropping blocks MOVES (reads MIXED)", reading({"a": narr, "b": narr}) == "FRAMING-MIXED")
+    def cc(lo, hi):
+        return {"drop_arm": {"point": 0, "lo": 0, "hi": 0}, "gap": {"point": (lo + hi) / 2, "lo": lo, "hi": hi}}
+    check("baseline reading, gap above 0 reads BASELINE-BEATS-NOT", _reading(cc(0.02, 0.1), "not") == "BASELINE-BEATS-NOT")
+    check("baseline reading, gap below 0 reads CHECKLIST-BEATS-BASELINE", _reading(cc(-0.1, -0.02), "checklist") == "CHECKLIST-BEATS-BASELINE")
+    check("baseline reading, gap through 0 reads MATCH", _reading(cc(-0.03, 0.03), "not") == "MATCH")
     print("\nselftest: " + ("ALL OK" if ok else "FAILED"))
     return 0 if ok else 1
 
@@ -140,10 +184,30 @@ def main(argv=None) -> int:
     ap.add_argument("--judges", default=",".join(JUDGES))
     ap.add_argument("--json", type=Path, default=OUT)
     ap.add_argument("--selftest", action="store_true")
+    ap.add_argument("--baselines", action="store_true",
+                    help="17.11 amendment: the 17.12 baseline arms on the framing rate; appends 'baselines' to the readout")
     a = ap.parse_args(argv)
     if a.selftest:
         return _selftest()
     judges = [j for j in a.judges.split(",") if j]
+    if a.baselines:
+        base = json.loads(a.json.read_text()) if a.json.exists() else {}
+        bl = run_baselines(judges)
+        base["baselines"] = bl
+        for j in judges:
+            jr = bl["judges"][j]
+            print(f"\n== judge {j}  (framing rate, 1 = accepts the framing; baseline drop from CoT, NoT minus baseline, checklist minus baseline)")
+            for b in BASELINES:
+                p = jr["pooled"][b]; d = p["not"]
+                if d.get("drop_arm") is None:
+                    print(f"   {b:22s} under-gated"); continue
+                print(f"   {b:22s} drop {100 * d['drop_arm']['point']:+.1f} [{100 * d['drop_arm']['lo']:+.1f},{100 * d['drop_arm']['hi']:+.1f}]"
+                      f"  NoT-base {100 * d['gap']['point']:+.1f} [{100 * d['gap']['lo']:+.1f},{100 * d['gap']['hi']:+.1f}] {jr['readings'][b]['not']}"
+                      f"  chk-base {100 * p['checklist']['gap']['point']:+.1f} [{100 * p['checklist']['gap']['lo']:+.1f},{100 * p['checklist']['gap']['hi']:+.1f}] {jr['readings'][b]['checklist']}")
+        print("\njudge-robust:", json.dumps(bl["judge_robust"]))
+        a.json.write_text(json.dumps(base, indent=2, default=float))
+        print(f"wrote {a.json}")
+        return 0
     res = run(judges)
     for j in judges:
         jr = res["judges"][j]
