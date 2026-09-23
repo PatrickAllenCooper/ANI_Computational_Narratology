@@ -25,6 +25,8 @@ the committed artefacts only (every number carries a % source comment in the out
   figures/tab_z3.tex             asker shielding, signal detection (z3_sdt_<model>.json)
   figures/tab_interjudge.tex     inter-judge kappa against the production judge
   figures/tab_knockout_readouts.tex  17.3 knockout descriptives and Manski brackets (readouts_17_3_17_5.json)
+  figures/fig_collective_prompts.tex  every prompt of the collective, its routing judge and the
+                                 validation judge, printed verbatim from the scripts (W25)
                                  (interjudge_kappa.json) with its test-retest row
                                  (judge_test_retest.json)
 
@@ -108,11 +110,11 @@ def _judge_axis(series, name, title, first):
     """One axis of the two-panel judge figure. The first axis carries the row labels and the legend,
     which sits in the upper left with no fill: the lower left holds Llama's and Mistral's drops in both
     panels, and an opaque box in the upper left would cover the nano row's production-judge marker.
-    Marks are 2.3pt (2.5pt touches neighbouring rows at this height) with a per-judge row offset."""
+    Marks are 2.3pt (2.5pt touched neighbouring rows at the earlier 5.0cm height; 3.5cm since 2026-09-23 for the page budget) with a per-judge row offset."""
     style = {jk: (col, mark, fill) for jk, _jl, col, mark, fill in JUDGES}
     k = len(series)
     opts = [f"name={name}", "scale only axis", f"title={{{title}}}",
-            "title style={font=\\small, yshift=-3pt}", "width=0.40\\columnwidth", "height=5.0cm",
+            "title style={font=\\small, yshift=-3pt}", "width=0.40\\columnwidth", "height=3.5cm",
             "xmin=-85", "xmax=25", "xlabel={NoT $-$ CoT, validation rate (points)}",
             "xlabel style={font=\\small}", f"ytick={{{','.join(str(i) for i in range(len(GENS)))}}}",
             "ymin=-0.6", "ymax=6.6", "y dir=reverse", "xmajorgrids", "axis lines*=left",
@@ -441,7 +443,8 @@ def seat_table() -> str:
     return "\n".join(out) + "\n"
 
 
-RUN_HEADS = {"1": "run 1 (original)", "2": "run 2 (same day, 2,048)", "3": "run 3 (same day, 4,096)"}
+RUN_HEADS = {"1": "run 1 (original)", "2": "run 2 (same day, 2,048)", "3": "run 3 (same day, 4,096)",
+             "3b": "run 3b (second run, 4,096)"}
 
 
 def _run_cell(c):
@@ -684,6 +687,113 @@ def knockout_table() -> str:
     return "\n".join(out) + "\n"
 
 
+
+def collective_prompts_figure() -> str:
+    """figures/fig_collective_prompts.tex: every prompt the collective of Section 6 and its routing
+    judge use, printed verbatim from the modules that ran them (scripts/run_crowdgold_deliberation.py,
+    scripts/run_crowdgold_aita.py, scripts/verify_pillar3_headline.py, scripts/elephant_scorers.py),
+    with <POST TEXT> standing for the account and <...> for prior-round text. Reviewer W25."""
+    import inspect
+    import textwrap
+    from scripts import run_crowdgold_deliberation as m
+    from scripts.run_crowdgold_aita import build_system, build_user_turn
+    from scripts.elephant_scorers import SCORER_SYSTEM, _validation_prompt
+    sig = inspect.signature(m.run).parameters.get("allow_unresolved")
+    allow = True if sig is None or sig.default is inspect._empty else bool(sig.default)
+    item = m.CrowdGoldItem(item_id="<item>", post_text="<POST TEXT>", gold_verdict="YTA")
+    prior = {rid: "<THAT SEAT'S PRIOR STATEMENT>" for rid in m.ROLE_ORDER}
+    labels = {rid: "<THAT SEAT'S LABEL>" for rid in m.ROLE_ORDER}
+    objections = {rid: "<THAT SEAT'S STATED MODIFICATION>" for rid in m.ROLE_ORDER}
+    writer = m.ROLE_BY_ID["writer_advocate"]
+
+    def tex(t: str) -> str:
+        """Escape a title or note for text mode (the prompts themselves go through verbatim)."""
+        return (t.replace("\\", "\\textbackslash{}").replace("_", "\\_").replace("&", "\\&")
+                 .replace("%", "\\%").replace("#", "\\#").replace("<", "\\textless{}")
+                 .replace(">", "\\textgreater{}"))
+
+    shared = [(m.request_block("as_asker", "<POST TEXT>"), "<REQUEST WRAPPER, printed above>"),
+              (m.GLOSSARY_CORE, "<GLOSSARY, printed above>"),
+              (m._role_header(writer), "<ROLE BRIEF, printed above>")]
+
+    def verb(text: str) -> str:
+        for full, short in shared:
+            text = text.replace(full, short)
+        lines = []
+        for raw in text.rstrip("\n").split("\n"):
+            lines.extend(textwrap.wrap(raw, 78, break_long_words=False, break_on_hyphens=False,
+                                       subsequent_indent="  ") or [""])
+        return "\\begin{verbatim}\n" + "\n".join(lines) + "\n\\end{verbatim}\n"
+
+    blocks = [
+        ("Seat system prompt", "The NoT text of Figure~FIGPROMPT, verbatim and alone, or the CoT "
+         "text for the plain-seat collectives (agent_system).", None),
+        ("Request wrapper, third person (build_user_turn)", None, build_user_turn("third_person", "<POST TEXT>")),
+        ("Request wrapper, the user as the writer, quoted between the request markers (request_block)", None,
+         m.request_block("as_asker", "<POST TEXT>")),
+        ("Preamble shown to every seat (R0_PREAMBLE)", None, m.R0_PREAMBLE),
+        ("Verdict-label glossary (GLOSSARY_CORE)", None, m.GLOSSARY_CORE),
+        ("Forced verdict line, seats and moderator (verdict_instruction)", None,
+         m.verdict_instruction(m.INSTRUMENT, allow_unresolved=allow)),
+        ("Forced label line, stage 5", None, m.verdict_instruction(m.LABEL_INSTRUMENT, allow_unresolved=False)),
+        ("Forced vote line, stage 7", None, m.verdict_instruction(m.VOTE_INSTRUMENT, allow_unresolved=False)),
+    ]
+    for r in m.ROLES:
+        blocks.append((f"Role brief, {r.label} (_role_header)", None, m._role_header(r)))
+    blocks += [
+        ("Stage 1, opening statement, user turn (r0_user), shown for the writer's advocate", None,
+         m.r0_user("as_asker", item, writer, allow_unresolved=allow)),
+        ("Stage 2, rebuttal (r1_user)", None,
+         m.r1_user("as_asker", item, writer, "<OWN OPENING>", prior, allow_unresolved=allow, cap=0)),
+        ("Stage 3, final position (r2_user)", None,
+         m.r2_user("as_asker", item, writer, "<OWN OPENING>", "<OWN REBUTTAL>", prior,
+                   allow_unresolved=allow, cap=0)),
+        ("Moderator system prompt, stage 4 (SYNTHESIS_SYSTEM)", None, m.SYNTHESIS_SYSTEM),
+        ("Stage 4, synthesis, moderator user turn (synthesis_user)", None,
+         m.synthesis_user("as_asker", item, prior, allow_unresolved=allow, cap=0)),
+        ("Stage 5, label on the synthesis (r3_label_user)", None,
+         m.r3_label_user("as_asker", item, writer, "<OWN FINAL POSITION>", "<SYNTHESIS>", cap=0)),
+        ("Moderator system prompt, stage 6 (INTEGRATION_SYSTEM)", None, m.INTEGRATION_SYSTEM),
+        ("Stage 6, integrated verdict, moderator user turn (integration_user)", None,
+         m.integration_user("as_asker", item, "<SYNTHESIS>", labels, objections,
+                            allow_unresolved=allow, cap=0)),
+        ("Stage 7, vote (r4_vote_user)", None,
+         m.r4_vote_user("as_asker", item, writer, "<SYNTHESIS>", "ACCEPT_WITH_MODIFICATION",
+                        "<OWN STATED MODIFICATION>", "<INTEGRATED PROPOSAL>", cap=0)),
+        ("Marker lines parsed from the seats' and moderator's text", None,
+         "\n".join([m.MOD_MARKER, m.UNRESOLVABLE_MARKER, m.ADDRESSED_MARKER,
+                    "SYNTHESIS:", "PROPOSAL:", "VERDICT: <LABEL>"])),
+        ("Routing judge (sonnet), system prompt (run_crowdgold_aita.build_system, scaffold standard)",
+         None, build_system(scaffold="standard", allow_unresolved=allow)),
+        ("Routing judge, user turn", "The request wrapper above for the debate's framing, with the "
+         "same account, answered three times; the judge's verdict is the majority of the three "
+         "(YTA and ESH coded at fault, NTA and NAH not) and a tie keeps the collective's verdict "
+         "(verify_pillar3_headline.load and routed_ok).", None),
+        ("Validation judge of Section~SECSINGLE, system prompt (SCORER_SYSTEM)", None, SCORER_SYSTEM),
+        ("Validation judge, user turn (_validation_prompt), the full response in place of <RESPONSE>",
+         None, _validation_prompt("<QUESTION>", "<RESPONSE>")),
+    ]
+    out = ["% AUTO-GENERATED by scripts/make_iclr_figures.py collective_prompts_figure (reviewer W25):",
+           "% printed from scripts/run_crowdgold_deliberation.py (ROLES, R0_PREAMBLE, GLOSSARY_CORE,",
+           "% verdict_instruction, _role_header, r0_user, r1_user, r2_user, synthesis_user, r3_label_user,",
+           "% integration_user, r4_vote_user, SYNTHESIS_SYSTEM, INTEGRATION_SYSTEM, MOD_MARKER,",
+           "% UNRESOLVABLE_MARKER, ADDRESSED_MARKER), scripts/run_crowdgold_aita.py (build_user_turn,",
+           "% build_system with the standard scaffold and BREVITY), scripts/verify_pillar3_headline.py",
+           "% (majority of three, ties to the collective) and scripts/elephant_scorers.py (SCORER_SYSTEM,",
+           "% _validation_prompt). Stand-in text in angle brackets replaces the account and prior-round",
+           f"% text; transcript cap 0 (no truncation of prior rounds); allow_unresolved={allow} as in run().",
+           "% The stage prompts repeat the request wrapper, the glossary and the role brief verbatim; each",
+           "% repetition is replaced here by a placeholder naming the block printed above, so that every",
+           "% line of every prompt appears exactly once."]
+    for title, note, text in blocks:
+        out.append(f"\\noindent\\textbf{{{tex(title).replace('SECSINGLE', chr(92) + 'ref{sec-single}')}.}}")
+        if note:
+            out.append(tex(note).replace("FIGPROMPT", chr(92) + "ref{fig:prompt}") + "\n")
+        if text is not None:
+            out.append(verb(text))
+    return "\n".join(out) + "\n"
+
+
 def main() -> int:
     FIG.mkdir(parents=True, exist_ok=True)
     outputs = {"fig_judge_panel.tex": judge_panel_figure(), "tab_routing.tex": routing_table(),
@@ -692,7 +802,8 @@ def main() -> int:
                "tab_seat.tex": seat_table(), "tab_runs.tex": runs_table(),
                "tab_run_stability.tex": run_stability_table(), "tab_z3.tex": z3_table(),
                "tab_interjudge.tex": interjudge_table(),
-               "tab_knockout_readouts.tex": knockout_table()}
+               "tab_knockout_readouts.tex": knockout_table(),
+               "fig_collective_prompts.tex": collective_prompts_figure()}
     for name, text in outputs.items():
         (FIG / name).write_text(text)
         print("wrote", FIG / name)

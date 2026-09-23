@@ -5,9 +5,8 @@
 
 Narration-of-Thought is a system prompt that asks the model to reason through
 the situation as a first-person narrative in five sections, protagonist,
-stakeholders, consequences, uncertainty and decision, before answering, and
-the control, standard chain-of-thought, is a one-line instruction to think
-step by step (Figure~\ref{fig:prompt}). Sections~\ref{sec-single}
+stakeholders, consequences, uncertainty and decision, before answering,
+against a one-line chain-of-thought control (Figure~\ref{fig:prompt}). Sections~\ref{sec-single}
 and~\ref{sec-collective} use the NoT text unchanged on every model and task
 and add any forced verdict line, label glossary or seat role outside it
 (Appendices~\ref{app-pushback} and~\ref{app-seat}). NoT also abbreviates the
@@ -32,11 +31,11 @@ content with this scaffold.
 % (Findings of EMNLP 2024, pp. 16507-16530; the method is abbreviated NoT there too)
 
 The design follows the social account of objectivity
-\citep{longino1990science,mercier2011argumentative}. A model answering a
-person's account of their own conflict holds only that person's perspective,
-so the scaffold writes the missing perspectives into the trace before the
-answer, and the collective of Section~\ref{sec-collective} places them in
-separate agents with opposed interests. Unlike SimToM's two-stage
+\citep{longino1990science,mercier2011argumentative}, writing the perspectives
+a model answering one person's account of a conflict would otherwise lack
+into the trace before the answer, while the collective of
+Section~\ref{sec-collective} places them in separate agents with opposed
+interests. Unlike SimToM's two-stage
 perspective-taking prompt, which restates what one character knows before
 answering \citep{wilf2024simtom}, a chain-of-thought built from a theory of
 moral reasoning \citep{jin22_moralcot} and multi-persona self-collaboration in
@@ -51,7 +50,7 @@ examples or rewriting.
 
 \begin{figure}[t]
 \centering
-\fbox{\begin{minipage}{0.94\columnwidth}\small
+\fbox{\begin{minipage}{0.94\columnwidth}\scriptsize
 \textbf{Narration-of-Thought (system prompt).}
 You are a thoughtful advisor. When given an ethical dilemma, reason through it
 as a five-part first-person narrative before giving your answer.\\[2pt]

@@ -9555,3 +9555,75 @@ least 480 of 498 rows or the partial-panel rule, no `GUARD FAILED` in
 
 **Spend ledger.** Projected batch total about $270 to $280 with this cell, above the $250
 overnight cap by the PI's authorisation of 2026-09-23.
+
+## Addendum 17.11 RESULTS (run 2026-09-23; 9,910 judge calls under `elephant_rescore_framing_<judge>_full_*`, 46 gpt-4o calls lost to a network drop and refilled in a second pass; guards PASSED, unparsed 1 of 4,955 under the production judge and 0 under gpt-4o, missing 0; artefacts `judge_panel_full_rep4k_framing.json`, `judge_panel_newarms_framing.json`, `framing_17_11_readout.json`; script `scripts/analyze_framing_17_11.py`)
+
+**Registered reading: FRAMING-MIXED**, because the narrative-only arm also lowers the
+accepting-framing rate with an interval excluding 0 under both judges, which the
+FRAMING-MOVES-WITH-VALIDATION definition excluded. The signs of every registered contrast are
+reported below; none is in the direction the register caveat feared.
+
+**Design (a), the 17.10 same-day 4,096-token cells, seven generators.** NoT lowers the rate at
+which the answer accepts the asker's framing on all seven generators under both judges, every
+interval excluding 0. Production judge (claude-haiku-4-5), CoT -> NoT rate and drop in points:
+haiku 0.653 -> 0.313, -34.0 [-42.0, -26.0]; sonnet 0.680 -> 0.353, -32.7 [-41.3, -24.0]; nano
+0.782 -> 0.619, -16.3 [-24.5, -8.2]; grok 0.731 -> 0.564, -15.7 [-24.3, -7.9]; Llama 0.869 ->
+0.775, -9.2 [-16.9, -2.1]; Mistral 0.757 -> 0.436, -32.4 [-41.7, -23.0]; DeepSeek 0.621 ->
+0.312, -30.5 [-40.4, -20.6]; pooled -24.5 [-28.4, -20.6]. gpt-4o: haiku 0.560 -> 0.207, -35.3
+[-44.0, -27.3]; sonnet 0.573 -> 0.307, -26.7 [-34.7, -18.7]; nano 0.735 -> 0.503, -23.1 [-31.3,
+-15.0]; grok 0.786 -> 0.593, -20.0 [-27.9, -12.1]; Llama 0.924 -> 0.542, -38.0 [-47.2, -28.9];
+Mistral 0.826 -> 0.421, -40.3 [-48.9, -32.4]; DeepSeek 0.600 -> 0.262, -33.3 [-42.6, -23.4];
+pooled -30.9 [-35.1, -27.0]. Sonnet, whose validation drop reversed under gpt-4o (17.10), drops
+here under both judges. Judge agreement on these responses 0.759 (n 2,036).
+
+**Design (b), the 17.7 cells, pooled over haiku, grok, nano and Llama (150 items, paired,
+8,000 draws, seed 20260822).** Production judge: NoT minus CoT -23.2 [-27.3, -19.1]; checklist
+minus CoT -17.6 [-21.6, -13.6]; narrative-only minus CoT -18.9 [-22.6, -15.3]; persona-only
+minus CoT -4.1 [-7.1, -1.2]; NoT minus checklist -5.7 [-9.7, -1.9]; NoT minus narrative-only
+-4.3 [-8.7, -0.2]; NoT minus persona -19.1 [-23.2, -15.0]. gpt-4o: NoT minus CoT -28.6 [-33.2,
+-23.9]; checklist -24.4 [-28.8, -20.2]; narrative-only -20.6 [-25.2, -16.3]; persona -2.4
+[-5.5, +0.7]; NoT minus checklist -4.1 [-7.8, -0.7]; NoT minus narrative-only -8.1 [-12.8,
+-3.5]; NoT minus persona -26.2 [-30.6, -21.7]. The checklist recovers 0.76 [0.61, 0.92] and 0.86
+[0.74, 0.98] of NoT's drop and the narrative-only arm 0.81 [0.66, 0.99] and 0.72 [0.58, 0.87]
+under the two judges. Per generator, NoT's drop excludes 0 on all four under both judges; the
+checklist's includes 0 on nano under the production judge (-4.1 [-11.6, +3.4]) and the
+narrative-only arm's on nano under the production judge (-6.1 [-13.6, +0.7]); on grok under
+gpt-4o the three arms are indistinguishable (-19.7, -20.4, -20.0). Judge agreement 0.777 (n 2,918).
+
+**What this shows, stated within the registration.** The reduction has an endorsement leg: NoT
+makes answers challenge the asker's premise more often, on every generator, under both judges,
+including the generator on which the validation result reversed. Unlike judged validation, where
+the narrative instruction alone raised the rate (17.7), on premise acceptance the narrative form
+alone lowers it by about as much as the content alone, and the full scaffold lowers it more than
+either part (differences of 4 to 8 points, intervals excluding 0 under both judges). The
+"content, not narrative form" conclusion of 17.7 is therefore specific to the emotional-validation
+rubric. Descriptively, premise challenge remains uncommon under CoT (accepting-framing rates 0.57 to
+0.96), consistent with ELEPHANT's note. The pushback (17.9), Z3 and BrokenMath (16.15.5) results
+are unchanged. **Spend.** 9,956 judge calls; about $35 at list prices (dry-run $34.24), inside the
+$45 ceiling. Batch total now about $160.
+
+## Addendum 17.10 amendment, run 2 RESULTS (run 2026-09-23; 600 responses generated under `standard_cot_rep4k_b` / `narrative_cot_rep4k_b`, none at the 4,096 cap; 3,000 judge calls, 43 lost to a network drop and refilled; guards PASSED, unparsed at most 2 of 600 per judge, missing 0; artefacts `judge_panel_rep4k_b.json`, `headline_rep4k_b_readout.json`, `run_stability.json` (rerun with `--include-extra`); scripts `analyze_headline_rep4k.py --arm-suffix _b`, `analyze_run_stability.py`)
+
+**Run 2 alone, NoT minus CoT in points (150 paired items).** Sonnet: production judge -4.7
+[-13.3, +3.3]; gpt-4o +7.3 [+0.7, +14.7]; nano +8.0 [+0.0, +16.0]; Llama judge +7.4 [+1.3,
++13.4]; grok judge +10.1 [+4.0, +16.1]. Haiku: production -32.7 [-42.7, -22.7]; gpt-4o -20.7
+[-30.0, -11.3]; nano -1.3 [-10.7, +8.0]; Llama judge +2.7 [-4.0, +9.4]; grok judge +6.0 [-2.0,
++14.1].
+
+**Beside run 1 (17.10) and, where they exist, the June and 2,048-token runs; pooled with run as
+a fixed crossed factor (equal run weights, items resampled).** Sonnet under the production
+judge: -19.3, -12.7, -4.7 across the three runs, pooled -12.2 [-18.0, -6.7] (random-run
+interval [-21.1, -3.3], between-run sigma 6.1 points). Sonnet under the four other judges rises in
+every run, pooled gpt-4o +6.2 [+1.3, +11.1], nano +6.2 [+0.7, +11.8], Llama judge +7.8 [+4.0,
++11.9], grok judge +12.0 [+7.9, +16.6]. Haiku under the production judge: -26.7, -26.7, -22.0,
+-32.7, pooled -27.0 [-33.5, -20.3]; gpt-4o pooled -13.3 [-19.3, -7.5]; nano -3.0 [-8.3, +2.5];
+Llama judge +2.3 [-1.3, +6.2]; grok judge +8.4 [+4.0, +12.9]. Item-level drops correlate only
+weakly across runs (r 0.09 to 0.39), so single-run cells on these two generators carry
+run-to-run noise of several points.
+
+**As pre-declared, the 17.10 readings are not re-read.** The paper states the sonnet and haiku
+validation cells as multi-run estimates. For sonnet the production-judge reduction holds when
+runs are pooled and does not hold in run 2 alone, and the rise under every other judge is
+consistent across runs; this is reported as such, with the accepting-framing result (17.11), on
+which sonnet drops under both judges, beside it. **Spend.** About $22 at list prices (sonnet
+generation about $12), inside the $25 ceiling. Batch total about $182.

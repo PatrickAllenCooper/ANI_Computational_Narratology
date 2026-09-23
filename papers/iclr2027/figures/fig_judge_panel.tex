@@ -4,7 +4,7 @@
 % responses at their caps). Production judge = filled black circle; other judges open shapes.
 % missing at generation time: none
 \begin{tikzpicture}
-\begin{axis}[name=left, scale only axis, title={Regenerated, 4,096-token cap}, title style={font=\small, yshift=-3pt}, width=0.40\columnwidth, height=5.0cm, xmin=-85, xmax=25, xlabel={NoT $-$ CoT, validation rate (points)}, xlabel style={font=\small}, ytick={0,1,2,3,4,5,6}, ymin=-0.6, ymax=6.6, y dir=reverse, xmajorgrids, axis lines*=left, tick label style={font=\small}, yticklabels={haiku,sonnet,nano,grok,Llama,Mistral,DeepSeek}, legend style={font=\scriptsize, at={(0.02,0.99)}, anchor=north west, draw=none, fill=none, row sep=-3pt}, legend cell align=left]
+\begin{axis}[name=left, scale only axis, title={Regenerated, 4,096-token cap}, title style={font=\small, yshift=-3pt}, width=0.40\columnwidth, height=3.5cm, xmin=-85, xmax=25, xlabel={NoT $-$ CoT, validation rate (points)}, xlabel style={font=\small}, ytick={0,1,2,3,4,5,6}, ymin=-0.6, ymax=6.6, y dir=reverse, xmajorgrids, axis lines*=left, tick label style={font=\small}, yticklabels={haiku,sonnet,nano,grok,Llama,Mistral,DeepSeek}, legend style={font=\scriptsize, at={(0.02,0.99)}, anchor=north west, draw=none, fill=none, row sep=-3pt}, legend cell align=left]
 \fill[gray!9] (axis cs:-85,-0.5) rectangle (axis cs:25,0.5);
 \fill[gray!9] (axis cs:-85,1.5) rectangle (axis cs:25,2.5);
 \fill[gray!9] (axis cs:-85,3.5) rectangle (axis cs:25,4.5);
@@ -66,7 +66,7 @@
   };
 \addlegendentry{grok}
 \end{axis}
-\begin{axis}[name=right, scale only axis, title={Original responses}, title style={font=\small, yshift=-3pt}, width=0.40\columnwidth, height=5.0cm, xmin=-85, xmax=25, xlabel={NoT $-$ CoT, validation rate (points)}, xlabel style={font=\small}, ytick={0,1,2,3,4,5,6}, ymin=-0.6, ymax=6.6, y dir=reverse, xmajorgrids, axis lines*=left, tick label style={font=\small}, yticklabels={,,}, at={(left.east)}, anchor=west, xshift=0.45cm]
+\begin{axis}[name=right, scale only axis, title={Original responses}, title style={font=\small, yshift=-3pt}, width=0.40\columnwidth, height=3.5cm, xmin=-85, xmax=25, xlabel={NoT $-$ CoT, validation rate (points)}, xlabel style={font=\small}, ytick={0,1,2,3,4,5,6}, ymin=-0.6, ymax=6.6, y dir=reverse, xmajorgrids, axis lines*=left, tick label style={font=\small}, yticklabels={,,}, at={(left.east)}, anchor=west, xshift=0.45cm]
 \fill[gray!9] (axis cs:-85,-0.5) rectangle (axis cs:25,0.5);
 \fill[gray!9] (axis cs:-85,1.5) rectangle (axis cs:25,2.5);
 \fill[gray!9] (axis cs:-85,3.5) rectangle (axis cs:25,4.5);

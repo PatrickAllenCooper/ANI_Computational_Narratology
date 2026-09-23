@@ -57,6 +57,96 @@ draws unless stated.
 % pillar1_headline.json bootstrap {b 8000}; scripts/analyze_length_matched_elephant.py _cluster_bootstrap;
 % 17.8 registration (~l.8719-8721)
 
+% Table tab-claims moved here from sections/introduction.tex by the integrating editor on
+% 2026-09-23 for the nine-page budget (W08); the introduction keeps a pointer to it. Rows and
+% their source comments are unchanged.
+\begin{table}[t]
+\centering
+\scriptsize
+\caption{Each claim, where it holds, where it fails or is qualified, and the
+reading fixed in the registration log before the data were seen
+(Appendix~\ref{app-prereg}). Model names are shortened after first use,
+haiku (claude-haiku-4-5), sonnet (claude-sonnet-4-6), nano (gpt-5.4-nano),
+grok (grok-4-1-fast-reasoning), Llama (Llama-3.3-70B-Instruct), Mistral
+(Mistral-Large-3-2) and DeepSeek (DeepSeek-V4-Pro), and the judges are haiku
+(the production judge), gpt-4o, nano, Llama and grok.}
+% Rows from key_messages.md and Sections sec-single and sec-collective; each row's sources are in the
+% comment beneath it. Set inline here rather than under figures/, which holds generated tables only.
+\label{tab-claims}
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{1.9cm}>{\raggedright\arraybackslash}p{4.7cm}>{\raggedright\arraybackslash}p{4.7cm}>{\raggedright\arraybackslash}p{2.05cm}@{}}
+\toprule
+claim & where it holds & where it fails or is qualified & registered reading \\
+\midrule
+NoT lowers judged validation of the asker &
+all seven generators under the production judge (13 to 63 points regenerated, 19 to 70 on the original responses), six under gpt-4o, five under nano &
+one or two generators under the Llama and grok judges, which rate most answers validating either way, sonnet reversed under the four other judges in the regeneration, all five judges agree on Llama alone &
+judge-dependent, holds under every judge on Llama only \\
+% prereg 17.8 RESULTS (JUDGE-DEPENDENT; negative with CI excluding 0 on 7, 6, 5, 1 and 2 of 7 under
+% the haiku, gpt-4o, nano, Llama and grok judges; ceiling statistic Llama 0.79, grok 0.64 of cells
+% above 0.85), judge_panel_full_oeq_<judge>.json (-19.3 sonnet to -70.2 Llama); prereg 17.10 RESULTS
+% (HEADLINE-HOLDS on Llama only), headline_rep4k_readout.json (-12.7 to -63.4; sonnet +8.0 [+1.3,
+% +15.3] gpt-4o, +8.7 [+0.7, +16.7] nano, +8.7 [+3.4, +14.1] Llama judge, +12.1 [+6.7, +18.1] grok
+% judge; the Llama and grok judges negative with CI excluding 0 on Llama alone)
+\addlinespace
+its structured content, not its narrative form, carries the reduction &
+pooled over haiku, grok, nano and Llama under all five judges, the checklist 36.5 to 57.5 points below CoT, narration alone 6.8 to 18.7 above it &
+cannot separate a cooler register from less endorsement, persona line inert or raises validation, length inert on two generators under four judges, unresolved under the Llama judge &
+checklist better and content adds under every judge, persona never lowers, length inert \\
+% prereg 17.7 and 17.7 amendment 2 RESULTS, narrative_form_readout.json form_pooled (checklist
+% -57.5, -45.3, -36.5, -37.3, -37.2 and narrative only +12.1, +10.7, +18.7, +6.8, +8.6 under the
+% production, gpt-4o, nano, Llama and grok judges), persona_pooled (PERSONA-INERT under the
+% production, Llama and grok judges, PERSONA-RAISES under gpt-4o +3.3 and nano +5.5); prereg 17.4
+% RESULTS (haiku and grok; LENGTH-INERT under the production, gpt-4o, nano and grok judges,
+% UNRESOLVED under the Llama judge), length_reading per judge; register caveat, prereg 17.7 RESULTS
+\addlinespace
+NoT gives way more under pushback on a verdict &
+raw capitulation 0.37 against 0.22 pooled over nano, Llama and grok, also where the crowd found the user at fault &
+net of NoT's own instability $+5.2$ $[-1.7, +12.2]$, carried by Llama with nano and grok near the floor, haiku unread after a quality guard &
+null on the primary, NoT worse on raw capitulation \\
+% prereg 17.9 RESULTS (primary NULL, raw NOT-WORSE, gold-YTA NOT-WORSE +16.3 [+11.8, +20.8], nano
+% NULL near floor, grok FLOOR on its own, haiku guard FAILED at 14.1 percent NOVERDICT),
+% pushback_readout_pooled.json (0.371 vs 0.216, +15.5 [+11.0, +20.2]; net +5.2 [-1.7, +12.2]),
+% pushback_readout_llama.json (0.809 vs 0.489)
+\addlinespace
+a second objection flags the collective's errors &
+grok, wrong 9.8 times as often on verdicts blaming one party, Mistral, DeepSeek and Llama at 6.2, 2.3 and 1.5 times, each interval excluding zero &
+haiku, 1.5 times with an interval including zero, and the collective is below its own solo on four of five models and indistinguishable from it on haiku &
+lift excludes zero on four of five models \\
+% 9.8x: prereg 16.15.1 RESULTS, verify_pillar3_headline_grok.json (0.387 vs 0.039, 93 of 1,287);
+% ol_ratio 6.16 Mistral (prereg 16.26 RESULTS, +0.111 [+0.066, +0.157], 521 fired), 2.27 DeepSeek
+% (16.27 RESULTS, +0.057 [+0.003, +0.113], 128 fired), 1.53 Llama (16.24 RESULTS, +0.162 [+0.024,
+% +0.303], 64 fired), 1.49 haiku (16.23 RESULTS, +0.035 [-0.041, +0.120], 65 fired),
+% verify_pillar3_headline_{mistral,deepseek,llama,haiku_249}.json; collective against solo paired per
+% debate, collective_vs_solo_paired.json, as in the comment under the contributions paragraph (W12)
+\addlinespace
+routing flagged debates to a stronger judge raises accuracy &
+over the collective on all six conditions of Table~\ref{tab-routing}, $+3.7$ to $+21.4$ points, $+7.0$ $[+4.8, +9.4]$ on grok &
+above the solo only on Mistral, matching it on grok and haiku, below it on Llama and DeepSeek, and below sonnet answering every case on all five &
+gain over the collective on every condition, below sonnet everywhere \\
+% figures/tab_routing.tex (verify_pillar3_headline_<cond>.json, all_agree true); routed minus solo
+% paired per debate, collective_vs_solo_paired.json (Mistral +12.3 [+8.1, +16.8]; grok +0.1 [-2.6,
+% +3.0] and haiku +3.1 [-0.8, +7.0] include zero; Llama -18.2 [-23.7, -12.7], DeepSeek -10.8 [-14.1,
+% -7.7]); sonnet answering every case above the routed collective on all five panels
+% (routing_certification{,_haiku,_llama,_mistral,_deepseek}.json sonnet-judge slot
+% acc_judge_everywhere 0.976, 0.969, 0.976, 0.975, 0.976 against routed 0.913, 0.891, 0.661, 0.967,
+% 0.850, descriptive); prereg 16.22 RESULTS, routing_certification.json (R1 +0.0238 [+0.0048,
+% +0.0452] routing grok's solo verdicts, R2 -0.0405 [-0.0690, -0.0143] against sonnet everywhere)
+\addlinespace
+plain chain-of-thought seats do at least as well as narrated ones &
+grok and Llama, the two models tested, plain more accurate by 2.0 and 4.2 points, the grok sensor surviving at 6.4 times &
+narration raises grok's fire rate and routing gain ($+1.6$ $[+0.0, +3.3]$) without raising routed accuracy, Llama's plain-seat sensor under-gated and not read &
+plain better on both models \\
+% prereg 16.28 RESULTS (PLAIN-BETTER), seat_scaffold_comparison.json (narrated minus plain acc
+% -0.020 [-0.037, -0.003] grok, -0.042 [-0.070, -0.014] Llama; grok gain +0.016 [+0.000, +0.033],
+% fire +0.043 [+0.018, +0.069], routed -0.004 [-0.023, +0.015]); router_decomposition_grok_stdcot_k4.json
+% (one-loser ratio 6.37, 72 fired); router_decomposition_llama_stdcot.json (53 fired, under the 60 gate)
+\addlinespace
+\multicolumn{4}{@{}p{13.6cm}@{}}{\todo{PILLAR 2 (co-author): the theory-of-mind claim, where it holds, where it fails and its registered reading.}} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
 \paragraph{Registered readings.}
 Each test was registered with a short set of capitalised readings, one of
 which the analysis script returns mechanically once the data are in, and the
@@ -162,9 +252,9 @@ Scored this way, the production judge reproduces the registered drops
 closely, haiku $-26.7$ exactly, grok $-35.2$ against $-36.0$, Llama $-70.2$
 against $-69.9$, Mistral $-57.6$ against $-58.2$, DeepSeek $-46.1$ against
 $-45.5$, nano $-37.9$ on its 116 paired items against $-41.4$ unpaired, and
-sonnet $-19.3$ against $-22.3$, a registered range of 22 to 70 points, or 31
-to 87 percent of the CoT rate, from a scoring that mixed stored and fresh
-scores. Apart from nano, whose gap reflects the
+sonnet $-19.3$ against $-22.3$, a registered range of 22 to 70 points, a
+relative reduction of 31 to 87 percent, from a scoring that mixed stored and
+fresh scores. Apart from nano, whose gap reflects the
 pairing, sonnet's 3.0 points is the largest difference.
 % prereg 17.8 RESULTS (~l.9067-9070); registered values from 16.15.7 RESULTS (~l.4607-4612) and
 % 17.1 RESULTS (~l.7730-7732), pillar1_headline.json ("unpaired arms", relative reductions 0.31 sonnet
@@ -411,7 +501,7 @@ the grok judge, where it falls from two to one, and turns sonnet's nulls under
 gpt-4o and nano into rises with intervals excluding zero
 (Table~\ref{tab-app-rep4k}). Under the
 production judge the drops run from 12.7 points on sonnet to 63.4 on Llama,
-16 to 80 percent of the CoT rate, so truncation during generation did not
+a relative reduction of 16 to 80 percent, so truncation during generation did not
 manufacture the production judge's result.
 % prereg Addendum 17.10 RESULTS (~l.9195-9216); headline_rep4k_readout.json per_generator.<gen>
 % .per_judge.claude-haiku-4-5 (drop, relative: sonnet -0.127 / 0.162, Llama -0.634 / 0.796);
@@ -488,16 +578,26 @@ reading there rests on that assumption.
 % ---- judge_panel_newarms_<judge>.json and headline_rep4k_readout.json exactly on 90 of 90 cells
 % ---- (reconciliation). It replaces the scratch readout run_stability_readout.json cited earlier.
 Each generator answered each item once per prompt in each run, but the CoT
-and NoT contrast was generated two or three times per generator, on the
+and NoT contrast was generated two to four times per generator, on the
 original responses, on the same-day replicate at 2,048 tokens that serves as
-the comparator of Appendix~\ref{app-form} (haiku, grok, nano and Llama) and
-on the same-day replicate at 4,096 tokens, and every run was scored by all
-five judges, so the runs show how far the drop moves between generations
-(Table~\ref{tab-app-runs}). This comparison was added after the runs and was
-not registered.
+the comparator of Appendix~\ref{app-form} (haiku, grok, nano and Llama), on
+the same-day replicate at 4,096 tokens and, on sonnet and haiku, on a second
+same-day run at 4,096 tokens registered after review (run 3b), and every run
+was scored by all five judges, so the runs show how far the drop moves
+between generations (Table~\ref{tab-app-runs}). This comparison was added
+after the runs and was not registered, whereas run 3b itself was registered
+before any call, with the rule that it is reported beside run 3 whichever
+way it falls and that the registered readings are not re-read.
+% run 3b: prereg "Addendum 17.10 amendment, run 2" (registered 2026-09-23 BEFORE any call, arms
+% standard_cot_rep4k_b and narrative_cot_rep4k_b, sonnet and haiku only, 600 responses, five judges),
+% artefacts headline_rep4k_b_readout.json (scripts/analyze_headline_rep4k.py --arm-suffix _b) and
+% run_stability.json (rerun with --include-extra, runs.3b, extra_runs_included true, commit 7560069);
+% its RESULTS block is still to be appended to the log
 % run_stability.json runs (1: standard_cot/narrative_cot; 2: standard_cot_rep/narrative_cot_rep, haiku,
-% grok, nano, Llama, prereg 17.7 comparators; 3: standard_cot_rep4k/narrative_cot_rep4k, 17.10); five
-% judges as in 17.8; reconciliation n_exact 35, 20, 35 of 35, 20, 35; not registered
+% grok, nano, Llama, prereg 17.7 comparators; 3: standard_cot_rep4k/narrative_cot_rep4k, 17.10; 3b:
+% standard_cot_rep4k_b/narrative_cot_rep4k_b, 17.10 run 2, sonnet and haiku); five judges as in 17.8;
+% reconciliation n_exact 35, 19, 35 of 35, 20, 35 (one run-2 cell within 0.14 points after the rerun);
+% the comparison itself not registered
 % (scripts/analyze_run_stability.py docstring)
 The runs differ in their caps and, for nano, in the number of paired items,
 so the movement between them includes the effect of truncation and bounds
@@ -512,17 +612,21 @@ the fit is negative, which it is on 17 of the 35 judge and generator pairs.
 % (normal, method-of-moments components, run component clipped at 0); pooled_random_run
 % .sigma_run_points equal to 0.0 on 17 of the 35 judge x generator pairs, df_run 1 or 2
 Under the production judge the drop is negative with an interval excluding
-zero in every run on every generator, and pooled over runs with run fixed it
-is $-16.0$ $[-22.7, -9.3]$ points on sonnet, the smallest, and $-65.9$
+zero in every run on every generator but sonnet, whose second 4,096-token
+run gives $-4.7$ $[-13.3, +3.3]$, and pooled over runs with run fixed it is
+$-12.2$ $[-18.0, -6.7]$ points on sonnet, the smallest, and $-65.9$
 $[-72.3, -59.2]$ on Llama, the largest. Treating run as random moves each
-bound by under 3 points except on nano, where the three runs differ most,
-by 13.1 points between the farthest two, and the interval widens from
-$[-50.3, -37.1]$ to $[-50.9, -30.4]$.
-% run_stability.json judges.claude-haiku-4-5.per_generator.<gen>.stability.all_runs_negative_ci_excl_0
-% true on 7 of 7; pooled sonnet -0.160 [-0.227, -0.093], Llama -0.659 [-0.723, -0.592]; the other five
-% pooled: haiku -25.1, nano -43.7, grok -41.0, Mistral -57.6, DeepSeek -48.9; pooled_random_run nano
-% -40.6 [-50.9, -30.4] against pooled [-50.3, -37.1]; summary.per_judge.claude-haiku-4-5
-% max_range_points 13.1 (gpt-5.4-nano); random-run bounds on the other six within 2.9 points of the
+bound by under 3 points except on nano and sonnet, whose runs differ most,
+by 13.1 and 14.7 points between the farthest two, widening nano's interval
+from $[-50.3, -37.1]$ to $[-50.9, -30.4]$ and sonnet's from $[-18.0, -6.7]$
+to $[-21.1, -3.3]$.
+% run_stability.json (rerun with run 3b, commit 7560069) judges.claude-haiku-4-5.per_generator.<gen>
+% .stability.all_runs_negative_ci_excl_0 true on 6 of 7 (sonnet per_run.3b -0.047 [-0.133, +0.033]);
+% pooled sonnet -0.122 [-0.180, -0.067], Llama -0.659 [-0.723, -0.592]; the other five pooled: haiku
+% -27.0, nano -43.7, grok -41.0, Mistral -57.6, DeepSeek -48.9; pooled_random_run nano -40.6 [-50.9,
+% -30.4] against pooled [-50.3, -37.1], sonnet -12.2 [-21.1, -3.3] against [-18.0, -6.7];
+% per_generator range_points nano 13.1, sonnet 14.7 (summary.per_judge max_range_points 14.7,
+% generator_max_range claude-sonnet-4-6); random-run bounds on the other five within 2.8 points of the
 % fixed bounds (largest grok upper bound -31.5 against -34.4)
 % Mistral's run 1 and run 3 production-judge drops are identical (-57.6 [-66.2, -48.9], n 139) by
 % coincidence, not a cache error: both runs have 81 items down, 57 unchanged and 1 up, on different
@@ -530,10 +634,10 @@ $[-50.3, -37.1]$ to $[-50.9, -30.4]$.
 % pair across runs, 62 percent of the 138 common items with the same difference), checked from the
 % cache on 2026-09-23 (run_stability.json ... Mistral-Large-3-2.per_run and .cross_run)
 Under gpt-4o the sign is the same in every run on every generator, sonnet's
-pooled rise is $+5.7$ $[0.0, +11.3]$, and Mistral's and DeepSeek's drops
+pooled rise is $+6.2$ $[+1.3, +11.1]$, and Mistral's and DeepSeek's drops
 shrink from the original responses to the uncapped run.
 % run_stability.json judges.gpt-4o.per_generator.<gen>.stability.same_sign_all_runs true on 7 of 7;
-% sonnet pooled +0.057 [0.000, +0.113] (lower bound exactly 0.0); Mistral -41.0 (run 1) to -29.5
+% sonnet pooled +0.062 [+0.013, +0.111] over runs 1, 3 and 3b (+3.3, +8.0, +7.3); Mistral -41.0 (run 1) to -29.5
 % (run 3), DeepSeek -29.1 to -16.3, as in Table tab-app-rep4k and Section 7
 Under the Llama judge the reversal on nano, $+13.8$ $[+7.8, +20.7]$ on the
 original responses, whose 116 paired items exclude the 34 empty NoT
@@ -552,15 +656,15 @@ in every run under every judge.
 % run_stability.json judges.<judge>.per_generator.Llama-3.3-70B-Instruct.stability
 % .all_runs_negative_ci_excl_0 true under all five judges (production -70.2/-64.1/-63.4, gpt-4o
 % -64.5/-58.5/-66.2, nano -42.6/-40.8/-50.7, Llama judge -11.3/-18.3/-17.7, grok judge -49.6/-44.4/-51.8)
-Item-level drops move far more than generator-level drops. Across the 75
+Item-level drops move far more than generator-level drops. Across the 100
 judge, generator and run-pair combinations the item-level drop of one run
-correlates with that of another at a mean $r$ of 0.27, and a single run's
-item-level drop has an intraclass correlation of about 0.24, while the
-run-level drop moves by 2.0 points on average and 8.0 at most between runs,
+correlates with that of another at a mean $r$ of 0.25, and a single run's
+item-level drop has an intraclass correlation of about 0.25, while the
+run-level drop moves by 2.1 points on average and 8.0 at most between runs,
 so a generator's drop under a judge replicates and an item's does not.
-% run_stability.json summary.overall (n_judge_generator_run_pairs 75, mean_item_drop_r 0.266,
-% mean_icc_item_single_run 0.243, mean_sigma_run_points 2.00, max_sigma_run_points 7.97 on nano
-% under the Llama judge)
+% run_stability.json summary.overall after the run-3b rerun (n_judge_generator_run_pairs 100,
+% mean_item_drop_r 0.253, mean_icc_item_single_run 0.246, mean_sigma_run_points 2.12,
+% max_sigma_run_points 7.97 on nano under the Llama judge)
 
 \begin{table}[t]
 \centering
@@ -568,7 +672,9 @@ so a generator's drop under a judge replicates and an item's does not.
 \caption{NoT minus CoT validation, points, in each generation run and pooled
 over runs, by judge, with 95 percent intervals. Run 1 is the original
 responses, run 2 the same-day replicate at 2,048 tokens, which exists on four
-generators, and run 3 the same-day replicate at 4,096 tokens. The first
+generators, run 3 the same-day replicate at 4,096 tokens and run 3b a second
+same-day run at 4,096 tokens on sonnet and haiku, registered after review as
+a run to be reported beside run 3 whichever way it fell. The first
 pooled column resamples items with run as a fixed crossed factor, the second
 adds a variance component for run, and the last column is the smallest
 item-level correlation of the drop between any two runs. This comparison was
@@ -596,6 +702,26 @@ $[+4.7, +19.5]$, as it did on the original responses, and under the Llama judge
 its interval includes zero ($+5.4$ $[-0.7, +11.4]$).
 % headline_rep4k_readout.json per_generator.claude-haiku-4-5.per_judge.{grok-4-1-fast-reasoning,
 % Llama-3.3-70B-Instruct}
+In the second 4,096-token run on sonnet and haiku, registered after review
+and generated with no response at the cap, the production judge's drop is
+$-32.7$ $[-42.7, -22.7]$ on haiku and $-4.7$ $[-13.3, +3.3]$ on sonnet, the
+one production-judge interval in any run that includes zero, sonnet's rises
+under the other four judges recur ($+7.3$ $[+0.7, +14.7]$ under gpt-4o,
+$+8.0$ $[+0.0, +16.0]$ under nano, $+7.4$ $[+1.3, +13.4]$ under the Llama
+judge and $+10.1$ $[+4.0, +16.1]$ under the grok judge), and haiku's rise
+under the grok judge does not ($+6.0$ $[-2.0, +14.1]$). The registered
+readings of the first run are not re-read, and the run is reported beside it
+in Table~\ref{tab-app-runs} as its registration requires.
+% prereg "Addendum 17.10 amendment, run 2" (registered 2026-09-23 BEFORE any call; readouts, guards
+% and the rule that run 2 is reported beside run 1 whichever way it falls and the 17.10 readings are
+% not re-read); headline_rep4k_b_readout.json per_generator.{claude-haiku-4-5,claude-sonnet-4-6}
+% .per_judge (haiku production -32.7 [-42.7, -22.7], gpt-4o -20.7 [-30.0, -11.3], nano -1.3 [-10.7,
+% +8.0], Llama judge +2.7 [-4.0, +9.4], grok judge +6.0 [-2.0, +14.1]; sonnet production -4.7
+% [-13.3, +3.3], gpt-4o +7.3, nano +8.0 [+0.0, +16.0] with the lower bound exactly 0.0, Llama judge
+% +7.4, grok judge +10.1) and .cap (share_at_cap 0.0 on all four arms); the artefact's own
+% HEADLINE-FAILS label on sonnet is the mechanical 17.10 rule applied to the second run, which the
+% run-2 registration says is not re-read; the RESULTS block for this run is still to be appended to
+% the log (artefacts committed c386e06 and 7560069 on 2026-09-23)
 Under gpt-4o the reduction holds on the other six generators, haiku $-14.0$
 $[-22.7, -4.7]$, nano $-10.2$ $[-17.7, -3.4]$, grok $-23.6$ $[-32.1, -15.0]$,
 Llama $-66.2$ $[-73.9, -58.5]$, Mistral $-29.5$ $[-37.4, -21.6]$ and DeepSeek
@@ -1306,6 +1432,18 @@ seed, moves no bound by more than 0.2 points.
 % block "Zero-spend post hoc analyses for review round 1"): conditions.<c>.paired
 % .{collective,routed}_minus_solo_debate_weighted (4,000 draws seed 101, replicate seed 13,
 % cell_weighted variant; prereg block "move no bound by more than 0.2 points"); figures/tab_routing.tex
+The two earlier comparisons that Section~\ref{sec-collective} says point the
+other way lie outside the table. On nano the collective's accuracy of 0.829
+over 828 debates sits above its solo's 0.820 over 406 item and framing
+pairs, an unregistered readout, and on a 100-item haiku panel the
+collective's 0.885 over 192 debates sits above the solo's 0.851 over 630
+answers and above its 0.862 on the 249-item panel, in each case debates set
+against the solo's own answers on the same items with no paired interval.
+% W47 (2026-09-23): prereg 16.4 table (~l.3143-3148, gpt-5.4-nano n 828 S2 0.829, claude-haiku-4-5
+% corrected n 192 S2 0.885); routing_certification_nano.json routed_vs_solo.sonnet.acc_base 0.8202
+% on n_cells 406 (unregistered); prereg 16.17 cell 2 (~l.6485, haiku solo majority-of-3 on these
+% items 0.851, n 630); routing_certification_haiku.json routed_vs_solo.sonnet.acc_base 0.8621 on 486
+% cells; debates against per-item solo answers, descriptive, no paired interval
 The mechanism behind the dissent sensor of Section~\ref{sec-collective} is
 model-dependent. On verdicts that blame exactly one party, the two advocates'
 objections are strongly opposed on grok ($\phi = -0.90$), as dissent against
@@ -1497,6 +1635,57 @@ judge, not that the judges are equivalent.
 % community is not covered
 
 % ============================================================================================
+\subsection{The collective's prompts, verbatim}
+\label{app-prompts}
+
+Every prompt of the collective of Section~\ref{sec-collective}, of its
+routing judge and of the validation judge of Section~\ref{sec-single} is
+printed below from the modules that ran them, with the account replaced by
+the placeholder \texttt{<POST TEXT>} and prior-round text by placeholders in
+angle brackets. Each debate makes 17 calls in seven stages
+(Table~\ref{tab-app-stages}), the seats' system prompt is the scaffold text
+alone, and everything else, the framing wrapper, the glossary, the role
+brief, the prior rounds and the forced verdict line, arrives in the user
+turn. The routing judge answers the same wrapped account three times under
+the panel's unscaffolded prompt, which asks for at most four sentences of
+reasoning, and its verdict is the majority of the three, a tie keeping the
+collective's verdict.
+% figures/fig_collective_prompts.tex (scripts/make_iclr_figures.py collective_prompts_figure, printed from
+% scripts/run_crowdgold_deliberation.py, scripts/run_crowdgold_aita.py, scripts/verify_pillar3_headline.py
+% and scripts/elephant_scorers.py); 17 = 3 seats x 5 seat stages + 2 moderator stages
+% (scripts/run_crowdgold_deliberation.py CALLS_PER_CELL); system prompt = scaffold alone, role in the
+% user turn (agent_system, r0_user); judge majority of three with ties to the collective
+% (scripts/verify_pillar3_headline.py load and routed_ok); BREVITY on the standard arm only
+% (scripts/run_crowdgold_aita.py build_system); reviewer W25 (2026-09-23)
+
+\begin{table}[t]
+\centering
+\small
+\caption{The seven stages of a debate and the 17 calls they make. Seat
+stages are one call per seat, moderator stages one call.}
+% scripts/run_crowdgold_deliberation.py ROUNDS, AGENT_ROUNDS, MODERATOR_ROUNDS, CALLS_PER_CELL and the
+% per-stage prompt builders named in the last column (W25)
+\label{tab-app-stages}
+\begin{tabular}{llll}
+\toprule
+stage & who & what is written & calls \\
+\midrule
+1 & each seat & opening statement with a verdict line & 3 \\
+2 & each seat & rebuttal of the other two openings & 3 \\
+3 & each seat & final position & 3 \\
+4 & moderator & synthesis of the three positions with a verdict line & 1 \\
+5 & each seat & label on the synthesis, accepted, accepted with a modification or rejected & 3 \\
+6 & moderator & integrated verdict against the labels, scored as the collective's & 1 \\
+7 & each seat & binary vote on the integrated proposal & 3 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+{\footnotesize
+\input{figures/fig_collective_prompts}
+}
+
+% ============================================================================================
 \subsection{Pre-registration, deviations and corrections}
 \label{app-prereg}
 
@@ -1530,8 +1719,8 @@ Appendix~\ref{app-rep4k} went unrecorded.
 % (~l.8947-8953); registration blocks such as 17.7 (~l.8782) and 17.8 (~l.8731) end without the
 % "Nothing above this line is edited" line
 The CoT and NoT responses of the four original generators (haiku, sonnet,
-nano and grok) were generated in June 2026 for an earlier study and their
-scoring was corrected in August, both before the document existed, so their
+nano and grok) were generated in June 2026 and their scoring was corrected
+in August, both before the document existed, so their
 drops enter it only as a zero-spend results note that makes no new claim
 (Addendum 16.15.7).
 % prereg 16.15.7 registration (~l.3987-3991, "No new claim") and RESULTS (~l.4593-4623)
@@ -1540,7 +1729,7 @@ begins with Addendum 17 on 21 September 2026, which added Llama, Mistral and
 DeepSeek (17.1), and the judge panel, replicate, form, persona, length,
 section-knockout, one-line and pushback tests of Appendices~\ref{app-judges}
 to~\ref{app-pushback} are all prospectively registered (17.3 to 17.5 and 17.7
-to 17.10).
+to 17.10, with the second run of 17.10 registered after review).
 % prereg Addendum 17 header (~l.7060), 17.1 (~l.7088), 17.3 (~l.7133), 17.4 (~l.7180), 17.5
 % (~l.7946, "registered 2026-09-22 BEFORE any call"), 17.7 (~l.8743), 17.8 (~l.8703), 17.9 (~l.8784),
 % 17.10 (~l.8947)
@@ -1977,6 +2166,7 @@ production-judge drops, original responses & 16.15.7, 17.1 & \texttt{pillar1\_he
 five-judge panel & 17.8 & \texttt{judge\_panel\_full\_oeq\_<judge>.json} & \texttt{rescore\_elephant\_full\_judge.py} \\
 reference-label agreement & 17.8 amendment 2 & \texttt{judge\_reference\_agreement.json} & \texttt{judge\_reference\_agreement.py} \\
 same-day replicate at 4,096 tokens & 17.10 & \texttt{headline\_rep4k\_readout.json} & \texttt{analyze\_headline\_rep4k.py} \\
+second 4,096-token run, sonnet and haiku & 17.10 run 2 & \texttt{headline\_rep4k\_b\_readout.json} & \texttt{analyze\_headline\_rep4k.py} \\
 run-to-run stability of the drop & post hoc note & \texttt{run\_stability.json} & \texttt{analyze\_run\_stability.py} \\
 inter-judge kappa and its ceiling & post hoc note & \texttt{interjudge\_kappa.json} & \texttt{analyze\_interjudge\_kappa.py} \\
 production-judge test-retest & post hoc note & \texttt{judge\_test\_retest.json} & \texttt{analyze\_judge\_test\_retest.py} \\

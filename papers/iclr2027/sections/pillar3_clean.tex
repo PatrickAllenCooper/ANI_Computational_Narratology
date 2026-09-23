@@ -2,17 +2,14 @@
 \label{sec-collective}
 
 The collective, the scaffold's principle placed across agents with opposed
-interests (Section~\ref{sec-scaffold}), is a poor decider whose dissent can
-audit its own verdicts. Its verdict is at or below the model
-answering alone on five models, a second objection marks where it is more
-often wrong on four, routing the flagged cases to a stronger judge lifts it
-above the model alone only on Mistral, and plain chain-of-thought seats
-outperform narrating ones on both models tested.
+interests (Section~\ref{sec-scaffold}), is a poor decider whose dissent
+audits its own verdicts, on grok with or without the scaffold in its seats.
 
 \paragraph{Instrument and protocol.}
 Disputes are Scruples Anecdotes \citep{lourie2021scruples}, first-person
-conflict accounts whose crowd verdict is gold when at least 90 percent of at
-least 50 votes agree.
+conflict accounts whose crowd verdict, a community judgement of blame rather
+than a ground truth, is gold when at least 90 percent of at least 50 votes
+agree.
 ELEPHANT's own split of such posts has no vote counts, so it admits no
 consensus rule, and our earlier validation claim on it was withdrawn
 (Appendix~\ref{app-prereg}).
@@ -34,17 +31,17 @@ sends the flagged debates to sonnet, a stronger judge that sees only the
 dispute and answers by majority of three, ties going to the collective.
 
 \paragraph{The collective is a sensor, not a decider.}
-In a pairing computed after review the collective's verdict is at or below
-the same model answering alone on the five models of
-Table~\ref{tab-routing}, collective minus solo $-6.9$ to $-22.2$
-points with intervals excluding zero on all but haiku ($-0.6$
-$[-4.7, +3.5]$), while two earlier comparisons outside the table, on nano
-and a 100-item haiku panel, point the other way.
-The seats lock to their sides, the advocates' opening at-fault rates
-differing by 0.97 on grok, 0.86 on Llama, 0.82 on DeepSeek, 0.71 on Mistral
-and 0.42 on haiku, and on Llama the error is one-sided, blaming the
-writer on 78 percent of debates against the crowd's 41 percent
+In a pairing computed after review the collective's verdict is below the
+same model answering alone on four of the five models of
+Table~\ref{tab-routing}, collective minus solo $-6.9$ to $-22.2$ points
+with intervals excluding zero, and indistinguishable from it on haiku
+($-0.6$ $[-4.7, +3.5]$), while two earlier comparisons outside the table, on
+nano and a 100-item haiku panel, point the other way
 (Appendix~\ref{app-collective}).
+The seats lock to their sides, the advocates' opening at-fault rates
+differing by 0.97 on grok and 0.42 on haiku with the other three between,
+and on Llama the error is one-sided, blaming the writer on 78 percent of
+debates against the crowd's 41 percent (Appendix~\ref{app-collective}).
 Opposition itself costs accuracy, three identical neutral readers scoring
 $+2.1$ points $[+0.4, +3.8]$ above the opposed seats on grok in a contrast
 not declared in advance.
@@ -67,23 +64,24 @@ conditions are its prospective test.
 The lift replicates, 5.1 times on grok with the edges (the seats' exchange)
 cut, 6.2 on Mistral, where the counter fires on 88 percent of debates and
 is close to a constant, 2.3 on DeepSeek and 1.5 on Llama, each interval
-excluding zero, while on haiku, whose seats lock least,
-the interval includes zero (1.5 times, $+3.5$ points $[-4.1, +12.0]$), and
-the advocates' objections are opposed on grok alone, so the against-interest
-mechanism is supported only there (Appendix~\ref{app-collective}).
+excluding zero, while on haiku the interval includes zero (1.5 times,
+$+3.5$ points $[-4.1, +12.0]$, 8 points either side)
+and rules out a lift of grok's or Llama's size but not Mistral's or
+DeepSeek's, and the advocates' objections are opposed on grok alone, so the
+against-interest mechanism is supported only there
+(Appendix~\ref{app-collective}).
 
 \begin{table}[t]
 \centering
 \small
-\caption{Routing the counter-flagged debates to sonnet. $n$ counts codable
-debates, whose synthesis and integrated verdict both name one of the four
-outcomes, fire the share routed, solo the model answering alone by majority
-of three, collective and routed accuracies, and the difference columns
-paired differences in points with 95 percent item-clustered bootstrap
-intervals (Appendix~\ref{app-collective}), and precision and recall the
-shares of flagged one-party verdicts that are wrong and of wrong one-party
-verdicts flagged. Edges off cuts the seats' exchange and has no solo
-pairing.}
+\caption{Routing the flagged debates to sonnet. $n$ counts codable debates,
+whose synthesis and integrated verdict both name one of the four outcomes,
+fire the share routed, solo the model answering alone by majority of three,
+the difference columns paired differences in points with 95 percent
+item-clustered intervals (Appendix~\ref{app-collective}), and precision and
+recall the shares of flagged one-party verdicts that are wrong and of wrong
+one-party verdicts flagged. Edges off cuts the seats' exchange and has no
+solo pairing.}
 \label{tab-routing}
 \input{figures/tab_routing_clean}
 \end{table}
@@ -106,8 +104,15 @@ case (\$0.0107 against \$0.0115 per case at list rates) for 6.3 points less
 accuracy.
 Routing grok's solo verdicts by the flags lifts them by $+2.4$ points
 $[+0.5, +4.5]$, but the solo's sample disagreement
-\citep{manakul2023selfcheck} routes as well and sonnet answering every case
-is 4.0 points above the routed solo (Appendix~\ref{app-collective}).
+\citep{manakul2023selfcheck} routes as well, and sonnet answering every case
+is above the routed collective on all five models and 4.0 points above the
+routed solo on grok (Appendix~\ref{app-collective}).
+We therefore identify no setting in which the collective is worth building
+for accuracy, since the same model answering alone by
+majority of three is at least as accurate at 3 calls against 17 and its own
+samples route its errors at least as well on every model but Mistral, and
+the contribution is the mechanism finding, that a second objection which no
+assigned side explains marks the collective's own errors.
 
 \paragraph{Narration costs the collective accuracy.}
 Replacing each seat's narration with plain chain-of-thought, all else fixed,
@@ -115,12 +120,12 @@ gives the collective higher accuracy on both models tested, by 2.0 points
 $[+0.3, +3.7]$ on grok and 4.2 $[+1.4, +7.0]$ on Llama, which the registered
 rule reads as a reversal (Appendix~\ref{app-seat}).
 On grok narrated seats fire the counter more often (0.195 against 0.152
-averaged over items) and so gain more from routing, while on Llama
-narration changes neither detectably, and at equal coverage the plain-seat
-system is more accurate after routing by 2.0 points $[+0.1, +3.8]$ on grok
-and 4.6 $[+1.2, +7.8]$ on Llama.
+averaged over items) and so gain more from routing, on Llama narration
+changes neither by more than about 2 points either way, and at equal
+coverage the plain-seat system is more accurate after routing on both
+models, by 2.0 and 4.6 points (Appendix~\ref{app-seat}).
 The sensor's survival without narration is shown on grok alone (6.4 against
-9.8 times on one-party verdicts), since on Llama that readout had 53 flagged
+9.8 times on one-party verdicts), since Llama's readout had 53 flagged
 debates, under the registered minimum of 60, and is unread, and narration
 changes neither model's tendency to excuse a writer at fault when the user
 is the writer.
@@ -128,5 +133,3 @@ The collective's accuracy on both models tested, and its sensor on grok, do
 not depend on the scaffold, so the multi-agent result is not evidence for
 it, only the external form of the principle it places inside one trace
 \citep{longino1990science}.
-
-\todo{PI: the abstract credits the scaffold with the 7.0-point gain, but plain seats do as well or better and 4.9 of those points come where dissent shows no lift.}
