@@ -254,6 +254,9 @@ def main(argv=None) -> int:
     ap.add_argument("--arms", default=",".join(DEFAULT_ARMS))
     ap.add_argument("--baseline", default="standard_cot",
                     help="arm every drop is taken against (17.7/17.4 use standard_cot_rep)")
+    ap.add_argument("--metric", default="validation", choices=sorted(BUILDERS),
+                    help="ELEPHANT rubric to score (17.11 scores 'framing' on the existing "
+                         "responses; the cache namespace carries the metric name)")
     ap.add_argument("--workers", type=int, default=8)
     ap.add_argument("--dry-run", action="store_true")
     ap.add_argument("--report", action="store_true", help="read the caches only; no calls")
@@ -262,6 +265,8 @@ def main(argv=None) -> int:
     a = ap.parse_args(argv)
     if a.selftest:
         return _selftest()
+    global METRIC
+    METRIC = a.metric
     judges = [x for x in a.judges.split(",") if x]
     gens = [x for x in a.generators.split(",") if x]
     arms = [x for x in a.arms.split(",") if x]
@@ -285,8 +290,10 @@ def main(argv=None) -> int:
             n = score_all(rows, j, questions, a.workers)
             print(f"  {j}: scored {n} new")
     res = report(rows, judges, gens, arms, questions, baseline=a.baseline)
+    res["metric"] = METRIC
     print_report(res)
-    out = a.json or Path("divergence_study_outputs/judge_panel_full_oeq.json")
+    out = a.json or Path("divergence_study_outputs/judge_panel_full_oeq"
+                         + ("" if METRIC == "validation" else f"_{METRIC}") + ".json")
     out.write_text(json.dumps(res, indent=2, default=str))
     print(f"\nwrote {out}")
     return 0
