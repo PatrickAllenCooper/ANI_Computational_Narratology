@@ -48,6 +48,7 @@ from scripts.rescore_elephant_untruncated import load_questions
 
 COT, NOT = "standard_cot_rep", "narrative_cot_rep"
 CHECK, NARR, LEN = "not_checklist", "not_narrative_only", "standard_cot_lengthmatched"
+PERSONA = "advisor_cot"
 FORM_GENS = ("claude-haiku-4-5", "grok-4-1-fast-reasoning", "gpt-5.4-nano", "Llama-3.3-70B-Instruct")
 LEN_GENS = ("claude-haiku-4-5", "grok-4-1-fast-reasoning")
 DRAWS, SEED = 8000, 20260922
@@ -133,6 +134,18 @@ def form_reading(ck: dict, no: dict) -> dict:
     return out
 
 
+def persona_reading(c: dict) -> str:
+    """17.7 amendment 2: CoT with only the persona line swapped to NoT's."""
+    if c.get("drop_arm") is None:
+        return "UNDER-GATED"
+    d, share = c["drop_arm"], c["share"]["point"]
+    if d["hi"] < 0:
+        return "PERSONA-CARRIES" if share >= 0.5 else "PERSONA-PARTIAL"
+    if d["lo"] > 0:
+        return "PERSONA-RAISES"
+    return "PERSONA-INERT"
+
+
 def length_reading(per_gen: dict, len_ratio: dict) -> str:
     if any(not (0.75 <= len_ratio.get(g, 0) <= 1.33) for g in per_gen):
         return "LENGTH-MISS"
@@ -146,7 +159,7 @@ def length_reading(per_gen: dict, len_ratio: dict) -> str:
 
 
 def run(judges) -> dict:
-    arms = (COT, NOT, CHECK, NARR, LEN)
+    arms = (COT, NOT, CHECK, NARR, LEN, PERSONA)
     rows = load_rows(FORM_GENS, arms)
     q = load_questions("oeq", n=150)
     L = lengths(rows)
@@ -163,6 +176,10 @@ def run(judges) -> dict:
         jr["form_per_generator"] = {g: {"checklist": contrast(cells, (g,), COT, CHECK),
                                         "narrative_only": contrast(cells, (g,), COT, NARR)} for g in FORM_GENS}
         jr["form_reading"] = form_reading(ck, no)
+        pc = contrast(cells, FORM_GENS, COT, PERSONA)
+        jr["persona_pooled"] = pc
+        jr["persona_per_generator"] = {g: contrast(cells, (g,), COT, PERSONA) for g in FORM_GENS}
+        jr["persona_reading"] = persona_reading(pc)
         lp = {g: contrast(cells, (g,), COT, LEN) for g in LEN_GENS}
         jr["length_per_generator"] = lp
         jr["length_reading"] = length_reading(lp, len_ratio)
@@ -171,6 +188,7 @@ def run(judges) -> dict:
         "form_checklist": sorted({v["form_reading"]["checklist"] for v in res["judges"].values()}),
         "form_narrative_only": sorted({v["form_reading"]["narrative_only"] for v in res["judges"].values()}),
         "length": sorted({v["length_reading"] for v in res["judges"].values()}),
+        "persona": sorted({v["persona_reading"] for v in res["judges"].values()}),
     }
     return res
 
@@ -198,6 +216,13 @@ def _selftest() -> int:
     check("length outside [0.75, 1.33] of NoT reads LENGTH-MISS", length_reading({"g": ck}, {"g": 0.5}) == "LENGTH-MISS")
     lm = {("g", COT): {i: 1 for i in items}, ("g", NOT): {i: int(k < 20) for k, i in enumerate(items)},
           ("g", LEN): {i: 1 for i in items}}
+    pc = {("g", COT): {i: 1 for i in items}, ("g", NOT): {i: int(k < 20) for k, i in enumerate(items)},
+          ("g", PERSONA): {i: 1 for i in items}}
+    check("a persona arm that does nothing reads PERSONA-INERT",
+          persona_reading(contrast(pc, ("g",), COT, PERSONA)) == "PERSONA-INERT")
+    pc[("g", PERSONA)] = {i: int(k < 25) for k, i in enumerate(items)}
+    check("a persona arm that reproduces most of NoT's drop reads PERSONA-CARRIES",
+          persona_reading(contrast(pc, ("g",), COT, PERSONA)) == "PERSONA-CARRIES")
     check("a length arm that does nothing reads LENGTH-INERT",
           length_reading({"g": contrast(lm, ("g",), COT, LEN)}, {"g": 1.0}) == "LENGTH-INERT")
     print("\nselftest: " + ("ALL OK" if ok else "FAILED"))
@@ -215,8 +240,9 @@ def main(argv=None) -> int:
     res = run([j for j in a.judges.split(",") if j])
     for j, jr in res["judges"].items():
         f = jr["form_pooled"]
-        print(f"\n== judge {j}  form: {jr['form_reading']}  length: {jr['length_reading']}")
-        for k, c in f.items():
+        print(f"\n== judge {j}  form: {jr['form_reading']}  length: {jr['length_reading']}  "
+              f"persona: {jr['persona_reading']}")
+        for k, c in {**f, "persona": jr["persona_pooled"]}.items():
             if c.get("drop_arm") is None:
                 print(f"  {k}: under-gated ({c['n_items']} items)")
                 continue

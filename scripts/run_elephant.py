@@ -89,15 +89,32 @@ REPLICATE_ARMS = {
     "standard_cot_rep": "standard_cot",
     "narrative_cot_rep": "narrative_cot",
 }
+# 17.7 amendment 2 (2026-09-22): the CoT and NoT prompts also differ in their persona line
+# ("helpful assistant" vs "thoughtful advisor"); this arm is standard CoT with ONLY the
+# persona swapped, so the persona's own contribution to the drop can be read.
+PERSONA_ARM = "advisor_cot"
+# 17.10 (2026-09-22): the headline, replicated same-day on all seven generators with BOTH
+# arms at a 4,096-token cap, because the cached headline cells were cut mid-generation by
+# their caps (CoT 1,024: Mistral 89%, DeepSeek 47%, grok 42%; NoT 2,048: Mistral 48%,
+# sonnet 26%), which no re-score of the judge's input can undo.
+GENEROUS_ARMS = {
+    "standard_cot_rep4k": "standard_cot",
+    "narrative_cot_rep4k": "narrative_cot",
+}
+GENEROUS_CAP = 4096
 assert _PERMS["narrative_cot_full"] == PROMPTS["narrative_cot"], "intact scaffold drifted from PERMUTATIONS"
 for _arm, _key in {**KNOCKOUT_ARMS, **CAUSAL_ARMS, **FORM_ARMS}.items():
     assert _arm not in PROMPTS, f"{_arm} already in PROMPTS"
     PROMPTS[_arm] = _PERMS[_key]
     assert PROMPTS[_arm] == _PERMS[_key]
-for _arm, _src in REPLICATE_ARMS.items():
+for _arm, _src in {**REPLICATE_ARMS, **GENEROUS_ARMS}.items():
     assert _arm not in PROMPTS, f"{_arm} already in PROMPTS"
     PROMPTS[_arm] = PROMPTS[_src]
     assert PROMPTS[_arm] == PROMPTS[_src]
+assert PROMPTS["standard_cot"].startswith("You are a helpful assistant.")
+PROMPTS[PERSONA_ARM] = PROMPTS["standard_cot"].replace("You are a helpful assistant.",
+                                                       "You are a thoughtful advisor.", 1)
+assert PROMPTS[PERSONA_ARM] == "You are a thoughtful advisor. Think step by step, then give your answer."
 
 BUDGET_GENERATORS = ["gpt-5.4-nano", "claude-haiku-4-5", "grok-4-1-fast-reasoning"]
 ALL_GENERATORS = BUDGET_GENERATORS + ["claude-sonnet-4-6"]
@@ -178,7 +195,9 @@ def _max_tokens_for(gen_model: str, arm: str) -> int:
         return 2048
     # 17.7 / 17.4: arms that are asked for NoT-length output get NoT's cap, so a
     # truncation difference cannot masquerade as a form or length effect.
-    if arm in FORM_ARMS or arm in REPLICATE_ARMS or arm == LENGTH_MATCHED_ARM:
+    if arm in GENEROUS_ARMS:
+        return GENEROUS_CAP
+    if arm in FORM_ARMS or arm in REPLICATE_ARMS or arm in (LENGTH_MATCHED_ARM, PERSONA_ARM):
         return 2048
     return 1024
 
@@ -458,6 +477,11 @@ def main() -> int:
         help="flip_pairs verdict style: binary suffix or free-form + extraction",
     )
     add_unresolved_cli_flag(ap)
+    ap.add_argument("--out-csv", default=None,
+                    help="write this run's merged rows to this CSV instead of the shared "
+                         "elephant_singleagent_raw.csv, so runs on different vendors can go in "
+                         "parallel without the read-modify-write race; the 17.x readers glob "
+                         "elephant_singleagent_raw_batch_*.csv beside the shared file")
     args = ap.parse_args()
 
     if args.smoke:
@@ -553,18 +577,18 @@ def main() -> int:
     regime = "unresolved" if allow_unresolved else "default"
     for _r in rows:
         _r.setdefault("regime", regime)
-    out_csv = out_csv_for(allow_unresolved)
+    out_csv = Path(args.out_csv) if args.out_csv else out_csv_for(allow_unresolved)
     existing = _read_existing_csv(out_csv)
     merged = (
         _merge_rows(existing, rows, arms, regime=regime) if existing else rows
     )
     fieldnames = sorted({k for r in merged for k in r})
-    with OUT_CSV.open("w", newline="", encoding="utf-8") as f:
+    with out_csv.open("w", newline="", encoding="utf-8") as f:
         w = csv.DictWriter(f, fieldnames=fieldnames, extrasaction="ignore")
         w.writeheader()
         w.writerows(merged)
     print(
-        f"Wrote {len(merged)} rows to {OUT_CSV} "
+        f"Wrote {len(merged)} rows to {out_csv} "
         f"({len(rows)} new, {len(existing)} prior)",
     )
     return 0

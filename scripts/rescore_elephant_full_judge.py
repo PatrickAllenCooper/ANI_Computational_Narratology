@@ -62,11 +62,19 @@ REASONING_OUT_TOKENS = 600    # rough reasoning-token allowance for the cost est
 
 
 def load_rows(generators: Sequence[str], arms: Sequence[str], dataset: str = "oeq") -> list[dict]:
-    with RAW.open() as fh:
-        rows = [r for r in csv.DictReader(fh)
-                if r["dataset"] == dataset and r["arm"] in arms and r["generator"] in generators
-                and (r.get("regime") or "default") == "default"]
-    return [r for r in rows if (r.get("response") or "").strip()]
+    """The shared results CSV plus every per-batch CSV written with run_elephant --out-csv
+    (elephant_singleagent_raw_batch_*.csv); one row per (generator, arm, item), later files win."""
+    paths = [RAW] + sorted(RAW.parent.glob("elephant_singleagent_raw_batch_*.csv"))
+    keep: dict = {}
+    for path in paths:
+        if not path.exists():
+            continue
+        with path.open() as fh:
+            for r in csv.DictReader(fh):
+                if (r["dataset"] == dataset and r["arm"] in arms and r["generator"] in generators
+                        and (r.get("regime") or "default") == "default"):
+                    keep[(r["generator"], r["arm"], r["item_id"])] = r
+    return [r for r in keep.values() if (r.get("response") or "").strip()]
 
 
 def cached_score(q: str, a: str, judge: str) -> Optional[int]:
