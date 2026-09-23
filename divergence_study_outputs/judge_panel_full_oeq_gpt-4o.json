@@ -1,0 +1,134 @@
+{
+  "judges": {
+    "gpt-4o": {
+      "unparsed": 0,
+      "missing": 0,
+      "unparsed_share": 0.0,
+      "unparsed_flag": false,
+      "ceiling_descriptive": {
+        "n_cells": 14,
+        "frac_cells_above_0.85": 0.07142857142857142,
+        "range": 0.8670212765957447,
+        "would_have_been_excluded": false
+      },
+      "agreement_with_production": {
+        "n": 2004,
+        "agreement": 0.7799401197604791
+      },
+      "per_generator": {
+        "claude-haiku-4-5": {
+          "narrative_cot": {
+            "n_items": 150,
+            "rate_a": 0.6,
+            "rate_b": 0.49333333333333335,
+            "drop": -0.10666666666666667,
+            "lo": -0.19333333333333333,
+            "hi": -0.02
+          },
+          "rates": {
+            "standard_cot": 0.6,
+            "narrative_cot": 0.49333333333333335
+          }
+        },
+        "claude-sonnet-4-6": {
+          "narrative_cot": {
+            "n_items": 150,
+            "rate_a": 0.7533333333333333,
+            "rate_b": 0.7866666666666666,
+            "drop": 0.03333333333333333,
+            "lo": -0.04666666666666667,
+            "hi": 0.11333333333333333
+          },
+          "rates": {
+            "standard_cot": 0.7533333333333333,
+            "narrative_cot": 0.7866666666666666
+          }
+        },
+        "gpt-5.4-nano": {
+          "narrative_cot": {
+            "n_items": 116,
+            "rate_a": 0.7931034482758621,
+            "rate_b": 0.6896551724137931,
+            "drop": -0.10344827586206896,
+            "lo": -0.1896551724137931,
+            "hi": -0.017241379310344827
+          },
+          "rates": {
+            "standard_cot": 0.8344827586206897,
+            "narrative_cot": 0.6896551724137931
+          }
+        },
+        "grok-4-1-fast-reasoning": {
+          "narrative_cot": {
+            "n_items": 145,
+            "rate_a": 0.7172413793103448,
+            "rate_b": 0.4827586206896552,
+            "drop": -0.23448275862068965,
+            "lo": -0.31724137931034485,
+            "hi": -0.15172413793103448
+          },
+          "rates": {
+            "standard_cot": 0.7191780821917808,
+            "narrative_cot": 0.4827586206896552
+          }
+        },
+        "Llama-3.3-70B-Instruct": {
+          "narrative_cot": {
+            "n_items": 141,
+            "rate_a": 0.6950354609929078,
+            "rate_b": 0.04964539007092199,
+            "drop": -0.6453900709219859,
+            "lo": -0.7304964539007093,
+            "hi": -0.5602836879432624
+          },
+          "rates": {
+            "standard_cot": 0.7013888888888888,
+            "narrative_cot": 0.04964539007092199
+          }
+        },
+        "Mistral-Large-3-2": {
+          "narrative_cot": {
+            "n_items": 139,
+            "rate_a": 0.8273381294964028,
+            "rate_b": 0.4172661870503597,
+            "drop": -0.41007194244604317,
+            "lo": -0.49640287769784175,
+            "hi": -0.3237410071942446
+          },
+          "rates": {
+            "standard_cot": 0.8309859154929577,
+            "narrative_cot": 0.42142857142857143
+          }
+        },
+        "DeepSeek-V4-Pro": {
+          "narrative_cot": {
+            "n_items": 141,
+            "rate_a": 0.9219858156028369,
+            "rate_b": 0.6312056737588653,
+            "drop": -0.2907801418439716,
+            "lo": -0.36879432624113473,
+            "hi": -0.2127659574468085
+          },
+          "rates": {
+            "standard_cot": 0.9166666666666666,
+            "narrative_cot": 0.6312056737588653
+          }
+        }
+      }
+    }
+  },
+  "generators": [
+    "claude-haiku-4-5",
+    "claude-sonnet-4-6",
+    "gpt-5.4-nano",
+    "grok-4-1-fast-reasoning",
+    "Llama-3.3-70B-Instruct",
+    "Mistral-Large-3-2",
+    "DeepSeek-V4-Pro"
+  ],
+  "arms": [
+    "standard_cot",
+    "narrative_cot"
+  ],
+  "baseline": "standard_cot"
+}

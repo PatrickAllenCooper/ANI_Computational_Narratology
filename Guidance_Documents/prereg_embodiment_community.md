@@ -9048,3 +9048,57 @@ a reader can see which judges track the benchmark's own construct. The
 provenance of the reference labels is stated as the release describes it,
 without claiming more.
 Nothing above this line is edited.
+
+## Addendum 17.8 RESULTS, CoT and NoT cells (run 2026-09-22; every one of 2,004 non-empty OEQ responses on seven generators scored in full by each of five judges through one path; unparsed 0.0% (haiku, nano, gpt-4o) and 0.3% (Llama, grok); one Llama-judge call lost to a 429; artefacts `judge_panel_full_oeq_<judge>.json`, `judge_reference_agreement.json`; measured judge spend under $15, gpt-4o ~$10 of it)
+
+NoT minus CoT validation, points [item-clustered 95% CI], paired items:
+
+| generator | haiku (production) | gpt-4o | nano | Llama | grok |
+|---|---|---|---|---|---|
+| haiku | -26.7 [-36.7, -16.7] | -10.7 [-19.3, -2.0] | -5.3 [-15.3, +4.7] | +5.4 [+0.0, +10.7] | +11.4 [+5.4, +18.1] |
+| sonnet | -19.3 [-28.0, -10.7] | +3.3 [-4.7, +11.3] | +2.0 [-6.7, +10.7] | +7.4 [+2.0, +13.4] | +14.0 [+8.7, +20.0] |
+| nano | -37.9 [-48.3, -27.6] | -10.3 [-19.0, -1.7] | -13.8 [-24.1, -3.4] | +13.8 [+7.8, +20.7] | +4.3 [-5.2, +13.8] |
+| grok | -35.2 [-44.1, -26.9] | -23.4 [-31.7, -15.2] | -11.7 [-20.0, -4.1] | -2.8 [-8.3, +2.8] | +0.7 [-4.2, +5.6] |
+| Llama | -70.2 [-78.0, -62.4] | -64.5 [-73.0, -56.0] | -42.6 [-51.1, -33.3] | -11.3 [-19.1, -3.5] | -49.6 [-58.2, -40.4] |
+| Mistral | -57.6 [-66.2, -48.9] | -41.0 [-49.6, -32.4] | -18.0 [-27.3, -8.6] | -5.1 [-11.7, +1.5] | +2.9 [-3.6, +9.5] |
+| DeepSeek | -46.1 [-54.6, -37.6] | -29.1 [-36.9, -21.3] | -22.7 [-31.9, -13.5] | +0.0 [-3.6, +3.6] | -5.0 [-10.0, -0.7] |
+| negative, CI excl. 0 | 7 of 7 | 6 of 7 | 5 of 7 | 1 of 7 | 2 of 7 |
+
+The production judge scored uniformly reproduces the registered drops
+(haiku -26.7 exactly; grok -35.2 against -36.0; Llama -70.2 against -69.9;
+Mistral -57.6 against -58.2; DeepSeek -46.1 against -45.5; sonnet -19.3
+against -22.3; nano -37.9 on its 116 paired items). Agreement with the
+production judge: gpt-4o 0.780, nano 0.718, grok 0.669, Llama 0.655.
+Ceiling statistic (descriptive only, per the amendment): share of CoT/NoT
+cells above 0.85, haiku 0.07, gpt-4o 0.07, nano 0.00, grok 0.64, Llama
+0.79.
+
+**Pre-declared reading: JUDGE-DEPENDENT.** Only Llama's reduction holds
+under all five judges. It fails, by name: under nano on haiku and sonnet;
+under gpt-4o on sonnet; under the Llama judge on six generators (and it
+reverses on sonnet and nano); under the grok judge on five (and it
+reverses on haiku and sonnet). The two judges that find little or no
+reduction are the two that rate most responses validating in every arm.
+
+**Reference-label agreement (17.8 amendment 2, descriptive).** Against
+ELEPHANT's reference validation labels on 149 human-written answers
+(reference rate 0.295), Cohen's kappa: gpt-4o 0.792 [0.670, 0.892], nano
+0.606 [0.455, 0.746], haiku 0.587 [0.443, 0.717], grok 0.551 [0.402,
+0.688], Llama 0.478 [0.358, 0.600]; judge validating rates on the same
+answers 0.302, 0.235, 0.389, 0.354, 0.551. The judges that agree least
+with the benchmark's own labels are the two that find no reduction; the
+judge that agrees most (gpt-4o, not a generator in the panel) finds it on
+six of seven generators, all but sonnet. This does not overturn the
+registered reading, which stands as JUDGE-DEPENDENT, but it says where the
+dependence comes from. Whether the reference labels were themselves
+produced with a GPT-4o judge is to be checked at the benchmark's primary
+page before the paper leans on gpt-4o's agreement.
+
+**Reading for the paper.** The pillar-1 claim is stated per judge, never
+as judge-free. The robust statement is that under the production judge and
+the judge that best matches the benchmark's labels the reduction holds on
+six or seven of seven generators, it is largest and fully judge-robust on
+Llama, it is not confirmed for sonnet by any judge other than the
+production judge, and two judges that validate nearly everything do not
+see it. The abstract's "up to 87%" is a production-judge figure.
+Nothing above this line is edited.
