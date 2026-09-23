@@ -44,6 +44,10 @@ PAIRS = {
     "grok": {"narrated": "cg_deliberation", "plain": "cg_deliberation_stdcot", "rows": 1680, "samples": 4},
     "llama": {"narrated": "cg_deliberation_llama3370binstruct",
               "plain": "cg_deliberation_llama3370binstruct_stdcot", "rows": 900, "samples": 2},
+    # 16.28 amendment E-D (2026-09-23): haiku on the 249-item panel, k = 1; the narrated cell has
+    # 491 of 498 rows (16.23 partial-panel rule), so the pair is read on the common debates.
+    "haiku": {"narrated": "cg_deliberation_haiku_249", "plain": "cg_deliberation_haiku_249_stdcot",
+              "rows": 498, "samples": 1},
 }
 THIN_SEEDS = 200
 DRAWS, SEED = 8000, 20260922

@@ -9390,3 +9390,168 @@ Sonnet about $9 to $12 of generation at list price, haiku about $1.5, judges abo
 $34, 17.12 about $41, 17.10 run 2 about $20, expected total about $220 of the $250 cap;
 the three ceilings sum to $245. The area chair's desirable experiment E-D (a plain-seat haiku
 collective, about $40) is deferred unless the PI raises the cap.
+
+## Zero-spend post hoc analyses for review round 1 (recorded 2026-09-23 after the results were seen; descriptive, no model calls; scripts and artefacts named)
+
+Seven analyses were added during review round 1 after every result they read had been seen.
+Each replays cached judge scores, verdict rows and existing artefacts under
+`divergence_study_outputs/`, makes no model or API call, has a `--selftest` that passed on
+2026-09-23 when the registrar re-ran it, and writes one JSON artefact. They are descriptive
+companions to registered readouts. None of them changes a registered reading, and wherever the
+paper cites one it is cited as post hoc.
+
+**Collective against its own solo.** `scripts/analyze_collective_vs_solo.py` writes
+`collective_vs_solo_paired.json`. It pairs every codable debate of the five narrated communities
+and of the two plain-seat communities with the same model's standard majority-of-three solo
+answer on the same framing and item, and reports the collective minus the solo and the routed
+collective minus the solo in points (paired per debate, 4,000-draw item-clustered bootstrap,
+seed 101, replicate seed 13). The collective sits below its own solo with the interval excluding
+zero on grok -6.9 [-9.7, -4.2], Llama -22.2 [-27.9, -16.6], Mistral -9.1 [-13.1, -5.2],
+DeepSeek -18.1 [-21.9, -14.4], plain-seat grok -4.8 [-7.7, -2.0] and plain-seat Llama -17.9
+[-23.2, -12.9], and on haiku -0.6 [-4.7, +3.5] includes zero. The routed collective minus the
+solo is +0.1 [-2.6, +3.0] on grok, +3.1 [-0.8, +7.0] on haiku, -18.2 [-23.7, -12.7] on Llama,
++12.3 [+8.1, +16.8] on Mistral, -10.8 [-14.1, -7.7] on DeepSeek, +0.5 [-2.3, +3.5] on plain
+grok and -13.5 [-18.7, -8.8] on plain Llama, so the routed collective beats the solo with an
+interval excluding zero on Mistral alone, where 88 percent of debates go to the judge. This
+estimand is the routed collective. It is not the registered 16.22 R1 system, which routes the
+solo's own verdicts by the collective's flags at the cell level, and the R1 certifications (grok
++2.4 [+0.5, +4.5], haiku +3.1 [+1.2, +5.1]) stand unchanged. Cross-checks of debate counts and
+accuracies against `verify_pillar3_headline_*.json`, `seat_scaffold_comparison.json` and the
+solo accuracies against `routing_certification*.json` all agree, and the cell-weighted variants
+and the seed-13 replicate move no bound by more than 0.2 points.
+
+**Inter-judge agreement.** `scripts/analyze_interjudge_kappa.py` writes `interjudge_kappa.json`.
+On the 2,004 non-empty OEQ CoT and NoT responses scored by all five 17.8 judges it reports Cohen's
+kappa of each judge with the production judge (item-clustered bootstrap, 8,000 draws, seed
+20260822) overall and per arm, every pairwise kappa, the kappa ceiling the two marginals allow,
+and the base-rate region. Kappa with the production judge is 0.543 [0.501, 0.584] for gpt-4o,
+0.418 [0.370, 0.461] for nano, 0.270 [0.223, 0.316] for grok and 0.231 [0.179, 0.283] for
+Llama. On CoT responses it is 0.607, 0.498, 0.486 and 0.478, on NoT responses 0.396, 0.273,
+0.141 and 0.115. The ceilings the marginals allow are 0.374 for grok and 0.276 for Llama, so
+part of their low agreement is forced by how often they validate. Validation rates over all
+responses run from 0.566 (production) to 0.891 (Llama), and the human reference rate of 0.295
+on 149 items lies below the 0.540 to 0.972 span of rates the judges assign to CoT responses.
+
+**DeepSeek as the routing judge.** `scripts/analyze_routing_judge_deepseek.py` writes
+`routing_judge_deepseek.json` (`registration_status` UNREGISTERED). It routes the counter-flagged
+debates of the six `verify_pillar3_headline` conditions to the cached DeepSeek-V4-Pro standard
+majority-of-three instead of sonnet. The routing gain over the collective keeps its sign with
+the interval excluding zero on all six, grok +6.5 [+4.6, +8.6] against sonnet's +7.0, edges off
++4.5 against +4.8, haiku +3.5 against +3.7, Llama +3.6 against +4.1, DeepSeek +6.6 against +7.2
+and Mistral +20.4 against +21.4. The paired DeepSeek minus sonnet routed difference is between
+-0.2 and -1.0 points on every condition with no interval excluding zero (Llama's upper bound is
+exactly zero), and the two judges agree on 85 to 96 percent of the fired arm-item pairs. DeepSeek
+is a slightly weaker judge everywhere (judge-everywhere accuracy 0.959 to 0.967 against 0.969 to
+0.978), so this shows that the gain's existence does not depend on the sonnet judge, not that the
+judges are equivalent, and the exploratory nano community is not covered.
+
+**17.3 and 17.5 readouts under the corrected scores.** `scripts/analyze_readouts_17_3_17_5.py`
+writes `readouts_17_3_17_5.json`, reusing the full-text production-judge cache so that its
+complete-case rates reproduce `knockout_social_analysis.json` and
+`counterparty_causal_analysis.json` exactly. For the four 17.3 knockouts it reports compliance,
+length, non-response and Manski brackets on knockout minus intact NoT and knockout minus CoT. On
+haiku, whose cells are complete, the three drop knockouts sit 11.3, 11.3 and 14.7 points above
+intact NoT and commit-first 8.0 points below it, and all four remain below CoT (-12.0 to -34.7).
+On grok every knockout minus intact bracket crosses zero while every knockout minus CoT bracket
+excludes it (-33.3 to -41.1). On nano the 34 missing intact items widen every knockout minus
+intact bracket across zero while knockout minus CoT stays at -37.8 to -47.3. The intact brackets
+reproduce the 17.3 RESULTS. For 17.5 it reports the share of NoT's reduction each arm recovers,
+(CoT - arm) / (CoT - intact NoT). The counterparty-only prompt recovers none and moves the other
+way, pooled -0.21 [-0.45, -0.07] over all items and -0.18 [-0.38, -0.04] on counterparty-present
+items, and the style control is +0.01 [-0.20, +0.15] and +0.08 [-0.08, +0.21]. The
+counterparty-absent stratum is reported as unresolvable, as the 17.3 rule requires, because its
+denominator is 2.5 points on haiku, 7.7 on grok and 21.0 on nano.
+
+**Judge test-retest.** `scripts/analyze_judge_test_retest.py` writes `judge_test_retest.json`.
+It compares the production scorer's score (draw 1, judge input cut at 4,000 characters) with the
+17.8 full-text score (draw 2) from the same claude-haiku-4-5 judge through the same system prompt,
+rubric and token limit, on the 814 responses of at most 4,000 characters where the judge input is
+byte-identical, over 150 items. Agreement is 0.969 [0.957, 0.980] and kappa 0.932 [0.906, 0.956]
+(item-clustered bootstrap, 8,000 draws, seed 20260822) with 25 flips in 814 pairs and a shift of
+-0.9 [-2.0, +0.3] points, so there is no drift. Per arm the kappa is 0.924 [0.887, 0.955] on CoT
+and 0.911 [0.833, 0.972] on NoT. The 1,189 pairs whose draw-1 input was truncated give agreement
+0.829 [0.808, 0.851], kappa 0.659 [0.617, 0.701] and a shift of +7.1 [+4.8, +9.4] points toward
+validating, which is the truncation effect and not judge noise. The pairs are a length-selected
+subset with four thin cells, and the two draws are months apart for the four original generators.
+
+**Run-to-run stability.** `scripts/analyze_run_stability.py` writes `run_stability.json`. For
+the two or three generation runs of the CoT and NoT contrast per generator (the original
+responses, the same-day 2,048-token replicate on four generators and the same-day 4,096-token
+replicate) under all five judges, it reports the drop per run, the drop pooled over runs with run
+as a fixed crossed factor, a random-run interval from method-of-moments variance components, and
+the item-level correlation of the drop across runs (8,000 draws, seed 20260822). Under the
+production judge the drop is negative with the interval excluding zero in every run on all seven
+generators. Pooled it is -25.1 [-32.2, -18.0] on haiku, -16.0 [-22.7, -9.3] on sonnet, -43.7
+[-50.3, -37.1] on nano, -41.0 [-47.8, -34.4] on grok, -65.9 [-72.3, -59.2] on Llama, -57.6
+[-64.4, -50.9] on Mistral and -48.9 [-55.5, -42.2] on DeepSeek, and the largest across-run range
+is 13.1 points on nano. Under the Llama judge the sign flips between runs on haiku, nano and grok,
+and under the grok judge on nano, grok and Mistral. Item-level drops correlate weakly across runs
+(mean r 0.27 over 75 judge, generator and run-pair cells, single-run ICC about 0.24) while the
+run-level effect is stable (run-to-run SD 2.0 points on average, 8.0 at most). Reconciliation
+against `judge_panel_full_oeq_<judge>.json`, `judge_panel_newarms_<judge>.json` and
+`headline_rep4k_readout.json` is exact on 90 of 90 cells. This artefact replaces the earlier
+scratch readout `run_stability_readout.json`, whose per-run values it reproduces exactly and
+whose pooled values it moves by at most 1.8 points, and which the paper's appendix cites until
+its next edit.
+
+**Multiplicity and detectable effects.** `scripts/analyze_multiplicity_mde.py` writes
+`multiplicity_mde.json`. It applies a Holm step-down within each judge to the seven-generator
+families of the judge panel (17.8) and of the 4,096-token replicate (17.10) and to the
+four-generator families of the form, persona and length contrasts (17.7 and 17.4), with two-sided
+p-values both implied from the percentile intervals and recomputed exactly from the cached
+per-item scores (every recomputed interval reproduces its artefact, `exact_ci_match` true on every
+cell), and it reports half-widths and 80 percent minimum detectable effects for the null
+readings. Under the production judge all seven generators survive in both the panel and the
+replicate. Under gpt-4o the original-response drops on haiku (-10.7) and nano (-10.3) fail at
+adjusted p 0.052 while in the replicate all six negative drops and the sonnet rise (+8.0) survive.
+Under the nano judge the replicate's sonnet rise (+8.7) fails at adjusted p 0.090. Under the Llama
+and grok judges only the Llama generator's drop survives, with the reversals on nano (Llama judge,
+original responses) and on haiku and sonnet (grok judge, both runs) also surviving. The checklist
+contrasts survive four of four under every judge and the persona contrast has no survivor under
+any judge. The 80 percent detectable effects are about 10 points for the pooled pushback net
+(observed +5.2 [-1.7, +12.2]), 0.12 for the haiku one-loser lift (observed +0.035), 0.24 to 0.29
+for the knockout shares against the 0.25 threshold and 2.4 points for the Llama seat gain
+(observed -0.2).
+
+None of these analyses alters a registered reading. The readings recorded in the RESULTS blocks
+above for 16.15.1, 16.22, 16.23, 16.24 to 16.28, 17.3, 17.4, 17.5, 17.7, 17.8, 17.9 and 17.10
+stand as written. These artefacts add multiplicity, agreement, stability and estimand context
+around them. Their tables in the paper are generated by `scripts/make_iclr_figures.py`
+(`tab_routing.tex` solo and paired columns, `tab_rep4k.tex` and `tab_form.tex` daggers,
+`tab_run_stability.tex`, `tab_interjudge.tex`).
+
+## Addendum 16.28 amendment, E-D: plain chain-of-thought seats on the haiku 249-item panel (registered 2026-09-23 BEFORE any call under the new tag; review round 1, area-chair experiment E-D; the PI authorised this spend above the $250 batch cap on 2026-09-23; ceiling $60)
+
+**Cell.** `scripts/run_crowdgold_deliberation.py` launched exactly as the 16.23 narrated haiku
+cell was (`--models claude-haiku-4-5 --arms third_person,as_asker --n-yta 99 --n-nta 150
+--samples 1 --seed 44 --max-tokens-agent 2560 --max-tokens-moderator 1024 --max-tokens-label
+3072 --max-tokens-vote 3072 --transcript-cap 0`) with only `--agent-scaffold standard_cot
+--tag cg_deliberation_haiku_249_stdcot` changed, as 16.28 did for grok. Haiku's content-filter
+screen drops no item, so the panel is the same 249 items, k = 1, 498 debates, 8,466 calls,
+nothing replays. Dry-run upper bound $57.53 (`cg_deliberation_haiku_249_stdcot_dryrun.json`,
+narrated completion lengths assumed and prompt tokens undercounted by the regex tokenizer; the
+narrated cell measured $39.70 for 5,390 new calls). **Ceiling $60.** Stop rule: if measured
+spend at half the debates exceeds $35 the run stops and the cell is reported as partial, with
+paired readouts on the completed debates only and labelled as such.
+
+**Readouts.** `scripts/analyze_seat_scaffold.py` extended with a `haiku` pair (narrated
+`cg_deliberation_haiku_249`, plain `cg_deliberation_haiku_249_stdcot`, 498 rows, k = 1; the
+narrated cell's 7 missing as_asker debates fall under 16.23's partial-panel rule, so the pair is
+read on the debates both cells complete): narrated minus plain in collective accuracy, routed
+accuracy (sonnet majority-of-three), routed accuracy thinned to the lower fire rate, routing
+gain, fire rate and shield, item-clustered paired bootstrap as in 16.28. Also
+`verify_pillar3_headline.py` on a new `haiku_stdcot` entry (role-lock, advocate phi, one-loser
+lift at >= 60 fired) and the per-model router decomposition.
+
+**Pre-declared readings** (16.28's, unchanged): PLAIN-BETTER if collective accuracy or matched
+routed accuracy favours plain seats with an interval excluding 0; NARRATION-LOAD-BEARING if
+either favours narrated seats with an interval excluding 0; AMPLIFIER-ONLY if only the fire rate
+differs; INERT otherwise. The narrated haiku sensor's one-loser lift already includes 0 (16.23),
+so sensor survival is not testable on this model and is not read; accuracy is the readout.
+
+**Guards.** 16.23's round-level truncation, NOVERDICT and outcome guards, completeness of at
+least 480 of 498 rows or the partial-panel rule, no `GUARD FAILED` in
+`logs/cell_ed_haiku_249_stdcot.log`.
+
+**Spend ledger.** Projected batch total about $270 to $280 with this cell, above the $250
+overnight cap by the PI's authorisation of 2026-09-23.

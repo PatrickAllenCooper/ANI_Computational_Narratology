@@ -1,7 +1,11 @@
 % ============================================================================================
-% TODO PI -- the abstract's WORDING is kept verbatim at the PI's instruction (only figures may
-% change). Four of its claims are in tension with the overnight results (2026-09-22/23); each
-% is reported plainly in the body, and the PI should decide whether to reword:
+% PI decisions 2026-09-23 (after review round 1): three clauses reworded by the PI's instruction
+% (the narrative attribution dropped, "under our production judge" added, the collective sentence
+% credits opposed interests plus routing); the figure 87 -> 80; "we introduce" stands and the
+% paper makes no reference to any earlier preprint; the name Narration-of-Thought is kept with a
+% disambiguating citation of Zhang, Beauchamp and Wang (2024). The rest of the wording is verbatim.
+% Record of the four tensions found on 2026-09-22/23 (items 1, 2 and 4 now addressed by the
+% rewording; item 3 remains the co-author's):
 %  (1) "structured as a narrative, which improves their social reasoning abilities": 17.7 finds
 %      the reduction is carried by the structured content, not the narrative form (a
 %      third-person checklist of the same five elements validates LESS than NoT; narration alone
@@ -23,7 +27,12 @@
 %      scaffold.
 % ============================================================================================
 \begin{abstract}
-LLMs today are adept at conversation, providing advice and suggestions with apparent empathy and understanding. While the underlying nature of their understanding and the manner of its emergence might be a matter of much debate, the premise that this "understanding" breaks down under more complex social conditions remains largely accepted. The social account of objectivity emphasizes how organized criticism across perspectives can expose individual errors. Based on this account, we introduce a general, lightweight prompt scaffold, structured as a narrative, which improves their social reasoning abilities when compared to standard chain-of-thought. Narration-of-Thought (NoT) guides the model through a first-person narrative that identifies the decision-maker and what they know, considers affected stakeholders and their interests, traces the consequences of available actions, acknowledges uncertainty, and arrives at a decision. We demonstrate that this scaffold can be used in various ways, with experiments in single-agent and multi-agent settings, on a range of nuanced reasoning tasks. We find that using the scaffold reduces model sycophancy in social contexts by up to 80\% relative to standard chain-of-thought,
+LLMs today are adept at conversation, providing advice and suggestions with apparent empathy and understanding. While the underlying nature of their understanding and the manner of its emergence might be a matter of much debate, the premise that this "understanding" breaks down under more complex social conditions remains largely accepted. The social account of objectivity emphasizes how organized criticism across perspectives can expose individual errors. Based on this account, we introduce a general, lightweight prompt scaffold that writes the decision-maker, the affected stakeholders, the consequences of each action and what remains uncertain into the model's reasoning, and which improves their social reasoning abilities when compared to standard chain-of-thought.
+% PI decision 2026-09-23 (review round 1, W02): the narrative attribution ("structured as a
+% narrative") is dropped because the registered form test finds the structured content carries
+% the reduction and narration alone raises validation (prereg 17.7 RESULTS,
+% narrative_form_readout.json: checklist -36.5 to -57.5, narrative-only +6.8 to +18.7, all five judges).
+ Narration-of-Thought (NoT) guides the model through a first-person narrative that identifies the decision-maker and what they know, considers affected stakeholders and their interests, traces the consequences of available actions, acknowledges uncertainty, and arrives at a decision. We demonstrate that this scaffold can be used in various ways, with experiments in single-agent and multi-agent settings, on a range of nuanced reasoning tasks. We find that using the scaffold reduces model sycophancy in social contexts by up to 80\% under our production judge relative to standard chain-of-thought,
 % figure updated 2026-09-23 (review round 1, W01) from 87 (the superseded unpaired June-cell
 % scoring, prereg 17.1 RESULTS, pillar1_headline.json) to 80, the registered same-day 4,096-token
 % restatement under the production judge that Addendum 17.10 commits the paper to (Llama-3.3-70B-
@@ -33,9 +42,13 @@ improves theory-of-mind reasoning abilities by 3-10 percentage points\todo{PILLA
 % TODO PILLAR 2 (co-author): wording kept verbatim at the PI's instruction. The only ToM run in
 % this repository (prereg Addendum 18, ToMBench stage 1, four models) measured a pooled
 % -4.4 points [-6.6, -2.2]; the figure here must come from the co-author's own work.
-and supports more objective, grounded collective judgments through structured criticism among agents with opposing biases, with review of cases flagged by dissent by a stronger judge increasing accuracy by 7.0 percentage points over the collective alone in our primary evaluation.
+and that among agents with opposing interests, with or without the scaffold in their seats, dissent flags the collective's own errors, so that review of the flagged cases by a stronger judge increases accuracy by 7.0 percentage points over the collective alone in our primary evaluation.
+% PI decision 2026-09-23 (review round 1, W03): "more objective, grounded" and the attribution of
+% the gain to the scaffold are dropped because plain chain-of-thought seats give an equally or
+% more accurate collective (prereg 16.28 RESULTS PLAIN-BETTER, seat_scaffold_comparison.json) and
+% the plain-seat grok sensor and routing survive (routing_certification_grok_stdcot_k4.json).
 % grok-4-1-fast-reasoning community: routed 0.913 vs collective 0.843, +0.070 [+0.048, +0.094]
 % (router_decomposition.json composed_sonnet; independently reproduced by verify_pillar3_headline.py)
 Our findings lay the groundwork for further exploring the potential of this scaffold in improving models' social alignment.
 \end{abstract}
-\noindent\todo{PI: abstract wording kept verbatim as instructed; four claims are in tension with the results (see the comment block at the top of sections/abstract.tex and Section~\ref{sec-discussion}).}
+\noindent\todo{PI: three clauses reworded on 2026-09-23 (narrative attribution, judge qualifier, collective sentence); the theory-of-mind figure is the co-author's (see the comment block at the top of sections/abstract.tex).}
