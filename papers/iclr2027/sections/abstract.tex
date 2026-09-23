@@ -1,0 +1,14 @@
+\begin{abstract}
+LLMs today are adept at conversation, providing advice and suggestions with apparent empathy and understanding. While the underlying nature of their understanding and the manner of its emergence might be a matter of much debate, the premise that this "understanding" breaks down under more complex social conditions remains largely accepted. The social account of objectivity emphasizes how organized criticism across perspectives can expose individual errors. Based on this account, we introduce a general, lightweight prompt scaffold, structured as a narrative, which improves their social reasoning abilities when compared to standard chain-of-thought. Narration-of-Thought (NoT) guides the model through a first-person narrative that identifies the decision-maker and what they know, considers affected stakeholders and their interests, traces the consequences of available actions, acknowledges uncertainty, and arrives at a decision. We demonstrate that this scaffold can be used in various ways, with experiments in single-agent and multi-agent settings, on a range of nuanced reasoning tasks. We find that using the scaffold reduces model sycophancy in social contexts by up to 87\% relative to standard chain-of-thought,
+% figure updated from 54.5 (gpt-5.4-nano, four models) to 87, the largest relative reduction
+% under the production judge on seven models (Llama-3.3-70B-Instruct 0.806 -> 0.106, prereg
+% Addendum 17.1 RESULTS; divergence_study_outputs/pillar1_headline.json). Range 31-87%.
+improves theory-of-mind reasoning abilities by 3-10 percentage points\todo{PILLAR 2 (co-author): this figure belongs to the co-author's theory-of-mind results and is not supported by any experiment in this draft},
+% TODO PILLAR 2 (co-author): wording kept verbatim at the PI's instruction. The only ToM run in
+% this repository (prereg Addendum 18, ToMBench stage 1, four models) measured a pooled
+% -4.4 points [-6.6, -2.2]; the figure here must come from the co-author's own work.
+and supports more objective, grounded collective judgments through structured criticism among agents with opposing biases, with review of cases flagged by dissent by a stronger judge increasing accuracy by 7.0 percentage points over the collective alone in our primary evaluation.
+% grok-4-1-fast-reasoning community: routed 0.913 vs collective 0.843, +0.070 [+0.048, +0.094]
+% (router_decomposition.json composed_sonnet; independently reproduced by verify_pillar3_headline.py)
+Our findings lay the groundwork for further exploring the potential of this scaffold in improving models' social alignment.
+\end{abstract}

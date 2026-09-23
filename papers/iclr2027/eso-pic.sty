@@ -1,0 +1,28 @@
+% eso-pic.sty -- MINIMAL LOCAL STAND-IN, not the CTAN package.
+% The TeX installation on the build machine (TinyTeX) lacks eso-pic, which the
+% ICLR 2027 style uses only for the review-mode line-number ruler. Installing it
+% (`tlmgr install eso-pic`) needs a network download that was not authorised
+% during the overnight run, so this file reproduces the three macros the style
+% calls, on the LaTeX kernel's shipout/background hook (LaTeX 2020-10 or later).
+% Delete this file after `tlmgr install eso-pic`; nothing else changes.
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{eso-pic}[2026/09/22 local stand-in: AddToShipoutPicture, AtTextUpperLeft, LenToUnit]
+% eso-pic's trick: in picture mode \put multiplies a coordinate by \unitlength;
+% "<len>\@gobble" makes the \@gobble swallow \unitlength, so any length works.
+\providecommand\LenToUnit[1]{#1\@gobble}
+% eso-pic places its picture with the origin at the page's lower-left corner; the
+% kernel hook's picture has its origin at the top-left corner, so shift down.
+\newcommand\AddToShipoutPicture[1]{%
+  \AddToHook{shipout/background}{\put(0,\LenToUnit{-\paperheight}){#1}}}
+\newcommand\AddToShipoutPictureBG[1]{\AddToShipoutPicture{#1}}
+% Upper-left corner of the text area, measured from the lower-left page corner.
+\newcommand\AtTextUpperLeft[1]{\begingroup
+  \@tempdima=1in\relax
+  \ifodd\c@page \advance\@tempdima\oddsidemargin \else \advance\@tempdima\evensidemargin \fi
+  \@tempdimb=\paperheight\relax
+  \advance\@tempdimb -1in\relax
+  \advance\@tempdimb -\topmargin\relax
+  \advance\@tempdimb -\headheight\relax
+  \advance\@tempdimb -\headsep\relax
+  \put(\LenToUnit{\@tempdima},\LenToUnit{\@tempdimb}){#1}\endgroup}
+\endinput

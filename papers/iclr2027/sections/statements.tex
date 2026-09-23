@@ -1,0 +1,31 @@
+% statements.tex -- ICLR 2027 required and recommended statements (do not count toward the page limit).
+\subsection*{AI use statement}
+
+Generative AI tools were used to write analysis code, to run and monitor the experiments under
+the pre-registration protocol described below, to extract and cross-check numbers from the
+experiment record, and to draft and revise the manuscript text. Every number in the paper was
+traced to a committed artefact, and every citation was checked at its primary source. The
+authors reviewed all AI-assisted work and take responsibility for the content of the paper,
+including text, claims and artefacts produced with the aid of generative AI.
+\todo{PI: confirm the exact tasks and the named tools against the ICLR 2027 AI policy.}
+
+\subsection*{Ethics statement}
+
+The experiments use public benchmark text (ELEPHANT open-ended advice questions, Scruples
+anecdotes) and public model APIs, with no human subjects and no new personal data. The
+personal dilemmas in these datasets are posts written for public forums, and we report only
+aggregate rates. The scaffold studied here changes how a model answers people who describe
+their own conflicts, so a reduction in validation is not automatically a benefit to the person
+asking, and we report where the scaffold fails to help or makes things worse (pushback,
+propositional commitments, and the collective's own accuracy) rather than only where it helps.
+
+\subsection*{Reproducibility statement}
+
+Every experiment was pre-registered in an append-only log before any model call, with a
+spending ceiling, a stop rule, readouts with baselines and pre-declared readings for every
+outcome, and every corrected or withdrawn result is recorded there beside the original. All
+model calls are cached by name, so every number can be recomputed offline from the released
+caches, and the headline collective numbers are reproduced by an independent implementation
+that shares no code with the registered analysers. Intervals are item-clustered percentile
+bootstraps. The appendix lists the scripts, artefacts and pre-registration entries behind each
+result. \todo{PI: add the anonymised code and data link.}

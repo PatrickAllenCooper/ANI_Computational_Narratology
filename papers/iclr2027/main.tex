@@ -1,0 +1,55 @@
+\documentclass{article} % For LaTeX2e
+\usepackage{iclr2027_conference,times}
+
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.17}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{amsmath}
+
+% Optional math commands from https://github.com/goodfeli/dlbook_notation.
+\input{math_commands.tex}
+
+\usepackage{hyperref}
+\usepackage{url}
+% The build machine's TinyTeX lacks the Courier metrics (pcrr7t) that `times` selects for
+% \texttt; typewriter text falls back to Computer Modern Typewriter. After
+% `tlmgr install courier` this line can be deleted.
+\renewcommand{\ttdefault}{cmtt}
+
+\title{Narration-of-Thought: A Generalizable Scaffold For Social Reasoning}
+
+% Authors must not appear in the submitted version. They are hidden as long as
+% \iclrfinalcopy stays commented out below.
+\author{Anonymous Authors}
+
+\newcommand{\fix}{\marginpar{FIX}}
+\newcommand{\new}{\marginpar{NEW}}
+\newcommand{\todo}[1]{\textcolor{red}{[TODO: #1]}}
+
+%\iclrfinalcopy % Uncomment for camera-ready version, but NOT for submission.
+\begin{document}
+
+\maketitle
+
+\input{sections/abstract}
+
+\input{sections/introduction}
+\input{sections/related_work}
+\input{sections/scaffold}
+\input{sections/pillar1}
+\input{sections/pillar2_tom}
+\input{sections/pillar3}
+\input{sections/discussion}
+
+\input{sections/statements}
+
+\bibliography{references}
+\bibliographystyle{iclr2027_conference}
+
+\appendix
+\input{sections/appendix}
+
+\end{document}

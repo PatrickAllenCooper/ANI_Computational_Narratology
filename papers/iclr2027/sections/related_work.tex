@@ -1,0 +1,105 @@
+% related_work.tex -- ICLR 2027 draft, condensed from the PI's seven paragraphs (every
+% citation kept; keys resolve in references.bib, merged from the verified unified and
+% embodied_sensor bibliographies). Sentences that stated a single-model finding as general
+% are scoped to the model on which it was measured. No new citations were added.
+\section{Related Work}
+\label{sec-related}
+
+\paragraph{Sycophancy is a trained bias, and it is steerable.}
+Preference-tuned models agree with the user more often than the evidence
+warrants, and the deference grows with model scale and with the user's
+confidence \citep{perez2023discovering,sharma23}. It persists where it matters,
+when a model validates the asker's own account of a conflict
+\citep{cheng25elephant} or revises a correct answer under pushback
+\citep{fanous2025syceval,malmqvist24}. It is a linear direction in activation
+space that can be added or subtracted \citep{rimsky2024caa}, and it behaves as
+a persona-level trait, so an off-the-shelf sceptical persona recovers most of
+what targeted steering achieves \citep{chen2025persona,kelkar2026devil}.
+Synthetic fine-tuning data reduce it \citep{wei2023synthetic} without telling
+us what the model concludes when the deference is removed at inference time.
+If sycophancy is a stance the model adopts, assigning a different stance is the
+natural control, and the scaffold assigns one inside the model's own trace.
+
+\paragraph{Role assignment controls what a model says, at a cost.}
+Assigning a character or an interest reliably moves a model's output
+\citep{shanahan2023roleplay,li2023camel}, although persona prompts explain
+little variance in simulated survey judgement \citep{hu2024persona}, can
+degrade zero-shot reasoning \citep{kim2025persona}, carry implicit biases
+\citep{gupta2024bias,deshpande2023toxicity}, and amplify sycophancy when the
+persona is agreeable \citep{shah2026toonice}. Multi-persona prompting within
+one model improves some tasks \citep{wang2024spp}. Closest to our collective,
+\citet{dietrich2026roles} assign opposed advocates, a balanced seat and a
+supervisor, and measure how far each advocate's output is fixed by its role.
+We measure the same quantity, role-lock, and find it ranges from near total on
+one model to below one half on another, and that a seat whose verdict is fixed
+by its role carries no information about the case.
+% role-lock grok 0.971 (16.10), Llama 0.862 (16.24), DeepSeek 0.816 (16.27), Mistral 0.708 (16.26), haiku 0.419 (16.23)
+
+\paragraph{Debate places truth at the judge, not in the debaters.}
+Scalable oversight puts opposed agents before a judge \citep{irving18}, and
+judges become more accurate watching a debate than consulting one advocate
+\citep{michael2023debate,khan2024debating}, but the gain over a judge answering
+alone appears only under information asymmetry \citep{kenton2024scalable}.
+Debate among copies of one model improves some benchmarks
+\citep{du23,liang2024divergent,chan2023chateval} and fails to beat
+self-consistency on others \citep{smit2024mad,wang2024rethinking}. Formal
+accounts explain why. Same-model debate converges to the majority already in
+the room \citep{estornell2024multillm}, homogeneous agents with uniform updates
+cannot reliably improve expected correctness \citep{zhu2026demystifying}, and
+exchange preserves expectations where voting does not
+\citep{choi2025debateorvote}. Two strands use disagreement as a signal rather
+than a route to a verdict, cross-examination that detects factual errors
+\citep{cohen2023lmvslm} and prover and verifier games that train legibility
+for a checker \citep{kirchner2024prover}. We assign opposed interests rather
+than opposed answers, so that no advocate holds the truth by construction, and
+ask what the advocates' disagreement carries.
+
+\paragraph{Communication topology and aggregation.}
+Sparse topologies match or beat fully connected ones at lower cost
+\citep{li2024sparse}, collaboration follows a scaling law over chains, trees
+and graphs \citep{qian2025macnet}, and agent systems can be optimised as graphs
+\citep{zhuge2024gptswarm,liu2024dylan}. Topology governs how errors propagate
+\citep{shen2025propagation,han2026conformity}, agents conform to majorities
+\citep{zhang2024socialpsych,weng2025conformity}, correlated errors limit what
+aggregation can recover \citep{kim2025correlated}, and heterogeneous panels
+beat homogeneous ones \citep{wang2025moa}. Effective team size has been fitted
+as an order parameter across debate conditions \citep{bertalanic2026ringelmann},
+isolated self-correction beats unguided homogeneous debate
+\citep{bertalanic2026costconsensus}, and minorities can be taught when to
+overturn a majority \citep{he2026minoritysentinel}. Aggregation theory predicts
+our measurements. Correlated votes can help or hurt majority rule
+\citep{ladha1992condorcet,boland1989majority}, the optimal rule over voters of
+unequal competence is a weighted majority
+\citep{shapley1984optimizing,nitzan1982optimal}, a network learns the truth only
+if no node dominates \citep{golub2010naive}, and repeated averaging returns the
+weighted prior \citep{degroot1974reaching}. Social influence undermines crowd
+wisdom \citep{lorenz2011social} unless the network is decentralised
+\citep{becker2017network}, diversity helps only while it is transient
+\citep{zollman2010epistemic}, two heads beat one only at similar competence
+\citep{bahrami2010optimally}, and a few debates can beat a large crowd
+\citep{navajas2018aggregated}. Diversity does not trump ability in general
+\citep{hong2004groups,thompson2014diversity}, shared biases need a
+non-majoritarian rule \citep{prelec2017solution}, and judgement aggregation has
+impossibility results of its own \citep{list2002aggregating}. Where the dependent
+variable in this literature is accuracy or cost, ours is the structure of
+dissent and whether it transfers to other generators.
+
+\paragraph{The argumentative theory and the social account of objectivity.}
+Human reasoning may have evolved for argument, with individuals producing
+biased advocacy and truth emerging on the evaluation side of an exchange
+\citep{mercier2011argumentative,mercier2017enigma}. Groups reason well because
+arguments rather than confidence move them \citep{trouche2014arguments}, while
+individuals are lazy about their own arguments \citep{trouche2016selective}, and
+the evidence for the collective half is the weaker
+\citep{mercier2016predictions}. Assigned devil's advocacy improves decisions
+less than authentic dissent \citep{nemeth2001devil}, though structured conflict
+beats consensus \citep{schweiger1986group,schwenk1990effects}. Philosophically,
+objectivity is a property of a community's structure of criticism rather than
+of any member \citep{longino1990science,longino2002fate,popper2011open}. The
+scaffold places that structure inside a single trace and the collective places
+it across agents. Mediation and mechanism design study the same arrangement
+among agents with divergent interests
+\citep{dafoe2020cooperative,akata2025repeated,piatti2024cooperate,leon2026personas,tewolde2026coopeval},
+where a correlating third party can reach outcomes no equilibrium of the
+players alone reaches \citep{aumann1974subjectivity}. Our collective's neutral
+seat and external judge occupy that position.
