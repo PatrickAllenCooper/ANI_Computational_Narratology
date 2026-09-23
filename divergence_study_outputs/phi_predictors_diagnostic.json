@@ -1,0 +1,120 @@
+{
+  "table": {
+    "rows": [
+      {
+        "label": "grok_on_edge",
+        "role_lock": 0.971,
+        "role_lock_source": "prereg line ~7645, '(grok 0.971, haiku'",
+        "solo_base_acc": 0.9119047619047619,
+        "phi_point": -0.9008797990517647,
+        "phi_lo": -0.9289573072282268,
+        "phi_hi": -0.8680754548531585
+      },
+      {
+        "label": "grok_no_edge",
+        "role_lock": 0.969,
+        "role_lock_source": "prereg line ~4147, no-edge k=4 role-lock row, second column",
+        "solo_base_acc": 0.9119047619047619,
+        "phi_point": -0.8418795902309862,
+        "phi_lo": -0.8763747428417092,
+        "phi_hi": -0.8020042469662652
+      },
+      {
+        "label": "haiku_249",
+        "role_lock": 0.419,
+        "role_lock_source": "prereg 16.23 RESULTS, 'Role-lock 0.419 (0.414) [0.971]'",
+        "solo_base_acc": 0.8621399176954733,
+        "phi_point": 0.24575113550905042,
+        "phi_lo": 0.12950365355228943,
+        "phi_hi": 0.3597934596122808
+      },
+      {
+        "label": "llama",
+        "role_lock": 0.862,
+        "role_lock_source": "prereg 16.24 RESULTS, 'role-lock 0.862 [0.869 matched]'",
+        "solo_base_acc": 0.8418708240534521,
+        "phi_point": 0.14793602377676712,
+        "phi_lo": 0.0650976508350816,
+        "phi_hi": 0.2274974999940903
+      },
+      {
+        "label": "deepseek",
+        "role_lock": 0.8162614139457665,
+        "role_lock_source": "topology_cell_cg_deliberation_deepseekv4pro.json, role_lock",
+        "solo_base_acc": 0.9594272076372315,
+        "phi_point": -0.09308299198481594,
+        "phi_lo": -0.18205859717720532,
+        "phi_hi": -0.006717570076772863
+      },
+      {
+        "label": "mistral",
+        "role_lock": 0.70802200083022,
+        "role_lock_source": "topology_cell_cg_deliberation_mistrallarge32.json, role_lock",
+        "solo_base_acc": 0.8433179723502304,
+        "phi_point": 0.20832492854774814,
+        "phi_lo": 0.11854143138938707,
+        "phi_hi": 0.2985286576178218
+      }
+    ]
+  },
+  "correlations": {
+    "n6": {
+      "role_lock": {
+        "pearson_r": -0.751940754810678,
+        "pearson_p": 0.08466812065583698,
+        "spearman_rho": -0.942857142857143,
+        "spearman_p": 0.004804664723032055
+      },
+      "solo_base_acc": {
+        "pearson_r": -0.5651057373556859,
+        "pearson_p": 0.24257309695349474,
+        "spearman_rho": -0.5797710356524485,
+        "spearman_p": 0.22778395671501586
+      }
+    },
+    "n5_independent_models": {
+      "role_lock": {
+        "pearson_r": -0.6888764521546504,
+        "pearson_p": 0.19831118550934487,
+        "spearman_rho": -0.8999999999999998,
+        "spearman_p": 0.03738607346849874
+      },
+      "solo_base_acc": {
+        "pearson_r": -0.5430206504550454,
+        "pearson_p": 0.3442720212046917,
+        "spearman_rho": -0.49999999999999994,
+        "spearman_p": 0.3910022189557703
+      }
+    },
+    "leave_one_out_n5": {
+      "grok": {
+        "role_lock_r": -0.6039966668377984,
+        "solo_base_acc_r": -0.9149379643787288
+      },
+      "haiku_249": {
+        "role_lock_r": -0.8395086267400744,
+        "solo_base_acc_r": -0.503974618343723
+      },
+      "llama": {
+        "role_lock_r": -0.8266042802173266,
+        "solo_base_acc_r": -0.49202729055187044
+      },
+      "deepseek": {
+        "role_lock_r": -0.6943301487688771,
+        "solo_base_acc_r": -0.9391573577305917
+      },
+      "mistral": {
+        "role_lock_r": -0.6923351035316395,
+        "solo_base_acc_r": -0.4663372352222269
+      },
+      "_role_lock_range": [
+        -0.8395086267400744,
+        -0.6039966668377984
+      ],
+      "_solo_base_acc_range": [
+        -0.9391573577305917,
+        -0.4663372352222269
+      ]
+    }
+  }
+}

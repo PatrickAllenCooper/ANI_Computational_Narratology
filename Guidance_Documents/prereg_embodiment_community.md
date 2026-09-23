@@ -8543,3 +8543,47 @@ routing-mechanism paragraph as a genuine counter-example to the
 "disagreement is at least as good and always cheaper" reading that held
 on every prior model.
 Nothing above this line is edited.
+
+## Phi-predictor diagnostic (post hoc, zero spend, 2026-09-22; `scripts/analyze_phi_predictors.py`, artefact `phi_predictors_diagnostic.json`)
+
+Not pre-registered; run after the 16.26 readout to test the candidate the
+16.24 diagnostic note named ("plausibly each model's base accuracy or its
+calibration") for what decides the SIGN of advocate phi within one-loser
+verdicts. Inputs are read from committed artefacts: phi from
+`emergent_graphs_analysis.json` (one_loser, advocate_1|advocate_2), solo
+base accuracy from each `router_decomposition_<short>.json`
+(`routed_vs_solo.*.acc_base`), role-lock from the prereg for four
+conditions (source lines cited in the script) and from
+`topology_cell_*.json` for DeepSeek and Mistral (a selftest checks the
+hand-copied values against every machine-readable one).
+
+| condition | role-lock | solo acc | phi (one-loser) |
+|---|---|---|---|
+| grok on-edge | 0.971 | 0.912 | -0.901 [-0.929, -0.868] |
+| grok no-edge k=4 | 0.969 | 0.912 | -0.842 [-0.876, -0.802] |
+| haiku-249 | 0.419 | 0.862 | +0.246 [+0.130, +0.360] |
+| Llama | 0.862 | 0.842 | +0.148 [+0.065, +0.227] |
+| DeepSeek | 0.816 | 0.959 | -0.093 [-0.182, -0.007] |
+| Mistral | 0.708 | 0.843 | +0.208 [+0.119, +0.299] |
+
+With the two grok cells averaged to one point (five independent models):
+solo accuracy against phi, Pearson r -0.54 (p 0.34), and leave-one-out
+swings it from -0.47 to -0.94, so the 16.24 candidate is NOT supported.
+Role-lock against phi, Pearson r -0.69 (p 0.20), Spearman -0.90 (p 0.04),
+and it stays negative in every leave-one-out (-0.60 to -0.84), so no
+single model manufactures it. But the association is largely structural.
+An advocate that starts on its own side (high lock) and objects only when
+its side loses produces opposed objections by construction, so lock reads
+as necessary for opposition and not sufficient for it. Llama is the clean
+counter-case (lock 0.862, phi +0.148). The missing second ingredient is
+whether a locked advocate confines its objections to verdicts against its
+own side, and neither candidate here explains it.
+
+Correction, stated rather than edited above. The sentence in the 16.27
+and 16.26 RESULTS text that "role-lock alone continues not to predict
+phi's sign" was a pairwise reading (Llama against DeepSeek) and is too
+strong across the five models. The accurate statement is that role-lock
+is associated with phi's sign across the five models, largely for a
+structural reason, and does not guarantee it. n = 5 makes every figure
+here suggestive, not a finding.
+Nothing above this line is edited.
