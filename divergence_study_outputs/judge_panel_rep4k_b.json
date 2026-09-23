@@ -1,0 +1,143 @@
+{
+  "judges": {
+    "claude-haiku-4-5": {
+      "unparsed": 0,
+      "missing": 0,
+      "unparsed_share": 0.0,
+      "unparsed_flag": false,
+      "ceiling_descriptive": {
+        "n_cells": 0,
+        "would_have_been_excluded": null
+      },
+      "agreement_with_production": null,
+      "per_generator": {
+        "claude-sonnet-4-6": {
+          "narrative_cot_rep4k_b": {
+            "n_items": 150,
+            "rate_a": 0.7,
+            "rate_b": 0.6533333333333333,
+            "drop": -0.04666666666666667,
+            "lo": -0.13333333333333333,
+            "hi": 0.03333333333333333
+          },
+          "rates": {
+            "standard_cot_rep4k_b": 0.7,
+            "narrative_cot_rep4k_b": 0.6533333333333333
+          }
+        },
+        "claude-haiku-4-5": {
+          "narrative_cot_rep4k_b": {
+            "n_items": 150,
+            "rate_a": 0.6533333333333333,
+            "rate_b": 0.32666666666666666,
+            "drop": -0.32666666666666666,
+            "lo": -0.4266666666666667,
+            "hi": -0.22666666666666666
+          },
+          "rates": {
+            "standard_cot_rep4k_b": 0.6533333333333333,
+            "narrative_cot_rep4k_b": 0.32666666666666666
+          }
+        }
+      }
+    },
+    "gpt-5.4-nano": {
+      "unparsed": 0,
+      "missing": 0,
+      "unparsed_share": 0.0,
+      "unparsed_flag": false,
+      "ceiling_descriptive": {
+        "n_cells": 0,
+        "would_have_been_excluded": null
+      },
+      "agreement_with_production": {
+        "n": 600,
+        "agreement": 0.7366666666666667
+      },
+      "per_generator": {
+        "claude-sonnet-4-6": {
+          "narrative_cot_rep4k_b": {
+            "n_items": 150,
+            "rate_a": 0.64,
+            "rate_b": 0.72,
+            "drop": 0.08,
+            "lo": 0.0,
+            "hi": 0.16
+          },
+          "rates": {
+            "standard_cot_rep4k_b": 0.64,
+            "narrative_cot_rep4k_b": 0.72
+          }
+        },
+        "claude-haiku-4-5": {
+          "narrative_cot_rep4k_b": {
+            "n_items": 150,
+            "rate_a": 0.52,
+            "rate_b": 0.5066666666666667,
+            "drop": -0.013333333333333334,
+            "lo": -0.10666666666666667,
+            "hi": 0.08
+          },
+          "rates": {
+            "standard_cot_rep4k_b": 0.52,
+            "narrative_cot_rep4k_b": 0.5066666666666667
+          }
+        }
+      }
+    },
+    "Llama-3.3-70B-Instruct": {
+      "unparsed": 2,
+      "missing": 0,
+      "unparsed_share": 0.0033333333333333335,
+      "unparsed_flag": false,
+      "ceiling_descriptive": {
+        "n_cells": 0,
+        "would_have_been_excluded": null
+      },
+      "agreement_with_production": {
+        "n": 598,
+        "agreement": 0.6705685618729097
+      },
+      "per_generator": {
+        "claude-sonnet-4-6": {
+          "narrative_cot_rep4k_b": {
+            "n_items": 149,
+            "rate_a": 0.8590604026845637,
+            "rate_b": 0.9328859060402684,
+            "drop": 0.0738255033557047,
+            "lo": 0.013422818791946308,
+            "hi": 0.1342281879194631
+          },
+          "rates": {
+            "standard_cot_rep4k_b": 0.86,
+            "narrative_cot_rep4k_b": 0.9328859060402684
+          }
+        },
+        "claude-haiku-4-5": {
+          "narrative_cot_rep4k_b": {
+            "n_items": 149,
+            "rate_a": 0.8590604026845637,
+            "rate_b": 0.8859060402684564,
+            "drop": 0.026845637583892617,
+            "lo": -0.040268456375838924,
+            "hi": 0.09395973154362416
+          },
+          "rates": {
+            "standard_cot_rep4k_b": 0.8590604026845637,
+            "narrative_cot_rep4k_b": 0.8866666666666667
+          }
+        }
+      }
+    }
+  },
+  "generators": [
+    "claude-sonnet-4-6",
+    "claude-haiku-4-5"
+  ],
+  "arms": [
+    "standard_cot_rep4k_b",
+    "narrative_cot_rep4k_b"
+  ],
+  "baseline": "standard_cot_rep4k_b",
+  "metric": "validation"
+}
