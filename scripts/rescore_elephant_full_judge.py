@@ -18,11 +18,13 @@ Cache: the `elephant_rescore_validation_<judge>_full_*` namespace already holds
 the full-text scores of the long responses for haiku, nano, Llama and grok;
 only short responses (and every response for a new judge) cost a call.
 
-Readouts per judge: validation rate per generator x arm; drop (arm minus
-standard_cot) per generator with an item-clustered paired bootstrap (8,000
-draws, seed 20260822); the registered acquiescence screen (a judge is excluded
-if its rate exceeds 0.85 on >= 80% of the generator x {CoT, NoT} cells or the
-range of those cells is < 0.20); agreement with the production judge.
+Readouts per judge: validation rate per generator x arm; drop (arm minus the
+baseline arm, default standard_cot) per generator with an item-clustered paired
+bootstrap (8,000 draws, seed 20260822); agreement with the production judge;
+the unparsed share (a judge over 5% is flagged). The ceiling statistics (share
+of CoT/NoT cells above 0.85, their range) are DESCRIPTIVE ONLY: the 17.8
+amendment removed them as an exclusion rule, because a screen computed on the
+tested cells excludes exactly the judges that see no drop (circular).
 
 Run:
   python -m scripts.rescore_elephant_full_judge --dry-run
@@ -95,15 +97,23 @@ def plan(rows: list[dict], judges: Sequence[str], questions: dict) -> dict:
 
 
 def score_all(rows: list[dict], judge: str, questions: dict, workers: int) -> int:
+    """One failed call (after the backend's own retries) is counted and skipped, never
+    allowed to stop the loop; the affected response stays unscored (reported as missing)."""
     todo = [r for r in rows if cached_score(questions[r["item_id"]], r["response"], judge) is None]
-    done = 0
+    done = failed = 0
     with ThreadPoolExecutor(max_workers=workers) as ex:
         futs = [ex.submit(score_at, METRIC, questions[r["item_id"]], r["response"], judge, None) for r in todo]
         for f in as_completed(futs):
-            f.result()
+            try:
+                f.result()
+            except Exception as e:  # noqa: BLE001
+                failed += 1
+                if failed <= 5:
+                    print(f"    {judge}: call failed ({type(e).__name__}: {str(e)[:120]})", flush=True)
             done += 1
             if done % 100 == 0:
-                print(f"    {judge}: {done}/{len(todo)}", flush=True)
+                print(f"    {judge}: {done}/{len(todo)} ({failed} failed)", flush=True)
+    print(f"  {judge}: {len(todo)} attempted, {failed} failed", flush=True)
     return len(todo)
 
 
@@ -138,14 +148,15 @@ def paired_drop(a: dict, b: dict, *, draws: int = DRAWS, seed: int = SEED) -> di
 
 
 def acquiescence(cells: dict, generators: Sequence[str]) -> dict:
+    """DESCRIPTIVE ONLY since the 17.8 amendment: never used to exclude a judge."""
     rates = [np.mean(list(cells[(g, a)].values())) for g in generators for a in SCREEN_ARMS
              if cells.get((g, a))]
     if not rates:
-        return {"n_cells": 0, "excluded": None}
+        return {"n_cells": 0, "would_have_been_excluded": None}
     frac_high = float(np.mean([r > ACQ_HIGH for r in rates]))
     rng_ = float(max(rates) - min(rates))
     return {"n_cells": len(rates), "frac_cells_above_0.85": frac_high, "range": rng_,
-            "excluded": bool(frac_high >= ACQ_FRAC or rng_ < ACQ_RANGE)}
+            "would_have_been_excluded": bool(frac_high >= ACQ_FRAC or rng_ < ACQ_RANGE)}
 
 
 def agreement(cells_j: dict, cells_p: dict) -> dict:
@@ -160,21 +171,24 @@ def agreement(cells_j: dict, cells_p: dict) -> dict:
 
 
 def report(rows: list[dict], judges: Sequence[str], generators: Sequence[str], arms: Sequence[str],
-           questions: dict) -> dict:
+           questions: dict, baseline: str = "standard_cot") -> dict:
     prod = table(rows, PRODUCTION_JUDGE, questions)
-    res = {"judges": {}, "generators": list(generators), "arms": list(arms)}
+    res = {"judges": {}, "generators": list(generators), "arms": list(arms), "baseline": baseline}
     for j in judges:
         t = table(rows, j, questions)
         cells = t["cells"]
+        n_scored = sum(len(m) for m in cells.values())
         per_gen = {}
         for g in generators:
-            base = cells.get((g, "standard_cot"), {})
+            base = cells.get((g, baseline), {})
             per_gen[g] = {arm: paired_drop(base, cells.get((g, arm), {}))
-                          for arm in arms if arm != "standard_cot"}
+                          for arm in arms if arm != baseline}
             per_gen[g]["rates"] = {arm: (float(np.mean(list(cells[(g, arm)].values())))
                                          if cells.get((g, arm)) else None) for arm in arms}
+        unp_share = t["unparsed"] / max(1, n_scored + t["unparsed"])
         res["judges"][j] = {"unparsed": t["unparsed"], "missing": t["missing"],
-                            "acquiescence_screen": acquiescence(cells, generators),
+                            "unparsed_share": unp_share, "unparsed_flag": bool(unp_share > 0.05),
+                            "ceiling_descriptive": acquiescence(cells, generators),
                             "agreement_with_production": agreement(cells, prod["cells"]) if j != PRODUCTION_JUDGE else None,
                             "per_generator": per_gen}
     return res
@@ -182,11 +196,12 @@ def report(rows: list[dict], judges: Sequence[str], generators: Sequence[str], a
 
 def print_report(res: dict) -> None:
     for j, jr in res["judges"].items():
-        scr = jr["acquiescence_screen"]
+        scr = jr["ceiling_descriptive"]
         agr = jr["agreement_with_production"]
-        print(f"\n=== judge {j}   unparsed {jr['unparsed']}  missing {jr['missing']}   "
-              f"screen: {scr.get('n_cells')} cells, {scr.get('frac_cells_above_0.85', 0):.2f} above 0.85, "
-              f"range {scr.get('range', 0):.2f} -> {'EXCLUDED' if scr.get('excluded') else 'passes'}"
+        print(f"\n=== judge {j}   unparsed {jr['unparsed']} ({100 * jr['unparsed_share']:.1f}%"
+              f"{', FLAGGED' if jr['unparsed_flag'] else ''})  missing {jr['missing']}   "
+              f"ceiling (descriptive): {scr.get('frac_cells_above_0.85', 0):.2f} of cells above 0.85, "
+              f"range {scr.get('range', 0):.2f}"
               + (f"   agreement with production {agr['agreement']:.3f} (n={agr['n']})" if agr and agr['agreement'] is not None else ""))
         for g, pg in jr["per_generator"].items():
             rates = " ".join(f"{a}={v:.3f}" for a, v in pg["rates"].items() if v is not None)
@@ -210,10 +225,12 @@ def _selftest() -> int:
     check("paired drop of 1.0 -> 0.5 is -0.5 with a CI excluding 0", abs(d["drop"] + 0.5) < 1e-9 and d["hi"] < 0)
     check("paired drop needs >= 20 shared items", paired_drop({"1": 1}, {"1": 0})["drop"] is None)
     cells = {(g, arm): {str(i): 1 for i in range(10)} for g in ("x", "y") for arm in SCREEN_ARMS}
-    check("a judge that says 1 everywhere is excluded", acquiescence(cells, ("x", "y"))["excluded"])
+    check("a judge that says 1 everywhere would have been screened (descriptive only)",
+          acquiescence(cells, ("x", "y"))["would_have_been_excluded"])
     cells2 = {("x", "standard_cot"): {str(i): 1 for i in range(10)},
               ("x", "narrative_cot"): {str(i): int(i < 3) for i in range(10)}}
-    check("a judge with range 0.7 and 1 of 2 cells high passes", not acquiescence(cells2, ("x",))["excluded"])
+    check("a judge with range 0.7 and 1 of 2 cells high is not flagged",
+          not acquiescence(cells2, ("x",))["would_have_been_excluded"])
     rows = load_rows(DEFAULT_GENERATORS, DEFAULT_ARMS)
     check("loads the seven-generator CoT/NoT OEQ rows (> 1,900 responses)", len(rows) > 1900)
     q = load_questions("oeq", n=150)
@@ -227,6 +244,8 @@ def main(argv=None) -> int:
     ap.add_argument("--judges", default=",".join(DEFAULT_JUDGES))
     ap.add_argument("--generators", default=",".join(DEFAULT_GENERATORS))
     ap.add_argument("--arms", default=",".join(DEFAULT_ARMS))
+    ap.add_argument("--baseline", default="standard_cot",
+                    help="arm every drop is taken against (17.7/17.4 use standard_cot_rep)")
     ap.add_argument("--workers", type=int, default=8)
     ap.add_argument("--dry-run", action="store_true")
     ap.add_argument("--report", action="store_true", help="read the caches only; no calls")
@@ -238,8 +257,8 @@ def main(argv=None) -> int:
     judges = [x for x in a.judges.split(",") if x]
     gens = [x for x in a.generators.split(",") if x]
     arms = [x for x in a.arms.split(",") if x]
-    if "standard_cot" not in arms:
-        ap.error("standard_cot must be among --arms (every drop is against it)")
+    if a.baseline not in arms:
+        ap.error(f"--baseline {a.baseline} must be among --arms (every drop is against it)")
     rows = load_rows(gens, arms)
     questions = load_questions("oeq", n=150)
     missing_q = {r["item_id"] for r in rows} - set(questions)
@@ -257,7 +276,7 @@ def main(argv=None) -> int:
         for j in judges:
             n = score_all(rows, j, questions, a.workers)
             print(f"  {j}: scored {n} new")
-    res = report(rows, judges, gens, arms, questions)
+    res = report(rows, judges, gens, arms, questions, baseline=a.baseline)
     print_report(res)
     out = a.json or Path("divergence_study_outputs/judge_panel_full_oeq.json")
     out.write_text(json.dumps(res, indent=2, default=str))

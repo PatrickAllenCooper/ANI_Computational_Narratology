@@ -80,11 +80,24 @@ FORM_ARMS = {
     "not_checklist": "checklist_same_content",
     "not_narrative_only": "narrative_only",
 }
+# 17.7 amendment (pre-spend review, 2026-09-22): same-day replicates of the CoT and NoT
+# comparators under NEW arm names, at the same 2,048 cap (nano: the same 8,192 reasoning
+# floor) as the form and length arms. The cached `standard_cot` / `narrative_cot` cells are
+# from June (nano under a 2,048 TOTAL budget before the reasoning floor existed; grok's CoT
+# cut at 1,024 tokens on 42% of items), so every 17.7 / 17.4 contrast is read against these.
+REPLICATE_ARMS = {
+    "standard_cot_rep": "standard_cot",
+    "narrative_cot_rep": "narrative_cot",
+}
 assert _PERMS["narrative_cot_full"] == PROMPTS["narrative_cot"], "intact scaffold drifted from PERMUTATIONS"
 for _arm, _key in {**KNOCKOUT_ARMS, **CAUSAL_ARMS, **FORM_ARMS}.items():
     assert _arm not in PROMPTS, f"{_arm} already in PROMPTS"
     PROMPTS[_arm] = _PERMS[_key]
     assert PROMPTS[_arm] == _PERMS[_key]
+for _arm, _src in REPLICATE_ARMS.items():
+    assert _arm not in PROMPTS, f"{_arm} already in PROMPTS"
+    PROMPTS[_arm] = PROMPTS[_src]
+    assert PROMPTS[_arm] == PROMPTS[_src]
 
 BUDGET_GENERATORS = ["gpt-5.4-nano", "claude-haiku-4-5", "grok-4-1-fast-reasoning"]
 ALL_GENERATORS = BUDGET_GENERATORS + ["claude-sonnet-4-6"]
@@ -165,7 +178,7 @@ def _max_tokens_for(gen_model: str, arm: str) -> int:
         return 2048
     # 17.7 / 17.4: arms that are asked for NoT-length output get NoT's cap, so a
     # truncation difference cannot masquerade as a form or length effect.
-    if arm in FORM_ARMS or arm == LENGTH_MATCHED_ARM:
+    if arm in FORM_ARMS or arm in REPLICATE_ARMS or arm == LENGTH_MATCHED_ARM:
         return 2048
     return 1024
 
@@ -237,6 +250,9 @@ def _generate_advice(
         cache.write_text(json.dumps({
             "response": text,
             "completion_tokens": result.completion_tokens if result else 0,
+            "prompt_tokens": getattr(result, "prompt_tokens", 0) if result else 0,
+            "finish_reason": getattr(result, "finish_reason", "") if result else "",
+            "max_tokens": max_tokens,
             "arm": arm,
             "empty": False,
         }, ensure_ascii=False))
