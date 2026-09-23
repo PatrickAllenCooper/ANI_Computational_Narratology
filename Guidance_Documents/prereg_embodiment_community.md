@@ -9627,3 +9627,23 @@ runs are pooled and does not hold in run 2 alone, and the rise under every other
 consistent across runs; this is reported as such, with the accepting-framing result (17.11), on
 which sonnet drops under both judges, beside it. **Spend.** About $22 at list prices (sonnet
 generation about $12), inside the $25 ceiling. Batch total about $182.
+
+## Addendum 17.11 amendment: the accepting-framing rubric on the 17.12 baseline arms (registered 2026-09-23 BEFORE any framing call on these arms, after the 17.12 validation readout was seen; judge calls only; ceiling $20)
+
+**Purpose.** 17.12 finds that on judged emotional validation the benchmark's naive instruction
+(`cot_prepend_naive`) and the sceptical persona (`cot_sceptical`) lower the rate as much as or
+more than NoT under most judges. Whether they also lower acceptance of the asker's framing, the
+endorsement construct on which 17.11 found NoT beats both its own halves, decides what the
+scaffold does that a one-line instruction does not. Same path, judges and bootstrap as 17.11
+(`rescore_elephant_full_judge.py --metric framing`, production judge and gpt-4o, 8,000 draws,
+seed 20260822), on the existing `cot_prepend_naive`, `cot_prepend_context`, `cot_sceptical` and
+`cot_perspective_shift` responses (2,284 new calls per judge; dry-run $13.14). Record
+`judge_panel_baselines_framing.json`; readout appended to `framing_17_11_readout.json` by
+`scripts/analyze_framing_17_11.py --baselines` (to be added; selftest).
+
+**Readouts** (pooled over the four generators and per generator, paired on items): each
+baseline's accepting-framing drop from CoT; NoT minus baseline; checklist minus baseline.
+**Pre-declared readings**, per baseline, judge and comparator, the 17.12 definitions applied to
+the framing rate (BASELINE-BEATS-X, X-BEATS-BASELINE, MATCH, UNDER-GATED), judge-robust only
+if both judges agree. Reported whichever way they fall; a baseline that beats NoT on framing is
+stated as such. **Guards** as 17.11. **Stop rule** ceiling $20 measured.
