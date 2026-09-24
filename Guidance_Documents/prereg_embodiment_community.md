@@ -9785,3 +9785,36 @@ judges and on validation under three of five judges; NoT sits within about 10 po
 rate on premise acceptance, slightly on the challenging side, while remaining above it on validation
 under four judges. Whether the human rate is the right target is ELEPHANT's premise, not our result.
 **Spend.** About $13 and $0.6. Batch total about $238 before E-D.
+
+## Addendum 16.28 amendment E-D RESULTS (run 2026-09-23; haiku `cg_deliberation_haiku_249_stdcot`, k = 1, 498 of 498 rows after one refill pass for 23 debates lost to connection errors during the machine's hibernation (the authorised link-failure class); guards PASSED, worst truncation 0.0%, worst NOVERDICT 0.0%, no `GUARD FAILED` in `logs/cell_ed_haiku_249_stdcot.log`; 8,466 calls measured $32.03 at list prices ($1 / $5 per million input / output tokens), inside the $60 ceiling; artefacts `seat_scaffold_comparison.json` (pair `haiku`), `router_decomposition_haiku_stdcot.json`, `routing_certification_haiku_stdcot.json`, `transfer_readouts_haiku_stdcot.json`, `flooding_analysis_haiku_stdcot.json`)
+
+**Registered reading, haiku: PLAIN-BETTER**, carried by matched-coverage routed accuracy. Read on
+the 491 debates both cells complete (the narrated cell's 7 missing as_asker debates, 16.23's
+partial-panel rule, as registered; `analyze_seat_scaffold.py` now applies that rule and pairs
+only common debates). Narrated minus plain seats, 249 items: collective accuracy 0.851 vs 0.882,
+-3.0 [-6.4, +0.4]; routed accuracy (sonnet majority-of-three) 0.892 vs 0.902, -1.0 [-3.8, +1.8];
+routed accuracy thinned to the plain cell's fire rate -3.2 [-6.0, -0.4]; routing gain +2.0 [-0.4,
++4.6]; fire rate 0.197 vs 0.090, +10.6 [+6.6, +14.5]; shield -1.0 [-10.3, +8.3] (NO-DIFFERENCE).
+The 16.28 primary reading over grok and Llama is unchanged (PLAIN-BETTER); haiku now gives the same
+reading on a third generator, and, as on grok, narration roughly doubles how often the dissent flag
+fires without making the routed system more accurate at matched coverage.
+
+**Router decomposition (per-model readout, sonnet majority-of-three judge only).** A first run with
+the optional grok coverage judge in the second slot failed that slot's emission guard (grok's cached
+verdicts covered 0.909 of the union-fired cells, limit 0.95, because they were generated for the
+narrated cell's flags) and was not read; the E-D registration names only the sonnet judge, so the
+decomposition was rerun with it alone and all guards passed (codable 1.000, judge emission 1.000 and
+0.982). Plain seats: counter fires on 45 of 498 debates (0.090); routed 0.904 vs collective 0.883,
++2.0 [+0.8, +3.4] (narrated haiku +3.7 [+1.4, +5.9], 16.23); verdict-type router +2.6 [+1.0, +4.4];
+union +3.8 [+2.0, +5.8]. Routed against haiku's own majority-of-three solo +1.6 [+0.4, +3.0]
+(certified, as narrated haiku's +3.1); below sonnet answering every case, -9.5 [-12.9, -6.3]; the
+solo's own sample disagreement routes as well or better, +2.2 [+0.2, +4.6].
+
+**Sensor and advocate opposition (descriptive, not read as registered: E-D said sensor survival is not
+testable on haiku).** One-loser stratum P(wrong | fired) 0.250 vs 0.069, 3.6x, lift +18.1 [+3.9,
++34.1] at 32 fired, under the 60-fired minimum, so reported and not tabulated. Advocate phi within
+one-loser verdicts +0.419 [+0.285, +0.540] (narrated haiku +0.246), positively correlated as on the
+narrated cell, so the against-interest reading remains unsupported on haiku.
+
+**Spend ledger.** E-D $32.03 measured. Batch total about $270, above the $250 overnight cap by the
+PI's authorisation of 2026-09-23 for this cell.

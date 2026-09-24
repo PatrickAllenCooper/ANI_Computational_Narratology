@@ -47,8 +47,9 @@ PAIRS = {
     # 16.28 amendment E-D (2026-09-23): haiku on the 249-item panel, k = 1; the narrated cell has
     # 491 of 498 rows (16.23 partial-panel rule), so the pair is read on the common debates.
     "haiku": {"narrated": "cg_deliberation_haiku_249", "plain": "cg_deliberation_haiku_249_stdcot",
-              "rows": 498, "samples": 1},
+              "rows": 498, "samples": 1, "narrated_missing_ok": 7, "common_only": True},
 }
+REGISTERED_1628 = ("grok", "llama")   # the 16.28 primary reading; haiku is the E-D amendment, read on its own
 THIN_SEEDS = 200
 DRAWS, SEED = 8000, 20260922
 
@@ -168,10 +169,19 @@ def run() -> dict:
     for m, p in PAIRS.items():
         comp[m] = [completeness(p["narrated"], p["rows"], p["samples"]),
                    completeness(p["plain"], p["rows"], p["samples"])]
+        # E-D amendment: the narrated haiku cell is complete under 16.23's partial-panel rule
+        # (7 as_asker debates lost to Foundry DNS failures), so it passes at rows >= expected - 7.
+        miss = p.get("narrated_missing_ok", 0)
+        if miss and comp[m][0]["rows"] >= p["rows"] - miss and comp[m][0]["sample_idx"] == list(range(p["samples"])):
+            comp[m][0] = {**comp[m][0], "pass": True, "partial_panel_rule": f"16.23, {p['rows'] - comp[m][0]['rows']} missing"}
         if not all(c["pass"] for c in comp[m]):
             per_model[m] = {"UNREAD": "completeness failed", "completeness": comp[m]}
             continue
         da, db = load_tag(p["narrated"]), load_tag(p["plain"])
+        if p.get("common_only"):
+            key = lambda d: (d["arm"], d["item"], d["sample"])
+            common = {key(d) for d in da} & {key(d) for d in db}
+            da, db = [d for d in da if key(d) in common], [d for d in db if key(d) in common]
         a, b = per_item(da), per_item(db)
         fa, fb = np.mean([d["fired"] for d in da]), np.mean([d["fired"] for d in db])
         target = min(fa, fb)
@@ -185,7 +195,10 @@ def run() -> dict:
         per_model[m]["matched_fire_rate"] = float(target)
         per_model[m]["completeness"] = comp[m]
     readable = {m: r for m, r in per_model.items() if "UNREAD" not in r}
-    return {"per_model": per_model, "reading": reading(readable) if readable else {"primary": "UNREAD"}}
+    reg = {m: r for m, r in readable.items() if m in REGISTERED_1628}
+    return {"per_model": per_model,
+            "reading": reading(reg) if reg else {"primary": "UNREAD"},
+            "per_model_reading": {m: reading({m: r}) for m, r in readable.items()}}
 
 
 def _selftest() -> int:
@@ -246,7 +259,8 @@ def main(argv=None) -> int:
                 continue
             print(f"  {k:7s} narrated {v['narrated']:.4f}  plain {v['plain']:.4f}  narrated-plain "
                   f"{v['diff']:+.4f} [{v['lo']:+.4f}, {v['hi']:+.4f}]  n_items {v['n_items']}")
-    print(f"\nREADING: {res['reading']}")
+    print(f"\nREADING (16.28, grok and Llama): {res['reading']}")
+    print(f"PER-MODEL READINGS: {res.get('per_model_reading')}")
     a.json.write_text(json.dumps(res, indent=2, default=float))
     print(f"wrote {a.json}")
     return 0

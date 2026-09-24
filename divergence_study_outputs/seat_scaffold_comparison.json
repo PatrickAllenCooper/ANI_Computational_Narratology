@@ -165,6 +165,86 @@
           "pass": true
         }
       ]
+    },
+    "haiku": {
+      "acc": {
+        "n_items": 249,
+        "narrated": 0.8514056224899599,
+        "plain": 0.8815261044176707,
+        "diff": -0.030120481927710843,
+        "lo": -0.0642570281124498,
+        "hi": 0.004016064257028112,
+        "ci_excludes_0": false
+      },
+      "routed": {
+        "n_items": 249,
+        "narrated": 0.891566265060241,
+        "plain": 0.9016064257028112,
+        "diff": -0.010040160642570281,
+        "lo": -0.03815261044176707,
+        "hi": 0.018072289156626505,
+        "ci_excludes_0": false
+      },
+      "routed_matched": {
+        "n_items": 249,
+        "narrated": 0.8695582329317268,
+        "plain": 0.9016064257028112,
+        "diff": -0.03204819277108434,
+        "lo": -0.06043222891566265,
+        "hi": -0.003483935742971887,
+        "ci_excludes_0": true
+      },
+      "gain": {
+        "n_items": 249,
+        "narrated": 0.040160642570281124,
+        "plain": 0.020080321285140562,
+        "diff": 0.020080321285140562,
+        "lo": -0.004016064257028112,
+        "hi": 0.04618473895582329,
+        "ci_excludes_0": false
+      },
+      "fire": {
+        "n_items": 249,
+        "narrated": 0.19678714859437751,
+        "plain": 0.09036144578313253,
+        "diff": 0.10642570281124498,
+        "lo": 0.06626506024096386,
+        "hi": 0.14457831325301204,
+        "ci_excludes_0": true
+      },
+      "shield": {
+        "n_items": 97,
+        "narrated": -0.010309278350515464,
+        "plain": 0.0,
+        "diff": -0.010309278350515464,
+        "lo": -0.10309278350515463,
+        "hi": 0.08247422680412371,
+        "ci_excludes_0": false
+      },
+      "n_items_narrated": 249,
+      "n_items_plain": 249,
+      "matched_fire_rate": 0.08829568788501027,
+      "completeness": [
+        {
+          "tag": "cg_deliberation_haiku_249",
+          "rows": 491,
+          "expected": 498,
+          "sample_idx": [
+            0
+          ],
+          "pass": true,
+          "partial_panel_rule": "16.23, 7 missing"
+        },
+        {
+          "tag": "cg_deliberation_haiku_249_stdcot",
+          "rows": 498,
+          "expected": 498,
+          "sample_idx": [
+            0
+          ],
+          "pass": true
+        }
+      ]
     }
   },
   "reading": {
@@ -172,6 +252,26 @@
     "shielding": {
       "grok": "NO-DIFFERENCE",
       "llama": "NO-DIFFERENCE"
+    }
+  },
+  "per_model_reading": {
+    "grok": {
+      "primary": "PLAIN-BETTER",
+      "shielding": {
+        "grok": "NO-DIFFERENCE"
+      }
+    },
+    "llama": {
+      "primary": "PLAIN-BETTER",
+      "shielding": {
+        "llama": "NO-DIFFERENCE"
+      }
+    },
+    "haiku": {
+      "primary": "PLAIN-BETTER",
+      "shielding": {
+        "haiku": "NO-DIFFERENCE"
+      }
     }
   }
 }
