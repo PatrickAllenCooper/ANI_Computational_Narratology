@@ -9,6 +9,8 @@ LaTeX % comments removed, keeping escaped \\%. Removal is TeX-equivalent:
     which is what TeX does, except that after a control word a single space is kept so that
     "\\foo%" + "bar" does not become "\\foobar";
   * a %-ended line followed by a blank line keeps the blank line (the paragraph break).
+  * a blank line after a file's last paragraph is kept, so that paragraph still ends before the
+    next \\input begins (added by the integrating editor, clarity loop 2, 2026-09-24).
 In the _clean copies, \\input{sections/X} and \\input{figures/X} point to the _clean files.
 main_clean.tex is main.tex, comment-free, inputting the _clean sections.
 """
@@ -36,7 +38,10 @@ def comment_start(line):
 def strip_comments(text):
     out = []
     join_pending = False  # previous emitted line ended in a comment with no space before it
-    for line in text.split('\n'):
+    lines = text.split('\n')
+    if text.endswith('\n'):
+        lines = lines[:-1]  # the file's final newline ends its last line and is not a blank line
+    for line in lines:
         idx = comment_start(line)
         if idx >= 0:
             before = line[:idx]
@@ -72,7 +77,11 @@ def strip_comments(text):
         cleaned.append(l)
     while cleaned and cleaned[0].strip() == '':
         cleaned.pop(0)
-    return '\n'.join(cleaned).rstrip('\n') + '\n'
+    # A file whose last paragraph is followed by a blank line (after its comments are dropped) ends that
+    # paragraph with \par before the next \input begins; keep that blank line, since without it the
+    # paragraph runs on into the next file with an extra space token, which can move its line breaks.
+    trailing_par = bool(cleaned) and cleaned[-1].strip() == ''
+    return '\n'.join(cleaned).rstrip('\n') + '\n' + ('\n' if trailing_par else '')
 
 
 def redirect_inputs(text):

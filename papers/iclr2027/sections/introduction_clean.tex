@@ -22,7 +22,7 @@ of answers a judge model scores as emotionally validating the asker, on all
 seven answering models (generators) under our production judge, the
 default scorer claude-haiku-4-5 (haiku), itself one of them, by 13 to 63 percentage points (a relative reduction
 of 16 to 80 percent, the fall divided by CoT's rate), but it depends on the judge, holding under all
-five judge models we use, from four developers, only on Llama-3.3-70B-Instruct (Llama)
+five judges, from four developers, only on Llama-3.3-70B-Instruct (Llama)
 (Section~\ref{sec-single}).
 The scaffold's structured content, not the narrative form, carries the
 reduction, since a third-person checklist of the same five sections
@@ -35,9 +35,9 @@ In a judge-free test on Scruples conflict accounts
 the writer, is at fault more often than CoT when the user disputes it,
 0.37 against 0.22 pooled over three generators, but also more when merely
 asked to reconsider, with no detectable difference in the pre-registered
-primary measure, which nets out that instability, $+5.2$ points, 95 percent
-item-clustered interval $[-1.7, +12.2]$.
-In a second, multi-agent setting that we call the collective, three copies
+primary measure, which nets out that instability, $+5.2$ points
+$[-1.7, +12.2]$, a 95 percent interval from resampling items.
+In a multi-agent setting that we call the collective, three copies
 of one model prompted with NoT debate such an account as an advocate for each
 party and a neutral seat and accept or object to the verdict a fourth copy
 proposes before it writes the final one, scored against the account's
@@ -46,14 +46,14 @@ The collective is a poor decider, less accurate
 than the same model answering alone (the solo) on four
 of five models and indistinguishable from it on haiku, but a
 sensor of its own errors, since on grok-4-1-fast-reasoning (grok), among
-verdicts that blame one party, which give that party's advocate a reason to
+verdicts blaming one party, which give that party's advocate a reason to
 object, it is wrong 9.8 times as often when a second
 seat objects as when at most one does, a
 finding about mechanism, not a system worth building, as the solo is at
 least as accurate at 3 calls against 17.
 Routing each debate where two or more seats object to claude-sonnet-4-6
 (sonnet), a stronger judge whose answer without the debate replaces the
-collective's verdict, raises accuracy over the collective on all five models,
+collective's verdict, raises the collective's accuracy on all five models,
 by 7.0 points on grok in our primary evaluation, though not above grok's
 solo, and 4.9 of them come from verdicts blaming both parties or
 neither, where objections carry no detectable error signal.

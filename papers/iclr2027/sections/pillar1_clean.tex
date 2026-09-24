@@ -1,13 +1,12 @@
 \section{Single-Agent Social Sycophancy}
 \label{sec-single}
 
-Under our production judge, haiku, NoT lowers the rate of answers scored as
-emotionally validating on all seven generators, by 13 to 63 percentage points
-once both prompts are regenerated at a token cap that almost no response
-reaches, in place of original responses that lower caps often cut short.
-All five judges agree only on Llama, and on claude-sonnet-4-6 (sonnet) no
-other judge confirms the reduction, and in that regeneration each of the
-other four scores NoT as more validating than CoT.
+Under our production judge NoT lowers the validation rate on all seven
+generators, by 13 to 63 points once both prompts are regenerated at a token
+cap almost no response reaches, in place of original responses that lower
+caps often cut short. All five judges agree only on Llama, and on sonnet no
+other judge confirms the reduction, and in that regeneration the other four
+all reverse it.
 
 \paragraph{Setup.}
 The items are a random 150 of the 3,027 open-ended requests for personal
@@ -113,7 +112,7 @@ rises on sonnet ($+7.3$ to $+10.1$, the nano judge's interval reaching zero)
 and puts sonnet's production-judge drop at $-4.7$ $[-13.3, +3.3]$, the one
 run where that judge's interval includes zero, which the rule would read as
 failing, though as registered this run revises none of the first run's
-readings (Appendix~\ref{app-rep4k} pools the runs after the fact).
+conclusions (Appendix~\ref{app-rep4k} pools the runs after the fact).
 
 \begin{table}[t]
 \caption{\textbf{On judged validation the structured content carries the
@@ -132,41 +131,39 @@ less (Appendix~\ref{app-form}).}
 \paragraph{What carries the reduction.}
 NoT differs from CoT in its sections, story form, persona line (``thoughtful
 advisor'' for ``helpful assistant'') and length, so four further prompts
-(Figure~\ref{fig-app-prompts}) each target one of these, on haiku, grok, nano
-and Llama, against CoT and NoT regenerated in the same run at 2,048 tokens,
-8,192 for nano, so that no contrast also changes date or cap
-(Table~\ref{tab-form-main}, Appendix~\ref{app-form}).
+(Figure~\ref{fig-app-prompts}) each target one, on haiku, grok, nano and
+Llama, against CoT and NoT regenerated in the same run at 2,048 tokens, 8,192
+for nano, so no contrast also changes date or cap (Table~\ref{tab-form-main},
+Appendix~\ref{app-form}).
 A third-person checklist of the same five sections under NoT's persona line
 lowers validation more than NoT under every judge, by 11.4 to 31.4 points
-(every interval of that difference above zero).
-Because the rubric scores emotional validation, the checklist may be judged
-less validating partly for a cooler tone, or register, and not only for
+(each interval above zero).
+As the rubric scores emotional validation, the checklist may be judged
+less validating partly for a cooler tone, or register, not only for
 endorsing the asker less, and this design cannot separate the two, nor voice from narrative
 genre.
-The first-person narrative instruction without the sections raises
-validation above CoT under every judge, by 6.8 to 18.7 points.
+First-person narration without the sections raises validation above CoT under every judge, by 6.8 to 18.7 points.
 NoT's persona line does not carry the reduction, since CoT
-with only that line swapped in lowers validation under no judge and raises
+with only that line swapped in lowers validation under no judge, raising
 it under two (gpt-4o and nano).
 Nor does length, where CoT asked for NoT's mean length in words reaches it
 (1.04 and 1.19 times in characters on haiku and grok) yet NoT validates less
-than it under four judges, on haiku partly because the request raises
+than it under four judges, on haiku partly as the request raises
 validation above CoT, the Llama judge's interval on grok including zero.
 Earlier tests on haiku, grok and nano, scored by the production judge alone
-against the original, partly truncated responses, find no single section
+on the original, partly truncated responses, find no single section
 carrying the reduction. Removing the stakeholder, consequence or uncertainty
 section takes back no detectable share of NoT's drop on grok or nano and 42
 to 55 percent on haiku, the judge's own generator, each pooled interval
 including a quarter, the registered bar for crediting a section. One sentence
 asking the model to consider everyone affected raises validation above CoT,
 pooled, by $+6.1$ $[+2.1, +10.2]$ points, a rise no registered outcome
-anticipated (Appendix~\ref{app-form}).
+anticipated.
 
 \paragraph{What the scaffold does not do.}
 A judge-free test, reading each reply's required verdict label, asks whether
 NoT keeps a verdict the user disputes, on the high-consensus Scruples accounts
-\citep{lourie2021scruples} of Section~\ref{sec-collective} posed as the
-user's own. The same first answer is followed by a pushback (``I really don't
+of Section~\ref{sec-collective} posed as the user's own. The same first answer is followed by a pushback (``I really don't
 think I was in the wrong here'' before a request to reconsider) or, as a
 neutral re-ask, by the request alone (Appendix~\ref{app-pushback}). Where both
 prompts first blamed the user, capitulation is the share of verdicts moving to

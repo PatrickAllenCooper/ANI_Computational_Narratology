@@ -144,12 +144,26 @@ four times on grok, twice on Llama, Mistral and DeepSeek and once on haiku
 % (--samples 2, 840), haiku 16.23 registration ~l.6735-6740 (--samples 1) and RESULTS ~l.6914 (491
 % debates over 249 items, seven of 498 lost at the platform); rows in cg_deliberation_{,noedge_,
 % haiku_249_,llama3370binstruct_,mistrallarge32_,deepseekv4pro_}rows.csv
-Three copies of one model under the NoT system prompt take seats, an
-advocate for each party and a neutral seat, and a fourth copy with no side
-moderates and synthesises their final positions. Over seven stages in 17
-calls (Table~\ref{tab-app-stages}) the moderator's integrated verdict,
-written after each seat labels that synthesis, is scored as the
-collective's. A verdict blaming the writer alone or both parties counts as
+Over seven stages in 17 calls (Table~\ref{tab-app-stages}), in which the
+seats exchange statements, the fourth copy, a moderator with no side,
+synthesises the seats' final positions and, after each seat labels that
+synthesis, writes the integrated verdict scored as the collective's.
+% "in which the seats exchange statements" (integrating editor, clarity loop 2, 2026-09-24) defines at its
+% first main-text use the exchange that "grok with the exchange cut" (paragraph "Dissent flags errors")
+% and Table tab-routing's row "grok, exchange cut" remove: each seat reads the other two seats' openings
+% before its rebuttal and their rebuttals before its final position (scripts/run_crowdgold_deliberation.py
+% r1_user and r2_user; with the exchange cut, scripts/run_crowdgold_topology.py r1_user_noedge and
+% r2_user_noedge; Appendix app-collective, paragraphs "Item sets and exclusions" and "Debate, flag and judge")
+% integrating editor, clarity loop 2 (2026-09-24), one definition per term and page budget with the
+% theory-of-mind stand-in: the sentence "Three copies of one model under the NoT system prompt take seats,
+% an advocate for each party and a neutral seat, and a fourth copy with no side moderates and synthesises
+% their final positions" restated the Introduction's definition of the collective at its first use
+% (intro-01, "three copies of one model prompted with NoT debate such an account as an advocate for each
+% party and a neutral seat and accept or object to the verdict a fourth copy proposes before it writes the
+% final one"), so it is merged into this sentence, which keeps the moderator's lack of a side, the
+% synthesis, the labels and the scored integrated verdict; the seats' NoT system prompt is stated in the
+% Introduction and in the paragraph "Narration costs the collective accuracy"
+A verdict blaming the writer alone or both parties counts as
 at fault, one blaming the other party alone or no one as not at fault.
 % clarity round 2 (2026-09-24, collective-03): the synthesis is defined where it is first named: the moderator reads
 % the three seats' final positions and writes a synthesis with a verdict (scripts/run_crowdgold_deliberation.py
@@ -503,8 +517,9 @@ cut, where no seat reads another's statements, has no solo pairing.}
 \paragraph{Routing.}
 Routing improves the collective on every row of Table~\ref{tab-routing}, by
 $+7.0$ points $[+4.8, +9.4]$ on grok with 19.6 percent of debates routed, and
-holds with DeepSeek in sonnet's place in a readout not pre-registered
+holds with DeepSeek in sonnet's place in an analysis not pre-registered
 (Appendix~\ref{app-collective}).
+% "an analysis" (was "a readout", internal wording; integrating editor, clarity loop 2, 2026-09-24)
 % clarity round 2 (2026-09-24, m-collective-04): "lifts" -> "improves" for the routing gain here, in the Table
 % tab-routing title and in Appendix app-collective, so that "lift" keeps one meaning, the flagged minus unflagged
 % error rate; numbers unchanged (whole-06 covered); in the solo-routing sentence below "lifts it by" became

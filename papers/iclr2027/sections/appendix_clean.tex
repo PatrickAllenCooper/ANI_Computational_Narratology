@@ -1068,7 +1068,8 @@ production judge, gpt-4o and nano (Table~\ref{tab-app-length}, first column
 of each pair).
 
 Two earlier registered tests, scored by the production judge alone, find no
-single element of the content that carries the reduction. Each knockout
+single section of NoT that carries the reduction.
+Each knockout
 removes one of the stakeholder, consequence and uncertainty sections from
 NoT, on haiku, grok and nano. The share of the reduction it takes back is
 its validation rate minus intact NoT's, divided by CoT's minus intact NoT's,
@@ -1485,8 +1486,8 @@ shown.}
 \label{app-collective}
 
 Routing asks whether the collective's own dissent is worth acting on, by
-sending only the debates it flags to a stronger model, much as a model
-cascade sends a cheap model's uncertain cases to a stronger one, and the
+sending only the debates it flags to a stronger judge, much as a model
+cascade sends a cheap model's uncertain cases to a stronger model, and the
 comparisons with the same model answering alone, the solo, ask whether the
 collective adds anything that the solo, or routing on the solo's own sample
 disagreement, does not.
@@ -1589,7 +1590,7 @@ final position is stated from its own text alone, while the moderator still
 reads all three final positions and every later stage is unchanged, so each
 debate still makes 17 calls and the condition tests whether the flag needs
 the seats' exchange.
-A seat objects when its label accepts the synthesis with a stated
+A seat objects when it accepts the synthesis with a stated
 modification or rejects it,
 and the counter flags a debate when two or more of the three seats object.
 Routing replaces a flagged debate's verdict with the majority of sonnet's
@@ -1665,8 +1666,9 @@ debates, so a difference can depart from the difference of the accuracy
 columns by up to 0.2 points, as on haiku. A variant that weights each item
 and framing pair equally moves no bound by more than 0.2 points, and a rerun
 with seed 13 none by more than 0.25.
-The two earlier comparisons that Section~\ref{sec-collective} says point the
-other way lie outside the table. In an earlier collective on nano, the
+The two earlier, unpaired comparisons that Section~\ref{sec-collective} says
+favour the collective lie outside the table.
+In an earlier collective on nano, the
 collective's accuracy of 0.829 over 828 debates sits above its solo's 0.820
 over 406 item and framing pairs, an unregistered readout, and in an earlier
 haiku collective on 100 Scruples accounts the collective's 0.885 over 192
@@ -2452,7 +2454,7 @@ above, are marked where they appear.
 Earlier design notes and entries in the log described a chain-of-thought
 variant that asks for detailed
 reasoning from every relevant perspective as a length-matched or token-matched
-control. It is neither. It contains three of NoT's elements in prose, it ran
+control. It is neither. It contains three of NoT's sections in prose, it ran
 at 1,024 tokens against NoT's 2,048, and every one of grok's 139 responses to
 it ended at that cap. This paper does not use it, and its length control is
 the length-matched prompt of Appendix~\ref{app-form}.
@@ -2618,3 +2620,21 @@ advocate opposition on one-party verdicts & 16.12, 16.23 to 16.27 & \texttt{floo
 \bottomrule
 \end{tabular}
 \end{table}
+
+\subsection{Further related work}
+\label{app-related}
+Aggregation theory states when pooling judgements helps, under correlated
+votes \citep{ladha1992condorcet,boland1989majority}, unequal competence
+\citep{shapley1984optimizing,nitzan1982optimal,bahrami2010optimally}, social
+influence in networks
+\citep{degroot1974reaching,golub2010naive,lorenz2011social,becker2017network},
+diversity \citep{zollman2010epistemic,hong2004groups,thompson2014diversity},
+small deliberating groups \citep{navajas2018aggregated} and shared biases
+\citep{prelec2017solution}, and where it cannot \citep{list2002aggregating}.
+Mediation and mechanism design study agents with divergent interests
+\citep{dafoe2020cooperative,akata2025repeated,piatti2024cooperate,leon2026personas,tewolde2026coopeval},
+among them a mediator who privately recommends an action to each player and
+so can reach outcomes no equilibrium of the players alone reaches
+\citep{aumann1974subjectivity}, the position of the collective's neutral seat,
+which speaks for neither party, and of the stronger judge of
+Section~\ref{sec-collective}.

@@ -1,24 +1,21 @@
 \section{The Scaffold}
 \label{sec-scaffold}
 
-NoT asks the model to reason in a first-person narrative of five sections
-(protagonist, stakeholders, consequences, uncertainty and decision) before
-answering, and its control is the one-line CoT prompt, both verbatim in
-Figure~\ref{fig:prompt}.
-Under the scaffold's principle, organised criticism across perspectives
-\citep{longino1990science,popper2011open}, NoT has the model write out the
-perspectives missing from one person's account of a conflict, and the
-collective of Section~\ref{sec-collective} places them in separate agents
-with opposed interests.
+Figure~\ref{fig:prompt} gives NoT and its control, the one-line CoT prompt,
+verbatim.
+Under the scaffold's principle, organised criticism across perspectives, NoT
+has the model write out the perspectives missing from one person's account
+of a conflict, and the collective of Section~\ref{sec-collective} gives them
+to separate, opposed agents.
 Sections~\ref{sec-single} and~\ref{sec-collective} use the NoT text
 unchanged on every model and task, with what a task adds, such as labels for
 who is at fault or a seat's role, after it in the system prompt or user turn
 (Appendices~\ref{app-pushback}, \ref{app-seat} and~\ref{app-prompts}).
-The solo and Section~\ref{sec-collective}'s routing model answer instead
-under a brief unscaffolded prompt, which gives those labels and asks for at
+The solo and the stronger judge, sonnet, answer instead under a brief
+unscaffolded prompt, which gives those labels and asks for at
 most four sentences of reasoning (Appendix~\ref{app-prompts}).
 Among related prompts, SimToM \citep{wilf2024simtom} first restates what
-one character knows and then answers from it, MoralCoT \citep{jin22_moralcot}
+one character knows, then answers from it, MoralCoT \citep{jin22_moralcot}
 builds chain-of-thought on a theory of moral reasoning, and Solo
 Performance Prompting \citep{wang2024spp} has one model play several personas.
 NoT instead fixes its five sections in one system prompt used in one call per
