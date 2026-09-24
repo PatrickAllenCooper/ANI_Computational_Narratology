@@ -48,6 +48,19 @@
 %      is not above grok answering alone (+0.1 [-2.6, +3.0]). Sources: router_decomposition.json
 %      composed_sonnet (counter, by_stratum) and counter_lift_by_stratum.both_party;
 %      collective_vs_solo_paired.json grok routed_minus_solo_debate_weighted. PI decision.
+%  (9) Clarity review round 2 (2026-09-24), for the PI. (a) The ASCII quotes around "understanding" typeset
+%      as two closing quotes in the PDF, and ``understanding'' is the same word with LaTeX quotes (markup
+%      only, no change of wording). (b) "3-10" typesets with a hyphen, and a range takes "3--10" (the
+%      co-author's figure). (c) "improves their social reasoning abilities" has no plural antecedent for
+%      "their" in its sentence (the scaffold and the model are singular; the nearest plural is "LLMs",
+%      three sentences earlier). (d) "review of the flagged cases by a stronger judge" can be read as the
+%      judge reading the debate, whereas sonnet answers each flagged account afresh, without the debate,
+%      by majority of three with ties left to the collective (Section sec-collective,
+%      scripts/verify_pillar3_headline.py), which the Introduction now states. (e) The "without the
+%      scaffold" half of "with or without the scaffold in their seats, dissent flags the collective's own
+%      errors" rests on a plain-seat sensor read on grok only (Llama's 53 flagged debates fall under the
+%      registered minimum of 60, and haiku's sensor survival was registered as not testable), prereg 16.28
+%      RESULTS and amendment E-D, seat_scaffold_comparison.json, Appendix app-seat.
 % ============================================================================================
 \begin{abstract}
 LLMs today are adept at conversation, providing advice and suggestions with apparent empathy and understanding. While the underlying nature of their understanding and the manner of its emergence might be a matter of much debate, the premise that this "understanding" breaks down under more complex social conditions remains largely accepted. The social account of objectivity emphasizes how organized criticism across perspectives can expose individual errors. Based on this account, we introduce a general, lightweight prompt scaffold that writes the decision-maker, the affected stakeholders, the consequences of each action and what remains uncertain into the model's reasoning, and which improves their social reasoning abilities when compared to standard chain-of-thought.
@@ -74,4 +87,8 @@ and that among agents with opposing interests, with or without the scaffold in t
 % (router_decomposition.json composed_sonnet; independently reproduced by verify_pillar3_headline.py)
 Our findings lay the groundwork for further exploring the potential of this scaffold in improving models' social alignment.
 \end{abstract}
-\noindent\todo{PI: three clauses reworded on 2026-09-23 (narrative attribution, judge qualifier, collective sentence). The theory-of-mind figure is the co-author's. Items 5 to 8 of the comment block at the top of sections/abstract.tex are new.}
+\noindent\todo{PI: decide the title (note above it in main.tex) and items 5 to 9 atop sections/abstract.tex.}
+% visible note cut to one line (whole-02, clarity loop 2, 2026-09-24; supersedes intro-13's edit of this
+% \todo, whose comment item 9 stays): the three clauses reworded on 2026-09-23 are recorded in lines 2-6 of
+% this file, the theory-of-mind figure's owner in the PILLAR 2 \todo inside the abstract, and the title
+% question in the comment above \title in main.tex

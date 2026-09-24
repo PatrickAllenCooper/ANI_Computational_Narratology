@@ -41,14 +41,33 @@
 % measured with the ToM stand-in in scratchpad/cedit (g5), Section 6 grows by one rendered line (the
 % opener, collective-01); every other addition is paid inside its own paragraph, and the room left on
 % page 9 after the Discussion falls from 5 filler lines to 4, 0 overfull boxes, 0 undefined references.
+% Clarity round loop 2 (2026-09-24, collective-02 to -19, m-seats-01, m-collective-03/-07/-11, m-routing-02 to -08,
+% whole-11): measured by the section editor with the ToM stand-in (scratchpad/mcol2*, prevgraf line counts per
+% paragraph), Section 6 renders at the same line count as before the loop (opener 3, protocol 17, sensor 8,
+% dissent 16, routing 15, narration 11, Table tab-routing caption 7), 0 overfull boxes; where two fixes
+% edited the same words the merged wording is recorded in the comment under the sentence.
 \section{Collective Judgement}
 \label{sec-collective}
 
-The collective, the scaffold's principle placed across agents with opposed
-interests (Section~\ref{sec-scaffold}), decides worse than the solo on four
-of five models, and on those four its
-dissent flags its own errors, on grok with or without the scaffold in its
-seats.
+The collective places the scaffold's principle across opposed agents but is
+less accurate than the solo on four of five models, where its dissent flags
+its own errors, on grok with NoT or CoT seats.
+% integrating editor, clarity loop 2 (2026-09-24), page budget: "which places ... is" became "places ...
+% but is" (the collective is still not in apposition to the principle, collective-02), the pointer to
+% Section sec-scaffold, where the principle is defined, dropped (Section sec-scaffold names this
+% collective), "agents with opposed interests" is "opposed agents", "on those four" is "where", and
+% "with or without the scaffold in its seats" is
+% "with NoT or CoT seats", the seats' two system prompts of the paragraph "Narration costs the
+% collective accuracy"; "unscaffolded" before "solo" dropped because Section sec-scaffold now defines the
+% solo's brief unscaffolded prompt at its first main-text use (scaffold-01) and the Table tab-routing
+% caption repeats it (so the collective-02 note below is superseded on that word); same claims and
+% sources as below
+% clarity round 2 (2026-09-24, collective-02): "decides worse" -> "is less accurate" (same claim, accuracy against
+% the crowd verdict), "which places" so the collective is not in apposition to a principle, and "unscaffolded"
+% marks at the solo's first use in this section that it differs from the NoT seats in prompt as well as in
+% the number of agents: scripts/analyze_collective_vs_solo.py load_solo (scaffold standard),
+% scripts/run_crowdgold_aita.py build_system (GLOSSARY + BREVITY, no scaffold head, on the standard arm),
+% collective_vs_solo_paired.json solo_rule; the full definition is in the Table tab-routing caption
 % clarity round (2026-09-23): "decides worse than the solo on four of five models" and "on those four
 % its dissent flags its own errors" are the two claims sourced in the comment lines below (the four with
 % collective minus solo excluding zero and the four with a one-loser lift excluding zero are the same
@@ -81,8 +100,12 @@ seats.
 Disputes are Scruples Anecdotes \citep{lourie2021scruples}, first-person
 conflict accounts whose crowd verdict, a community judgement of blame rather
 than a ground truth, is the reference when at least 90 percent of at least 50
-votes agree that the writer alone, or the other party alone, is at fault, and
+votes agree in blaming the writer alone or the other party alone, and
 accuracy is agreement with it.
+% clarity round 2 (2026-09-24, collective-03): "agree that the writer alone, or the other party alone, is at fault"
+% tightened to "agree in blaming the writer alone or the other party alone", the same rule (consensus on the
+% YTA = AUTHOR or NTA = OTHER label only, scripts/load_scruples.py load_scruples_consensus; "agree" kept so
+% that the 90 percent attaches to one label, not to the two together), to pay for the synthesis below
 % Scruples citation added 2026-09-23 from https://ojs.aaai.org/index.php/AAAI/article/view/17589
 % and https://arxiv.org/abs/2008.09094, both fetched 2026-09-23
 % scripts/run_crowdgold_aita.py (--min-votes 50, --min-consensus 0.90), prereg E4 ~l.294-312
@@ -121,14 +144,25 @@ four times on grok, twice on Llama, Mistral and DeepSeek and once on haiku
 % (--samples 2, 840), haiku 16.23 registration ~l.6735-6740 (--samples 1) and RESULTS ~l.6914 (491
 % debates over 249 items, seven of 498 lost at the platform); rows in cg_deliberation_{,noedge_,
 % haiku_249_,llama3370binstruct_,mistrallarge32_,deepseekv4pro_}rows.csv
-Three copies of one model, each under the NoT system prompt, take seats, an
-advocate for each party and a neutral seat, a fourth copy with no side
-moderates, and over seven stages in 17 calls (Appendix~\ref{app-prompts})
-the moderator's integrated verdict, written after each seat accepts, accepts
-with a stated modification or rejects the synthesis, is scored as the
-collective's. A verdict blaming the writer alone or both
-parties counts as at fault, one blaming the other party alone or no one as
-not at fault.
+Three copies of one model under the NoT system prompt take seats, an
+advocate for each party and a neutral seat, and a fourth copy with no side
+moderates and synthesises their final positions. Over seven stages in 17
+calls (Table~\ref{tab-app-stages}) the moderator's integrated verdict,
+written after each seat labels that synthesis, is scored as the
+collective's. A verdict blaming the writer alone or both parties counts as
+at fault, one blaming the other party alone or no one as not at fault.
+% clarity round 2 (2026-09-24, collective-03): the synthesis is defined where it is first named: the moderator reads
+% the three seats' final positions and writes a synthesis with a verdict (scripts/run_crowdgold_deliberation.py
+% synthesis_user), each seat labels it (r3_label_user) and the integrated verdict is written from the
+% synthesis and the labels (integration_user); the pointer now names Table tab-app-stages in Appendix
+% app-prompts; 17 and seven as in the comment block below
+% section editor (2026-09-24): "Three copies of one model, each under the NoT system prompt, take seats" -> "Three
+% copies of one model under the NoT system prompt take seats" (same meaning, the three seats and not the
+% moderator run under NoT, scripts/run_crowdgold_deliberation.py agent_system), to pay for collective-03
+% m-routing-05 (1) (clarity round 2, 2026-09-24): "written after each seat accepts, accepts with a stated
+% modification or rejects that synthesis" -> "written after each seat labels that synthesis"; the next
+% sentence but one names the two objecting labels, and Appendix app-collective and app-prompts name all
+% three (ACCEPT, ACCEPT_WITH_MODIFICATION, REJECT; r3_label_user)
 % scripts/run_crowdgold_deliberation.py docstring (17 = 3+3+3+1+3+1+3), prereg E4 ~l.296,
 % 16.27 RESULTS ~l.8349 (14,280 calls = 840 debates x 17), scripts/verify_pillar3_headline.py scores S2
 % (YTA and ESH at fault, NTA and NAH not); models as in prereg E5, 16.4 table ~l.3143, 16.24, 16.26
@@ -148,9 +182,30 @@ not at fault.
 % its calls are priced inside the 17-call debate cost; "neutral seat" per whole-27
 A seat objects when it rejects the synthesis or accepts it with a
 modification, the counter fires, flagging the debate, when at least two
-seats object, and routing replaces a flagged debate's verdict with the
-majority of three answers that sonnet, a stronger model, gave to the framed
-account without the debate, unless they tie or none parse.
+seats object, and routing, to test whether the flag is worth acting on,
+replaces a flagged debate's verdict with the majority of three answers that
+sonnet gave to the framed account alone, unless they tie or none decides.
+% integrating editor, clarity loop 2 (2026-09-24): ", the stronger judge," dropped here, sonnet's role
+% being defined once, in the Introduction ("a stronger judge whose answer without the debate replaces
+% the collective's verdict"), and named so in Section sec-scaffold; page budget
+% section editor, clarity round 2 (2026-09-24): m-routing-05's clause "under the solo's brief prompt" is not carried
+% here, because the paragraph measured 18 rendered lines with it (17 without) in the stand-in build and Section
+% sec-scaffold now states the same fact at its first main-text use (scaffold-01: "The solo and Section
+% sec-collective's routing model answer instead under a brief unscaffolded prompt", since clarity loop 2
+% "The solo and the stronger judge, sonnet, answer instead under a brief unscaffolded prompt"); restore it here if
+% scaffold-01 is withdrawn
+% m-routing round 2 (m-routing-05 (2), 2026-09-24): purpose clause; sonnet's cached answers are scaffold standard
+% (cg_sonnet_actuator_rows.csv), the solo's prompt (scripts/run_crowdgold_aita.py build_system, GLOSSARY + BREVITY
+% on the standard arm; scripts/analyze_collective_vs_solo.py load_solo); 'none decides': the only no-majority
+% pairs among sonnet's 498 are four as_asker pairs whose three answers are all UNRESOLVED, no tie, recounted
+% 2026-09-24 with scripts/verify_pillar3_headline.py load (and again by the section editor the same day)
+% clarity round 2 (2026-09-24, collective-04): "the stronger judge" is the name the abstract, Related Work and
+% the claims table give sonnet in this role (it answers the account, unlike the scoring judges of Section
+% sec-single); stronger = more accurate alone than any seat model's solo on the same pairs,
+% routing_certification{,_haiku,_llama,_mistral,_deepseek}.json acc_judge_everywhere 0.969 to 0.976 against
+% acc_base at most 0.959 (Appendix app-collective); "tie" kept here for the page budget, the exact rule (an
+% even split of the parseable answers, scripts/verify_pillar3_headline.py load) is stated in Appendix
+% app-collective
 % m-routing-01 (2026-09-23): routing rule scripts/verify_pillar3_headline.py load (sonnet's cached
 % claude-sonnet-4-6 standard samples in cg_sonnet_actuator_rows.csv, three per (arm, item) on all 498
 % pairs, keyed on (arm, item) and never on the debate, so every flagged debate on a pair gets the same
@@ -179,10 +234,17 @@ account without the debate, unless they tie or none parse.
 
 \paragraph{The collective is a sensor, not a decider.}
 In a paired comparison not pre-registered, the collective's accuracy is
-below the solo's on four of the five models of Table~\ref{tab-routing}, by
-6.9 to 22.2 points with intervals excluding zero, and indistinguishable from
-it on haiku ($-0.6$ $[-4.7, +3.5]$), while two earlier comparisons not in
-the table point the other way (Appendix~\ref{app-collective}).
+below the solo's on four of five models (Table~\ref{tab-routing}), by
+6.9 to 22.2 points, intervals excluding zero, and indistinguishable from it
+on haiku ($-0.6$ $[-4.7, +3.5]$), while two earlier, unpaired comparisons
+favour the collective.
+% integrating editor, clarity loop 2 (2026-09-24), page budget: "not in the table" is "unpaired", the
+% reason they are not in Table tab-routing (debates against the solo's per-item answers with no paired
+% interval, Appendix app-collective paragraph "Pairing with the solo" and the collective-06 note below)
+% clarity round 2 (2026-09-24, collective-06): "point the other way" -> "favour the collective", nano 0.829 against
+% its solo 0.820 and haiku_fixed 0.885 against 0.851 to 0.862, debates against per-item solo answers with no
+% paired interval (sources in the comment block below); "without paired intervals" stays in Appendix
+% app-collective for the page budget
 % clarity round (2026-09-23, collective-06, whole-16, m-routing-20): "after review" read as an earlier
 % peer review, so the status is stated as not pre-registered; "by 6.9 to 22.2 points" keeps the numbers
 % without a mixed sign after "below"; the two earlier comparisons (nano, and the 100-item haiku set) are
@@ -198,10 +260,18 @@ the table point the other way (Appendix~\ref{app-collective}).
 % (routing_certification_nano.json acc_base, 406 cells, unregistered), haiku_fixed 0.885 (192 debates,
 % 16.4) vs solo 0.851 (prereg 16.17 cell 2 ~l.6485, n 630) to 0.862 (routing_certification_haiku.json
 % acc_base), debates against the solo's per-item answers, no paired interval
-The seats lock to their sides, the two advocates' opening rates
-of blaming the writer differing by 0.97 on grok and 0.42 on haiku with the
-other three models between, and Llama's error is one-sided, toward blaming
-the writer (Appendix~\ref{app-collective}).
+Role-lock, the gap between the advocates' opening at-fault rates, is 0.97
+on grok and 0.42 on haiku, the other three between, and Llama errs
+one way, toward blaming the writer.
+% clarity round 2 (2026-09-24, collective-07): the term role-lock restored so that the Related Work pointer ("which
+% we call role-lock and find near total on grok and below one half on haiku (Section sec-collective)") resolves;
+% related-07 (clarity2_fixes_related.json, same sentence, "(role-lock)" after "lock to their sides") is not
+% applied as well, since this wording names the term;
+% role-lock = absolute gap between the two advocates' opening at-fault rates (Appendix app-collective,
+% paragraph Role-lock), "the seats lock to their sides" folded into the term; sources in the W48 block below
+% clarity round 2 (2026-09-24, m-collective-07): "opening at-fault rates" is the Appendix app-collective term; at
+% fault = a verdict blaming the writer alone or both parties, as the protocol paragraph defines
+% (scripts/analyze_topology_2x2.py code_response published coding, YTA and ESH = 1)
 % "(role-lock)" dropped after "lock to their sides" (integrating editor, clarity loop 1, 2026-09-24): the
 % term is defined once in the main text, in Related Work ("how far each advocate's output is fixed by its
 % role, a role-lock"), and operationally in Appendix app-collective, paragraph "Role-lock"
@@ -222,9 +292,18 @@ the writer (Appendix~\ref{app-collective}).
 % crowd at-fault share 366 of 897 (0.408); prereg 16.24 RESULTS ~l.7646 (P(at_fault) neutral 0.733)
 % and ~l.7705-7706 (collective 0.989 on gold-YTA); the other models' per-gold split (grok 0.878/0.791,
 % haiku 0.808/0.923, DeepSeek 0.686/0.916, Mistral 0.676/0.864) is in the same artefacts
-Opposition itself costs accuracy, three seats all given the neutral brief
-scoring $+2.1$ points $[+0.4, +3.8]$ above the opposed seats on grok in a
-contrast not pre-registered.
+Opposition itself costs accuracy, three neutral seats scoring $+2.1$ points
+$[+0.4, +3.8]$ above opposed ones on grok in a contrast not pre-registered
+(Appendix~\ref{app-collective}).
+% integrating editor, clarity loop 2 (2026-09-24): the paragraph's three pointers to Appendix
+% app-collective are merged into this last one, which covers the two earlier comparisons, role-lock,
+% Llama's one-sided error and the identical-seats contrast (paragraphs "Pairing with the solo",
+% "Role-lock" and "Identical against opposed seats" there); "three seats all given the neutral role" is
+% "three neutral seats", the Discussion's wording for the same identical-seats condition; page budget
+% clarity round 2 (2026-09-24, collective-08): "the neutral brief" -> "the neutral role", the neutral seat's role
+% instructions given to all three seats (prereg 16.10 registration ~l.3510-3531, identical cells)
+% clarity round 2 (2026-09-24, m-collective-03): pointer to the appendix paragraph on identical seats, which also
+% states that those runs drop the stake wording from the opening preamble and the moderator prompts
 % prereg 16.10 RESULTS ~l.4190-4201 (observed, not pre-declared), identical/on 0.863 vs embodied/on
 % 0.842, +0.021 [+0.004, +0.038], 209 items, 415 item-matched cells, 3,000 draws, seed 29 (the paired
 % interval is in the prereg text only, topology_2x2_analysis.json holds unmatched S2), all 16.10 cells
@@ -245,10 +324,14 @@ is a fixed threshold, not the learned rule of \citet{he2026minoritysentinel}.
 % prereg 16.1 ~l.3042-3084) on objections to the synthesis and routes to a judge. "The roles fix" the
 % split on grok: majority of opening verdicts equals the neutral seat's on 1,642 of 1,642 debates
 % (effective_voter.json, prereg 16.15.4 RESULTS ~l.4496). Existing bib key, no new citation.
-On grok's verdicts that blame one party the collective is wrong on 0.387 of
+On grok's integrated verdicts that blame one party the collective is wrong on 0.387 of
 debates where a second seat objects against 0.039 where at most one does,
 9.8 times as often, a lift in error rate of $+34.8$ points $[+20.1, +49.3]$,
 against 4.4 times pooled over all verdicts.
+% clarity round 2 (2026-09-24, m-collective-01): "integrated" names the verdict whose type defines the one-party
+% stratum, scripts/verify_pillar3_headline.py l.112 (one_loser = verdict column in YTA, NTA) and
+% scripts/analyze_router_decomposition.py verdict_type (reads s2); the distinction from the synthesis is stated
+% in Appendix app-collective
 % prereg 16.15.1 RESULTS ~l.4273-4283 (full 210-item frame), router_decomposition.json
 % counter_lift_by_stratum.one_loser, verify_pillar3_headline_grok.json (0.3871 vs 0.0394, 9.834x;
 % unfired = fewer than two objectors, 1,194 debates, flooding_analysis.json one-loser 8 with none);
@@ -260,13 +343,17 @@ against 4.4 times pooled over all verdicts.
 % scripts/analyze_router_decomposition.py _lift_stat and concentration; 0.387 - 0.039 = +0.348
 % (router_decomposition.json one_loser lift); "lift in error rate" (collective-10 and m-routing-07,
 % 2026-09-23) defines the lift as the flagged minus unflagged error rate in the fewest words
-On verdicts that blame both parties or neither, right on 0.536 of 390
-grok debates against 0.936 for one-party verdicts, the counter shows no
+On verdicts that blame both parties or neither (accuracy 0.536 on 390
+grok debates against 0.936 for one-party verdicts), the counter shows no
 detectable lift, so the pooled figure mixes the dissent with the verdict
 type, itself a second, cheaper error signal. This split, like the
 two-objection threshold, was proposed and first read on grok's debates after
-they were collected, so the other five rows of Table~\ref{tab-routing} are
-their prospective test.
+their collection, so Table~\ref{tab-routing}'s other five rows are their
+prospective test.
+% clarity round 2 (2026-09-24, collective-09 and collective-10): the both-party accuracy moved into a parenthesis so
+% that "right on" no longer dangles from the counter (same numbers, sources in the W23 block below);
+% "after they were collected" and "the other five rows of Table tab-routing" tightened to pay for
+% collective-10's gloss, meaning unchanged
 % m-collective-06 (clarity loop 1, placed by the integrating editor 2026-09-24): the threshold's history is
 % stated in Appendix app-prereg, paragraph "The split by verdict type and the two-objection threshold": the
 % flag first registered (Addendum 3 gate) fired on the neutral seat's objection or an advocate's objection
@@ -297,8 +384,16 @@ debates and is close to a constant, 2.3 ($+5.7$) on DeepSeek and 1.5
 ($+16.2$) on Llama, each interval excluding zero. On haiku the interval
 includes zero (1.5 times, $+3.5$ points $[-4.1, +12.0]$) and rules out a
 lift of grok's or Llama's size in points but not Mistral's or DeepSeek's.
-The advocates' objections are strongly opposed on grok alone, so the
-mechanism is supported only there (Appendix~\ref{app-collective}).
+The advocates' objections are strongly opposed on grok alone, each objecting
+mainly when its side loses, so the argument above is supported only there
+(Appendix~\ref{app-collective}).
+% clarity round 2 (2026-09-24, collective-10): "the mechanism" -> "the argument above" (the argument that opens this
+% paragraph) so that "mechanism finding" in the Routing paragraph keeps one meaning, the lift; the gloss of
+% "strongly opposed": on grok one-party verdicts the writer's advocate objects on 0.992 of writer-blaming
+% (YTA) and 0.048 of other-party-blaming (NTA) verdicts, the other party's advocate on 0.989 of NTA and
+% 0.028 of YTA verdicts
+% (flooding_analysis.json aita.populations.s1_s2_codable_16_15.groups.{YTA,NTA}.seat_objection_rate), phi
+% -0.901 [-0.929, -0.868] (phi_predictors_diagnostic.json), "mainly" as in Appendix app-collective
 % clarity pass 2026-09-23 (m-collective-03): point lifts beside the ratios (edges off 0.282 - 0.056 =
 % +22.6, Mistral +11.1, DeepSeek +5.7, Llama 0.469 - 0.307 = +16.2, router_decomposition_{noedge_k4,
 % mistral,deepseek,llama}.json counter_lift_by_stratum.one_loser agree), so Llama's 1.5x is a large lift
@@ -320,7 +415,7 @@ mechanism is supported only there (Appendix~\ref{app-collective}).
 % read at >= 60 flagged one-party debates (78, 65, 64, 521, 128); the point values and the minimum are
 % stated in Appendix app-collective (m-routing-13), and the minimum of 60 also in Appendix app-seat; "the
 % exchange cut" per whole-16 (Table tab-routing's
-% caption defines edges off)
+% caption defines the exchange cut, its row label since collective-05)
 % W31 (2026-09-23): router_decomposition_haiku.json counter_lift_by_stratum.one_loser (lift +0.0353,
 % lo -0.0414, hi +0.1203, half-width 0.081, 65 fired of 424; prereg 16.23 RESULTS ~l.6937); one-loser
 % lifts in points from verify_pillar3_headline_{grok,noedge,llama,mistral,deepseek}.json recomputed
@@ -350,19 +445,36 @@ mechanism is supported only there (Appendix~\ref{app-collective}).
 \begin{table}[t]
 \centering
 \small
-\caption{\textbf{Routing lifts the collective on every row but beats the solo
-only on Mistral.} Solo, collective and routed are accuracies against the
-crowd verdict of the model alone by majority of three brief unscaffolded
-answers, of the integrated verdict and after routing to sonnet. $n$ counts
-codable debates, whose synthesis and integrated verdict both name one of the
-four outcomes, fire the share routed, the difference columns paired
-differences in points with 95 percent item-clustered intervals
-(Appendix~\ref{app-collective}), and precision and recall the shares of
-flagged one-party verdicts that are wrong and of wrong ones flagged. Edges
-off cuts the seats' exchange and has no solo pairing.}
+\caption{\textbf{Routing improves the collective on every row but beats the solo
+only on Mistral.} Solo (the model's majority of three brief unscaffolded
+answers), collective (the integrated verdict) and routed (after routing to
+sonnet) are accuracies against the crowd verdict. $n$ counts codable
+debates, whose synthesis and integrated verdict each blame the writer, the
+other party, both or neither, fire is the share flagged, differences are
+paired, in points, with 95 percent item-clustered intervals
+(Appendix~\ref{app-collective}), and precision and recall are the shares of
+flagged one-party verdicts that are wrong and of wrong ones flagged. Exchange
+cut, where no seat reads another's statements, has no solo pairing.}
 \label{tab-routing}
 \input{figures/tab_routing}
 \end{table}
+% clarity round 2 (2026-09-24, collective-05): caption rewritten, no number changed; each system's accuracy stated
+% beside its name, the four outcomes listed (YTA, NTA, ESH, NAH, scripts/verify_pillar3_headline.py code),
+% rows relabelled "grok (primary)" and "grok, exchange cut" in scripts/make_iclr_figures.py CONDITIONS so
+% the condition has one name; exchange cut = edges off, no seat reads another seat's text at the rebuttal
+% and final-position stages (scripts/run_crowdgold_topology.py r1_user_noedge, r2_user_noedge; prereg 16.25
+% design table); item-clustered is defined at its first use in Section sec-single and for debates in the
+% estimator paragraph of Appendix app-collective
+% clarity round 2 (2026-09-24, m-collective-11): fire = share of codable debates the counter flags (n_objectors >= 2),
+% verify_pillar3_headline_*.json fire; a flagged debate on whose pair sonnet has no majority keeps its verdict, so
+% "flagged" and not "routed" is the exact name of the column
+% caption (m-routing round 2, m-routing-06): fire = share flagged, scripts/verify_pillar3_headline.py compute
+% fire = n_fired / n with fired = n_objectors >= 2; flagged debates that keep the collective's verdict because
+% sonnet has no majority Llama 1 of 71, Mistral 5 of 760, none elsewhere (router_decomposition_{llama,mistral}.json
+% composed_sonnet.block.routers.counter.n_fallback_to_s2, recounted 2026-09-24 with
+% scripts/verify_pillar3_headline.py load on all six conditions); m-routing-06's "respectively" and "Edges off cuts
+% the seats' exchange, with no solo pairing" are superseded by collective-05's rewrite (accuracies named in
+% parentheses, "Exchange cut, where no seat reads another's statements, has no solo pairing")
 % figures/tab_routing.tex, generated by scripts/make_iclr_figures.py from
 % verify_pillar3_headline_{grok,noedge,haiku_249,llama,deepseek,mistral}.json (all_agree true,
 % recomputed intervals, bootstrap 4,000 draws seed 101, tolerances lo/hi 0.006 against registered;
@@ -389,10 +501,19 @@ off cuts the seats' exchange and has no solo pairing.}
 % grok_plain and llama_plain; no edges-off entry), pairing per debate on its own framing and item
 
 \paragraph{Routing.}
-Routing the flagged debates to sonnet lifts the collective on every row of
-Table~\ref{tab-routing}, by $+7.0$ points $[+4.8, +9.4]$ on grok with 19.6
-percent of debates routed, and holds with DeepSeek in sonnet's place in a
-readout not pre-registered (Appendix~\ref{app-collective}).
+Routing improves the collective on every row of Table~\ref{tab-routing}, by
+$+7.0$ points $[+4.8, +9.4]$ on grok with 19.6 percent of debates routed, and
+holds with DeepSeek in sonnet's place in a readout not pre-registered
+(Appendix~\ref{app-collective}).
+% clarity round 2 (2026-09-24, m-collective-04): "lifts" -> "improves" for the routing gain here, in the Table
+% tab-routing title and in Appendix app-collective, so that "lift" keeps one meaning, the flagged minus unflagged
+% error rate; numbers unchanged (whole-06 covered); in the solo-routing sentence below "lifts it by" became
+% "gains", since "improves it by" and "raises it by" each pushed that paragraph and the end of the main text
+% down by one line in the stand-in build of 2026-09-24 (AI use statement 249.3pt -> 279.5pt on page 10)
+% clarity round 2 (2026-09-24, collective-11, and m-routing-08 (a)): "the flagged debates to sonnet" dropped (the
+% protocol paragraph defines routing); collective-11's "the gain" as the subject of "holds" was measured and
+% not kept, because the Routing paragraph renders at 16 lines with it and 15 without in the stand-in build,
+% and "Routing ... lifts ... and holds" already has one subject; numbers and sources unchanged, below
 % clarity round (2026-09-23, collective-14 and whole-28): "sonnet" and "in sonnet's place" keep bare
 % "judge" for the scoring judges of Section sec-single; "every row" replaces "six conditions" (the six
 % rows of Table tab-routing, routed - collective excluding zero above on each)
@@ -408,10 +529,16 @@ readout not pre-registered (Appendix~\ref{app-collective}).
 % 0.60, 1.04 points, no paired difference excluding zero; the same numbers in
 % verify_pillar3_headline_deepseek_judge.json; the per-condition figures are in Appendix
 % app-collective; sonnet remains the primary judge in Table tab-routing and the text
-Of the 7.0 points, 2.1 come from verdicts that blame one party and 4.9 from
-those that blame both or neither, where the dissent shows no detectable
-lift and sending every such verdict to sonnet does better than the
-counter.
+Most of the 7.0 points, 4.9 against 2.1 from one-party verdicts, come from
+verdicts blaming both or neither, where dissent shows no detectable lift
+and sending every such verdict to sonnet beats the counter.
+% section editor (2026-09-24): "that blame" -> "blaming" and "does better than" -> "beats" (the verdict-type router's
+% +2.3 [+0.4, +4.3] over the counter excludes zero, W20 block below), to pay for m-routing-02 and -03
+% clarity round 2 (2026-09-24, collective-12): reordered to lead with the consequence, most of the gain arising where
+% the dissent shows no detectable lift; 4.9 + 2.1 = 7.0 (router_decomposition.json
+% composed_sonnet.block.routers.counter.by_stratum, W20 block below); "the dissent" -> "dissent" from
+% m-routing-08 (b), whose "one-party verdicts" is kept (the term of Dissent flags errors and the caption);
+% m-routing-08 (b)'s order (2.1 first) not adopted in favour of collective-12's
 % collective-15, m-routing-15, whole-28 (2026-09-23): scripts/analyze_router_decomposition.py
 % verdict_type_router (routes every debate whose S2 is ESH or NAH, no objection input),
 % router_decomposition.json composed_sonnet.block.routers.verdict_type (390 routed, 0.9356 against the
@@ -425,9 +552,11 @@ counter.
 % [-0.0030, +0.0298] includes zero, so the ordering is judge-dependent and the judge is named (prereg
 % 16.15.1 RESULTS ~l.4261-4331, Rules 2 and 3 ~l.4358-4377); the haiku-judge caveat and the union
 % are in Appendix app-collective
-The routed collective beats the solo with an interval excluding zero only
-on Mistral ($+12.3$ points $[+8.1, +16.8]$), is indistinguishable from it
-on grok and haiku, and stays below it on Llama and DeepSeek.
+The routed collective detectably beats the solo only on Mistral ($+12.3$
+points $[+8.1, +16.8]$), is indistinguishable from it on grok and haiku and
+below it on Llama and DeepSeek.
+% 'detectably' = interval excluding zero, as 'no detectable lift' in the same paragraph (m-routing round 2 trim,
+% m-routing-08 (c) with collective-13 (1), 2026-09-24)
 % collective-16 (2026-09-23): grok +0.1 [-2.6, +3.0] and haiku +3.1 [-0.8, +7.0] include zero, so
 % "indistinguishable" rather than "matches"
 % collective_vs_solo_paired.json conditions.<c>.paired.routed_minus_solo_debate_weighted (points):
@@ -437,9 +566,20 @@ on grok and haiku, and stays below it on Llama and DeepSeek.
 % (0.913 vs 0.912 grok, 0.891 vs 0.862 haiku, 0.661 vs 0.842 Llama, 0.850 vs 0.959 DeepSeek, 0.967 vs
 % 0.843 Mistral) are the routed and solo columns of the table; verify_pillar3_headline_mistral.json
 % (delta 0.2143, fire 0.876), prereg 16.26 RESULTS ~l.8500-8545
-On grok it costs 93 percent as much as sonnet answering every case, at list
-rates on reported tokens, which may understate grok's, for 6.3 points less
-accuracy.
+On grok, priced at one debate per case, it costs 93 percent as much as
+sonnet answering every case, at list rates on reported tokens, which may
+understate grok's cost, for 6.3 points less accuracy.
+% section editor (2026-09-24): collective-13's "the routed collective" for "it" is not kept (it cost the Routing
+% paragraph a rendered line), because m-routing-02's "priced at one debate per case" now fixes the referent, a
+% solo holding no debate; collective-13's "grok's cost" is kept
+% priced unit (m-routing round 2, m-routing-02, 2026-09-24): routing_certification.json
+% cost_per_decision.systems.collective_k1_sensor_at_sample0_fire_rate.counter.sonnet = one first debate
+% (unit_costs collective_k1_17_calls, 17 calls, $0.008445) plus sonnet's three calls ($0.011472) on the 0.1976 of
+% the 420 first debates flagged = $0.010712, against judge_everywhere.sonnet $0.011472, ratio 0.934
+% clarity round 2 (2026-09-24, collective-13): "it" -> "the routed collective", since the previous sentence ends on
+% "it" meaning the solo, and "grok's" -> "grok's cost" (grok's cached completion count excludes hidden
+% reasoning tokens, routing_certification.json cost_per_decision.note); "with an interval excluding zero"
+% -> "detectably" (the paper's usage for an interval excluding zero) to pay for both
 % clarity round (2026-09-23, collective-17): the per-case prices ($0.0107 against $0.0115) moved to the
 % frontier paragraph of Appendix app-collective, which states them; sources in the comment block below;
 % "it" is the routed collective of the previous sentence
@@ -460,12 +600,26 @@ accuracy.
 % ("Routing the solo's answers, and cost");
 % routing_certification.json cost_per_decision.note (grok's cached completion count excludes any hidden
 % reasoning tokens not reported by the provider)
-Routing grok's solo verdict to sonnet where most debates on its item and
-framing are flagged lifts it by $+2.4$ points $[+0.5, +4.5]$, but its own
-sample disagreement \citep{manakul2023selfcheck} routes at least as well,
-and sonnet answering alone is above the routed collective on all five
-models and 4.0 points above the routed solo on grok
-(Appendix~\ref{app-collective}).
+Routing grok's solo to sonnet where most debates on its item and
+framing are flagged gains $+2.4$ points $[+0.5, +4.5]$, but its own
+sample disagreement \citep{manakul2023selfcheck}, a split of its three
+answers on fault, routes at least as well, and sonnet answering every case
+is above the routed collective on all five models and 4.0 points above the
+routed solo on grok (Appendix~\ref{app-collective}).
+% sample disagreement defined (m-routing round 2, m-routing-03, 2026-09-24): scripts/analyze_router_decomposition.py
+% build_cells solo_disagree = len(set(codes)) > 1 over the solo's codable samples under the published coding (YTA
+% and ESH at fault, NTA and NAH not, scripts/analyze_crowdgold_sdt.py code_response); disagree_minus_counter
+% +0.0024 [-0.0190, +0.0238] (routing_certification.json routed_vs_solo.sonnet.pairwise, 420 pairs, 4,000
+% draws, seed 13) is given in Appendix app-collective, since carrying it here cost a rendered line in the
+% stand-in build of 2026-09-24
+% clarity round 2 (2026-09-24, collective-14 with m-routing-03): the definition in place is m-routing-03's "a split
+% of its three answers on fault" (exact: YTA against ESH is not a split, an unparsed answer is not counted),
+% chosen over collective-14's "disagreement among its three answers"; "sonnet answering alone" -> "sonnet
+% answering every case" (collective-14 and m-routing-07), the name used two sentences earlier for the same system
+% m-routing round 2 (m-routing-07): one name for the judge-everywhere system ('sonnet answering every case', as in
+% the cost sentence)
+% section editor (2026-09-24): "Routing grok's solo verdict to sonnet" -> "Routing grok's solo to sonnet" (the solo is
+% the system whose verdict is routed, as "the routed solo" below), to pay for m-routing-03's definition
 % collective-18 and m-routing-10 (2026-09-23): counter-routed solo, an item and framing fires when the
 % counter fired in more than half of its codable debates (scripts/analyze_router_decomposition.py
 % build_cells, counter_fired = k_counter*2 > k, 3 of 4 on grok; 'most' because three pairs have three
@@ -479,10 +633,16 @@ models and 4.0 points above the routed solo on grok
 % slot labelled haiku), 0.976, 0.975, 0.976 against routed 0.913, 0.891, 0.661, 0.967, 0.850 in
 % figures/tab_routing.tex; solo cells against debates on the same items, descriptive, no paired interval
 We therefore find no setting in which the collective is worth building
-for accuracy, since the solo is at least as accurate at 3 calls against 17
-and its own sample disagreement routes its errors at least as well on every
-model but Mistral, and the contribution is the mechanism finding stated
-above.
+for accuracy, since the solo is at least as accurate as the unrouted
+collective at 3 calls against 17 and that disagreement routes its errors at
+least as well on every model but Mistral, and the contribution is the
+mechanism finding.
+% clarity round 2 (2026-09-24, collective-15): "as the unrouted collective" removes the apparent clash with the
+% routed collective beating the solo on Mistral (collective minus solo at or below zero on all five,
+% collective_vs_solo_paired.json); "stated above" dropped because "mechanism" now has one meaning in this
+% section (collective-10), the finding that a second objection flags the collective's errors, as in the
+% Introduction; "that disagreement" refers to the solo's sample disagreement defined two sentences earlier;
+% m-routing-08 (d) ("the mechanism finding above") superseded by this rewrite
 % the mechanism (a second objection that no assigned side explains marks the collective's own errors) is
 % stated in the paragraph Dissent flags errors; shortened 2026-09-23 to pay for the opener
 % (m-collective-12); "the solo" and "sample disagreement" per collective-19 and m-routing-20
@@ -502,9 +662,20 @@ above.
 % everywhere 0.976); the exploratory readouts on the other four models are in Appendix app-collective
 
 \paragraph{Narration costs the collective accuracy.}
-Changing only the seats' system prompt from NoT to CoT raises the collective's
-accuracy, by 2.0 points $[+0.3, +3.7]$ on grok and 4.2 $[+1.4, +7.0]$
-on Llama, a reversal under the registered rule (Appendix~\ref{app-seat}).
+Changing only the seats' system prompt from NoT to CoT raises the
+collective's accuracy by 2.0 points $[+0.3, +3.7]$ on grok and
+4.2 $[+1.4, +7.0]$ on Llama and, with narrated flags thinned at random to
+the plain fire rate so both route equally often, its routed
+accuracy by 2.0 $[+0.1, +3.8]$ and 4.6 $[+1.2, +7.8]$, a reversal under a
+rule registered on both measures (Appendix~\ref{app-seat}).
+% m-seats-01 (clarity round 2, 2026-09-24): matched-coverage routed accuracy, the rule's second measure, moved
+% here from the next sentence with its intervals, plain minus narrated +2.0 [+0.1, +3.8] grok and +4.6
+% [+1.2, +7.8] Llama (seat_scaffold_comparison.json per_model.{grok,llama}.routed_matched, narrated minus
+% plain -0.0196 [-0.0382, -0.0009] and -0.0456 [-0.0780, -0.0125], negated); thinning
+% scripts/analyze_seat_scaffold.py thinned_routed (narrated grok keeps 254 of its 328 flags over 1,677 debates
+% against plain 254 of 1,676, so both route equally often per debate), its reason from the pre-spend review
+% amendment to 16.28 (~l.8894-8899); 'a rule registered on both measures' = reading() keys acc and
+% routed_matched (prereg 16.28 registration ~l.8641-8656 and that amendment)
 % prereg Addendum 16.28 RESULTS ~l.8977-9002 (reading PLAIN-BETTER ~l.8994, registered as a reversal
 % ~l.8646-8648), seat_scaffold_comparison.json (acc, narrated minus plain -0.020 [-0.037, -0.003]
 % grok, 210 items, -0.042 [-0.070, -0.014] Llama, 225 items); the accuracies (0.863 vs 0.843 grok,
@@ -516,11 +687,12 @@ on Llama, a reversal under the registered rule (Appendix~\ref{app-seat}).
 % paired); grok and Llama are the two models 16.28 registered, haiku (amendment E-D) is in Appendix
 % app-seat; the reader's opening clause "To test whether the collective needs the scaffold" was cut
 % for the page budget (the paragraph heading states the question's answer)
-On grok narrated seats fire the counter more often and so gain more from
-routing, by 1.6 points with an interval reaching zero, on Llama neither rate
-nor gain changes detectably, both intervals within 2.7 points of zero, and,
-with narrated flags thinned at random to the plain fire rate, plain seats
-give higher routed accuracy on both models, by 2.0 and 4.6 points.
+Narration raises grok's fire rate and so its gain from routing, the latter
+by 1.6 points with an interval reaching zero, and changes neither detectably
+on Llama, both intervals within 2.7 points of zero.
+% m-seats-01 (clarity round 2, 2026-09-24): the matched-coverage clause moved into the sentence above; "the latter"
+% ties the 1.6 points to the gain, not to the fire rate's rise (+4.3 [+1.8, +6.9], Table tab-app-seat);
+% collective-16 and collective-17 (same two sentences) are superseded by this restructure
 % W31 (2026-09-23): seat_scaffold_comparison.json per_model.llama.gain (-0.002 [-0.019, +0.014],
 % half-width 0.017) and .fire (+0.002 [-0.022, +0.027], half-width 0.024); routed_matched intervals
 % [+0.1, +3.8] grok and [+1.2, +7.8] Llama in Table tab-app-seat and Appendix app-seat
@@ -542,7 +714,10 @@ give higher routed accuracy on both models, by 2.0 and 4.6 points.
 The sensor survives without narration on grok (6.4 against 9.8 times on
 one-party verdicts) and is not read on Llama, its 53 flagged debates under
 the registered minimum of 60, and narration changes neither model's
-tendency to excuse a writer at fault who is the user.
+shift toward excusing a writer at fault who is the user.
+% clarity round 2 (2026-09-24, collective-18): "tendency to excuse" -> "shift toward excusing", the Discussion's name
+% for the same measure ("the verdict's shift toward excusing the user"; Section sec-single describes it as
+% "blaming the writer less when the writer is the user"; asker-shielding in Appendix app-seat)
 % W43 (2026-09-23): prereg 16.28 RESULTS ~l.9004-9016, router_decomposition_grok_stdcot_k4.json
 % (one-loser 72 fired, 0.319 vs 0.050, ratio 6.37, +26.9 [+11.8, +41.2]), narrated 9.8x
 % verify_pillar3_headline_grok.json; router_decomposition_llama_stdcot.json
@@ -554,7 +729,9 @@ tendency to excuse a writer at fault who is the user.
 % (seat_scaffold_comparison.json per_model.<m>.shield, prereg 16.28 RESULTS ~l.8990 row (e))
 The collective's accuracy on grok and Llama, and its sensor on grok, do
 not depend on the scaffold and so are not evidence for it, the collective
-being only its principle's external form \citep{longino1990science}.
+only placing its principle across agents \citep{longino1990science}.
+% clarity round 2 (2026-09-24, collective-19): "being only its principle's external form" -> "only placing its principle
+% across agents", the opener's wording for the same INERT framing of prereg 16.28, meaning unchanged
 % tightened 2026-09-24 (integrating editor, clarity loop 1) to pay for the threshold clause of
 % m-collective-06 in "Dissent flags errors": "gives the collective higher accuracy" -> "raises the
 % collective's accuracy", "the plain-seat system is more accurate after routing" -> "plain seats give

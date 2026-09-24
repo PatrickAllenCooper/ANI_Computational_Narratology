@@ -4,58 +4,64 @@
 \paragraph{What the evidence supports.}
 We set out to test whether a first-person narrative of the missing
 perspectives lowers sycophancy.
-On judged validation, where we separated the scaffold's content from that
-form, and in the collective, where we removed the scaffold from the seats,
-the evidence supports only its principle, organised criticism across
-perspectives \citep{longino1990science}, in a weaker, judge-dependent form
-than we set out to test, so the name Narration-of-Thought records that
-hypothesis, not the mechanism we found.
-Pooled over four generators, a third-person checklist of NoT's five
-sections lowers judged validation below CoT more than NoT under every
-judge, and the narrative instruction without the sections raises it above
-CoT (Table~\ref{tab-form-main}), though part of the checklist's effect may be
-a cooler register, which this design cannot separate from less
+On judged validation and in the collective the evidence supports only the
+scaffold's principle, organised criticism across perspectives
+\citep{longino1990science}, in a weaker, judge-dependent form, so the name
+Narration-of-Thought records that hypothesis, not what we found.
+Pooled over four generators and under every judge, a third-person
+checklist of NoT's five sections lowers judged validation further below CoT
+than NoT does, and the narrative instruction without the sections raises it
+above CoT (Table~\ref{tab-form-main}), though part of the checklist's effect
+may be a cooler register, which this design cannot separate from less
 endorsement.
-In the collective a second objection flags errors on four of five models,
-but objections come from assigned opposition, which costs accuracy on grok
-in a contrast not declared in advance (Section~\ref{sec-collective}), and
-plain CoT seats beat narrated ones on grok and Llama. The collective is
-less accurate than the same model alone on four of the five models of
-Table~\ref{tab-routing}, indistinguishable from it on haiku, and even with
-its flagged debates sent to sonnet beats it only on Mistral.
+In the collective, among verdicts that blame one party, a second objection
+flags errors on four of five models, a reading proposed after grok's debates
+were collected. Those objections, however, come from assigned opposition,
+which on grok costs accuracy compared with three neutral seats in a contrast
+not pre-registered (Section~\ref{sec-collective}).
+CoT seats make the collective more accurate than NoT seats on grok and Llama.
+The collective is less accurate than the same model answering alone, the
+solo, on four of the five models of Table~\ref{tab-routing},
+indistinguishable from it on haiku, and even with its flagged debates sent
+to sonnet beats it only on Mistral.
 \todo{PILLAR 2 (co-author): Section~\ref{sec-tom}'s result, its scope and limits, and whether any contrast there separates content from form, else say the decomposition above was tested on judged validation and the collective only.}
 
-\paragraph{Judges and what they measure.}
+\paragraph{Judges and judge-free tests.}
 The single-agent reduction holds on all seven generators only under the
-production judge, haiku, a generator sharing a developer with sonnet,
-whose reduction no other judge confirms, and under all five judges only on
-Llama (Table~\ref{tab-claims}, Section~\ref{sec-single}).
+production judge, haiku, and under all five judges only on Llama, while no
+other judge confirms it on sonnet, which shares haiku's developer
+(Table~\ref{tab-claims}, Section~\ref{sec-single}).
 No judge panel can separate register from endorsement, but the judge-free
-pushback test \citep{fanous2025syceval} separates it from commitment.
+pushback test \citep{fanous2025syceval} measures commitment, keeping a
+verdict when asked to reconsider, without scoring tone.
 There NoT gives up its verdict more often than CoT whether the user
 disputes it or just asks again, carried almost entirely by Llama, and the
-registered net contrast is null because the two rises are alike, not
-because either is absent.
-On Llama and Mistral the verdict's shift toward excusing the user as writer
-also survives NoT, and DeepSeek shows none either way.
+registered primary, the first rise net of the second, is null because the
+two rises are alike, not because either is absent.
+In a second judge-free test, against a brief unscaffolded prompt rather
+than CoT, NoT does not remove the verdict's shift toward excusing the user
+as writer on Llama and Mistral, and DeepSeek shows none under either prompt.
 
 \paragraph{Other limitations.}
-Each generator answered each item once per prompt in each run, so only its
-two to four runs, compared after the fact (Appendix~\ref{app-rep4k}), show
-how far the reduction moves between generations. They keep it under the
-production judge, with an interval excluding zero, in every run but
-sonnet's second at 4,096 tokens, and shrink it on three generator-judge
-pairs.
+Each generator answered each item once per prompt per run, and our
+intervals resample items, not runs, so only its two to four runs, compared
+post hoc (Table~\ref{tab-app-runs}), show how far the reduction moves
+between generations.
+They keep it under the production judge, with an
+interval excluding zero, in every run but sonnet's second at 4,096 tokens,
+and the regeneration shrinks it on sonnet under the production judge and on
+Mistral and DeepSeek under gpt-4o.
 Content filters on most platforms refuse some disputes, so the collective
 and pushback item sets differ by model.
 
 \paragraph{Future work.}
 The decisive test crosses first- and third-person voice with narrative and
 checklist form and has blind human raters score endorsement apart from
-register. A second is whether any form of the content resists pushback
+register.
+A second is whether any form of the content resists pushback
 over several turns \citep{hong2025sycophancy}. A third is whether dissent
-flags errors where seats lock weakly to their sides and routes them better
-than disagreement among the solo model's three answers
+flags errors where seats lock weakly to their sides and
+routes them better than disagreement among the solo's three answers
 \citep{jitkrittum2023deferral,manakul2023selfcheck}, which routed errors at
 least as well everywhere but Mistral, in comparisons registered only on
 grok (Appendix~\ref{app-collective}).

@@ -3,20 +3,43 @@
 \section{The Scaffold}
 \label{sec-scaffold}
 
-NoT asks the model to reason in a first-person narrative of five sections,
-protagonist, stakeholders, consequences, uncertainty and decision, before
-answering, and its control is the one-line CoT prompt, both verbatim in
-Figure~\ref{fig:prompt}.
+NoT asks the model to reason in a first-person narrative of five sections
+before answering, and its control is the one-line CoT prompt, both verbatim
+in Figure~\ref{fig:prompt}.
+% integrating editor, clarity loop 2 (2026-09-24): the parenthesis naming the five sections
+% (protagonist, stakeholders, consequences, uncertainty and decision) is dropped because the
+% Introduction names them at NoT's first use and Figure fig:prompt, on this page, prints their labels,
+% so the sections keep one main-text definition; page budget
 % scripts/run_phase1_quartet.py PROMPTS["narrative_cot"], PROMPTS["standard_cot"] (Figure fig:prompt
 % gives both verbatim, including the sentence-by-sentence walk-through of the five sections that stood here)
 % NoT and CoT are defined once, at their first use in the Introduction; the re-expansions
 % "Narration-of-Thought (NoT) is a system prompt" and "chain-of-thought (CoT)" were removed here so each
 % term has one main-text definition (integrating editor, clarity loop 1, 2026-09-24)
+% The five section names are in parentheses so that "before answering" cannot be read as a sixth item
+% (scaffold-08, clarity loop 2, 2026-09-24)
+Under the scaffold's principle, organised criticism across perspectives, NoT
+has the model write out the perspectives missing from one person's account
+of a conflict, and the collective of Section~\ref{sec-collective} gives them
+to separate, opposed agents.
+% integrating editor, clarity loop 2 (2026-09-24), page budget: the Introduction cites
+% longino1990science and popper2011open for the same account at its first use, so the repeated
+% citation is dropped here; "places them in separate agents with opposed interests" is "gives them to
+% separate, opposed agents", same meaning
+% "the perspectives missing from one person's account" restates the introduction's "a model answering
+% one person's account holds only that person's perspective" (sections/introduction.tex); the earlier
+% "into the trace before the answer" is carried by "before answering" in the first sentence
+% Citation matches the introduction's for the same account (longino1990science,popper2011open);
+% mercier2011argumentative stays cited in Related Work for the argumentative theory
+% "the scaffold's principle, organised criticism across perspectives" (scaffold-03, clarity loop 2,
+% 2026-09-24) names the referent of "the scaffold's principle" in the opener of sections/pillar3.tex, of
+% "its principle's external form" at the end of that section and of "its principle, organised criticism
+% across perspectives" in sections/discussion.tex; the introduction attributes the phrase to the social
+% account of objectivity with the same two citations; "NoT has" for "the scaffold has" ties the
+% scaffold of the title to NoT
 Sections~\ref{sec-single} and~\ref{sec-collective} use the NoT text
-unchanged on every model and task, and any glossary of verdict labels, line
-forcing a verdict or seat role in the collective that a task adds goes after
-it in the system prompt or in the user turn (Appendices~\ref{app-pushback},
-\ref{app-seat} and~\ref{app-prompts}).
+unchanged on every model and task, with what a task adds, such as labels for
+who is at fault or a seat's role, after it in the system prompt or user turn
+(Appendices~\ref{app-pushback}, \ref{app-seat} and~\ref{app-prompts}).
 % NoT text unchanged on every Section 4 and 6 task, the wrappers outside it: scripts/run_elephant.py
 % l.132 (intact scaffold asserted equal to PROMPTS["narrative_cot"]) and _generate_advice (system prompt
 % PROMPTS[arm], user turn = the item); scripts/run_brokenmath.py _system_prompt (PROMPTS);
@@ -26,7 +49,8 @@ it in the system prompt or in the user turn (Appendices~\ref{app-pushback},
 % scripts/run_pushback.py l.102 (same build_system; prereg 17.9; Appendix app-pushback);
 % scripts/run_crowdgold_deliberation.py agent_system (PROMPTS["narrative_cot"] verbatim) and
 % _role_header (role brief in the user turn); scripts/run_stance_factorial.py render_unit_prompt
-% (verdict_instruction appended to the user turn; prereg 16.15.5). Pillar 2 prompts are the
+% (system prompt PROMPTS[scaffold] unchanged, verdict_instruction appended to the user turn; prereg
+% 16.15.5, the BrokenMath theorem statements). Pillar 2 prompts are the
 % co-author's and this sentence does not cover them (see the \todo in sections/pillar2_tom.tex).
 % Placement as named in the prose (2026-09-23 clarity pass): glossary and verdict line after the NoT
 % text inside the system prompt in scripts/run_crowdgold_aita.py build_system (body = head + glossary +
@@ -35,35 +59,59 @@ it in the system prompt or in the user turn (Appendices~\ref{app-pushback},
 % (Appendices app-seat and app-prompts); verdict line in the user turn in scripts/run_elephant.py
 % augment_user_turn and scripts/run_stance_factorial.py render_unit_prompt. Appendix app-prompts prints
 % the collective's prompts verbatim, not every task's wrapper.
-
-Following the social account of objectivity
-\citep{longino1990science,popper2011open}, the scaffold has the
-model write out the perspectives missing from one person's account of a
-conflict, and the collective of Section~\ref{sec-collective} places them in
-separate agents with opposed interests.
-% "the perspectives missing from one person's account" restates the introduction's "a model answering
-% one person's account holds only that person's perspective" (sections/introduction.tex); the earlier
-% "into the trace before the answer" is carried by "before answering" in the first sentence
-% Citation matches the introduction's for the same account (longino1990science,popper2011open);
-% mercier2011argumentative stays cited in Related Work for the argumentative theory
+% scaffold-05 (clarity loop 2, 2026-09-24): "any glossary of verdict labels, line forcing a verdict or
+% seat role in the collective that a task adds" -> "what a task adds, such as labels for who is at fault
+% or a seat's role"; the forced verdict line stays in the appendices named and in the comment above
+The solo and the stronger judge, sonnet, answer instead under a brief
+unscaffolded prompt, which gives those labels and asks for at
+most four sentences of reasoning (Appendix~\ref{app-prompts}).
+% scaffold-01 (clarity loop 2, 2026-09-24), defining at its first main-text use the prompt that Section
+% sec-single ("Against a brief unscaffolded prompt rather than CoT") and Table tab-routing ("majority of
+% three brief unscaffolded answers") name: scripts/run_crowdgold_aita.py build_system with scaffold
+% "standard" (empty head, so the system prompt is GLOSSARY_CORE, the verdict labels, + BREVITY l.436
+% " Be brief: at most four sentences of reasoning." + verdict_instruction; no step-by-step instruction),
+% printed in Appendix app-prompts ("Routing judge (sonnet), system prompt ... scaffold standard"); the
+% solo: Appendix app-collective "Pairing with the solo", scripts/analyze_collective_vs_solo.py load_solo,
+% collective_vs_solo_paired.json estimator.solo_rule (the artefact's "standard-CoT" label names the
+% standard scaffold); the routing model: cg_sonnet_actuator_rows.csv (1,494 rows, scaffold "standard" on
+% every row), scripts/verify_pillar3_headline.py load; the same prompt is the comparator of the verdict
+% shift in Section sec-single, prereg Z3 RESULTS and Table tab-app-z3 ("Brief is the unscaffolded prompt
+% used on this set"). "the stronger judge, sonnet" (integrating editor, clarity loop 2, 2026-09-24) replaces
+% "Section sec-collective's routing model": the Introduction now defines sonnet at its first use as
+% "claude-sonnet-4-6 (sonnet), a stronger judge whose answer without the debate replaces the collective's
+% verdict", and Related Work and Section sec-collective use the same name
 Among related prompts, SimToM \citep{wilf2024simtom} first restates what
-one character knows and then answers from it, the chain-of-thought of
-\citet{jin22_moralcot} is built from a theory of moral reasoning, and
-multi-persona self-collaboration \citep{wang2024spp} has one model play
-several personas. NoT instead fixes five content sections and a closing
-commitment to a decision in one system prompt, applied once to the unchanged
-query without worked examples.
+one character knows, then answers from it, MoralCoT \citep{jin22_moralcot}
+builds chain-of-thought on a theory of moral reasoning, and Solo
+Performance Prompting \citep{wang2024spp} has one model play several personas.
+% scaffold-10 (clarity loop 2, 2026-09-24): method names from the primary pages, fetched 2026-09-24,
+% https://arxiv.org/abs/2210.01478 ("a novel moral chain of thought (MORALCOT) prompting strategy",
+% jin22_moralcot) and https://arxiv.org/abs/2307.05300 ("Solo Performance Prompting (SPP)", a single LLM
+% in "self-collaboration with multiple personas", wang2024spp); no citation added
+NoT instead fixes its five sections in one system prompt used in one call per
+answer, with no restating pass or worked examples.
 % wilf2024simtom added 2026-09-23 for reviewer W38; primary pages https://aclanthology.org/2024.acl-long.451/
 % and https://arxiv.org/abs/2311.10227 fetched 2026-09-23 (two-stage perspective-taking, no exemplars).
 % jin22_moralcot was already in references.bib and previously uncited; wang2024spp is cited in Related
-% Work. Single pass over the unchanged query: scripts/run_elephant.py _generate_advice (system prompt
-% PROMPTS[arm], user turn = the item); no examples: scripts/run_phase1_quartet.py PROMPTS (Figure fig:prompt).
-\citet{zhang2024narrativeofthought} use NoT for Narrative-of-Thought, a
-temporal-reasoning prompt that shares neither task nor content with this
-scaffold.
+% Work. One call per answer: scripts/run_elephant.py _generate_advice (system prompt PROMPTS[arm], user
+% turn = the item) and scripts/run_crowdgold_deliberation.py (one call per seat statement, 17 per debate,
+% Appendix app-prompts); no examples: scripts/run_phase1_quartet.py PROMPTS (Figure fig:prompt).
+% scaffold-06 (clarity loop 2, 2026-09-24): "applied once to the unchanged query" read against the task
+% additions in the user turn and the collective's 17 calls per debate, so it is now "used in one call per
+% answer, with no restating pass", the contrast with SimToM's first restating pass; "five content sections
+% and a closing commitment to a decision" shortened to "its five sections" for the page budget, the
+% sections, the last the decision, being listed in the first sentence and Figure fig:prompt ("Commit to a
+% specific decision")
+NoT also abbreviates Narrative-of-Thought
+\citep{zhang2024narrativeofthought}, a temporal-reasoning prompt sharing
+neither task nor content with ours.
 % zhang2024narrativeofthought added 2026-09-23 for reviewer W18 (name and acronym collision), fetched
 % 2026-09-23 at https://aclanthology.org/2024.findings-emnlp.963/ and https://arxiv.org/abs/2410.05558
-% (Findings of EMNLP 2024, pp. 16507-16530; the method is abbreviated NoT there too)
+% (Findings of EMNLP 2024, pp. 16507-16530; the method is abbreviated NoT there too); reworded so that it
+% cannot be read as Zhang et al. applying this scaffold (scaffold-11, clarity loop 2, 2026-09-24)
+% scaffold-04 (clarity loop 2, 2026-09-24): order is what NoT is, its principle, how the tasks use it, the
+% brief prompt of the solo and routing model, related prompts, the acronym; the section is one paragraph
+% for the page budget (measured with the theory-of-mind stand-in, one line longer than before, page 9 unchanged)
 
 \begin{figure}[t]
 \centering
@@ -82,10 +130,10 @@ projected future.\\
 Section 5 -- Decision: Commit to a specific decision and explain, within the
 narrative frame, why that trajectory is preferable to the alternatives.\\[2pt]
 Work through all five sections before giving your final answer.\\[4pt]
-\textbf{Standard chain-of-thought (control).} You are a helpful assistant. Think
+\textbf{Standard chain-of-thought (system prompt, control).} You are a helpful assistant. Think
 step by step, then give your answer.
 \end{minipage}}
-\caption{\textbf{The two system prompts of Sections~\ref{sec-single} and~\ref{sec-collective}}, verbatim, with the item in the user turn.}
+\caption{\textbf{NoT and CoT as used in Sections~\ref{sec-single} and~\ref{sec-collective}}, verbatim, with the item in the user turn.}
 \label{fig:prompt}
 \end{figure}
 % Caption: each prompt is the system prompt and the item goes in the user turn, scripts/run_elephant.py
@@ -93,3 +141,7 @@ step by step, then give your answer.
 % agent_system and r0_user, scripts/run_stance_factorial.py render_unit_prompt; wrappers a task adds are
 % named in the prose of Section sec-scaffold. Scope "of Sections sec-single and sec-collective" rather
 % than "throughout": the theory-of-mind section's prompts are the co-author's and not stated here
+% scaffold-07 (clarity loop 2, 2026-09-24): "The two system prompts of" -> "NoT and CoT as used in", since
+% Sections sec-single and sec-collective also use the prompts of Figure fig-app-prompts and the brief
+% unscaffolded prompt; "system prompt" moved into the CoT label so the caption stays one line (a
+% two-line caption, measured with the theory-of-mind stand-in, costs a line of page 4)

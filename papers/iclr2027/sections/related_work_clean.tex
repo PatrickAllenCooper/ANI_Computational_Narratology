@@ -2,21 +2,23 @@
 \label{sec-related}
 
 \paragraph{Sycophancy is a trained bias, and it is steerable.}
-Preference-tuned models agree with the user more than the evidence warrants,
-more so with scale and user confidence
+Preference-tuned models grow more sycophantic with scale and user confidence
 \citep{perez2023discovering,sharma23}, validate the asker's own account of a
 conflict \citep{cheng25elephant} and revise correct answers under pushback
 \citep{fanous2025syceval,malmqvist24}. Sycophancy is a linear direction in
-activation space \citep{rimsky2024caa} and a persona-level trait, so an
-off-the-shelf sceptical persona vector recovers most of what steering along
-that direction achieves \citep{chen2025persona,kelkar2026devil}, and synthetic fine-tuning
-data reduce it \citep{wei2023synthetic}. If sycophancy is a stance the model
-adopts, NoT has the model write other perspectives into its reasoning trace,
-and we compare it with chain-of-thought.
-Language-model judges favour their own generations, among other biases
+activation space \citep{rimsky2024caa} and a persona-level trait
+\citep{chen2025persona}, an off-the-shelf sceptical persona vector recovers
+most of what steering along the sycophancy direction achieves
+\citep{kelkar2026devil}, and synthetic fine-tuning data reduce it
+\citep{wei2023synthetic}. If sycophancy is an adopted stance, a
+prompt may shift it, so NoT has the model write other perspectives into its
+written reasoning, and we compare it with chain-of-thought.
+Our validation rate rests on language-model judges, which favour their own
+generations, among other biases
 \citep{panickssery2024selfrecognition,wataoka2024selfpreference,zheng2023judging},
-so we state every claim per judge and check each judge against ELEPHANT's
-labels on human-written answers (Section~\ref{sec-single}).
+and our production judge, haiku, is a generator, so we name the judge
+of each judged claim and check all five judges against ELEPHANT's
+validation labels on human-written answers (Section~\ref{sec-single}).
 
 \paragraph{Role assignment controls what a model says, at a cost.}
 Assigning a character or an interest reliably moves a model's output
@@ -24,35 +26,37 @@ Assigning a character or an interest reliably moves a model's output
 little variance in simulated surveys \citep{hu2024persona}, can degrade
 zero-shot reasoning \citep{kim2025persona}, carry implicit biases
 \citep{gupta2024bias,deshpande2023toxicity} and amplify sycophancy when
-agreeable \citep{shah2026toonice}, while multi-persona prompting in one model
-helps some tasks \citep{wang2024spp}. Closest to our
+agreeable \citep{shah2026toonice}, while multi-persona self-collaboration in one
+model helps some tasks \citep{wang2024spp}. Closest to our
 collective, \citet{dietrich2026roles} assigns opposed advocates, a balanced
 seat and a supervisor and measures how far each advocate's output is fixed by
-its role, a role-lock we find near total on grok and below one half on
-haiku (Section~\ref{sec-collective}).
+its role, which we call role-lock and find near total on grok and below one
+half on haiku (Section~\ref{sec-collective}).
 
 \paragraph{Debate places truth at the judge, not in the debaters.}
 Scalable oversight puts opposed agents before a judge \citep{irving18}, who gains more from a debate than from one advocate
 \citep{michael2023debate,khan2024debating}, and over answering alone only
 when it lacks the debaters' information \citep{kenton2024scalable}.
-Debate among copies of one model helps some benchmarks
-\citep{du23,liang2024divergent,chan2023chateval} and fails to beat
-self-consistency \citep{wang2023selfconsistency}, our single-model baseline,
-on others
-\citep{smit2024mad,wang2024rethinking}, since it converges to the existing
+Debate among copies of one model, the form of our collective, helps some
+benchmarks \citep{du23,liang2024divergent,chan2023chateval} and fails to beat
+self-consistency \citep{wang2023selfconsistency}, a majority vote over one
+model's samples as in our solo baseline, on others
+\citep{smit2024mad,wang2024rethinking}, since debate converges to the existing
 majority \citep{estornell2024multillm}, homogeneous
 agents with uniform updates cannot reliably improve expected correctness
 \citep{zhu2026demystifying}, and debate alone leaves it unchanged where voting
 raises it \citep{choi2025debateorvote}.
-Disagreement has also been a signal, in cross-examination
-\citep{cohen2023lmvslm}, in prover-verifier games
-\citep{kirchner2024prover} and, as sample disagreement or stated confidence
-\citep{manakul2023selfcheck,farquhar2024semantic,xiong2024confidence}, as the
-rule by which cascades escalate a cheap model's uncertain cases
+Disagreement has also signalled errors, in cross-examination
+\citep{cohen2023lmvslm} and prover-verifier games \citep{kirchner2024prover}.
+Sample disagreement, one model's answers differing across samples, and stated
+confidence signal uncertainty
+\citep{manakul2023selfcheck,farquhar2024semantic,xiong2024confidence}, on
+which model cascades escalate a cheap model's cases
 \citep{chen2023frugal,jitkrittum2023deferral,gupta2024cascades,yue2024cascades,aggarwal2024automix,jung2025escalate,wang2026defer}.
-We assign opposed interests, not opposed answers, so no advocate is right
-by construction, and ask whether their disagreement routes errors to a
-stronger judge better than sample disagreement.
+Each advocate argues a party's side, not a candidate answer, so
+none is right by construction, and we ask whether their disagreement picks
+the cases to send to a stronger judge, claude-sonnet-4-6 answering afresh
+without the debate, better than the same model's sample disagreement.
 
 \paragraph{Topology and aggregation ask when pooling helps.}
 Work on multi-agent topology scales and optimises agent graphs
@@ -62,7 +66,8 @@ errors propagate \citep{shen2025propagation,han2026conformity}, agents to
 conform to majorities \citep{zhang2024socialpsych,weng2025conformity},
 correlated errors to limit aggregation \citep{kim2025correlated} and
 heterogeneous panels to beat homogeneous ones \citep{wang2025moa}, and studies
-team size, unguided homogeneous debate and minority overrides
+team size, unguided homogeneous debate and when a minority should overturn the
+majority
 \citep{bertalanic2026ringelmann,bertalanic2026costconsensus,he2026minoritysentinel}.
 Aggregation theory states when pooling judgements helps, under correlated
 votes \citep{ladha1992condorcet,boland1989majority}, unequal competence
@@ -72,8 +77,9 @@ influence in networks
 diversity \citep{zollman2010epistemic,hong2004groups,thompson2014diversity},
 small deliberating groups \citep{navajas2018aggregated} and shared biases
 \citep{prelec2017solution}, and where it cannot \citep{list2002aggregating}.
-We ask instead whether a second objection flags the collective's own errors,
-on each of five models.
+We ask instead whether a second seat's objection, beyond the one expected
+from the blamed party's advocate, flags the collective's own errors, on each
+of five models (Section~\ref{sec-collective}).
 
 \paragraph{Two accounts of reasoning as social motivate the design.}
 Human reasoning may have evolved for argument, with biased advocacy from
@@ -87,10 +93,11 @@ Assigned devil's advocacy helps less than authentic dissent
 \citep{schweiger1986group,schwenk1990effects}. Objectivity is a
 property of a community's structure of criticism rather than of any member
 \citep{longino1990science,longino2002fate,popper2011open}, a structure the
-scaffold places inside one trace and the collective across agents. Mediation and
-mechanism design study agents with divergent
-interests
+scaffold places inside one model's written reasoning and the collective across agents.
+Beyond these two accounts, mediation and mechanism design study agents
+with divergent interests
 \citep{dafoe2020cooperative,akata2025repeated,piatti2024cooperate,leon2026personas,tewolde2026coopeval},
-where a mediator's correlated recommendations can reach outcomes no
-equilibrium of the players alone reaches \citep{aumann1974subjectivity}, the
-position of our neutral seat and stronger judge.
+where a mediator privately recommending an action to each player can reach
+outcomes no equilibrium of the players alone reaches
+\citep{aumann1974subjectivity}, the position of our neutral seat, which speaks
+for neither party, and of the stronger judge.

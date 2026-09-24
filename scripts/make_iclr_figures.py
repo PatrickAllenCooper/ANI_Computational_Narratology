@@ -52,7 +52,9 @@ JUDGES = [("claude-haiku-4-5", "haiku (production)", "black", "*", "black"),
           ("gpt-5.4-nano", "nano", "violet!80!black", "triangle", "white"),
           ("Llama-3.3-70B-Instruct", "Llama", "gray!60!black", "diamond", "white"),
           ("grok-4-1-fast-reasoning", "grok", "red!70!black", "pentagon", "white")]
-CONDITIONS = [("grok", "grok, edges on (primary)"), ("noedge", "grok, edges off"),
+# Row labels (clarity round 2, 2026-09-24, collective-05): the edges-off condition is called the exchange cut
+# in the paper, so its row reads "grok, exchange cut" and the primary row "grok (primary)".
+CONDITIONS = [("grok", "grok (primary)"), ("noedge", "grok, exchange cut"),
               ("haiku_249", "haiku"), ("llama", "Llama"), ("deepseek", "DeepSeek"), ("mistral", "Mistral")]
 # verify_pillar3_headline condition -> collective_vs_solo_paired.json condition (None: no solo pairing;
 # the edges-off community has no solo of its own in that artefact).
@@ -202,7 +204,7 @@ def routing_table() -> str:
            "% paired per debate, 4,000-draw item-clustered bootstrap, seed 101. 'routed' there is the ROUTED",
            "% COLLECTIVE (S2 unless the counter fires, then the sonnet judge) against the solo, NOT the 16.22 R1",
            "% system that routes the solo's own verdicts by the collective's flags (routing_certification*.json:",
-           "% grok +2.4 [+0.5, +4.5], haiku +3.1 [+1.2, +5.1]). Edges off has no solo pairing (blank).",
+           "% grok +2.4 [+0.5, +4.5], haiku +3.1 [+1.2, +5.1]). Exchange cut (edges off) has no solo pairing (blank).",
            "% precision = ol_wrong_fired; recall = ol_fired*ol_wrong_fired / (ol_fired*ol_wrong_fired + (ol_n-ol_fired)*ol_wrong_unfired),",
            "% both on verdicts that blame exactly one party (the one-loser stratum, prereg 16.15.1 Rule 1).",
            f"% missing at generation time: {missing or 'none'}",
@@ -290,20 +292,24 @@ def form_table() -> str:
             any_dagger = True
             return DAGGER, note
         return "", note
-    for j, jr in d["judges"].items():
+    # Judges in the panel order of JUDGES, as in the other tables, and shares in math mode so that a
+    # negative share prints with a minus sign (clarity loop 2, appendix1-21).
+    order = [jk for jk, *_ in JUDGES]
+    for j in [k for k in order if k in d["judges"]] + [k for k in d["judges"] if k not in order]:
+        jr = d["judges"][j]
         f = jr["form_pooled"]
         ck, no, pc = f["checklist"], f["narrative_only"], jr.get("persona_pooled", {})
         if ck.get("drop_arm") is None:
             continue
         dg, nt = mark(j, FORM_FAMILY["NoT"])
-        out.append(f"{JUDGE_SHORT.get(j, j)} & NoT & {_ci(ck['drop_not'])}{dg} & 1.00 & \\\\{nt}")
+        out.append(f"{JUDGE_SHORT.get(j, j)} & NoT & {_ci(ck['drop_not'])}{dg} & $1.00$ & \\\\{nt}")
         dg, nt = mark(j, FORM_FAMILY["checklist"])
-        out.append(f" & checklist, same content & {_ci(ck['drop_arm'])}{dg} & {ck['share']['point']:.2f} & {jr['form_reading']['checklist']} \\\\{nt}")
+        out.append(f" & checklist, same content & {_ci(ck['drop_arm'])}{dg} & ${ck['share']['point']:.2f}$ & {jr['form_reading']['checklist']} \\\\{nt}")
         dg, nt = mark(j, FORM_FAMILY["narrative_only"])
-        out.append(f" & narrative only & {_ci(no['drop_arm'])}{dg} & {no['share']['point']:.2f} & {jr['form_reading']['narrative_only']} \\\\{nt}")
+        out.append(f" & narrative only & {_ci(no['drop_arm'])}{dg} & ${no['share']['point']:.2f}$ & {jr['form_reading']['narrative_only']} \\\\{nt}")
         if pc.get("drop_arm") is not None:
             dg, nt = mark(j, FORM_FAMILY["persona"])
-            out.append(f" & persona only & {_ci(pc['drop_arm'])}{dg} & {pc['share']['point']:.2f} & {jr.get('persona_reading', '')} \\\\{nt}")
+            out.append(f" & persona only & {_ci(pc['drop_arm'])}{dg} & ${pc['share']['point']:.2f}$ & {jr.get('persona_reading', '')} \\\\{nt}")
         out.append("\\addlinespace")
     out += ["\\bottomrule"]
     if any_dagger:
@@ -429,24 +435,33 @@ def seat_table() -> str:
     d = _load(OUT / "seat_scaffold_comparison.json")
     if d is None:
         return "% seat_scaffold_comparison.json not present\n"
-    out = ["% AUTO-GENERATED from seat_scaffold_comparison.json (16.28; narrated minus plain-CoT seats, paired items).",
-           "\\begin{tabular}{lrr}", "\\toprule", "readout & grok & Llama \\\\", "\\midrule"]
+    # Levels of each collective beside the paired difference (clarity loop 2, 2026-09-24, m-seats-05), so the
+    # accuracies the main text points to are in the table; the difference cells are unchanged.
+    out = ["% AUTO-GENERATED from seat_scaffold_comparison.json (16.28, grok and Llama, the registered pair;",
+           "% per-item means of narrated and plain seats and their paired difference; haiku, E-D, is in the text).",
+           "\\begin{tabular}{lrrr}", "\\toprule", "readout & narrated & plain & narrated minus plain \\\\"]
     names = [("acc", "collective accuracy"), ("routed", "routed accuracy"),
              ("routed_matched", "routed, matched coverage"), ("gain", "routing gain"), ("fire", "fire rate")]
-    for k, lab in names:
-        cells = []
-        for m in ("grok", "llama"):
-            v = d["per_model"][m][k]
-            cells.append(f"${100 * v['diff']:+.1f}$ $[{100 * v['lo']:+.1f}, {100 * v['hi']:+.1f}]$")
-        out.append(f"{lab} & " + " & ".join(cells) + " \\\\")
+    for m, head in (("grok", "grok"), ("llama", "Llama")):
+        r = d["per_model"][m]
+        out += ["\\midrule", f"\\multicolumn{{4}}{{@{{}}l}}{{\\textit{{{head}, {r['acc']['n_items']} items}}}} \\\\"]
+        for k, lab in names:
+            v = r[k]
+            out.append(f"{lab} & {v['narrated']:.3f} & {v['plain']:.3f} & "
+                       f"${100 * v['diff']:+.1f}$ $[{100 * v['lo']:+.1f}, {100 * v['hi']:+.1f}]$ \\\\")
     out += ["\\bottomrule", "\\end{tabular}"]
     return "\n".join(out) + "\n"
 
 
-# "replicate" rather than "same day" (integrating editor, clarity loop 1, 2026-09-24): Appendix app-rep4k
-# names runs 2 and 3 "the same-run replicate", matching Section sec-single's "regenerated in the same run"
-RUN_HEADS = {"1": "run 1 (original)", "2": "run 2 (replicate, 2,048)", "3": "run 3 (replicate, 4,096)",
-             "3b": "run 3b (second run, 4,096)"}
+# Run names (clarity loop 2, 2026-09-24, appendix1-03): run 3 is "the 4,096-token regeneration", as in
+# Section sec-single ("The regeneration without truncation") and Appendix app-rep4k, and run 2 is the CoT
+# and NoT generated at 2,048 tokens with the form prompts, their same-run comparator in Appendix app-form
+# (loop 1 had called runs 2 and 3 "the same-run replicate").
+# Each head is stacked on two lines so that the longer names do not widen the resized table and shrink
+# its type (measured 2026-09-24: one-line heads took the body from 5.35pt to 4.89pt).
+RUN_HEADS = {"1": "\\shortstack[r]{run 1\\\\original}", "2": "\\shortstack[r]{run 2, 2,048\\\\form-test run}",
+             "3": "\\shortstack[r]{run 3, 4,096\\\\regeneration}",
+             "3b": "\\shortstack[r]{run 3b, 4,096\\\\second regeneration}"}
 
 
 def _run_cell(c):
@@ -529,7 +544,8 @@ def run_stability_table() -> str:
             cells = [_run_cell(v["per_run"].get(r)) for r in runs] + [_run_cell(v["pooled"]), _run_cell(rr)]
             st = v.get("stability", {})
             r_min = st.get("min_pairwise_drop_r")
-            cells.append("" if r_min is None else f"{r_min:.2f}")
+            # math mode, and -0.00 printed as 0.00 (clarity loop 2, appendix1-21)
+            cells.append("" if r_min is None else f"${(0.0 if abs(r_min) < 0.005 else r_min):.2f}$")
             ns = ", ".join(f"n{r}={v['per_run'][r]['n_items']}" for r in runs if r in v["per_run"])
             out.append(f"{gl} & " + " & ".join(cells) + f" \\\\  % {ns}, pooled items {v['pooled']['n_items']}, "
                        f"range {v['pooled'].get('range_points', float('nan')):.1f} pts, run SD "
@@ -659,7 +675,7 @@ def knockout_table() -> str:
            "% nonresponse_pct, compliance_pct, mean_len_chars, knock_minus_intact_pp.complete_case and",
            "% .manski_lo / .manski_hi (points; every unscored item of 150 imputed first as not validating,",
            "% then as validating; a single number where lo = hi). Scores are the production judge's full-text",
-           "% re-scores; grok's and nano's CoT and intact NoT are the June cells, the 17.3 comparators.",
+           "% re-scores; every generator's CoT and intact NoT are the June cells, the 17.3 comparators.",
            "\\begin{tabular}{llrrrrr}", "\\toprule",
            "generator & condition & non-response & compliance & mean chars & minus intact NoT & bracket \\\\",
            "\\midrule"]

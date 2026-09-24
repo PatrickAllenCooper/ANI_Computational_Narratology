@@ -10,21 +10,31 @@
 % keys already in references.bib (verified 2026-09-14, papers/embodied_sensor/related_works_verified.json)
 % cited for the first time; paid for inside this section by tighter wording, with every earlier
 % citation kept and no reported failure weakened.
+% Clarity loop 2 (Related Work editor, 2026-09-24): verified fixes related-01 to related-13 of
+% scratchpad/clarity2_fixes_related.json applied here, except related-05 (sections/appendix.tex) and
+% related-07 (sections/pillar3.tex), which belong to those files' editors; every citation key kept. A
+% scratch build with the ToM stand-in measured this section at 72 rendered lines against 65 before
+% (+7, of which related-10 is 1), after the layout trim "check each of five judges" to "check all five
+% judges", which saved one line and changes no meaning.
+% Integrating editor, clarity loop 2 (2026-09-24), main-text page budget with the theory-of-mind stand-in:
+% the aggregation-theory sentence (fifteen citations) and the mediation and mechanism-design clause (five
+% citations) moved to Appendix app-related, each replaced here by a pointer that keeps its claim and the
+% Aumann sentence; every key is still cited in the paper, so the bibliography is unchanged.
 \section{Related Work}
 \label{sec-related}
 
 \paragraph{Sycophancy is a trained bias, and it is steerable.}
-Preference-tuned models agree with the user more than the evidence warrants,
-more so with scale and user confidence
+Preference-tuned models grow more sycophantic with scale and user confidence
 \citep{perez2023discovering,sharma23}, validate the asker's own account of a
 conflict \citep{cheng25elephant} and revise correct answers under pushback
 \citep{fanous2025syceval,malmqvist24}. Sycophancy is a linear direction in
-activation space \citep{rimsky2024caa} and a persona-level trait, so an
-off-the-shelf sceptical persona vector recovers most of what steering along
-that direction achieves \citep{chen2025persona,kelkar2026devil}, and synthetic fine-tuning
-data reduce it \citep{wei2023synthetic}. If sycophancy is a stance the model
-adopts, NoT has the model write other perspectives into its reasoning trace,
-and we compare it with chain-of-thought.
+activation space \citep{rimsky2024caa} and a persona-level trait
+\citep{chen2025persona}, an off-the-shelf sceptical persona vector recovers
+most of what steering along the sycophancy direction achieves
+\citep{kelkar2026devil}, and synthetic fine-tuning data reduce it
+\citep{wei2023synthetic}. If sycophancy is an adopted stance, a
+prompt may shift it, so NoT has the model write other perspectives into its
+written reasoning, and we compare it with chain-of-thought.
 % W40 (2026-09-23), revised in the clarity pass of 2026-09-23 (related-01): the earlier clause "not with a
 % sceptical persona" is dropped because it is no longer true of the registration log. Addendum 17.12
 % (registered 2026-09-23 BEFORE any call, RESULTS block in the prereg) runs a sceptical-advisor prompt,
@@ -34,21 +44,32 @@ and we compare it with chain-of-thought.
 % Its reporting plan puts it in Section sec-single and Appendix app-form, and this paragraph should point to
 % it once it is reported there. The other persona control is CoT with NoT's "thoughtful advisor" line (prereg
 % 17.7 amendment 2, narrative_form_readout.json judges.<judge>.persona_pooled, PERSONA-INERT under three
-% judges and PERSONA-RAISES under two), reported in Section sec-single. "Reasoning trace" is defined here at
-% its first use in the main text (the reasoning NoT asks for before the answer, Figure fig:prompt). "An
+% judges and PERSONA-RAISES under two), reported in Section sec-single. "Written reasoning" (Section
+% sec-single's term for what the judge reads) replaced "reasoning trace" here and in the last paragraph
+% (Related Work verifying editor, clarity loop, 2026-09-24), so the hidden reasoning of nano and grok is not
+% implied; "a prompt may shift it" states why a prompt is the remedy tested (steering and fine-tuning need
+% activations or weights). "An
 % off-the-shelf sceptical persona vector" (related-12): kelkar2026devil steers with off-the-shelf doubt and
 % scrutiny persona vectors and compares them with targeted CAA steering along the sycophancy direction
 % (Guidance_Documents/not_origins_review.md section 6, papers/embodied_sensor/related_works_verified.json).
 % The PI's original wording was "assigning a different stance is the natural control, and the scaffold
 % assigns one inside the model's own trace".
-Language-model judges favour their own generations, among other biases
+% related-11 (clarity loop 2, 2026-09-24): "agree with the user more than the evidence warrants" shortened to
+% "grow more sycophantic", the introduction defining sycophancy with the same citations; the joint citation
+% is split so chen2025persona supports "persona-level trait" and kelkar2026devil the steering comparison
+% (related_works_verified.json), and the "so" that presented the comparison as following from the trait is dropped
+Our validation rate rests on language-model judges, which favour their own
+generations, among other biases
 \citep{panickssery2024selfrecognition,wataoka2024selfpreference,zheng2023judging},
-so we state every claim per judge and check each judge against ELEPHANT's
-labels on human-written answers (Section~\ref{sec-single}).
+and our production judge, haiku, is a generator, so we name the judge
+of each judged claim and check all five judges against ELEPHANT's
+validation labels on human-written answers (Section~\ref{sec-single}).
 % related-02: the judges are claude-haiku-4-5 (production), gpt-4o, gpt-5.4-nano, Llama-3.3-70B-Instruct and
-% grok-4-1-fast-reasoning (prereg 17.8 RESULTS, judge_panel_full_oeq_<judge>.json); "per judge" is kept
-% because some claims rest on one judge (the knockout tests, production judge alone) and the 17.11 framing
-% rubric, once reported, on two; the labels are ELEPHANT's on the 149 labelled human-written answers to the
+% grok-4-1-fast-reasoning (prereg 17.8 RESULTS, judge_panel_full_oeq_<judge>.json); "name the judge of each
+% judged claim" replaced "state every claim per judge" (clarity loop, 2026-09-24) because some claims rest on
+% one judge (the knockout tests, production judge alone) and the 17.11 framing rubric, once reported, on two,
+% and the pushback test and the collective are judge-free; haiku as a generator is Section sec-single ("The
+% production judge is itself a generator") and Appendix app-judges paragraph "Scoring procedure"; the labels are ELEPHANT's on the 149 labelled human-written answers to the
 % seed-44 items (prereg 17.8 amendment 2, judge_reference_agreement.json)
 % W19 (2026-09-23): panickssery2024selfrecognition (arXiv 2404.13076, self-recognition and
 % self-preference), wataoka2024selfpreference (arXiv 2410.21819, self-preference bias) and
@@ -63,39 +84,65 @@ Assigning a character or an interest reliably moves a model's output
 little variance in simulated surveys \citep{hu2024persona}, can degrade
 zero-shot reasoning \citep{kim2025persona}, carry implicit biases
 \citep{gupta2024bias,deshpande2023toxicity} and amplify sycophancy when
-agreeable \citep{shah2026toonice}, while multi-persona prompting in one model
-helps some tasks \citep{wang2024spp}. Closest to our
+agreeable \citep{shah2026toonice}, while multi-persona self-collaboration in one
+model helps some tasks \citep{wang2024spp}. Closest to our
 collective, \citet{dietrich2026roles} assigns opposed advocates, a balanced
 seat and a supervisor and measures how far each advocate's output is fixed by
-its role, a role-lock we find near total on grok and below one half on
-haiku (Section~\ref{sec-collective}).
+its role, which we call role-lock and find near total on grok and below one
+half on haiku (Section~\ref{sec-collective}).
 % role-lock grok 0.971 (16.10), Llama 0.862 (16.24), DeepSeek 0.816 (16.27), Mistral 0.708 (16.26), haiku 0.419 (16.23)
 % related-03: role-lock is the gap between the two advocates' opening at-fault rates on each seat's own
 % codable openings (Appendix app-collective; topology_2x2_analysis.json, topology_cell_haiku_249.json),
-% printed as 0.97 and 0.42 in Section sec-collective; Dietrich is a single author
+% printed as 0.97 and 0.42 in Section sec-collective; Dietrich is a single author; "which we call role-lock"
+% (clarity loop, 2026-09-24) marks the term as ours, Dietrich's own measure being advocate role fidelity
+% (arXiv 2604.27228), and Section sec-collective gives the 0.97 and 0.42 gap in its sentence "Role-lock, the
+% gap between the advocates' opening at-fault rates, is 0.97 on grok and 0.42 on haiku" (collective-07, which
+% superseded related-07; integrating editor, clarity loop 2)
 
 \paragraph{Debate places truth at the judge, not in the debaters.}
 Scalable oversight puts opposed agents before a judge \citep{irving18}, who gains more from a debate than from one advocate
 \citep{michael2023debate,khan2024debating}, and over answering alone only
 when it lacks the debaters' information \citep{kenton2024scalable}.
-Debate among copies of one model helps some benchmarks
-\citep{du23,liang2024divergent,chan2023chateval} and fails to beat
-self-consistency \citep{wang2023selfconsistency}, our single-model baseline,
-on others
-\citep{smit2024mad,wang2024rethinking}, since it converges to the existing
+Debate among copies of one model, as in our collective, helps some
+benchmarks \citep{du23,liang2024divergent,chan2023chateval} and fails to beat
+self-consistency \citep{wang2023selfconsistency}, a majority vote over one
+model's samples like our solo, on others
+\citep{smit2024mad,wang2024rethinking}, as debate converges to the existing
 majority \citep{estornell2024multillm}, homogeneous
 agents with uniform updates cannot reliably improve expected correctness
 \citep{zhu2026demystifying}, and debate alone leaves it unchanged where voting
 raises it \citep{choi2025debateorvote}.
-Disagreement has also been a signal, in cross-examination
-\citep{cohen2023lmvslm}, in prover-verifier games
-\citep{kirchner2024prover} and, as sample disagreement or stated confidence
-\citep{manakul2023selfcheck,farquhar2024semantic,xiong2024confidence}, as the
-rule by which cascades escalate a cheap model's uncertain cases
+% related-08 (clarity loop 2, 2026-09-24): the solo is the same model's majority of three answers under the
+% brief unscaffolded prompt, Appendix app-collective paragraph "Pairing with the solo" (routing_certification.json
+% acc_base); self-consistency is majority voting over sampled reasoning paths (wang2023selfconsistency,
+% related_works_verified.json)
+Disagreement also signals errors in cross-examination
+\citep{cohen2023lmvslm} and prover-verifier games \citep{kirchner2024prover}.
+Sample disagreement, one model's answers differing across samples, and stated
+confidence signal uncertainty
+\citep{manakul2023selfcheck,farquhar2024semantic,xiong2024confidence}, on
+which model cascades escalate a cheap model's cases
 \citep{chen2023frugal,jitkrittum2023deferral,gupta2024cascades,yue2024cascades,aggarwal2024automix,jung2025escalate,wang2026defer}.
-We assign opposed interests, not opposed answers, so no advocate is right
-by construction, and ask whether their disagreement routes errors to a
-stronger judge better than sample disagreement.
+% related-02 (clarity loop 2, 2026-09-24): cascades defer on an uncertainty estimate, not all on sample
+% disagreement, yue2024cascades on the weaker model's answer consistency, jitkrittum2023deferral,
+% gupta2024cascades and jung2025escalate on confidence, aggarwal2024automix on self-verification,
+% chen2023frugal on a learned score, wang2026defer on a lower confidence bound, escalating to human review
+% (papers/embodied_sensor/related_works_verified.json what_it_shows); the solo's sample disagreement as
+% routed in Section sec-collective is more than one code among its codable samples
+% (scripts/analyze_router_decomposition.py build_cells, solo_disagree)
+Each advocate argues a party's side, not a candidate answer, so
+none is right by construction, and we ask whether their disagreement picks
+cases for the stronger judge better than the solo's sample disagreement.
+% integrating editor, clarity loop 2 (2026-09-24): the gloss "claude-sonnet-4-6 answering afresh without the
+% debate" is dropped because the Introduction defines sonnet at its first use as "a stronger judge whose answer
+% without the debate replaces the collective's verdict"; "the same model's sample disagreement" is "the solo's
+% sample disagreement" (the solo being the same model's majority of three), "as in our solo baseline" is "like
+% our solo", "the form of our collective" is "as in our collective", "since" is "as" and "has also signalled"
+% is "also signals"; page budget, same claims
+% related-03 (clarity loop 2, 2026-09-24): stronger judge = claude-sonnet-4-6, the majority of three answers
+% it gives to the framed account without the debate (Section sec-collective paragraph "Instrument and
+% protocol", Appendix app-collective); "the same model's sample disagreement" routes the solo, the
+% comparison of prereg 16.22 R3 below
 % W19 (2026-09-23): the cascade, deferral and single-model uncertainty keys (chen2023frugal,
 % jitkrittum2023deferral, gupta2024cascades, yue2024cascades, aggarwal2024automix, jung2025escalate,
 % wang2026defer, wang2023selfconsistency, farquhar2024semantic, xiong2024confidence) were verified at
@@ -113,21 +160,26 @@ errors propagate \citep{shen2025propagation,han2026conformity}, agents to
 conform to majorities \citep{zhang2024socialpsych,weng2025conformity},
 correlated errors to limit aggregation \citep{kim2025correlated} and
 heterogeneous panels to beat homogeneous ones \citep{wang2025moa}, and studies
-team size, unguided homogeneous debate and minority overrides
+team size, unguided homogeneous debate and when a minority should overturn the
+majority
 \citep{bertalanic2026ringelmann,bertalanic2026costconsensus,he2026minoritysentinel}.
-Aggregation theory states when pooling judgements helps, under correlated
-votes \citep{ladha1992condorcet,boland1989majority}, unequal competence
-\citep{shapley1984optimizing,nitzan1982optimal,bahrami2010optimally}, social
-influence in networks
-\citep{degroot1974reaching,golub2010naive,lorenz2011social,becker2017network},
-diversity \citep{zollman2010epistemic,hong2004groups,thompson2014diversity},
-small deliberating groups \citep{navajas2018aggregated} and shared biases
-\citep{prelec2017solution}, and where it cannot \citep{list2002aggregating}.
-We ask instead whether a second objection flags the collective's own errors,
-on each of five models.
+Aggregation theory (Appendix~\ref{app-related}) states when pooling
+judgements helps and where it cannot
+\citep{ladha1992condorcet,list2002aggregating}.
+% integrating editor, clarity loop 2 (2026-09-24), page budget: the sentence listing the conditions
+% under which pooling helps (correlated votes, unequal competence, social influence in networks,
+% diversity, small deliberating groups, shared biases) moved verbatim, with all fifteen of its
+% citations, to Appendix app-related; the two keys kept here bracket it (Condorcet-type pooling under
+% correlated votes, ladha1992condorcet, and the impossibility result, list2002aggregating)
+We ask instead whether a second seat's objection, beyond the one expected
+from the blamed party's advocate, flags the collective's own errors on five
+models (Section~\ref{sec-collective}).
 % five models of Table tab-routing: grok, haiku, Llama, Mistral and DeepSeek,
 % verify_pillar3_headline_{grok,haiku_249,llama,mistral,deepseek}.json (prereg 16.15.1, 16.23, 16.24, 16.26
 % and 16.27 RESULTS); "generators" was the Section sec-single name for the seven answering models
+% related-01 (clarity loop 2, 2026-09-24): a verdict blaming one party gives that party's advocate a reason
+% to object, so the informative objection is a second one (Section sec-collective paragraph "Dissent flags
+% errors")
 
 \paragraph{Two accounts of reasoning as social motivate the design.}
 Human reasoning may have evolved for argument, with biased advocacy from
@@ -141,13 +193,17 @@ Assigned devil's advocacy helps less than authentic dissent
 \citep{schweiger1986group,schwenk1990effects}. Objectivity is a
 property of a community's structure of criticism rather than of any member
 \citep{longino1990science,longino2002fate,popper2011open}, a structure the
-scaffold places inside one trace and the collective across agents. Mediation and
-mechanism design study agents with divergent
-interests
-\citep{dafoe2020cooperative,akata2025repeated,piatti2024cooperate,leon2026personas,tewolde2026coopeval},
-where a mediator's correlated recommendations can reach outcomes no
-equilibrium of the players alone reaches \citep{aumann1974subjectivity}, the
-position of our neutral seat and stronger judge.
+scaffold places inside one model's written reasoning and the collective across agents.
+Beyond these two accounts, a mediator privately recommending an action to
+each player can reach outcomes no equilibrium of the players alone reaches
+\citep{aumann1974subjectivity}, the position of our neutral seat and of the
+stronger judge, and mediation and mechanism design study agents with
+divergent interests more widely (Appendix~\ref{app-related}).
+% integrating editor, clarity loop 2 (2026-09-24), page budget: the five citations for mediation and
+% mechanism design among agents with divergent interests (dafoe2020cooperative, akata2025repeated,
+% piatti2024cooperate, leon2026personas, tewolde2026coopeval) moved to Appendix app-related with the
+% sentence they support; "which speaks for neither party" dropped, the neutral seat being defined in the
+% Introduction and Section sec-collective as the seat that is an advocate for neither party
 % "neutral seat" is Section sec-collective's name for the seat that speaks for neither party (whole-27);
 % "neutral adjudicator" survives only as the role's name inside the verbatim prompts of Appendix
 % app-prompts (integrating editor, clarity loop 1, 2026-09-24)

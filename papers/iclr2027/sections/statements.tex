@@ -16,7 +16,11 @@ Anecdotes) and public model APIs, with no human subjects and no new personal dat
 personal dilemmas in these datasets are posts written for public forums, and we report only
 aggregate rates. The scaffold studied here changes how a model answers people who describe
 their own conflicts, so a reduction in validation is not automatically a benefit to the person
-asking, and we report where the scaffold fails to help or makes things worse (pushback,
+asking, since ELEPHANT's own human-written answers are labelled validating in 30 percent of
+cases (Section~\ref{sec-single}).
+% 30 percent: judge_reference_agreement.json reference_rate 0.2953 (44 of 149 labelled human answers),
+% as in Section sec-single ("30 percent by reference")
+We report where the scaffold fails to help or makes things worse (capitulating under pushback,
 affirming false theorem statements, and the collective's own accuracy) rather than only where it
 helps.
 % "affirming false theorem statements" (discussion-14, subsuming whole-29): Section sec-single, NoT also
@@ -27,16 +31,34 @@ helps.
 Every experiment run after our append-only pre-registration log opened was registered there
 before any model call, with a spending ceiling, a stop rule, the quantities to be reported with
 their baselines, and for every outcome an interpretation declared in advance, which the log calls
-a reading, and every corrected or withdrawn result is recorded there beside the original. The
-appendix identifies the results that predate the log and the readings added after data were seen.
+a reading, and every corrected or withdrawn result is recorded there beside the original.
+Appendix~\ref{app-prereg} and Table~\ref{tab-app-provenance} identify the results that predate
+the log and the readings added after data were seen.
 % Integrating editor, 2026-09-23: the earlier "Every experiment was pre-registered ... before any
 % model call" contradicted Appendix app-prereg (June single-agent responses and the BrokenMath
 % contrast predate the log; the verdict-instrument analysis was registered before analysis, not
 % generation).
 Every model call is cached in a file whose name is built from the call's inputs, so every number
-can be recomputed offline from the released caches, and the headline collective numbers are
-reproduced by an independent implementation that shares no code with the analysis scripts named
-in the registrations. Intervals are percentile bootstraps that resample items and keep every
+can be recomputed offline from the released caches, and the collective's counts, fire rates,
+accuracies before and after routing, routing gains, precision, recall and error-rate ratios in
+Table~\ref{tab-routing} and Section~\ref{sec-collective} are recomputed by an independent
+implementation that shares no code with the analysis scripts named in the registrations
+(Appendix~\ref{app-collective}).
+% independent check: Appendix app-collective, "Estimators and the independent check" (the n, fire,
+% collective, routed, routed minus collective and precision and recall columns of Table tab-routing,
+% and the flagged and unflagged one-party error rates and their ratio, recomputed by
+% scripts/verify_pillar3_headline.py, verify_pillar3_headline_<condition>.json all_agree true); the
+% solo column and the two differences from the solo come from collective_vs_solo_paired.json
+% (scripts/analyze_collective_vs_solo.py) and are not part of the independent check
+Fresh calls would not reproduce every response or score, since models were sampled at 0.7 or at
+the provider's default temperature and repeated judge calls on the same text can disagree
+(Appendix~\ref{app-cost}), so the numbers are reproduced from the caches.
+% sampling: Appendix app-cost decoding paragraph (scripts/generators.py temperature=0.7 on the gpt-4o
+% and open-weight routes, the provider's default for the Anthropic models, grok and nano;
+% scripts/elephant_scorers.py _judge_text at the provider's default temperature); disagreement: the
+% production judge's test-retest agreement 0.969 on byte-identical input (judge_test_retest.json,
+% Appendix app-judges) and no response recurring between runs 1 and 3 (Appendix app-rep4k)
+Intervals are percentile bootstraps that resample items and keep every
 response to an item together (item-clustered).
 % Cache names (discussion-16): judge calls hash metric, question, advice and judge
 % (scripts/elephant_scorers.py _cache_key), ELEPHANT generations carry no sample index
@@ -49,8 +71,9 @@ release holds the per-call caches, the ELEPHANT and Scruples item lists with the
 they carry and each platform's content-filter exclusions, every prompt including the collective's, the scripts
 behind each result together with the independent verification script, the bootstrap seeds, and
 the pre-registration log with its per-run spend ledger. The log will be released with names,
-local paths, authorisation notes and pointers to unreleased records redacted, since it records
-dated decisions of the senior author that could be linked to a public record.
+local paths, authorisation notes and pointers to unreleased
+records redacted, since its dated records of the senior author's decisions could identify the
+authors.
 \todo{PI: add the anonymised code and data link before submission, and confirm the redacted log
 and the row CSVs the analysers read are in the release.}
 % Release inventory, 2026-09-23. Caches are the per-call JSON files under divergence_study_outputs/
