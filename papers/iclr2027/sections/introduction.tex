@@ -14,35 +14,53 @@
 % correct one" (Scruples labels are community judgements of blame). Relative reductions are written
 % "a relative reduction of", never "percent of the CoT rate". The relative figures 88 (original
 % responses) and 87 (earlier pass) percent are no longer stated here and belong to Section sec-single.
+% Readability round 1 (clarity pass, 2026-09-23): sycophancy and social sycophancy named at first use
+% (ELEPHANT abstract page fetched), the validation rate, judge model and production judge glossed, the
+% checklist range stated against CoT, the pushback test and its interval described, the collective
+% introduced with its seats, crowd reference and solo, the 9.8x scoped to one-party verdicts as in
+% Section sec-collective and Table tab-claims, the routed model named, the claim count dropped (Table
+% tab-claims has six rows plus the co-author's), and the registered reading defined at its use. Paid for
+% inside this section (net zero lines, verified with the theory-of-mind stand-in): the opening clause
+% "give advice with apparent empathy and understanding" and the introduction's copy of the sentence
+% "every experiment run after the log opened was registered before its model calls" (kept in the
+% Reproducibility statement and Appendix app-prereg) were dropped, and the collective is introduced once.
+% Loop 1 (2026-09-24), also net zero with the stand-in (Related Work heading still at line 075, and the
+% AI use statement at page 9, line 483, against the other sections as they stood at the start of loop 1):
+% "We introduce" added before the scaffold's name (senior author's first-introduction instruction,
+% reviewer item whole-02), the house phrase "a relative reduction" kept and defined as the drop divided
+% by CoT's rate (W50, item m-stats-10), and the plain-seat models named as grok and Llama because haiku
+% was tested later (item m-seats-06). Paid for by dropping the repeated "social" before "form", "that
+% asks" -> "asking", "and we compare" -> "and compare", and "disputes a verdict that they, as writer of a
+% conflict account, are at fault" -> "as writer of a conflict account, disputes being found at fault".
 \section{Introduction}
 \label{sec-intro}
 
-Large language models give advice with apparent empathy and understanding,
-yet they agree with their users more than the evidence warrants
-\citep{perez2023discovering,sharma23}, and in personal advice this takes a
-social form, validating the person asking \citep{cheng25elephant}. The social
-account of objectivity locates objectivity in organised criticism
-across perspectives rather than in any single reasoner
+Large language models agree with their users more than the evidence
+warrants, a trained bias called sycophancy
+\citep{perez2023discovering,sharma23}, which in personal advice takes the
+form \citet{cheng25elephant} call social sycophancy, validating the person
+asking.
+% cheng25elephant, abstract page https://arxiv.org/abs/2505.13995 fetched 2026-09-23 (title "ELEPHANT:
+% Measuring and understanding social sycophancy in LLMs"; social sycophancy is "excessive preservation of
+% a user's face", set against agreement with a user's explicitly stated beliefs; ELEPHANT is a benchmark)
+The social
+account of objectivity locates it in organised criticism across
+perspectives, not in one reasoner
 \citep{longino1990science,popper2011open}, and a model answering one person's
-account holds only that person's perspective. Narration-of-Thought (NoT), a
-lightweight system prompt, asks the model to write the missing perspectives
+account holds only that person's perspective. We introduce
+Narration-of-Thought (NoT), a lightweight system prompt asking the model to write the missing perspectives
 into its reasoning as a first-person narrative of the decision-maker, the
-stakeholders, the consequences of each available action and what remains
-uncertain, ending in a decision (Section~\ref{sec-scaffold}), and we compare
-it with standard chain-of-thought \citep[CoT,][]{wei22,kojima22}. A collective
-places the perspectives in separate agents with opposed interests and sends
-the cases on which they dissent to a stronger judge
-(Section~\ref{sec-collective}).
+stakeholders, the consequences of each action and what remains uncertain,
+ending in a decision (Section~\ref{sec-scaffold}), and compare it with standard chain-of-thought \citep[CoT,][]{wei22,kojima22}.
 
-This paper makes four claims, each stated with where it holds, where it
-fails and its registered reading in Table~\ref{tab-claims}
-(Appendix~\ref{app}). On 150 open-ended advice questions
-from ELEPHANT \citep{cheng25elephant}, NoT lowers the rate at which our
-production judge, claude-haiku-4-5 (haiku), scores an answer as emotionally
-validating the asker on all seven answering models (generators), by 13 to 63
-points, a relative reduction of 16 to 80 percent, but the reduction depends
-on the judge and holds under all five of ours only on Llama-3.3-70B-Instruct
-(Llama) (Section~\ref{sec-single}).
+On 150 open-ended advice questions from the ELEPHANT benchmark
+\citep{cheng25elephant}, NoT lowers the validation rate, the share
+of answers a judge model scores as emotionally validating the asker, on all
+seven answering models (generators) under our production judge, the
+default scorer claude-haiku-4-5 (haiku), by 13 to 63 percentage points, a relative reduction,
+the drop divided by CoT's rate, of 16 to 80 percent, but it depends on the judge, holding under all
+five judges only on Llama-3.3-70B-Instruct (Llama)
+(Section~\ref{sec-single}).
 % 150 items (seed 44) and seven generators: prereg Addendum 17 shared instrument, 17.1 RESULTS and
 % the 17.7 registration (seed-44 correction); pillar1_headline.json. 13 to 63 points, relative 16 to
 % 80 percent: prereg 17.10 registration (headline restated from 17.10) and RESULTS,
@@ -53,65 +71,99 @@ on the judge and holds under all five of ours only on Llama-3.3-70B-Instruct
 % and an earlier unpaired pass 87 percent (prereg 17.1 RESULTS, pillar1_headline.json, relative
 % 0.868), the abstract's figure; both belong to Section sec-single and Appendix app-prereg, not here
 % (reviewers W08, W27, W50). All five judges only on Llama: prereg 17.8 RESULTS (JUDGE-DEPENDENT)
-% and 17.10 RESULTS (HEADLINE-HOLDS on Llama only), judge_panel_full_oeq_<judge>.json
-The reduction comes with the scaffold's structured content and not its
-narrative form, since the same content as a third-person checklist lowers
-judged validation more than NoT under every judge, by 36.5 to 57.5 points
-pooled over four generators, while the narrative instruction alone raises it,
-and because the rubric scores emotional validation part of the reduction may
-be a cooler register.
+% and 17.10 RESULTS (HEADLINE-HOLDS on Llama only), judge_panel_full_oeq_<judge>.json. Production
+% judge, "the default scorer": the judge that scored every cell inline in the original pipeline before
+% the panel existed (prereg Addendum 17 shared instrument, "scoring by the production judge
+% (claude-haiku-4-5 ...)"); five judges, item bootstrap of 8,000 draws and the rule that a reduction
+% holds when negative with an interval excluding zero, prereg 17.8 registration, stated in Section
+% sec-single; validation rate as in Section sec-single Setup (scripts/elephant_scorers.py)
+% Relative reduction = the drop divided by CoT's rate: scripts/analyze_headline_rep4k.py (relative =
+% -drop / rate_a; sonnet 12.67 / 78.0 = 0.162)
+The scaffold's structured content, not the narrative form, carries the
+reduction, since the same five elements as a third-person checklist
+lower validation below CoT's by 36.5 to 57.5 points pooled over four
+generators, more than NoT under every judge, while first-person narration
+without them raises it, though as the rubric scores emotional validation,
+part of any reduction may be a cooler tone rather than less endorsement.
 % prereg 17.7 and 17.7 amendment 2 RESULTS (CHECKLIST-BETTER and CONTENT-ADDS under all five judges,
 % register caveat), narrative_form_readout.json judges.<judge>.form_pooled (pooled over haiku, grok,
 % nano and Llama, clustered on the item; checklist -36.49 nano judge to -57.49 production judge, NoT
 % minus checklist +11.4 to +31.4, every CI excluding 0; narrative only +6.8 Llama judge to +18.7 nano
 % judge). 36.5 to 57.5 is the one-decimal rounding of -36.49 and -57.49 (key_messages.md says 37 to 58)
-NoT gives way more under pushback on a verdict, capitulating more often
-than CoT, 0.37 against 0.22 pooled over three models, with no difference
-net of its own instability, $+5.2$ points $[-1.7, +12.2]$.
+In a judge-free test, NoT capitulates more often than CoT when the user,
+as writer of a conflict account, disputes being found at fault,
+0.37 against 0.22 pooled over three generators, but also more when merely
+asked to reconsider, with no detectable difference net of that instability, $+5.2$ points, 95 percent interval $[-1.7, +12.2]$.
 % prereg 17.9 RESULTS (primary NULL, raw NOT-WORSE), pushback_readout_pooled.json (nano, Llama and
 % grok, 232 item pairs; capitulation 0.371 vs 0.216, +15.5 [+11.0, +20.2]; net of instability +5.2
 % [-1.7, +12.2]); carried by Llama, pushback_readout_llama.json (0.809 vs 0.489); haiku unread under
-% the 17.9 guard note (14.1 percent of NoT pushback replies without a parseable verdict)
-In the collective, judged against near-unanimous crowd verdicts on
-first-person conflict accounts, opposed agents make a poor decider, less
-accurate than the same model answering alone on four of five models and
-indistinguishable from it on the fifth, but a sensor of their own errors,
-since on grok-4-1-fast-reasoning (grok) the collective is wrong 9.8 times as
-often when a second agent objects as when at most one does, a mechanism
-finding rather than a system.
+% the 17.9 guard note (14.1 percent of NoT pushback replies without a parseable verdict); capitulation
+% and instability are P(turn 2 not at fault) on items both prompts first judged at fault, under the
+% pushback and the neutral re-ask "Can you reconsider and give me your verdict again?"
+% (scripts/run_pushback.py docstring and CONDITIONS); 95 percent interval = item-clustered percentile
+% bootstrap, 8,000 draws (scripts/run_pushback.py DRAWS, SEED 20260922)
+In a second setting, the collective, copies of one model using NoT take
+opposed seats to debate a Scruples account
+\citep{lourie2021scruples}, scored against its near-unanimous crowd verdict of
+who is at fault. The collective is a poor decider, less accurate
+than the same model answering alone (the solo) on four
+of five models and indistinguishable from it on haiku, but a
+sensor of its own errors, since on grok-4-1-fast-reasoning (grok), among
+verdicts that blame one party, it is wrong 9.8 times as often when a second
+seat objects as when at most one does, a
+mechanism finding, not a system worth building.
+% seats prompted with NoT: scripts/run_crowdgold_deliberation.py agent_system (PROMPTS["narrative_cot"]
+% verbatim); objection = ACCEPT_WITH_MODIFICATION or REJECT on the moderator's first synthesis, which
+% states the group's verdict (SYNTHESIS_SYSTEM l.582, objection test l.1211); solo = standard majority
+% of three (routing_certification.json acc_base); seats = an advocate for each party and a neutral
+% adjudicator, Section sec-collective (scripts/run_crowdgold_deliberation.py)
 % crowd reference: scripts/run_crowdgold_aita.py (gold when at least 90 percent of at least 50 votes
 % agree), prereg E4; the labels are Scruples community judgements of blame (lourie2021scruples, cited
-% in Section sec-collective), so the paper calls them the reference, not the correct verdict
+% in Section sec-collective; primary page https://arxiv.org/abs/2008.09094 fetched 2026-09-23, recorded
+% in references.bib), so the paper calls them the reference, not the correct verdict
 % (reviewer W37). Four of five models and haiku (W12, paired per debate, 2026-09-23):
 % collective_vs_solo_paired.json collective minus solo grok -6.9 [-9.7, -4.2], Llama -22.2 [-27.9,
 % -16.6], Mistral -9.1 [-13.1, -5.2], DeepSeek -18.1 [-21.9, -14.4] exclude zero, haiku -0.6 [-4.7,
 % +3.5] includes it (prereg block "Zero-spend post hoc analyses for review round 1"); the two earlier
 % comparisons that point the other way, prereg 16.4, are stated in Section sec-collective and Appendix
 % app-collective. 9.8x: prereg 16.15.1 RESULTS, verify_pillar3_headline_grok.json (one-loser verdicts,
-% 0.387 vs 0.039, 93 flagged of 1,277). Mechanism finding, not a system (W30): prereg 16.22 RESULTS
+% 0.387 vs 0.039, 93 flagged of 1,287; pooled over all verdicts 4.4 times, router_decomposition.json,
+% stated in Section sec-collective). Mechanism finding, not a system (W30): prereg 16.22 RESULTS
 % consequence paragraph ~l.6854-6863 (the solo's own sample disagreement routes solo errors at least
 % as well, 3 calls against 17), routing_certification{,_haiku,_llama,_deepseek,_mistral}.json
 % disagree_minus_counter, stated in Section sec-collective
-Review of the flagged debates by a stronger judge raises accuracy over the
-collective on all five models, by 7.0 points on grok, though not above grok
-answering alone, and plain chain-of-thought seats make the collective more
-accurate than narrating ones on both models tested
+Routing debates where two or more seats object to claude-sonnet-4-6, a
+stronger model answering afresh, raises accuracy over the
+collective on all five models, by 7.0 points on grok, though not above grok's
+solo, and CoT seats make the collective more accurate than NoT seats on grok
+and Llama
 (Section~\ref{sec-collective}).
 % figures/tab_routing.tex from verify_pillar3_headline_<cond>.json (six conditions +3.7 to +21.4,
 % grok +7.0 [+4.8, +9.4]); routed 0.913 against solo 0.912 on grok (routing_certification.json
 % acc_base, descriptive), prereg 16.22 RESULTS; plain seats: prereg 16.28 RESULTS (PLAIN-BETTER),
 % seat_scaffold_comparison.json (narrated minus plain -0.020 [-0.037, -0.003] on grok, -0.042
-% [-0.070, -0.014] on Llama)
+% [-0.070, -0.014] on Llama); plain seats use PROMPTS["standard_cot"] (scripts/run_stdcot_seats.py
+% SEAT_SCAFFOLD); counter = at least two objectors (prereg 16.1 ~l.3042-3084); sonnet sees only the
+% dispute and answers by majority of three, ties to the collective (Section sec-collective,
+% scripts/verify_pillar3_headline.py)
+% grok and Llama are the two models Addendum 16.28 registered; haiku (amendment E-D, ~l.9523, RESULTS
+% ~l.9789, also PLAIN-BETTER, routed at matched coverage narrated minus plain -3.2 [-6.0, -0.4] as the
+% RESULTS block states, seat_scaffold_comparison.json per_model.haiku.routed_matched -0.0320 [-0.0604,
+% -0.0035]) is stated in Appendix app-seat (inserted 2026-09-24, clarity loop 1)
 \todo{PILLAR 2 (co-author): one sentence on the theory-of-mind claim of Section~\ref{sec-tom} and one row of Table~\ref{tab-claims}, expected to support the abstract's 3 to 10 point figure fully.}
-Every experiment run after our append-only registration log opened was
-registered before its model calls, and Appendix~\ref{app-prereg} records the
-exceptions, the analyses added after data were seen and the readouts
-labelled exploratory.
+Table~\ref{tab-claims} (Appendix~\ref{app}) gives each claim, where it holds
+and fails, and the outcome registered before the data were seen,
+and Appendix~\ref{app-prereg} the exceptions and post hoc or exploratory
+analyses.
 % Prereg practice (append-only, each RESULTS block ends "Nothing above this line is edited"), document
 % opened 2026-08-31 (prereg header, whose BrokenMath baselines 0.157 and 0.223 also predate it);
 % 16.15.7 RESULTS note and pre-spend review amendment (four-model June cells predate the document);
 % prospective pillar-1 registration from Addendum 17 (2026-09-21); CORRECTION to 17.2 and 17.6
-% (withdrawn mixed-judge tables). Added after data were seen: 17.5 REVERSED label (post hoc), 17.8
+% (withdrawn mixed-judge tables). "Every experiment run after our append-only registration log opened
+% was registered before its model calls" is stated in the Reproducibility statement and Appendix
+% app-prereg. Added after data were seen: 17.5 REVERSED label (post hoc), 17.8
 % amendment 2 (after the panel tables), 17.9 guard note (void rule fixed after the haiku and nano
 % cells), 16.10 identical-reader contrast (observed); overruns incl. 16.27 $93.70 vs $90 (appendix
-% app-prereg). Plain-seat sensor read on grok only (Llama under-gated, prereg 16.28 RESULTS)
+% app-prereg). Plain-seat sensor read on grok only (Llama under-gated, prereg 16.28 RESULTS).
+% Readings: a short list of named outcomes registered per test, of which the analysis script returns
+% one (Appendix app, paragraph "Registered readings")

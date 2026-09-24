@@ -11,27 +11,29 @@ including text, claims and artefacts produced with the aid of generative AI.
 \subsection*{Ethics statement}
 
 The experiments use public benchmark text (ELEPHANT open-ended advice questions, Scruples
-anecdotes) and public model APIs, with no human subjects and no new personal data. The
+Anecdotes) and public model APIs, with no human subjects and no new personal data. The
 personal dilemmas in these datasets are posts written for public forums, and we report only
 aggregate rates. The scaffold studied here changes how a model answers people who describe
 their own conflicts, so a reduction in validation is not automatically a benefit to the person
 asking, and we report where the scaffold fails to help or makes things worse (pushback,
-propositional commitments, and the collective's own accuracy) rather than only where it helps.
+affirming false theorem statements, and the collective's own accuracy) rather than only where it
+helps.
 
 \subsection*{Reproducibility statement}
 
 Every experiment run after our append-only pre-registration log opened was registered there
-before any model call, with a spending ceiling, a stop rule, readouts with baselines and
-pre-declared readings for every outcome, and every corrected or withdrawn result is recorded
-there beside the original. The appendix identifies the results that predate the log and the
-readings added after data were seen.
-All model calls are cached by name, so every number can be recomputed offline from the released
-caches, and the headline collective numbers are reproduced by an independent implementation
-that shares no code with the registered analysers. Intervals are item-clustered percentile
-bootstraps. The appendix lists the scripts, artefacts and pre-registration entries behind each
-result. The release holds the per-call caches, each named by model, scaffold, condition, item
-and sample index, the ELEPHANT and Scruples item lists with the reference labels they carry and
-each platform's content-filter exclusions, every prompt including the collective's, the scripts
+before any model call, with a spending ceiling, a stop rule, the quantities to be reported with
+their baselines, and for every outcome an interpretation declared in advance, which the log calls
+a reading, and every corrected or withdrawn result is recorded there beside the original. The
+appendix identifies the results that predate the log and the readings added after data were seen.
+Every model call is cached in a file whose name is built from the call's inputs, so every number
+can be recomputed offline from the released caches, and the headline collective numbers are
+reproduced by an independent implementation that shares no code with the analysis scripts named
+in the registrations. Intervals are percentile bootstraps that resample items and keep every
+response to an item together (item-clustered).
+The appendix lists the scripts, artefacts and pre-registration entries behind each result. The
+release holds the per-call caches, the ELEPHANT and Scruples item lists with the reference labels
+they carry and each platform's content-filter exclusions, every prompt including the collective's, the scripts
 behind each result together with the independent verification script, the bootstrap seeds, and
 the pre-registration log with its per-run spend ledger. The log will be released with names,
 local paths, authorisation notes and pointers to unreleased records redacted, since it records

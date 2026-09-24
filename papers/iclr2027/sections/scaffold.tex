@@ -3,18 +3,20 @@
 \section{The Scaffold}
 \label{sec-scaffold}
 
-Narration-of-Thought is a system prompt that asks the model to reason through
-the situation as a first-person narrative in five sections, protagonist,
-stakeholders, consequences, uncertainty and decision, before answering,
-against a one-line chain-of-thought control (Figure~\ref{fig:prompt}). Sections~\ref{sec-single}
-and~\ref{sec-collective} use the NoT text unchanged on every model and task
-and add any forced verdict line, label glossary or seat role outside it
-(Appendices~\ref{app-pushback} and~\ref{app-seat}). NoT also abbreviates the
-Narrative-of-Thought of \citet{zhang2024narrativeofthought}, which recounts
-events as a narrative for temporal reasoning and shares neither task nor
-content with this scaffold.
+NoT asks the model to reason in a first-person narrative of five sections,
+protagonist, stakeholders, consequences, uncertainty and decision, before
+answering, and its control is the one-line CoT prompt, both verbatim in
+Figure~\ref{fig:prompt}.
 % scripts/run_phase1_quartet.py PROMPTS["narrative_cot"], PROMPTS["standard_cot"] (Figure fig:prompt
 % gives both verbatim, including the sentence-by-sentence walk-through of the five sections that stood here)
+% NoT and CoT are defined once, at their first use in the Introduction; the re-expansions
+% "Narration-of-Thought (NoT) is a system prompt" and "chain-of-thought (CoT)" were removed here so each
+% term has one main-text definition (integrating editor, clarity loop 1, 2026-09-24)
+Sections~\ref{sec-single} and~\ref{sec-collective} use the NoT text
+unchanged on every model and task, and any glossary of verdict labels, line
+forcing a verdict or seat role in the collective that a task adds goes after
+it in the system prompt or in the user turn (Appendices~\ref{app-pushback},
+\ref{app-seat} and~\ref{app-prompts}).
 % NoT text unchanged on every Section 4 and 6 task, the wrappers outside it: scripts/run_elephant.py
 % l.132 (intact scaffold asserted equal to PROMPTS["narrative_cot"]) and _generate_advice (system prompt
 % PROMPTS[arm], user turn = the item); scripts/run_brokenmath.py _system_prompt (PROMPTS);
@@ -26,27 +28,42 @@ content with this scaffold.
 % _role_header (role brief in the user turn); scripts/run_stance_factorial.py render_unit_prompt
 % (verdict_instruction appended to the user turn; prereg 16.15.5). Pillar 2 prompts are the
 % co-author's and this sentence does not cover them (see the \todo in sections/pillar2_tom.tex).
-% zhang2024narrativeofthought added 2026-09-23 for reviewer W18 (name and acronym collision), fetched
-% 2026-09-23 at https://aclanthology.org/2024.findings-emnlp.963/ and https://arxiv.org/abs/2410.05558
-% (Findings of EMNLP 2024, pp. 16507-16530; the method is abbreviated NoT there too)
+% Placement as named in the prose (2026-09-23 clarity pass): glossary and verdict line after the NoT
+% text inside the system prompt in scripts/run_crowdgold_aita.py build_system (body = head + glossary +
+% verdict_instruction; pushback and the verdict-instrument test); glossary, role brief and verdict line
+% in the user turn of the collective, scripts/run_crowdgold_deliberation.py r0_user and _role_header
+% (Appendices app-seat and app-prompts); verdict line in the user turn in scripts/run_elephant.py
+% augment_user_turn and scripts/run_stance_factorial.py render_unit_prompt. Appendix app-prompts prints
+% the collective's prompts verbatim, not every task's wrapper.
 
-The design follows the social account of objectivity
-\citep{longino1990science,mercier2011argumentative}, writing the perspectives
-a model answering one person's account of a conflict would otherwise lack
-into the trace before the answer, while the collective of
-Section~\ref{sec-collective} places them in separate agents with opposed
-interests. Unlike SimToM's two-stage
-perspective-taking prompt, which restates what one character knows before
-answering \citep{wilf2024simtom}, a chain-of-thought built from a theory of
-moral reasoning \citep{jin22_moralcot} and multi-persona self-collaboration in
-one model \citep{wang2024spp}, NoT fixes five content sections and a
-commitment in one system prompt applied once to the unchanged query without
-examples or rewriting.
+Following the social account of objectivity
+\citep{longino1990science,popper2011open}, the scaffold has the
+model write out the perspectives missing from one person's account of a
+conflict, and the collective of Section~\ref{sec-collective} places them in
+separate agents with opposed interests.
+% "the perspectives missing from one person's account" restates the introduction's "a model answering
+% one person's account holds only that person's perspective" (sections/introduction.tex); the earlier
+% "into the trace before the answer" is carried by "before answering" in the first sentence
+% Citation matches the introduction's for the same account (longino1990science,popper2011open);
+% mercier2011argumentative stays cited in Related Work for the argumentative theory
+Among related prompts, SimToM \citep{wilf2024simtom} first restates what
+one character knows and then answers from it, the chain-of-thought of
+\citet{jin22_moralcot} is built from a theory of moral reasoning, and
+multi-persona self-collaboration \citep{wang2024spp} has one model play
+several personas. NoT instead fixes five content sections and a closing
+commitment to a decision in one system prompt, applied once to the unchanged
+query without worked examples.
 % wilf2024simtom added 2026-09-23 for reviewer W38; primary pages https://aclanthology.org/2024.acl-long.451/
 % and https://arxiv.org/abs/2311.10227 fetched 2026-09-23 (two-stage perspective-taking, no exemplars).
 % jin22_moralcot was already in references.bib and previously uncited; wang2024spp is cited in Related
 % Work. Single pass over the unchanged query: scripts/run_elephant.py _generate_advice (system prompt
 % PROMPTS[arm], user turn = the item); no examples: scripts/run_phase1_quartet.py PROMPTS (Figure fig:prompt).
+\citet{zhang2024narrativeofthought} use NoT for Narrative-of-Thought, a
+temporal-reasoning prompt that shares neither task nor content with this
+scaffold.
+% zhang2024narrativeofthought added 2026-09-23 for reviewer W18 (name and acronym collision), fetched
+% 2026-09-23 at https://aclanthology.org/2024.findings-emnlp.963/ and https://arxiv.org/abs/2410.05558
+% (Findings of EMNLP 2024, pp. 16507-16530; the method is abbreviated NoT there too)
 
 \begin{figure}[t]
 \centering
@@ -68,6 +85,11 @@ Work through all five sections before giving your final answer.\\[4pt]
 \textbf{Standard chain-of-thought (control).} You are a helpful assistant. Think
 step by step, then give your answer.
 \end{minipage}}
-\caption{\textbf{The two system prompts compared throughout}, verbatim.}
+\caption{\textbf{The two system prompts of Sections~\ref{sec-single} and~\ref{sec-collective}}, verbatim, with the item in the user turn.}
 \label{fig:prompt}
 \end{figure}
+% Caption: each prompt is the system prompt and the item goes in the user turn, scripts/run_elephant.py
+% _generate_advice, scripts/run_crowdgold_aita.py build_system, scripts/run_crowdgold_deliberation.py
+% agent_system and r0_user, scripts/run_stance_factorial.py render_unit_prompt; wrappers a task adds are
+% named in the prose of Section sec-scaffold. Scope "of Sections sec-single and sec-collective" rather
+% than "throughout": the theory-of-mind section's prompts are the co-author's and not stated here

@@ -2,61 +2,60 @@
 \label{sec-discussion}
 
 \paragraph{What the evidence supports.}
-On judged validation and in the collective, the two settings in which we
-separated the scaffold's content from its form, the evidence supports its
-principle, organised criticism across perspectives, only in a weaker form
-than we set out to test, and not its narrative packaging.
-Pooled over four generators, a third-person checklist of the same five
-elements lowers validation more than NoT under each of the five judges and
-the narrative instruction alone raises it (Table~\ref{tab-form-main}),
-though the checklist may score lower partly for a cooler register, which
-this design cannot separate from less endorsement.
-In the collective the objections routing uses come from assigned
-opposition, which costs accuracy on grok (Section~\ref{sec-collective}),
-plain chain-of-thought seats beat narrated ones on both models tested, the
-collective is below the same model answering alone on four of the five
-models of Table~\ref{tab-routing} and indistinguishable from it on haiku,
-and the routed collective beats the solo only on Mistral.
+We set out to test whether a first-person narrative of the missing
+perspectives lowers sycophancy.
+On judged validation, where we separated the scaffold's content from that
+form, and in the collective, where we removed the scaffold from the seats,
+the evidence supports only its principle, organised criticism across
+perspectives \citep{longino1990science}, in a weaker, judge-dependent form
+than we set out to test, so the name Narration-of-Thought records that
+hypothesis, not the mechanism we found.
+Pooled over four generators, a third-person checklist of NoT's five
+sections lowers judged validation below CoT more than NoT under every
+judge, and the narrative instruction without the sections raises it above
+CoT (Table~\ref{tab-form-main}), though part of the checklist's effect may be
+a cooler register, which this design cannot separate from less
+endorsement.
+In the collective a second objection flags errors on four of five models,
+but objections come from assigned opposition, which costs accuracy on grok
+in a contrast not declared in advance (Section~\ref{sec-collective}), and
+plain CoT seats beat narrated ones on grok and Llama. The collective is
+less accurate than the same model alone on four of the five models of
+Table~\ref{tab-routing}, indistinguishable from it on haiku, and even with
+its flagged debates sent to sonnet beats it only on Mistral.
 \todo{PILLAR 2 (co-author): Section~\ref{sec-tom}'s result, its scope and limits, and whether any contrast there separates content from form, else say the decomposition above was tested on judged validation and the collective only.}
 
-\paragraph{Judges and the construct.}
-The single-agent reduction depends on the judge, holding on all seven
-generators only under the production judge and under all five judges only
-on Llama (Table~\ref{tab-claims}, with the Holm-corrected counts in
-Section~\ref{sec-single}).
-The production judge is also a generator and shares its developer with
-sonnet, whose reduction no other judge confirms (Section~\ref{sec-single}).
+\paragraph{Judges and what they measure.}
+The single-agent reduction holds on all seven generators only under the
+production judge, haiku, a generator sharing a developer with sonnet,
+whose reduction no other judge confirms, and under all five judges only on
+Llama (Table~\ref{tab-claims}, Section~\ref{sec-single}).
 No judge panel can separate register from endorsement, but the judge-free
-pushback test of Section~\ref{sec-single} \citep{fanous2025syceval}
-separates register from commitment, and there the scaffold is worse on both
-raw measures, carried almost entirely by Llama, and its registered net
-contrast, $+5.2$ points $[-1.7, +12.2]$, is null because the rises are
-alike, not because either is absent (Section~\ref{sec-single}).
-On Llama and Mistral NoT also keeps the verdict's shift toward the user as
-writer, and DeepSeek shows none (Section~\ref{sec-single}).
+pushback test \citep{fanous2025syceval} separates it from commitment.
+There NoT gives up its verdict more often than CoT whether the user
+disputes it or just asks again, carried almost entirely by Llama, and the
+registered net contrast is null because the two rises are alike, not
+because either is absent.
+On Llama and Mistral the verdict's shift toward excusing the user as writer
+also survives NoT, and DeepSeek shows none either way.
 
 \paragraph{Other limitations.}
-Each generator answered each item once per prompt in each run, and the two
-to four runs per generator, compared after the fact
-(Appendix~\ref{app-rep4k}), keep the production judge's reduction with an
-interval excluding zero on every generator in every run except sonnet's
-second run at 4,096 tokens ($-4.7$ $[-13.3, +3.3]$) and shrink it on three
-generator and judge pairs, while content filters removed disputes each
-platform refuses, so the collective and pushback panels differ across
-models.
+Each generator answered each item once per prompt in each run, so only its
+two to four runs, compared after the fact (Appendix~\ref{app-rep4k}), show
+how far the reduction moves between generations. They keep it under the
+production judge, with an interval excluding zero, in every run but
+sonnet's second at 4,096 tokens, and shrink it on three generator-judge
+pairs.
+Content filters on most platforms refuse some disputes, so the collective
+and pushback item sets differ by model.
 
 \paragraph{Future work.}
 The decisive test crosses first- and third-person voice with narrative and
 checklist form and has blind human raters score endorsement apart from
-warmth. Another is whether any form of the content resists pushback over
-several turns \citep{hong2025sycophancy}. A third is whether dissent flags errors where seats lock weakly to their sides
-and routes them better than a model's own sample disagreement, the cascade
-baseline
-\citep{jitkrittum2023deferral,manakul2023selfcheck}, which matched or beat
-it everywhere but Mistral in mostly exploratory readouts
-(Appendix~\ref{app-collective}).
-On judged validation and in the collective the evidence supports the
-principle of organised criticism across perspectives
-\citep{longino1990science} only in this weaker, judge-dependent form, so the
-name Narration-of-Thought records the hypothesis we tested, that a
-first-person narrative carries the reduction, and not the mechanism we found.
+register. A second is whether any form of the content resists pushback
+over several turns \citep{hong2025sycophancy}. A third is whether dissent
+flags errors where seats lock weakly to their sides and routes them better
+than disagreement among the solo model's three answers
+\citep{jitkrittum2023deferral,manakul2023selfcheck}, which routed errors at
+least as well everywhere but Mistral, in comparisons registered only on
+grok (Appendix~\ref{app-collective}).

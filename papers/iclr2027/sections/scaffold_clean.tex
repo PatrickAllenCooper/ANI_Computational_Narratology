@@ -1,29 +1,31 @@
 \section{The Scaffold}
 \label{sec-scaffold}
 
-Narration-of-Thought is a system prompt that asks the model to reason through
-the situation as a first-person narrative in five sections, protagonist,
-stakeholders, consequences, uncertainty and decision, before answering,
-against a one-line chain-of-thought control (Figure~\ref{fig:prompt}). Sections~\ref{sec-single}
-and~\ref{sec-collective} use the NoT text unchanged on every model and task
-and add any forced verdict line, label glossary or seat role outside it
-(Appendices~\ref{app-pushback} and~\ref{app-seat}). NoT also abbreviates the
-Narrative-of-Thought of \citet{zhang2024narrativeofthought}, which recounts
-events as a narrative for temporal reasoning and shares neither task nor
-content with this scaffold.
+NoT asks the model to reason in a first-person narrative of five sections,
+protagonist, stakeholders, consequences, uncertainty and decision, before
+answering, and its control is the one-line CoT prompt, both verbatim in
+Figure~\ref{fig:prompt}.
+Sections~\ref{sec-single} and~\ref{sec-collective} use the NoT text
+unchanged on every model and task, and any glossary of verdict labels, line
+forcing a verdict or seat role in the collective that a task adds goes after
+it in the system prompt or in the user turn (Appendices~\ref{app-pushback},
+\ref{app-seat} and~\ref{app-prompts}).
 
-The design follows the social account of objectivity
-\citep{longino1990science,mercier2011argumentative}, writing the perspectives
-a model answering one person's account of a conflict would otherwise lack
-into the trace before the answer, while the collective of
-Section~\ref{sec-collective} places them in separate agents with opposed
-interests. Unlike SimToM's two-stage
-perspective-taking prompt, which restates what one character knows before
-answering \citep{wilf2024simtom}, a chain-of-thought built from a theory of
-moral reasoning \citep{jin22_moralcot} and multi-persona self-collaboration in
-one model \citep{wang2024spp}, NoT fixes five content sections and a
-commitment in one system prompt applied once to the unchanged query without
-examples or rewriting.
+Following the social account of objectivity
+\citep{longino1990science,popper2011open}, the scaffold has the
+model write out the perspectives missing from one person's account of a
+conflict, and the collective of Section~\ref{sec-collective} places them in
+separate agents with opposed interests.
+Among related prompts, SimToM \citep{wilf2024simtom} first restates what
+one character knows and then answers from it, the chain-of-thought of
+\citet{jin22_moralcot} is built from a theory of moral reasoning, and
+multi-persona self-collaboration \citep{wang2024spp} has one model play
+several personas. NoT instead fixes five content sections and a closing
+commitment to a decision in one system prompt, applied once to the unchanged
+query without worked examples.
+\citet{zhang2024narrativeofthought} use NoT for Narrative-of-Thought, a
+temporal-reasoning prompt that shares neither task nor content with this
+scaffold.
 
 \begin{figure}[t]
 \centering
@@ -45,6 +47,6 @@ Work through all five sections before giving your final answer.\\[4pt]
 \textbf{Standard chain-of-thought (control).} You are a helpful assistant. Think
 step by step, then give your answer.
 \end{minipage}}
-\caption{\textbf{The two system prompts compared throughout}, verbatim.}
+\caption{\textbf{The two system prompts of Sections~\ref{sec-single} and~\ref{sec-collective}}, verbatim, with the item in the user turn.}
 \label{fig:prompt}
 \end{figure}

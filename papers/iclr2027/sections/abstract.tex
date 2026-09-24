@@ -25,6 +25,29 @@
 %      routing gain is real and replicates on six conditions, but 16.28 finds plain
 %      chain-of-thought seats equal or better (PLAIN-BETTER), so it is not a property of the
 %      scaffold.
+%  (5) Readability round 1 (2026-09-23), for the PI: a first-time reader meets "production judge",
+%      "the collective", "a stronger judge" and "our primary evaluation" in the abstract before any
+%      definition. The introduction now glosses each at first use in the main text (the production
+%      judge as the default scorer claude-haiku-4-5, the collective as copies of one model in opposed
+%      seats, the stronger model as claude-sonnet-4-6 answering the dispute afresh, the 7.0 points as
+%      grok's). If the abstract may be reworded, "under the default judge of our analysis" and "on
+%      grok-4-1-fast-reasoning, the model of our primary evaluation" would carry the same facts.
+%  (6) Readability round 1, for the PI: "which improves their social reasoning abilities when compared
+%      to standard chain-of-thought" will be read against the introduction's findings that a
+%      third-person checklist of the same content lowers judged validation more than NoT, that NoT
+%      capitulates more under pushback (null net of instability) and that chain-of-thought seats give a
+%      more accurate collective than NoT seats (prereg 17.7, 17.9 and 16.28 RESULTS). Consider whether
+%      "improves" should carry the qualifier the introduction gives. Not edited here.
+%  (7) Clarity review (2026-09-24), for the PI: "reduces model sycophancy ... by up to 80%" is read by
+%      a skimmer as sycophancy in general; the paper measures judged emotional validation of a first
+%      answer, and NoT capitulates more under pushback (0.37 vs 0.22 raw, prereg 17.9 RESULTS,
+%      pushback_readout_pooled.json). The Introduction states both; the abstract cannot.
+%  (8) Clarity review (2026-09-24), for the PI: "increases accuracy by 7.0 percentage points": 4.9 of
+%      the 7.0 points come from verdicts blaming both parties or neither (390 of 1,677 debates, 0.536
+%      -> 0.749), where dissent shows no detectable lift (-9.7 [-23.3, +4.3]), and the routed collective
+%      is not above grok answering alone (+0.1 [-2.6, +3.0]). Sources: router_decomposition.json
+%      composed_sonnet (counter, by_stratum) and counter_lift_by_stratum.both_party;
+%      collective_vs_solo_paired.json grok routed_minus_solo_debate_weighted. PI decision.
 % ============================================================================================
 \begin{abstract}
 LLMs today are adept at conversation, providing advice and suggestions with apparent empathy and understanding. While the underlying nature of their understanding and the manner of its emergence might be a matter of much debate, the premise that this "understanding" breaks down under more complex social conditions remains largely accepted. The social account of objectivity emphasizes how organized criticism across perspectives can expose individual errors. Based on this account, we introduce a general, lightweight prompt scaffold that writes the decision-maker, the affected stakeholders, the consequences of each action and what remains uncertain into the model's reasoning, and which improves their social reasoning abilities when compared to standard chain-of-thought.
@@ -51,4 +74,4 @@ and that among agents with opposing interests, with or without the scaffold in t
 % (router_decomposition.json composed_sonnet; independently reproduced by verify_pillar3_headline.py)
 Our findings lay the groundwork for further exploring the potential of this scaffold in improving models' social alignment.
 \end{abstract}
-\noindent\todo{PI: three clauses reworded on 2026-09-23 (narrative attribution, judge qualifier, collective sentence); the theory-of-mind figure is the co-author's (see the comment block at the top of sections/abstract.tex).}
+\noindent\todo{PI: three clauses reworded on 2026-09-23 (narrative attribution, judge qualifier, collective sentence). The theory-of-mind figure is the co-author's. Items 5 to 8 of the comment block at the top of sections/abstract.tex are new.}
