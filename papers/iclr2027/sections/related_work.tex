@@ -35,15 +35,70 @@
 Preference-tuned models grow more sycophantic with scale and user confidence
 \citep{perez2023discovering,sharma23}, validate the asker's own account of a
 conflict \citep{cheng25elephant} and revise correct answers under pushback
-\citep{fanous2025syceval,malmqvist24}. Sycophancy is a linear direction in
-activation space \citep{rimsky2024caa} and a persona-level trait
-\citep{chen2025persona}, an off-the-shelf sceptical persona vector (a trait's
-activation direction) recovers most of what steering along the sycophancy
-direction achieves
-\citep{kelkar2026devil}, and synthetic fine-tuning data reduce it
-\citep{wei2023synthetic}. If sycophancy is an adopted stance, a
-prompt may shift it, so NoT has the model write other perspectives into its
-written reasoning, and we compare it with CoT.
+\citep{fanous2025syceval,malmqvist24}. Synthetic fine-tuning data reduce
+sycophancy \citep{wei2023synthetic}. The closest prior idea to NoT is
+persona vectors \citep{chen2025persona}, directions in activation space that
+track traits such as sycophancy and can be read to monitor, or
+moved to steer, the persona a model adopts. An off-the-shelf sceptical
+persona vector recovers most of what steering along a sycophancy direction
+\citep{rimsky2024caa} achieves \citep{kelkar2026devil}. NoT is their
+prompt-level counterpart, assigning the model a stance toward the asker and
+the other parties without editing activations, and a sceptical-persona
+prompt, the one-line version of that move, lowers validation more than NoT
+under four of five judges (Section~\ref{sec-single}).
+% four of five judges: baselines_17_12_readout.json judges.<judge>.pooled.cot_sceptical.not.gap, BASELINE-BEATS-NOT
+% under the gpt-4o (+10.2 [+5.9, +14.7]), nano (+19.4), Llama (+26.0) and grok (+25.2) judges, MATCH under the
+% production judge (-1.7 [-6.7, +3.1]) (readings.cot_sceptical.not; prereg "Addendum 17.12 RESULTS"); Section
+% sec-single states the same ("the persona under four") with Table tab-app-baselines. The persona's premise-acceptance
+% result (below the human rate, -43.7 and -39.5 points, human_anchor_readout.json rubrics.framing.<judge>.pooled
+% .cot_sceptical.diff) is left to Section sec-single, where NoT's own over-correction there (-9.7 and -11.1,
+% narrative_cot_rep) is stated beside it; stated here alone it would read as a failure of the baseline that NoT
+% escapes (Related Work applying editor, 2026-09-24).
+% PENDING_EDITS item 1 (PI, 2026-09-23, applied by the Related Work editor 2026-09-24): persona vectors are named
+% as the closest prior idea, NoT as their prompt-level counterpart and the sceptical-persona baseline as the
+% one-line version of the same move. This replaces the passing gloss "(a trait's activation direction)", the
+% clause "Sycophancy is a linear direction in activation space (rimsky2024caa) and a persona-level trait
+% (chen2025persona)" (rimsky2024caa now cited for CAA steering along a sycophancy direction, the method behind
+% kelkar2026devil's comparator vector, a purpose-built CAA vector on Gemma 2 27B and Qwen 3 32B, not Rimsky's
+% Llama 2 direction, related_works_verified.json; hence "a sycophancy direction" in the prose, 2026-09-24; the
+% trait claim carried by the persona-vector gloss) and the closing sentence "If sycophancy is an adopted stance,
+% a prompt may shift it, so NoT has the model write other perspectives into its written reasoning, and we
+% compare it with CoT" (the CoT comparison is stated in the Introduction; "without editing activations" now
+% says why a prompt is the remedy tested). Every citation key of the paragraph is kept. The persona-vector
+% sentence was split at "adopts. An off-the-shelf" (2026-09-24) so the Kelkar clause is not read as one more
+% item of the persona-vector gloss; same claims and keys.
+% chen2025persona: primary page https://arxiv.org/abs/2507.21509 verified 2026-09-23 and fetched again with
+% WebFetch 2026-09-24 (Chen, Arditi, Sleight, Evans, Lindsey; v3 5 Sep 2025). The abstract identifies
+% directions in the model's activation space, persona vectors, underlying traits "such as evil, sycophancy, and
+% propensity to hallucinate", uses them to monitor the Assistant's personality at deployment, and predicts and
+% controls personality shifts in training by post-hoc intervention or preventative steering; hence "read to
+% monitor, or moved to steer, the persona a model adopts".
+% "the other parties": NoT's Stakeholders section lists every person whose life the decision touches and its
+% persona line makes the model an advisor (Figure fig:prompt, Section sec-scaffold). NoT is a system prompt, so
+% it edits no activations or weights. A prompt still shifts activations along persona vectors, which is how
+% chen2025persona extracts and monitors them (contrastive system prompts, difference of mean activations; Section
+% 3.3 "Monitoring prompt-induced persona shifts via projection" of arXiv 2507.21509, HTML fetched with WebFetch
+% 2026-09-24), hence "without editing activations", not "without touching activations".
+% Sceptical-persona baseline: prereg Addendum 17.12, cot_sceptical ("You are a sceptical advisor who does not
+% take the asker's account at face value. Think step by step, then give your answer.",
+% scripts/scaffold_permutations.BASELINES), which differs from CoT only in its persona sentence (the self-check
+% in scripts/scaffold_permutations.py), hence "the one-line version". Its result is reported in Section
+% sec-single, paragraph "Accepting the asker's framing" (which absorbed the former paragraph "The benchmark's
+% mitigations and the human rate" on 2026-09-24), and Table tab-app-baselines (the baseline rows left Table
+% tab-form-main on 2026-09-24): on validation BASELINE-BEATS-NOT under gpt-4o, nano, Llama and grok and MATCH under the
+% production judge (baselines_17_12_readout.json judges.<judge>.pooled.cot_sceptical.not.gap, prereg 17.12
+% RESULTS), on premise acceptance far below NoT under both framing judges (framing_17_11_readout.json
+% baselines, prereg 17.11 amendment RESULTS) and below the human rate there (human_anchor_readout.json, prereg
+% 17.11 amendment 2 RESULTS). The prose states the validation result (four of five judges, source comment above,
+% added 2026-09-24 so the one-line version's advantage over NoT is as visible as NoT's successes).
+% Page budget: PENDING_EDITS item 1 was line-neutral (49 rendered lines before and after, paid for by the judge
+% sentence below and the topology paragraph, see their comments), and so is the 2026-09-24 applying pass (this
+% paragraph still ends on ruler line 096, the text of pages 3 to 10 is identical before and after, Figure
+% fig:prompt on page 3, "3 The Scaffold" at ruler 149, in a scratch build with the theory-of-mind stand-in).
+% With the stand-in, the main text of the 2026-09-24 working tree ends at ruler line 502 on page 10 (page 9 ends
+% at ruler 485), about 17 lines past page 9 (other scratch builds of the moving tree measured 508 and 512). These
+% edits do not cause that overrun and do not reduce it; the integrating editor must cut or move those lines.
+% [superseded by PENDING_EDITS item 1 above, 2026-09-24: the gloss below and "a prompt may shift it" left the text]
 % clarity loop 3 (Related Work reviewer, 2026-09-24): "(a trait's activation direction)" defines persona vector at
 % its first use as chen2025persona does (directions in activation space underlying character traits such as
 % sycophancy; arXiv 2507.21509, papers/embodied_sensor/related_works_verified.json, PENDING_EDITS item 1),
@@ -56,33 +111,51 @@ written reasoning, and we compare it with CoT.
 % cot_sceptical (scripts/scaffold_permutations.BASELINES), on haiku, grok, nano and Llama, and it lowers
 % judged validation more than NoT under four of five judges (BASELINE-BEATS-NOT under gpt-4o, nano, Llama
 % and grok, MATCH under the production judge; baselines_17_12_readout.json, judge_panel_baselines_17_12.json).
-% Its reporting plan puts it in Section sec-single and Appendix app-form, and this paragraph should point to
-% it once it is reported there. The other persona control is CoT with NoT's "thoughtful advisor" line (prereg
+% Its reporting plan puts it in Section sec-single and Appendix app-form, and this paragraph now points to
+% it (PENDING_EDITS item 1, 2026-09-24). The other persona control is CoT with NoT's "thoughtful advisor" line (prereg
 % 17.7 amendment 2, narrative_form_readout.json judges.<judge>.persona_pooled, PERSONA-INERT under three
 % judges and PERSONA-RAISES under two), reported in Section sec-single. "Written reasoning" (Section
-% sec-single's term for what the judge reads) replaced "reasoning trace" here and in the last paragraph
-% (Related Work verifying editor, clarity loop, 2026-09-24), so the hidden reasoning of nano and grok is not
-% implied; "a prompt may shift it" states why a prompt is the remedy tested (steering and fine-tuning need
-% activations or weights). "An
+% sec-single's term for what the judge reads) replaced "reasoning trace" in the last paragraph (and in this
+% paragraph until PENDING_EDITS item 1 removed the sentence, 2026-09-24) (Related Work verifying editor, clarity
+% loop, 2026-09-24), so the hidden reasoning of nano and grok is not implied; "a prompt may shift it" stated why a
+% prompt is the remedy tested (steering and fine-tuning need activations or weights) [superseded 2026-09-24,
+% PENDING_EDITS item 1: "a prompt may shift it" left the text, and "without editing activations" now carries this
+% point]. "An
 % off-the-shelf sceptical persona vector" (related-12): kelkar2026devil steers with off-the-shelf doubt and
-% scrutiny persona vectors and compares them with targeted CAA steering along the sycophancy direction
+% scrutiny persona vectors and compares them with targeted CAA steering along a sycophancy direction, a
+% purpose-built CAA vector on Gemma 2 27B and Qwen 3 32B (68% and 98% of its effect), not Rimsky's Llama 2 vector
 % (Guidance_Documents/not_origins_review.md section 6, papers/embodied_sensor/related_works_verified.json).
 % The PI's original wording was "assigning a different stance is the natural control, and the scaffold
 % assigns one inside the model's own trace".
 % related-11 (clarity loop 2, 2026-09-24): "agree with the user more than the evidence warrants" shortened to
 % "grow more sycophantic", the introduction defining sycophancy with the same citations; the joint citation
-% is split so chen2025persona supports "persona-level trait" and kelkar2026devil the steering comparison
+% is split so chen2025persona supports "persona-level trait" (superseded by PENDING_EDITS item 1, 2026-09-24:
+% chen2025persona now supports the persona-vector sentence) and kelkar2026devil the steering comparison
 % (related_works_verified.json), and the "so" that presented the comparison as following from the trait is dropped
 Our validation rate rests on judge models, which favour their own
 generations, among other biases
 \citep{panickssery2024selfrecognition,wataoka2024selfpreference,zheng2023judging},
-and our production judge, haiku, scores its own answers, so we name the judge
-of each judged claim and check all five judges against ELEPHANT's
-validation labels on human-written answers (Section~\ref{sec-single}).
+and our production judge, haiku, scores its own answers, so every judged claim
+names its judge.
+% Page budget for the four-of-five clause above (Related Work applying editor, 2026-09-24): "so we name the judge of
+% each judged claim" -> "so every judged claim names its judge" (same promise), "character traits including
+% sycophancy" -> "traits such as sycophancy" (chen2025persona's own "traits such as evil, sycophancy, and propensity
+% to hallucinate"), and this sentence's "(Section sec-single)" dropped, since the sentence before points to the
+% same section and the Introduction introduces the five judges and haiku as a generator; same claims and keys.
+% PENDING_EDITS item 1 payment (Related Work editor, 2026-09-24): the clause "and check all five judges against
+% ELEPHANT's validation labels on human-written answers" left this sentence. Section sec-single points to that
+% check in its ceiling sentence ("Appendix app-judges, also for Cohen's kappa ... with ELEPHANT's labels"), and
+% Appendix app-judges states it in full with its caveat ("The check is descriptive. It was registered after the
+% five drop tables were seen ...", kappa gpt-4o 0.792 to Llama judge 0.478, judge_reference_agreement.json, prereg
+% 17.8 amendment 2), so no result or caveat moved; offered here as an answer to judge bias the clause said more
+% than that check supports (corrected 2026-09-24: Section sec-single no longer states the check in full, a third
+% pass having cut it to the pointer). The related-02 note on the labels below now describes Section sec-single.
 % related-02: the judges are claude-haiku-4-5 (production), gpt-4o, gpt-5.4-nano, Llama-3.3-70B-Instruct and
 % grok-4-1-fast-reasoning (prereg 17.8 RESULTS, judge_panel_full_oeq_<judge>.json); "name the judge of each
-% judged claim" replaced "state every claim per judge" (clarity loop, 2026-09-24) because some claims rest on
-% one judge (the knockout tests, production judge alone) and the 17.11 framing rubric, once reported, on two,
+% judged claim" (since 2026-09-24 "every judged claim names its judge", same promise) replaced "state every
+% claim per judge" (clarity loop, 2026-09-24) because some claims rest on
+% one judge (the knockout tests, production judge alone) and the 17.11 framing rubric on two (production judge and
+% gpt-4o, Section sec-single and Table tab-form-main),
 % and the pushback test and the collective are judge-free; haiku as a generator is Section sec-single ("The
 % production judge is itself a generator") and Appendix app-judges paragraph "Scoring procedure"; the labels are ELEPHANT's on the 149 labelled human-written answers to the
 % seed-44 items (prereg 17.8 amendment 2, judge_reference_agreement.json)
@@ -149,8 +222,17 @@ which model cascades escalate a cheap model's cases
 % routed in Section sec-collective is more than one code among its codable samples
 % (scripts/analyze_router_decomposition.py build_cells, solo_disagree)
 Unlike debaters, our advocates argue parties' sides, not answers, so
-none is right by construction, and we ask whether their disagreement picks
-cases for the stronger judge better than the solo's sample disagreement.
+none is right by construction, and we ask mainly whether a second seat's
+objection, beyond the one expected from the blamed party's advocate, flags
+the collective's own errors on five models and picks cases for the stronger
+judge better than the solo's sample disagreement (Section~\ref{sec-collective}).
+Appendix~\ref{app-related} reviews work on multi-agent topology, conformity
+and composition and on aggregation theory
+\citep{ladha1992condorcet,list2002aggregating}.
+% integrating editor (2026-09-24), page budget: the paragraph "Topology and aggregation ask when pooling helps" is
+% merged into this one, its question sentence ("We ask mainly whether a second seat's objection ... on five models")
+% joined to the sentence above and its pointer and two keys placed after it; same claims and citations, heading
+% dropped (its "ask when pooling helps" kept in the pointer). Sources as in the comment blocks below.
 % clarity loop 3 (Related Work reviewer, 2026-09-24): "Unlike debaters, our advocates" names the contrast behind "right by
 % construction" (a debater defends a candidate answer, irving18, khan2024debating); paid for, with the
 % "gains over" edit above, by dropping "also" before "signals errors"; measured 0 rendered lines together
@@ -173,12 +255,15 @@ cases for the stronger judge better than the solo's sample disagreement.
 % in routing_certification_{haiku,llama,mistral,deepseek}.json, reported in Section sec-collective
 % and Appendix app-collective
 
-\paragraph{Topology and aggregation ask when pooling helps.}
-Work on multi-agent topology, conformity and composition
-asks when a group of agents improves on its members, and aggregation theory
-states when pooling judgements helps and where it cannot
-\citep{ladha1992condorcet,list2002aggregating}, both reviewed in
-Appendix~\ref{app-related}.
+% (paragraph "Topology and aggregation ask when pooling helps" merged into the Debate paragraph above, integrating
+% editor 2026-09-24; its comment history follows)
+% PENDING_EDITS item 1 payment (Related Work editor, 2026-09-24; the PI's note names this paragraph): "Work on
+% multi-agent topology, conformity and composition asks when a group of agents improves on its members, and
+% aggregation theory states when pooling judgements helps and where it cannot (ladha1992condorcet,
+% list2002aggregating), both reviewed in Appendix app-related" is cut to the pointer above. The heading keeps
+% "ask when pooling helps", and Appendix app-related states both claims in full ("Aggregation theory states
+% when pooling judgements helps ... and where it cannot", list2002aggregating, and the topology sentence that
+% moved there in whole-14); both keys stay cited here, so the bibliography is unchanged. -1 rendered line.
 % integrating editor, clarity loop 3 (2026-09-24), page budget: "Work on the topology, conformity and composition of
 % multi-agent systems" -> "Work on multi-agent topology, conformity and composition", same scope, which brings this
 % paragraph's last line ("(Section sec-collective).") up and pays for "there" in the Introduction's routing sentence
@@ -193,9 +278,7 @@ Appendix~\ref{app-related}.
 % diversity, small deliberating groups, shared biases) moved verbatim, with all fifteen of its
 % citations, to Appendix app-related; the two keys kept here bracket it (Condorcet-type pooling under
 % correlated votes, ladha1992condorcet, and the impossibility result, list2002aggregating)
-We ask mainly whether a second seat's objection, beyond the one expected
-from the blamed party's advocate, flags the collective's own errors on five
-models (Section~\ref{sec-collective}).
+% (sentence "We ask mainly whether a second seat's objection ..." moved into the Debate paragraph above)
 % five models of Table tab-routing: grok, haiku, Llama, Mistral and DeepSeek,
 % verify_pillar3_headline_{grok,haiku_249,llama,mistral,deepseek}.json (prereg 16.15.1, 16.23, 16.24, 16.26
 % and 16.27 RESULTS); "generators" was the Section sec-single name for the seven answering models

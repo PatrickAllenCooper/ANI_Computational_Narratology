@@ -3,62 +3,67 @@
 
 \paragraph{What the evidence supports.}
 On judged validation and in the collective the evidence supports the
-scaffold's principle (Section~\ref{sec-scaffold}) more weakly than
+scaffold's principle more weakly than
 hypothesised and, on validation, depending on the judge. It does not
 support our hypothesis, recorded in the name Narration-of-Thought, that a
-first-person narrative of the missing perspectives lowers sycophancy.
-Pooled over four generators and under every judge, a third-person
-checklist of NoT's five sections lowers judged validation further below CoT
-than NoT does, and narration without the sections raises it
-above CoT (Table~\ref{tab-form-main}), though part of the checklist's effect
-may be a cooler register, inseparable here from less endorsement.
-In the collective, a verdict blaming one party is wrong more often when a
+first-person narrative of the missing perspectives lowers sycophancy,
+which premise acceptance alone partly supports.
+Pooled over four generators, the checklist lowers
+validation more than NoT under every judge and narration alone raises
+it above CoT, yet each
+gives most of NoT's drop in premise acceptance,
+NoT lowering it 4 to 8 points further under both judges scoring it and,
+unlike either, below the rate of human answers, so part of
+the checklist's larger validation drop may be register.
+The benchmark's instruction not to validate lowers validation more than NoT
+under every judge and than the checklist under three, but leaves premise
+acceptance where CoT has it, while our sceptical persona lowers
+validation more than NoT under four judges and premise acceptance more than
+NoT and the checklist (Table~\ref{tab-app-baselines}).
+In the collective, a one-party verdict is wrong more often when a
 second seat objects, on four of five models, an analysis proposed after
 grok's debates were collected.
-Those objections, however, come from assigned opposition,
-which on grok costs accuracy, three neutral seats scoring higher, in a
-contrast not pre-registered.
-CoT seats make the collective more accurate than NoT seats on grok and Llama.
-The collective is no better a decider than the solo, worse on four of five
-models (Table~\ref{tab-routing}) and indistinguishable on haiku, but a
-sensor of its own errors. Routing raises its accuracy on all five but
-beats the solo only on Mistral, and 4.9 of its 7.0 points on grok come from
-verdicts blaming both parties or neither, where objections carry no
-detectable error signal.
+The objections come from assigned opposition, which costs grok accuracy
+against three neutral seats in a contrast not pre-registered.
+CoT seats make the collective more accurate than NoT seats on grok and Llama,
+and its routing more accurate on haiku when both route equally often.
+The collective is worse than the solo on four of five models
+(Table~\ref{tab-routing}), and routing, which raises its accuracy on all
+five, beats the solo only on Mistral, 4.9 of its 7.0 points on grok coming from verdicts blaming both
+parties or neither, where objections carry no detectable error signal.
 \todo{PILLAR 2 (co-author): Section~\ref{sec-tom}'s result, its scope and limits, and whether any contrast there separates content from form, else say the decomposition above was tested on judged validation and the collective only.}
 
-\paragraph{Judges and judge-free tests.}
-NoT's reduction holds on all seven generators only under the production
-judge, haiku, and under every judge only on Llama, while on sonnet, whose
-responses haiku could favour as its developer's, the other four reverse it
-in the regeneration (Section~\ref{sec-single}).
-No judge can separate register from endorsement, but the judge-free
-pushback test measures commitment, keeping a verdict when asked to
-reconsider, not register.
-There NoT gives up its verdict more often than CoT whether the user
-disputes it or asks again, carried almost entirely by Llama, and the
+\paragraph{Judges, judge-free tests, limitations and future work.}
+NoT's validation drop, pooled over runs, holds on all seven only under the
+production judge and under every judge only on Llama, and on sonnet,
+whose responses haiku could favour as its developer's, the other four reverse
+it, pooled and by point estimate in every run, though NoT lowers premise
+acceptance on all seven under both judges scoring it (Section~\ref{sec-single}),
+a rubric on which the production judge agrees only moderately with the
+benchmark's labels (kappa 0.44, \citealp{cohen60}).
+In the judge-free pushback test of commitment, not register,
+NoT gives up its verdict more often than CoT whether the user
+disputes it or asks again, almost entirely on Llama, and the
 registered primary measure, the first rise minus the second, is null
 because the rises are alike, not absent.
 In a second judge-free test, against the brief unscaffolded prompt, not
 CoT, NoT does not remove the verdict's shift toward the user on Llama and
-Mistral, and DeepSeek shows it under neither prompt.
-
-\paragraph{Other limitations and future work.}
-Each generator answered each item once per prompt per run, and our
-intervals resample items, not runs, so only its two to four runs, compared
-post hoc (Table~\ref{tab-app-runs}), show how far the reduction moves.
-It holds under the production judge in every run but sonnet's second
-4,096-token run, and the regeneration shrinks it, for example, on sonnet
-under the production judge and on Mistral and DeepSeek under gpt-4o.
-Content filters on most platforms refuse some disputes, so collective
-and pushback item sets differ by model.
-The decisive test of form against content would cross first- and
-third-person voice with narrative and checklist form and have blind human
-raters score endorsement apart from register.
-A second is whether the scaffold's content in either form resists
-multi-turn pushback \citep{hong2025sycophancy}.
+Mistral, and DeepSeek shows none to remove.
+Each generator answered each item once per prompt and run, and intervals
+resample items, not runs, so only its two to four runs
+(Table~\ref{tab-app-runs}, compared post hoc) show how far the reduction moves,
+while the form and baseline prompts ran once.
+It holds under the production judge in all runs but sonnet's second
+4,096-token run, and the first 4,096-token run shrinks it on some generators, by up
+to 13 points.
+Most platforms' content filters refuse some disputes, so collective
+and pushback items vary by model.
+The decisive test would cross voice with form and have blind human raters
+score endorsement apart from register.
+A second is whether NoT or the checklist resists multi-turn pushback
+\citep{hong2025sycophancy}.
 A third is whether dissent flags errors where
 role-lock is weak, as on haiku, and routes them better than the solo's
 sample disagreement,
-which routed errors at least as well everywhere but Mistral,
+which did at least as well everywhere but Mistral,
 in comparisons registered only on grok.

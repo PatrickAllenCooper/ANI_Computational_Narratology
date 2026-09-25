@@ -5,21 +5,22 @@
 Preference-tuned models grow more sycophantic with scale and user confidence
 \citep{perez2023discovering,sharma23}, validate the asker's own account of a
 conflict \citep{cheng25elephant} and revise correct answers under pushback
-\citep{fanous2025syceval,malmqvist24}. Sycophancy is a linear direction in
-activation space \citep{rimsky2024caa} and a persona-level trait
-\citep{chen2025persona}, an off-the-shelf sceptical persona vector (a trait's
-activation direction) recovers most of what steering along the sycophancy
-direction achieves
-\citep{kelkar2026devil}, and synthetic fine-tuning data reduce it
-\citep{wei2023synthetic}. If sycophancy is an adopted stance, a
-prompt may shift it, so NoT has the model write other perspectives into its
-written reasoning, and we compare it with CoT.
+\citep{fanous2025syceval,malmqvist24}. Synthetic fine-tuning data reduce
+sycophancy \citep{wei2023synthetic}. The closest prior idea to NoT is
+persona vectors \citep{chen2025persona}, directions in activation space that
+track traits such as sycophancy and can be read to monitor, or
+moved to steer, the persona a model adopts. An off-the-shelf sceptical
+persona vector recovers most of what steering along a sycophancy direction
+\citep{rimsky2024caa} achieves \citep{kelkar2026devil}. NoT is their
+prompt-level counterpart, assigning the model a stance toward the asker and
+the other parties without editing activations, and a sceptical-persona
+prompt, the one-line version of that move, lowers validation more than NoT
+under four of five judges (Section~\ref{sec-single}).
 Our validation rate rests on judge models, which favour their own
 generations, among other biases
 \citep{panickssery2024selfrecognition,wataoka2024selfpreference,zheng2023judging},
-and our production judge, haiku, scores its own answers, so we name the judge
-of each judged claim and check all five judges against ELEPHANT's
-validation labels on human-written answers (Section~\ref{sec-single}).
+and our production judge, haiku, scores its own answers, so every judged claim
+names its judge.
 
 \paragraph{Role assignment controls what a model says, at a cost.}
 Assigning a character or an interest reliably moves a model's output
@@ -53,18 +54,13 @@ confidence signal uncertainty
 which model cascades escalate a cheap model's cases
 \citep{chen2023frugal,jitkrittum2023deferral,gupta2024cascades,yue2024cascades,aggarwal2024automix,jung2025escalate,wang2026defer}.
 Unlike debaters, our advocates argue parties' sides, not answers, so
-none is right by construction, and we ask whether their disagreement picks
-cases for the stronger judge better than the solo's sample disagreement.
-
-\paragraph{Topology and aggregation ask when pooling helps.}
-Work on multi-agent topology, conformity and composition
-asks when a group of agents improves on its members, and aggregation theory
-states when pooling judgements helps and where it cannot
-\citep{ladha1992condorcet,list2002aggregating}, both reviewed in
-Appendix~\ref{app-related}.
-We ask mainly whether a second seat's objection, beyond the one expected
-from the blamed party's advocate, flags the collective's own errors on five
-models (Section~\ref{sec-collective}).
+none is right by construction, and we ask mainly whether a second seat's
+objection, beyond the one expected from the blamed party's advocate, flags
+the collective's own errors on five models and picks cases for the stronger
+judge better than the solo's sample disagreement (Section~\ref{sec-collective}).
+Appendix~\ref{app-related} reviews work on multi-agent topology, conformity
+and composition and on aggregation theory
+\citep{ladha1992condorcet,list2002aggregating}.
 
 \paragraph{Argument and social objectivity motivate the design.}
 Human reasoning may have evolved for argument, with biased advocacy from

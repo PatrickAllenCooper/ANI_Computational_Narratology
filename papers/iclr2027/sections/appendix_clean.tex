@@ -2,7 +2,8 @@
 \label{app}
 
 This appendix gives the full evidence behind the single-agent validation and
-pushback results, the collective's dissent mechanism and routing against the
+pushback results, the benchmark's accepting-framing rubric and prompting
+baselines, the collective's dissent mechanism and routing against the
 solo model and the collective's comparison of narrated seats, under NoT, with
 plain seats, under CoT, and records every correction and deviation from the
 pre-registration.
@@ -88,7 +89,7 @@ of narrated and plain seats, which has its own estimator
 \caption{Each claim, where it holds, where it fails or is qualified, and its
 registered reading, fixed before the data were seen except for the readings
 Appendix~\ref{app-prereg} lists as added afterwards, among them the split by
-verdict type behind the fourth row, first read on grok after its debates
+verdict type behind the fifth row, first read on grok after its debates
 were collected and prospective on the other four models and on grok with the
 exchange cut. Model names are shortened after first use,
 haiku (claude-haiku-4-5), sonnet (claude-sonnet-4-6), nano (gpt-5.4-nano),
@@ -103,13 +104,18 @@ claim & where it holds & where it fails or is qualified & registered reading \\
 \midrule
 NoT lowers judged validation of the asker &
 all seven generators under the production judge (13 to 63 points regenerated, 19 to 70 on the original responses), six under gpt-4o, five under the nano judge &
-holds on only one or two generators under the Llama and grok judges, which rate most answers validating either way, sonnet reversed under the four other judges in the regeneration, all five judges agree on Llama alone, and sonnet's second 4,096-token run puts even the production judge's interval across zero ($-4.7$ $[-13.3, +3.3]$) &
+holds on only one or two generators under the Llama and grok judges, which rate most answers validating either way, sonnet reversed under the four other judges in the regeneration, all five judges agree on Llama alone, and sonnet's second 4,096-token run puts even the production judge's interval across zero ($-4.7$ $[-13.3, +3.3]$), and the benchmark's instruction not to validate lowers the rate more than NoT under every judge &
 judge-dependent, holds under every judge on Llama only \\
 \addlinespace
 its structured content, not its narrative form, carries the reduction &
 pooled over haiku, grok, nano and Llama under all five judges, the checklist 36.5 to 57.5 points below CoT, narration alone 6.8 to 18.7 above it &
-cannot separate a cooler register from less endorsement, persona line inert or raises validation, length inert on two generators under four judges, unresolved under the Llama judge &
-checklist better and content adds under every judge, persona never lowers, length inert \\
+cannot separate a cooler register from less endorsement, persona line inert or raises validation, length inert on two generators under four judges, unresolved under the Llama judge, and on whether the answer accepts the asker's framing the narrative form alone also lowers the rate, by 0.81 and 0.72 of NoT's drop &
+checklist better and content adds under every judge, persona never lowers, length inert, mixed on the framing rubric \\
+\addlinespace
+NoT lowers acceptance of the asker's framing &
+all seven generators under the production judge and gpt-4o, the only two judges that scored it, pooled $-24.5$ and $-30.9$ points &
+the checklist and the narrative-only prompt each give 0.72 to 0.86 of NoT's drop, the production judge agrees only moderately with the benchmark's labels on this rubric (kappa 0.44), and NoT falls 9.7 and 11.1 points below the human rate, where the benchmark puts its ideal &
+mixed \\
 \addlinespace
 NoT gives way more under pushback on a verdict &
 raw capitulation 0.37 against 0.22 pooled over nano, Llama and grok, also where the crowd found the user at fault &
@@ -234,7 +240,8 @@ model, NARRATION-LOAD-BEARING means either favours narrated seats in that
 way, AMPLIFIER-ONLY means neither does but the routing gain or the fire rate
 differs with an interval excluding zero, and INERT means none of these
 holds. Routed accuracy without matched coverage is reported but does not
-enter the reading.
+enter the reading. A later amendment applies the same rule to haiku on its
+own, outside the registered reading over grok and Llama.
 For the one-sentence instruction test recorded in Appendix~\ref{app-prereg},
 STRUCTURE-NEEDED is the registered branch for an instruction that produces no
 drop from CoT with an interval excluding zero, and REVERSED, a label added
@@ -252,6 +259,40 @@ returned NEITHER. The condition that moves NoT's decision section first is
 read apart from the shares, COMMITMENT-LOADED meaning that its change from
 intact NoT has an interval excluding zero, and otherwise the position is read
 as inert, as it was.
+For the accepting-framing test (Appendix~\ref{app-framing}), the readings
+apply to the contrasts with CoT pooled over haiku, grok, nano and Llama,
+under the production judge and gpt-4o taken together, and the analysis
+returns the first that holds. FRAMING-MOVES-WITH-VALIDATION means that NoT
+minus CoT and the checklist minus CoT are both negative with intervals
+excluding zero under both judges while the narrative-only prompt minus CoT
+is not negative with an interval excluding zero under either judge,
+FRAMING-JUDGE-SPLIT means that this pattern holds under exactly one judge,
+FRAMING-INERT means that neither NoT minus CoT nor the checklist minus CoT
+has an interval excluding zero under either judge, and FRAMING-MIXED means
+any other pattern and is reported with the sign of every contrast under each
+judge. The test returned FRAMING-MIXED.
+For the prompting baselines (Appendix~\ref{app-baselines}), the readings
+apply, for each baseline, judge and comparator X, NoT or the checklist, to X
+minus the baseline, the comparator's change from CoT minus the baseline's,
+pooled over the four generators. BASELINE-BEATS-X, returned as
+BASELINE-BEATS-NOT or BASELINE-BEATS-CHECKLIST, means that this difference
+has an interval above zero, so that the baseline scores lower than X,
+X-BEATS-BASELINE, returned as NOT-BEATS-BASELINE or
+CHECKLIST-BEATS-BASELINE, means an interval below zero, MATCH means an
+interval including zero, and UNDER-GATED, which no contrast returned, means
+fewer than 20 paired items, as for pushback. The same readings are applied
+to the validation rate under all five judges and to the accepting-framing
+rate under the production judge and gpt-4o, and a reading is judge-robust
+only if every judge that scored that rubric returns it.
+For the comparison with the human answers (Appendix~\ref{app-baselines}),
+the readings apply to a prompt's rate minus the same judge's rate on the
+human answers to the same items, pooled over the four generators, for each
+prompt, rubric and judge. ABOVE-HUMAN means that this difference has an
+interval above zero, sycophantic in the benchmark's sense, BELOW-HUMAN means
+an interval below zero, which the benchmark calls anti-sycophantic, and
+AT-HUMAN means an interval including zero.
+whether the human rate is the right target is the benchmark's premise and
+not a result of this paper.
 
 \subsection{Five judges and agreement with the benchmark's labels}
 \label{app-judges}
@@ -473,7 +514,7 @@ rise on nano ($+13.8$) does not repeat there ($-4.1$ $[-11.7, +2.8]$).
 Agreement with the production judge on the same responses is 0.780 for
 gpt-4o, 0.718 for nano, 0.669 for grok and 0.655 for Llama.
 Raw agreement is inflated by chance where both judges validate most
-responses, so we also report Cohen's kappa, agreement corrected for the
+responses, so we also report Cohen's kappa \citep{cohen60}, agreement corrected for the
 agreement two judges would reach by chance given how often each validates,
 $\kappa=(p_o-p_e)/(1-p_e)$, where $p_o$ is the share of responses two judges
 score alike and $p_e=r_1r_2+(1-r_1)(1-r_2)$ the share two independent judges
@@ -868,12 +909,14 @@ run, while the fitted run-to-run standard deviation of a generator's drop is
 2.1 points on average and 8.0 at most, so a generator's drop under a judge
 replicates and an item's does not.
 
-\begin{table}[t]
+\begin{sidewaystable}
 \centering
 \small
 \caption{NoT minus CoT validation, points, negative where NoT validates less,
 in each generation run and pooled over runs, with 95 percent intervals, in
-one block of rows per judge, a blank cell marking a run the generator lacks.
+one block of rows per judge, the production judge and gpt-4o here and the
+other three judges in Table~\ref{tab-app-runs-b}, a blank cell marking a run
+the generator lacks.
 Run 1 is the original
 responses, run 2 the CoT and NoT responses generated at 2,048 tokens with the
 form prompts of Appendix~\ref{app-form}, which exist on four generators, run
@@ -890,8 +933,17 @@ for run 3b. Mistral's production-judge drop is identical in runs 1 and 3 by
 coincidence, since in each run 81 of its 139 items fall and 1 rises, on
 different responses with different rates.}
 \label{tab-app-runs}
-\resizebox{\textwidth}{!}{\input{figures/tab_run_stability_clean}}
-\end{table}
+\input{figures/tab_run_stability_clean}
+\end{sidewaystable}
+
+\begin{sidewaystable}
+\centering
+\small
+\caption{NoT minus CoT validation as in Table~\ref{tab-app-runs}, in each
+generation run and pooled over runs, under the nano, Llama and grok judges.}
+\label{tab-app-runs-b}
+\input{figures/tab_run_stability_b_clean}
+\end{sidewaystable}
 
 On sonnet the regeneration gives a reduction under the production judge,
 $-12.7$ $[-22.0, -3.3]$, and a rise under each of the other four judges,
@@ -926,25 +978,62 @@ judges, each of which returned one unparsed output per generator. Its
 registration set limits of 5 percent on the share at the cap and on unparsed
 and missing outputs, and the run met them.
 
-\begin{table}[t]
+The paper reports the sonnet and haiku drops of the 4,096-token
+regeneration, which sets the headline range of 13 to 63 points, beside
+estimates pooled over every run of each generator, the pooling that replaced
+the registered two-run pool (above).
+Pooled in this way, sonnet's drop is $-12.2$ $[-18.0, -6.7]$ under the
+production judge ($[-21.1, -3.3]$ with run treated as a random factor) and a
+rise under each of the other four judges, $+6.2$ $[+1.3, +11.1]$ under gpt-4o, $+6.2$ $[+0.7, +11.8]$
+under the nano judge, $+7.8$ $[+4.0, +11.9]$ under the Llama judge and
+$+12.0$ $[+7.9, +16.6]$ under the grok judge, and its point estimate under
+each of those four is positive in every run.
+Haiku's pooled drop is $-27.0$ $[-33.5, -20.3]$ under the production judge
+and $-13.3$ $[-19.3, -7.5]$ under gpt-4o, its interval includes zero under
+the nano and Llama judges ($-3.0$ $[-8.3, +2.5]$ and $+2.3$ $[-1.3, +6.2]$),
+and under the grok judge it is a rise, $+8.4$ $[+4.0, +12.9]$.
+So sonnet's production-judge reduction holds when its runs are pooled and
+does not hold in its second 4,096-token run alone. On both generators an
+item's drop recurs poorly from run to run, the item-level drops of any two of
+their runs correlating at 0.09 to 0.38 under the production judge, while the
+fitted run-to-run standard deviation of the production-judge drop is 6.1
+points on sonnet and 0.4 on haiku, so a single run's estimate carries
+run-to-run noise of several points on sonnet, whereas haiku's runs differ by
+no more than item resampling predicts.
+On sonnet's run-3 responses a second rubric of the benchmark, whether the
+answer accepts the asker's framing, falls under NoT under both judges that
+scored it, by 32.7 points under the production judge and 26.7 under gpt-4o
+(Appendix~\ref{app-framing}), while on the validation rubric the other four
+judges find no reduction on sonnet in any run.
+
+\begin{table}[p]
 \centering
 \small
-\caption{NoT minus CoT validation, points, negative where NoT validates less,
-in the 4,096-token regeneration of Section~\ref{sec-single} (run 3 of
-Table~\ref{tab-app-runs}), with both conditions generated in one run at
-4,096 tokens (8,192 for nano), for each generator (rows) under each judge
-(columns), with 95 percent item-clustered bootstrap intervals and each
-generator's pre-declared reading under the per-generator rule of this
-regeneration, defined at the head of this appendix, whose JUDGE-DEPENDENT is
-not the judge panel's reading of that name. The dagger marks the one entry whose
-interval excludes zero but which a Holm step-down over the seven generators
-within the judge does not keep. Paired items per generator are 139 to 150
-under the production judge, gpt-4o and nano, after 64 of the 2,100 requested
-responses were missing, and 138 to 149 under the Llama
-and grok judges, each of which lost two scores to rate limits and returned
-five unparsed outputs (Appendix~\ref{app-rep4k}).}
+\caption{NoT minus CoT in the 4,096-token regeneration of
+Section~\ref{sec-single} (run 3 of Table~\ref{tab-app-runs}), with both
+conditions generated in one run at 4,096 tokens (8,192 for nano), in points,
+negative where NoT scores lower. Panel (a) gives judged validation for each
+generator (rows) under each judge (columns), with its 95 percent
+item-clustered bootstrap interval on the line below. Every generator's
+pre-declared reading under the per-generator rule of this regeneration,
+defined at the head of this appendix, is JUDGE-DEPENDENT except Llama's,
+which HOLDS, and this JUDGE-DEPENDENT is not the judge panel's reading of
+that name. The dagger marks the one entry whose interval excludes zero but
+which a Holm step-down over the seven generators within the judge does not
+keep. Below the rule, run 3b is the second 4,096-token run on sonnet and
+haiku, registered before its calls but after run 3 was read, and pooled is
+the equal-weight mean of the drops over all of that generator's runs in
+Table~\ref{tab-app-runs} with items resampled, and neither revises the
+readings. Panel (b) gives, on the same responses, the rate at which the
+answer accepts the asker's framing under CoT and under NoT on the paired
+items and NoT minus CoT with its interval, under the production judge and
+gpt-4o, for each generator and pooled over the seven. Paired items per
+generator are 139 to 150 under the production judge, gpt-4o and nano, after
+64 of the 2,100 requested responses were missing, and 138 to 149 under the
+Llama and grok judges, each of which lost two scores to rate limits and
+returned five unparsed outputs (Appendix~\ref{app-rep4k}).}
 \label{tab-app-rep4k}
-\resizebox{\textwidth}{!}{\input{figures/tab_rep4k_clean}}
+\input{figures/tab_rep4k_clean}
 \end{table}
 
 \subsection{Form, content, persona and length}
@@ -953,6 +1042,10 @@ five unparsed outputs (Appendix~\ref{app-rep4k}).}
 In judged validation the structured content carries the reduction and the
 narrative form does not, although part of this may be the checklist's cooler
 tone, or register, rather than less endorsement of the asker (see below).
+On the benchmark's rubric for whether an answer accepts the asker's framing,
+scored later on the same responses, the narrative form alone also lowers the
+rate, so the conclusion that content and not form carries the reduction is
+specific to judged validation (Appendix~\ref{app-framing}).
 
 NoT differs from CoT in four respects at once, its five content sections, its
 first-person narrative form, its persona line (``You are a thoughtful
@@ -1076,6 +1169,14 @@ this, since it asks a different question, whether a verdict holds when the
 user objects, and there NoT does not resist. The checklist also
 removes the first person and the narrative genre together, and the design
 cannot separate voice from genre either.
+The benchmark's accepting-framing rubric, which scores whether an answer
+challenges the asker's premise rather than how warm it is, was later scored
+on these same responses (Appendix~\ref{app-framing}). The checklist lowers
+the rate at which answers accept the asker's framing too, by 17.6 points
+under the production judge and 24.4 under gpt-4o, so it changes endorsement
+as that rubric measures it, but that result does not divide the checklist's
+reduction in judged validation between register and endorsement, and the
+caveat above stands.
 
 The persona line does not explain the reduction. Every NoT minus CoT
 contrast also changes the persona line. CoT with only the persona
@@ -1327,25 +1428,33 @@ and CoT are in Figure~\ref{fig:prompt}.}
 \begin{table}[t]
 \centering
 \footnotesize
-\caption{Pooled over haiku, grok, nano and Llama, each condition's change in
-validation from same-run CoT, the CoT responses generated in the same run and
-at the same cap as these prompts, in points with 95 percent intervals
-clustered on the item and negative where the condition validates less than
-CoT (change from CoT), that change divided by NoT's (share of NoT), so that a
-share above one means the prompt lowers validation more than NoT and a
-negative share means it raises validation, and the pre-declared reading,
-which NoT's own row, with a share of one by construction, does not carry.
-Readings are
-defined at the head of this appendix, and a dagger marks a pooled entry
-behind which a per-generator interval excludes zero but fails a Holm
-step-down over the four generators within the judge. Pooled
-generator-by-item pairs per contrast are 577 to 581 under the production
-judge, gpt-4o and nano, 573 to 577 under the Llama judge and 569 to 572
-under the grok judge, after the scores lost to rate limits and the unparsed
-outputs reported in the text. Part of the checklist's effect may be its
-cooler register rather than less endorsement (see text).}
+\caption{Pooled over haiku, grok, nano and Llama, each condition's change
+from same-run CoT, the CoT responses generated in the same run and at the
+same cap as these prompts, in points with 95 percent intervals clustered on
+the item and negative where the condition scores lower than CoT (change from
+CoT), NoT's change minus the condition's on the same pairs, negative where
+NoT scores lower (NoT minus prompt), the condition's change divided by NoT's
+(share of NoT), so that a share above one means the prompt lowers the rate
+more than NoT and a negative share means it raises it, and the pre-declared
+reading, which NoT's own row, with a share of one by construction, does not
+carry. The first five blocks score judged validation under each judge. The
+last two score, on the same responses, whether the answer accepts the
+asker's framing, under the production judge and gpt-4o, and carry one
+registered reading for both judges together, FRAMING-MIXED, the registered
+name for any pattern other than the three defined at the head of this
+appendix, returned because the narrative-only prompt also lowers that rate
+with an interval excluding zero under both judges. The checklist holds NoT's five sections in the
+third person under NoT's persona line. Readings are defined at the head of
+this appendix, and a dagger marks a validation entry behind which a
+per-generator interval excludes zero but fails a Holm step-down over the
+four generators within the judge. Pooled generator-by-item pairs per
+contrast are 577 to 581 under the production judge, gpt-4o and nano, 573 to
+577 under the Llama judge and 569 to 572 under the grok judge in the
+validation blocks, and 577 to 581 in the framing blocks, after the scores
+lost to rate limits and the unparsed outputs reported in the text. Part of
+the checklist's validation effect may be its cooler register rather than
+less endorsement (see text).}
 \label{tab-app-form}
-\setlength{\tabcolsep}{3pt}
 \input{figures/tab_form_clean}
 \end{table}
 
@@ -1394,6 +1503,435 @@ nano & 4{,}323 & 7{,}062 & 6{,}536 & 4{,}687 & 4{,}497 & n/a \\
 Llama & 2{,}911 & 3{,}885 & 2{,}905 & 2{,}966 & 3{,}072 & n/a \\
 \bottomrule
 \end{tabular}
+\end{table}
+
+\subsection{Acceptance of the asker's framing}
+\label{app-framing}
+
+NoT lowers the rate at which an answer accepts the asker's framing on all
+seven generators under both judges that scored it, and on the responses of
+the form tests the checklist and the narrative-only prompt each lower that
+rate by 0.72 to 0.86 of NoT's drop, while NoT lowers it by 4 to 8
+points more than either.
+The registered reading is FRAMING-MIXED, because the narrative-only prompt
+also lowers the rate, so the conclusion of Appendix~\ref{app-form} that the
+content and not the narrative form carries the reduction holds for judged
+validation and not for this rubric.
+
+The validation rubric scores understanding, respect for the person's
+perspective and care, so a lower validation rate may reflect a cooler tone
+as well as less endorsement of the asker's account (Appendix~\ref{app-form}).
+The benchmark's accepting-framing rubric asks instead whether the advice
+challenges the premise of the question, scored 0, or accepts the asker's
+framing and works within it, scored 1, and so scores endorsement of the
+asker's account rather than warmth (Figure~\ref{fig-app-framing-rubric}).
+A condition's accepting-framing rate is the share of its scored responses
+that a judge scores 1, and its drop and intervals are computed as for
+validation at the head of this appendix, a negative drop meaning that NoT's
+answers accept the framing less often.
+The test was registered on 23 September 2026, before any call with this
+rubric but after the validation results of Appendices~\ref{app-rep4k}
+and~\ref{app-form} had been seen, and it scored responses already on disk,
+with no new generation.
+Each judge receives the fixed system line of the validation judge and, as
+its user turn, the benchmark's framing instruction, copied verbatim from its
+released scorer and followed by the item's question and the full response,
+and the first 0 or 1 in its reply is the score, through the same full-text
+path as the validation scores of Appendix~\ref{app-judges}.
+
+Two judges scored every response, the production judge and gpt-4o, the judge
+whose validation scores agree best with the benchmark's reference labels
+(Appendix~\ref{app-judges}).
+The nano, Llama and grok judges did not score this rubric, so whether the
+framing result holds under the Llama and grok judges, under which the
+reduction in judged validation holds on only one or two generators, is
+untested.
+The registration described the two as the judges agreeing best with those
+labels among the judges that pass the panel's acquiescence screen, but that
+screen had been removed before the panel ran (Appendix~\ref{app-prereg}) and
+the nano judge's kappa, 0.61, is slightly above the production judge's,
+0.59, so the production judge scored this rubric as the production judge and
+not for its agreement with the labels.
+Scored with this rubric on the 149 human answers to our items that carry the
+benchmark's framing label, of which the labels mark 0.611 as accepting the
+framing, the production judge's kappa with the labels is 0.44 $[0.28, 0.59]$
+and gpt-4o's 0.65 $[0.52, 0.77]$, with intervals from 4,000 resamples of the
+answers, so on this rubric the production judge agrees with the benchmark's
+labels only moderately, and the limits of that check stated in
+Appendix~\ref{app-judges} apply here too.
+
+The rubric was scored on two sets of responses. The first is the 4,096-token
+regeneration of Appendix~\ref{app-rep4k}, CoT and NoT on all seven
+generators, 2,036 responses in all. The second is the run of the form tests
+of Appendix~\ref{app-form}, same-run CoT, NoT, the checklist, the
+narrative-only prompt and the persona-only prompt on haiku, grok, nano and
+Llama, 2,919 responses in all.
+Each contrast is the paired bootstrap of the head of this appendix with
+8,000 draws, per generator and pooled over the generators of its set, and
+the second set's pooled contrasts pool generator-by-item pairs as the form
+tests do.
+Of the 9,910 judge calls, 46 of gpt-4o's were lost to a network drop and
+refilled in a second pass, so that no score is missing, and the production
+judge returned 1 unparsed output of 4,955 and gpt-4o none, inside the
+registered limit of 5 percent of any condition's responses.
+
+On the regenerated responses NoT lowers the accepting-framing rate on each
+of the seven generators under both judges, every interval excluding zero,
+by 9.2 to 34.0 points under the production judge and by 20.0 to 40.3 under
+gpt-4o, and pooled over the seven the drop is $-24.5$ $[-28.4, -20.6]$ and
+$-30.9$ $[-35.1, -27.0]$ points (Table~\ref{tab-app-rep4k}, panel (b)).
+On sonnet, where the four validation judges other than the production judge
+find no reduction in any run, the drop is $-32.7$ $[-41.3, -24.0]$ points under the production
+judge and $-26.7$ $[-34.7, -18.7]$ under gpt-4o.
+
+On the form-test responses, pooled over the four generators, NoT changes
+the rate by $-23.2$ $[-27.3, -19.1]$ points under the production judge and
+$-28.6$ $[-33.2, -23.9]$ under gpt-4o, the checklist by $-17.6$
+$[-21.6, -13.6]$ and $-24.4$ $[-28.8, -20.2]$ and the narrative-only prompt
+by $-18.9$ $[-22.6, -15.3]$ and $-20.6$ $[-25.2, -16.3]$
+(Table~\ref{tab-app-form}).
+The checklist's drop is 0.76 $[0.61, 0.92]$ of NoT's under the production
+judge and 0.86 $[0.74, 0.98]$ under gpt-4o, and the narrative-only prompt's
+0.81 $[0.66, 0.99]$ and 0.72 $[0.58, 0.87]$. NoT minus the checklist is
+$-5.7$ $[-9.7, -1.9]$ and $-4.1$ $[-7.8, -0.7]$ and NoT minus the
+narrative-only prompt $-4.3$ $[-8.7, -0.2]$ and $-8.1$ $[-12.8, -3.5]$, so
+NoT accepts the framing less often than either the checklist or the
+narrative-only prompt under both judges.
+Where on validation the narrative instruction alone raised the rate, on this
+rubric the checklist and the narrative-only prompt each lower it by most of
+NoT's drop and the whole scaffold lowers it further.
+The persona swap changes the rate by $-4.1$ $[-7.1, -1.2]$ points under the
+production judge, a share of 0.18 of NoT's drop, and by $-2.4$
+$[-5.5, +0.7]$ under gpt-4o, so on this rubric, unlike validation, the
+persona line lowers the rate under one judge, by a small part of NoT's drop.
+
+No reading was registered per generator (Table~\ref{tab-app-framing-gen}),
+and unlike the validation contrasts of Appendix~\ref{app-form} these carry no
+Holm correction over the four generators. NoT's drop excludes zero on all
+four generators under both judges. Under the
+production judge the checklist's drop on nano includes zero, $-4.1$
+$[-11.6, +3.4]$, as does the narrative-only prompt's, $-6.1$
+$[-13.6, +0.7]$.
+Under gpt-4o, NoT, the checklist and the narrative-only prompt change grok's
+rate by almost the same amount, $-19.7$, $-20.4$ and $-20.0$ points, while on
+nano they differ, $-32.0$, $-25.2$ and $-10.9$.
+On Llama under the production judge the narrative-only prompt's drop,
+$-25.0$, is larger than NoT's on the same items, $-17.1$, but NoT minus the
+narrative-only prompt, $+7.9$ $[+0.0, +16.4]$, has an interval that reaches
+zero.
+The persona swap's drop excludes zero on haiku alone, under both judges,
+$-12.7$ $[-20.0, -6.0]$ and $-8.7$ $[-16.7, -1.3]$.
+
+The two judges give the same score to 0.759 of the 2,036 regenerated
+responses and to 0.777 of the 2,918 form-test responses that both scored.
+Under CoT the judges score 0.56 to 0.96 of answers as accepting the framing,
+depending on the generator, the judge and the run, so that under CoT
+between 4 and 44 percent of answers challenge the asker's premise, and the
+rubric itself tells the judge that such challenges are uncommon and to judge
+conservatively.
+
+Within its registration, the test shows that NoT also lowers endorsement as
+the benchmark's framing rubric measures it, since NoT makes answers
+challenge the asker's premise more often on every generator under both
+judges, sonnet included, and that the checklist and the narrative-only
+prompt each produce 0.72 to 0.86 of that drop.
+would, it leaves the pushback result of Appendix~\ref{app-pushback}, where
+NoT gives way more often on the raw measure, unchanged, and it does not
+divide the reduction in judged validation between register and endorsement
+(Appendix~\ref{app-form}).
+
+\begin{figure}[t]
+\centering
+\fbox{\begin{minipage}{0.94\columnwidth}\footnotesize
+\input{figures/fig_framing_rubric_clean}
+\end{minipage}}
+\caption{\textbf{The accepting-framing judge's prompt}, verbatim from the
+benchmark's released scorer as ported to our scoring code and printed from
+that code, set in the body font with typographic quotation marks, the
+placeholders in angle brackets standing for the item's question and the full
+response. The judge answers 1 when the advice accepts the asker's framing
+and 0 when it challenges the premise. The validation judge's prompt, which
+has the same system turn, is printed with the collective's prompts in
+Appendix~\ref{app-prompts}.}
+\label{fig-app-framing-rubric}
+\end{figure}
+
+\begin{table}[t]
+\centering
+\caption{Acceptance of the asker's framing on the form-test responses, per
+generator, under the production judge and gpt-4o, in points with 95 percent
+item-clustered intervals on the line below each estimate, negative where
+the first term accepts the framing less often. The first four columns give
+each prompt's change from same-run CoT and the last two NoT's change minus
+the prompt's on the same items. Each contrast rests on 140 to 150 paired
+items. The pooled contrasts and the registered reading are in
+Table~\ref{tab-app-form}, and no reading was registered per generator.}
+\label{tab-app-framing-gen}
+\input{figures/tab_framing_gen_clean}
+\end{table}
+
+\subsection{Prompting baselines and the human reference}
+\label{app-baselines}
+
+On judged validation the benchmark's naive instruction not to validate
+lowers the rate more than NoT under every judge, and a sceptical persona
+does so under four of the five judges. On acceptance of the asker's
+framing, the naive instruction, the context instruction and the
+third-person rewrite, whose answers the judge scores as answers about a
+third party, leave the rate at or above CoT's, and NoT and the checklist
+lower it more than each of the three under both judges, while the sceptical
+persona lowers it far more than NoT or the checklist, to 40 to 44 points
+below the rate of human answers to the same questions, where NoT itself is
+9.7 and 11.1 points below that rate.
+The benchmark's paper tested two prompt-based mitigations of its own, an
+instruction added to the prompt and a rewrite of the question into the
+third person \citep{cheng25elephant}, and this test runs them beside NoT and
+the checklist, with a sceptical persona added, on the four generators of the
+form tests. It was registered on 23 September 2026, before any of its calls
+and after the validation results of Appendix~\ref{app-form} had been seen,
+and its scoring on the framing rubric was registered after its own
+validation results had been seen and before any framing call on these
+responses.
+
+The naive instruction appends to the CoT prompt the benchmark's sentence
+asking the model not to be emotionally validating or empathetic, and the
+context instruction appends instead its sentence asking for validation only
+when it is appropriate, the version the benchmark's own results table
+reports. Both are appended and replace no part of CoT. The sceptical persona
+is CoT with its persona line replaced by a sceptical advisor who does not
+take the asker's account at face value, built as the persona-only prompt of
+Appendix~\ref{app-form} was, and Figure~\ref{fig-app-baseline-prompts} gives
+all three verbatim. The benchmark's framing instructions, which ask the model
+to challenge the premise of the question, were not run, so no baseline here
+targets acceptance of the framing directly.
+For the third-person rewrite, gpt-4o, a judge of the panel that generated
+none of the responses, rewrote each question with the benchmark's own
+instruction under an empty system prompt, drawing up to three samples until
+a rewrite passed a guard that allows no first-person singular pronoun as a
+whole word and a length between 0.6 and 1.6 times the original's.
+Rewrites of 137 of the 150 questions passed after 31 further samples, the
+other 13 items are left out of this condition, and 2 accepted rewrites keep
+a first-person plural pronoun and 11 a second-person one, which the guard
+reports without excluding them.
+The model answers the rewritten question under the CoT prompt, and the judge
+scores the answer against the rewritten question, as the benchmark scored
+its own rewrite, so the person the validation rubric asks about, and the
+speaker whose framing the framing rubric asks about, is then a third party
+and not the asker, and this condition's numbers compare less directly with
+the other prompts'.
+
+Every baseline was answered once per item, on the 150 items for the three
+prompts and on the 137 accepted rewrites, except that nano's three prompt
+conditions hold 146 of the 150 items and its rewrite condition 135 of the
+137, at the 2,048-token cap of the form tests with nano at its 8,192-token
+floor, and scored in full
+by all five judges on validation and by the production judge and gpt-4o on
+the framing rubric, through the paths of Appendices~\ref{app-judges}
+and~\ref{app-framing}.
+The comparators are the CoT, NoT and checklist responses of
+Appendix~\ref{app-form}, generated one to two days before the baselines at
+the same cap, which the registration chose not to regenerate so as to stay
+within the batch's spending cap.
+Each contrast is pooled over the four generators on the generator-by-item
+pairs the two conditions share, 570 to 579 per contrast and 521 to 529 for
+the rewrite, with the paired bootstrap of the head of this appendix and
+8,000 draws.
+Every registered guard passed. Empty responses were at most 4.0 percent of
+any new condition's items, no response reached the cap, the judges left at
+most 3 unparsed outputs in any condition, 0.3 percent overall, and 34 Llama
+judge calls lost to a network drop were refilled, while on the framing
+rubric none of the 4,568 calls was lost and none returned an unparsed
+output.
+
+On judged validation (Table~\ref{tab-app-baselines}) the naive instruction
+lowers the rate by 43.8 to 56.2 points, more than NoT under every judge, NoT
+minus the naive instruction running from $+10.1$ $[+4.5, +15.3]$ under the
+production judge to $+42.8$ $[+37.4, +48.2]$ under the Llama judge, and it
+matches the checklist under the production judge and gpt-4o and lowers the
+rate more than the checklist under the nano, Llama and grok judges.
+The sceptical persona lowers validation by 31.6 to 44.4 points. It matches
+NoT under the production judge ($-1.7$ $[-6.7, +3.1]$) and lowers the rate
+more than NoT under the other four judges, and the checklist lowers the rate
+more than the sceptical persona under the production judge and gpt-4o and
+matches it under the other three.
+The context instruction changes validation by $-2.1$ to $+2.9$ points, an
+interval including zero under every judge, and NoT and the checklist both
+lower the rate more than it does under every judge. The third-person
+rewrite lowers validation by 6.1 to 15.4 points, the checklist lowers it
+more under every judge, and NoT lowers it more under the production judge
+and gpt-4o and matches it under the nano, Llama and grok judges.
+On this rubric, then, the checklist does more than both of the benchmark's
+mitigations under every judge, and NoT does more than the context
+instruction under every judge but more than the rewrite under only two of
+the five. A blunt instruction not to validate, which the benchmark found to
+remove affirmation even where it is appropriate, does more than NoT under
+every judge and matches the checklist under two judges and does more under
+the other three, and validation alone cannot separate what the scaffold does
+from a change of register.
+Per generator, the naive instruction and the sceptical persona take grok's
+validation rate under the production judge to 0.09 and 0.03. Under that
+judge grok carries most of the naive instruction's pooled margin over NoT,
+NoT minus the instruction being $+32.4$ $[+23.2, +41.5]$ on grok and $+20.7$
+$[+12.7, +28.7]$ on haiku, while the sceptical persona has no pooled margin
+over NoT there, since its margin on grok, $+38.7$ $[+30.3, +47.2]$, is offset
+on nano and Llama.
+On nano and Llama under the production judge NoT minus the naive
+instruction is $-7.7$ $[-18.2, +2.8]$ and $-5.6$ $[-13.4, +2.1]$, so there
+NoT validates no more than the instruction, and on nano NoT minus the
+sceptical persona is $-35.7$ $[-44.8, -25.9]$, the persona lowering nano's
+rate by only 15.4 points.
+
+On acceptance of the asker's framing (Table~\ref{tab-app-baselines}), the
+naive instruction changes the rate by $-1.9$ $[-5.7, +1.9]$ points under the
+production judge and $+1.4$ $[-1.5, +4.3]$ under gpt-4o and the context
+instruction by $-1.0$ and $+0.7$, each interval including zero, and the
+third-person rewrite by $-2.5$ $[-5.7, +0.9]$ under the production judge and
+$+4.4$ $[+0.6, +8.3]$ under gpt-4o, which finds it raising the rate on
+answers it scores as about a third party.
+NoT and the checklist lower the rate more than each of these three
+baselines under both judges, by 14.6 to 31.9 points, so the instruction that
+lowers validation more than NoT removes warmth but leaves the answers'
+acceptance of the asker's framing where CoT has it, at 0.58 to 0.96 by
+generator and judge.
+The sceptical persona changes the rate by $-57.5$ $[-62.3, -52.6]$ points
+under the production judge and $-56.0$ $[-60.9, -51.0]$ under gpt-4o, more
+than NoT ($+34.1$ $[+28.2, +39.9]$ and $+27.6$ $[+21.5, +33.5]$, NoT minus the
+persona) and more than the checklist ($+40.0$ $[+34.7, +45.3]$ and $+32.1$
+$[+26.1, +37.9]$). It leaves 0.04 to 0.07 of answers accepting the framing on
+haiku and grok and 0.19 to 0.25 on Llama, so that on three of the four
+generators it challenges the asker's premise in 75 to 96 percent of answers,
+and it is below NoT on every generator under both judges except nano under
+gpt-4o, where NoT minus the persona is $-4.9$ $[-14.7, +4.2]$.
+All eight readings on this rubric are judge-robust.
+
+A lower rate is not by itself better. The benchmark defines a model's social
+sycophancy as its rate minus the rate of human answers to the same
+questions, counts a difference of zero as best and calls a negative one
+anti-sycophantic, and found that its own blunt instruction not to validate
+removes affirmation even where it is appropriate \citep{cheng25elephant}.
+The reductions this paper reports, the abstract's included, are reductions
+in the rate itself and not in this difference, which under the production
+judge, on the form-test responses pooled over the four generators, is 37.7
+points above the human rate for CoT and 9.0 points below it for NoT on
+validation (below).
+To place every prompt on that scale, each of the two framing judges also
+scored the 149 human answers to our items with the framing rubric, as all
+five judges had scored them with the validation rubric
+(Appendix~\ref{app-judges}), and each prompt's rate is set against the same
+judge's rate on the human answers to the same items
+(Table~\ref{tab-app-human-anchor}).
+This comparison was registered after the framing results of the baselines
+had been seen and before the human answers were scored for framing, when
+every prompt's scores on both rubrics and the human answers' validation
+scores already existed, and it is descriptive.
+The human answers accept the framing at a rate of 0.644 under the production
+judge and 0.591 under gpt-4o, against 0.611 by the benchmark's labels, and
+validate at 0.235 to 0.551 across the five judges.
+
+By the benchmark's definition CoT is sycophantic on both rubrics under every
+judge, $+13.7$ $[+6.5, +21.0]$ and $+17.2$ $[+8.6, +26.0]$ points above the
+human rate on acceptance of the framing and $+33.3$ to $+51.0$ on
+validation.
+The naive instruction brings validation to or below the human rate under
+every judge but leaves acceptance of the framing above it ($+12.5$ and
+$+18.2$), and the context instruction leaves both rubrics above it under
+every judge, as does the third-person rewrite, whose answers are scored as
+about a third party.
+The sceptical persona is at or above the human rate on validation and
+$-43.7$ $[-51.8, -35.3]$ and $-39.5$ $[-48.2, -30.5]$ points below it on
+acceptance of the framing, anti-sycophantic in the benchmark's terms.
+The checklist is the only prompt at the human rate on both rubrics, on
+acceptance of the framing under both judges ($-4.0$ $[-11.9, +3.8]$ and
+$-6.9$ $[-15.3, +1.6]$) and on validation under three of the five judges,
+below it under the production judge and above it under the grok judge. The
+narrative-only prompt is also at the human rate on acceptance of the framing
+but 41.3 to 60.6 points above it on validation.
+NoT is below the human rate on acceptance of the framing under both judges,
+$-9.7$ $[-17.7, -1.6]$ and $-11.1$ $[-19.6, -2.4]$ points, anti-sycophantic in
+the benchmark's terms, and above it on validation under four of the five
+judges, below it under the production judge ($-9.0$ $[-17.2, -1.1]$).
+These distances rest on each judge reading short human answers and long
+model answers with the same rubric, the human answers being a few hundred
+characters long (Appendix~\ref{app-judges}) where the model answers compared
+here have median lengths of 1,580 to 7,171 characters by prompt and
+generator, and on the production judge's moderate
+agreement with the benchmark's framing labels (Appendix~\ref{app-framing}).
+Whether the human rate is the right target is the benchmark's premise and
+not a result of this paper.
+
+\begin{figure}[t]
+\centering
+\fbox{\begin{minipage}{0.94\columnwidth}\small
+\input{figures/fig_baseline_prompts_clean}
+\end{minipage}}
+\caption{\textbf{The prompting baselines}, verbatim, printed from the code
+that ran them. The first two are the CoT prompt of Figure~\ref{fig:prompt}
+with the benchmark's two instruction sentences appended, the third replaces
+CoT's persona line, and the last is the benchmark's instruction for
+rewriting a question into the third person, given to gpt-4o with the
+question after it, whose rewrite the model then answers under the CoT
+prompt.}
+\label{fig-app-baseline-prompts}
+\end{figure}
+
+\begin{table}[p]
+\centering
+\small
+\caption{\textbf{The benchmark's prompting baselines and our sceptical
+persona against NoT and the checklist.} Pooled over haiku, grok, nano and Llama, each baseline's change
+from CoT, NoT's change minus the baseline's (NoT minus baseline) and the
+checklist's change minus the baseline's (checklist minus baseline), in points
+with 95 percent intervals clustered on the item, each on the items its two
+conditions share, 570 to 579 generator-by-item pairs per contrast and 521 to
+529 for the third-person rewrite. The first five blocks score judged
+validation under each judge, and the last two score, on the same responses,
+whether the answer accepts the asker's framing, under the production judge
+and gpt-4o. The naive instruction adds to the CoT prompt the benchmark's
+sentence asking the model not to be emotionally validating or empathetic,
+the context instruction adds its version that asks for validation only when
+it is appropriate, the third-person rewrite answers the question after
+gpt-4o has rewritten it with ``someone'' in place of ``I'', and the sceptical
+persona replaces CoT's persona line with a sceptical advisor who does not
+take the asker's account at face value. A positive difference means the
+baseline scores lower than the comparator, and the pre-declared reading
+against each comparator X, NoT or the checklist, is BASELINE-BEATS-X where X
+minus baseline has an interval above zero, X-BEATS-BASELINE where it lies
+below zero and MATCH where it includes zero. CoT, NoT and the checklist are
+the responses of Table~\ref{tab-app-form}, generated one to two days before
+the baselines at the same cap. The third-person rewrite covers the 137 of
+150 items whose rewrite passed its guard, and there the judge scores an
+answer about a third party.}
+\label{tab-app-baselines}
+\input{figures/tab_baselines_clean}
+\end{table}
+
+\begin{table}[p]
+\centering
+\small
+\caption{\textbf{Every prompt against the human answers, the benchmark's own
+definition of sycophancy.} ELEPHANT \citep{cheng25elephant} defines a
+model's social sycophancy as its rate minus the rate of human answers to the
+same questions, counts a difference of zero as best and calls a negative one
+anti-sycophantic. Each
+entry is a prompt's rate minus the same judge's rate on the human answers to
+the same items, in points, pooled over haiku, grok, nano and Llama, with its
+95 percent item-clustered interval, for judged validation under the five
+judges, the interval on the line below (a), and for accepting the asker's
+framing under the production judge and gpt-4o (b). The first row of each panel is that judge's
+rate on the 149 human answers, 147 under the Llama and grok judges in panel
+(a). The word beside each entry is its pre-declared reading, above
+(ABOVE-HUMAN) where the interval lies above zero, below (BELOW-HUMAN) where
+it lies below zero, which the benchmark calls anti-sycophantic, and at
+(AT-HUMAN) where it includes zero. CoT is the CoT of
+Table~\ref{tab-app-form}, the persona-only prompt is CoT with NoT's persona
+line, and the last four rows are the baselines of
+Table~\ref{tab-app-baselines}, whose third-person rewrite covers the 136 of
+its 137 items that have a scored human answer here, 135 under the Llama and
+grok judges, and is scored as an answer about a third party. The comparison is
+descriptive, and whether the human rate is the right target is the
+benchmark's premise, not a result of this paper.}
+\label{tab-app-human-anchor}
+\input{figures/tab_human_anchor_clean}
 \end{table}
 
 \clearpage
@@ -2317,7 +2855,7 @@ its own, which leaves the registered reading on grok and Llama unchanged.
 Read on the 491 of 498 debates both collectives completed, the narrated one
 having lost seven to connection failures, 487 once
 unparseable verdicts are dropped, it also finds plain seats better, carried
-by routed accuracy at matched coverage ($-3.2$ $[-6.0, -0.4]$), while the
+by routed accuracy at matched coverage ($-3.2$ $[-6.0, -0.3]$), while the
 collective's own accuracy ($-3.0$ $[-6.4, +0.4]$) and its routed accuracy
 without matching ($-1.0$ $[-3.8, +1.8]$) include zero, and narration
 roughly doubles how often the flag fires (0.197 against 0.090, $+10.6$
@@ -2326,6 +2864,29 @@ Its narrated debates were collected by 15 September 2026 and the plain ones
 on 23 September, and the amendment registered its sensor as untestable, since
 with narrated seats the flag's lift on verdicts that blame exactly one party
 already includes zero.
+With plain seats haiku's routing still raises accuracy, in readouts reported
+without a registered reading. The counter fires on 45 of haiku's 498 plain
+debates, and routing those to sonnet raises the collective's accuracy from
+0.883 to 0.904, $+2.0$ $[+0.8, +3.4]$ points, against $+3.7$
+$[+1.4, +5.9]$ with narrated seats, whereas the routing-gain row of
+Table~\ref{tab-app-seat}, $+2.0$ $[-0.4, +4.6]$, is the narrated-minus-plain
+difference in this gain on the 491 debates both collectives completed.
+Routing haiku's own majority-of-three answers where the plain collective's
+counter fires raises the solo's accuracy by $+1.6$ $[+0.4, +3.0]$ points,
+against $+3.1$ $[+1.2, +5.1]$ with narrated seats, sonnet answering every
+case is $9.5$ points $[+6.3, +12.9]$ above that counter-routed solo, and
+routing the solo on its own sample disagreement does better than routing it
+on the counter, by $+2.2$ $[+0.2, +4.6]$ points.
+These readouts use sonnet as the only routing judge, as the amendment named,
+because a first run that also filled a second judge slot from grok's cached
+verdicts failed that slot's emission guard and was not read.
+Descriptively, on verdicts that blame exactly one party the plain collective
+is wrong 3.6 times as often where at least two seats object, a lift of
+$+18.1$ $[+3.9, +34.1]$ points on 32 flagged debates, under the registered
+minimum of 60 for reading a lift, and there the two advocates' objections
+are positively correlated, $\phi = +0.419$ $[+0.285, +0.540]$ against
+$+0.246$ with narrated seats, so the opposition found on grok does not
+appear on haiku with either kind of seat.
 
 Narration makes grok's counter fire more often, with a fire rate of 0.195 against
 0.152 ($+4.3$ $[+1.8, +6.9]$), which moves its routing gain, routed accuracy
@@ -2380,13 +2941,16 @@ not.
 \centering
 \small
 \caption{\textbf{Plain chain-of-thought seats make the collective more
-accurate on grok and Llama.} Narrated (NoT) and plain chain-of-thought (CoT)
-seats on grok and Llama, the two models the reading rule was registered for.
+accurate on grok and Llama, and its routed verdicts more accurate at matched
+coverage on haiku.} Narrated (NoT) and plain chain-of-thought (CoT) seats on
+grok and Llama, the two models the reading rule was registered for, and on
+haiku, registered later and read on its own on the 491 of 498 debates that
+both of its collectives completed.
 Each readout is averaged first over an item's debates whose verdicts parse
 and then over items, and is shown for each collective as a proportion and as
 narrated minus plain in points, with 95 percent percentile intervals from
 8,000 bootstrap resamples of the items both collectives share (grok 210,
-Llama 225), so negative differences in the three accuracy rows favour plain
+Llama 225, haiku 249), so negative differences in the three accuracy rows favour plain
 seats and positive differences in the last two rows mean that narrated seats
 gain more from routing or fire more often. Collective accuracy is the share
 of the moderator's integrated verdicts that agree with the crowd verdict.
@@ -2394,14 +2958,13 @@ Routed accuracy replaces the verdict of each debate with at least two
 objecting seats by the majority of three answers from sonnet
 (claude-sonnet-4-6), the stronger judge of Section~\ref{sec-collective}, the collective's verdict
 standing where those answers tie or none parses. Matched coverage first
-thins the flags of the collective that fires more, the narrated one on both
-models, at random to the other's per-debate fire rate, averaging over 200
+thins the flags of the collective that fires more, the narrated one on all
+three models, at random to the other's per-debate fire rate, averaging over 200
 draws, so that both route the same share of debates, and leaves the plain
 collective's flags as they are, so its two routed rows agree. The routing
 gain is routed minus collective accuracy, and the fire rate the share of
 debates flagged. The registered reading rests on collective accuracy and
-routed accuracy at matched coverage, and haiku, registered later and read on
-its own, is reported in the text.}
+routed accuracy at matched coverage.}
 \label{tab-app-seat}
 \input{figures/tab_seat_clean}
 \end{table}
@@ -2495,10 +3058,11 @@ as a results note that made no model calls and makes no new claim.
 Prospectively registered evidence for the single-agent validation result
 begins with the log entries of 21 September 2026, which added Llama, Mistral
 and DeepSeek, and the judge panel, regeneration, form, persona, length,
-section-knockout, one-line and pushback tests of
-Appendices~\ref{app-judges} to~\ref{app-pushback} are all prospectively
-registered, the second 4,096-token run after the first had been read but
-before any of its calls (Table~\ref{tab-app-provenance} lists each entry).
+framing, baseline, human-reference, section-knockout, one-line and pushback
+tests of Appendices~\ref{app-judges} to~\ref{app-pushback} are all
+prospectively registered, the second 4,096-token run and the framing,
+baseline and human-reference tests after earlier results had been read but
+before any of their calls (Table~\ref{tab-app-provenance} lists each entry).
 Before any call of the length, form, judge-panel and pushback tests, and while
 the plain-seat collectives of Appendix~\ref{app-seat} were already generating
 but before any of their numbers was read, an adversarial review of the
@@ -2910,19 +3474,41 @@ production-judge drops, original responses & 16.15.7, 17.1 & \texttt{pillar1\_he
 five-judge panel & 17.8 & \texttt{judge\_panel\_full\_oeq\_<judge>.json} & \texttt{rescore\_elephant\_full\_judge.py} \\
 reference-label agreement & 17.8 amendment 2 & \texttt{judge\_reference\_agreement.json} & \texttt{judge\_reference\_agreement.py} \\
 4,096-token regeneration & 17.10 & \texttt{headline\_rep4k\_readout.json} & \texttt{analyze\_headline\_rep4k.py} \\
-second 4,096-token run, sonnet and haiku & 17.10 run 2 & \texttt{headline\_rep4k\_b\_readout.json} & \texttt{analyze\_headline\_rep4k.py} \\
+second 4,096-token run, sonnet and haiku & 17.10 run 2 & \texttt{judge\_panel\_rep4k\_b.json}, \texttt{headline\_rep4k\_b\_readout.json} & \texttt{rescore\_elephant\_full\_judge.py}, \texttt{analyze\_headline\_rep4k.py} \\
 run-to-run stability of the drop & post hoc note & \texttt{run\_stability.json} & \texttt{analyze\_run\_stability.py} \\
 inter-judge kappa and its ceiling & post hoc note & \texttt{interjudge\_kappa.json} & \texttt{analyze\_interjudge\_kappa.py} \\
 production-judge test-retest & post hoc note & \texttt{judge\_test\_retest.json} & \texttt{analyze\_judge\_test\_retest.py} \\
 Holm corrections and detectable effects & post hoc note & \texttt{multiplicity\_mde.json} & \texttt{analyze\_multiplicity\_mde.py} \\
 form, persona and length & 17.7 and its amendment 2, 17.4 & \texttt{narrative\_form\_readout.json} & \texttt{analyze\_narrative\_form.py} \\
+acceptance of the asker's framing (Appendix~\ref{app-framing}) & 17.11 & \texttt{judge\_panel\_full\_rep4k\_framing.json}, \texttt{judge\_panel\_newarms\_framing.json}, \texttt{framing\_17\_11\_readout.json} & \texttt{rescore\_elephant\_full\_judge.py}, \texttt{analyze\_framing\_17\_11.py} \\
+prompting baselines, validation (Appendix~\ref{app-baselines}) & 17.12 & \texttt{judge\_panel\_baselines\_17\_12.json}, \texttt{baselines\_17\_12\_readout.json}, \texttt{oeq\_third\_person\_rewrites.json} & \texttt{analyze\_baselines\_17\_12.py}, \texttt{make\_third\_person\_oeq.py} \\
+prompting baselines, acceptance of the framing & 17.11 amendment & \texttt{judge\_panel\_baselines\_framing.json}, \texttt{framing\_17\_11\_readout.json} & \texttt{analyze\_framing\_17\_11.py} \\
+every prompt against the human answers & 17.11 amendment 2 & \texttt{judge\_reference\_agreement\_framing.json}, \texttt{human\_anchor\_readout.json} & \texttt{judge\_reference\_agreement.py}, \texttt{analyze\_human\_anchor.py} \\
 section knockouts & 17.3 & \texttt{knockout\_social\_analysis.json} & \texttt{analyze\_knockout\_social.py} \\
 one-line counterparty instruction & 17.5 & \texttt{counterparty\_causal\_analysis.json} & \texttt{analyze\_counterparty\_causal.py} \\
 knockout and one-line registered readouts & 17.3, 17.5, post hoc note & \texttt{readouts\_17\_3\_17\_5.json} & \texttt{analyze\_readouts\_17\_3\_17\_5.py} \\
 pushback & 17.9 & \texttt{pushback\_readout\_<model>.json} & \texttt{run\_pushback.py} \\
 verdict shift toward the user (Table~\ref{tab-app-z3}) & Z3 & \texttt{z3\_sdt\_<model>.json} & \texttt{analyze\_crowdgold\_sdt.py} \\
 false-theorem affirmation & 16.15.5 & \texttt{bm\_embody\_analysis.json} & \texttt{analyze\_bm\_embodiment.py} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[t]
+\centering
+\small
+\caption{Where each result comes from, continued from
+Table~\ref{tab-app-provenance}, for the collective, with the columns
+defined there.}
+\label{tab-app-provenance-b}
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\let\appunderscore\_\renewcommand{\_}{\appunderscore\allowbreak}\begin{tabular}{>{\raggedright\arraybackslash}p{2.45cm}>{\raggedright\arraybackslash}p{1.55cm}>{\raggedright\arraybackslash}p{5.1cm}>{\raggedright\arraybackslash}p{4.0cm}}
+\toprule
+result & pre-registration & artefact & script \\
+\midrule
 narrated versus plain seats & 16.28 and its haiku amendment & \texttt{seat\_scaffold\_comparison.json}, \texttt{router\_decomposition\_grok\_stdcot\_k4.json}, \texttt{flooding\_analysis\_grok\_stdcot\_k4.json}, \texttt{topology\_cell\_cg\_deliberation\_stdcot\_k4.json} & \texttt{analyze\_seat\_scaffold.py}, \texttt{analyze\_router\_decomposition.py}, \texttt{analyze\_flooding.py}, \texttt{analyze\_topology\_2x2.py} \\
+plain seats on haiku, routing and advocates & 16.28 haiku amendment & \texttt{router\_decomposition\_haiku\_stdcot.json}, \texttt{routing\_certification\_haiku\_stdcot.json}, \texttt{flooding\_analysis\_haiku\_stdcot.json} & \texttt{analyze\_router\_decomposition.py}, \texttt{analyze\_flooding.py} \\
 identical against opposed seats, grok & 16.10, observed & \texttt{topology\_2x2\_analysis.json} & \texttt{analyze\_topology\_2x2.py} \\
 role-lock of each collective & 16.10, 16.23, 16.24, 16.26 to 16.28 & \texttt{topology\_2x2\_analysis.json}, \texttt{topology\_cell\_<condition>.json}, \texttt{cg\_deliberation\_llama3370binstruct\_grip\_row.json} & \texttt{analyze\_topology\_2x2.py}, \texttt{run\_crowdgold\_filter\_screen.py} \\
 routing and dissent, independent check & 16.15.1, 16.22 to 16.27 & \texttt{verify\_pillar3\_headline\_<condition>.json} & \texttt{verify\_pillar3\_headline.py} \\

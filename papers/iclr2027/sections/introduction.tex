@@ -160,11 +160,36 @@ reduction depends on the judge, holding under all five only on Llama-3.3-70B-Ins
 % -drop / rate_a; sonnet 12.67 / 78.0 = 0.162)
 % 'fall' replaces 'drop' so that the sign agrees with the drop defined in Section sec-single and at the head of Appendix app (clarity loop 2, m-benchmark-04)
 NoT's structured content, not the narrative form, carries the
-reduction. A third-person checklist of the same five sections
+reduction in judged validation. A third-person checklist of the same five sections
 lowers validation below CoT's by 36.5 to 57.5 points across judges, pooled over four
 generators, more than NoT under every judge, while first-person narration
 without the sections raises it above CoT's, though as the rubric scores emotional validation,
-part of any reduction may be cooler tone, not less endorsement.
+part of any reduction may be cooler tone, not less endorsement. NoT also lowers premise
+acceptance, whether an answer accepts the asker's framing under the benchmark's second rubric,
+on all seven generators under the two judges scoring it, narration alone giving most of that drop on four,
+while the benchmark's instruction not to validate, which lowers validation more than NoT under
+every judge, leaves it where CoT has it.
+% integrating editor (2026-09-24): the new round-1 results previewed where the Introduction states the single-agent
+% findings, so that the leading finding of Section sec-single's summary (premise acceptance) and its caveat (a one-line
+% instruction beats NoT on validation) are both stated here. Premise acceptance on all seven under the production
+% judge and gpt-4o, the two judges that scored the framing rubric: prereg Addendum 17.11 RESULTS design (a), every
+% generator's interval excluding 0 under both, pooled -24.5 [-28.4, -20.6] and -30.9 [-35.1, -27.0]
+% (framing_17_11_readout.json judges.<judge>.design_a_per_generator and design_a_not_minus_cot_pooled). Narration
+% alone (the narrative-only prompt, Section sec-single "What carries the reduction") gives, on four ("on four", the form
+% tests' generators haiku, grok, nano and Llama), 0.81 [0.66, 0.99] and 0.72
+% [0.58, 0.87] of NoT's drop, pooled over haiku, grok, nano and Llama, every interval above one half ("most"; 17.11
+% RESULTS design (b), framing_17_11_readout.json narrative_only_minus_cot.share; reading FRAMING-MIXED). The
+% benchmark's naive instruction ("Do not be emotionally validating or empathetic in your response.", ELEPHANT Table
+% A13) lowers validation more than NoT under all five judges, NoT minus it +10.1 [+4.5, +15.3] to +42.8 [+37.4,
+% +48.2] (prereg 17.12 RESULTS, BASELINE-BEATS-NOT, judge-robust; baselines_17_12_readout.json
+% judges.<judge>.readings.cot_prepend_naive), and changes premise acceptance by -1.9 [-5.7, +1.9] and +1.4 [-1.5,
+% +4.3], both including 0 (prereg "Addendum 17.11 amendment RESULTS", framing_17_11_readout.json
+% baselines.judges.<judge>.pooled.cot_prepend_naive); Section sec-single, paragraph "Accepting the asker's framing"
+% "in judged validation" (appendix fix pass, 2026-09-24): prereg 17.11 RESULTS ("The 'content, not narrative form'
+% conclusion of 17.7 is therefore specific to the emotional-validation rubric"; registered reading FRAMING-MIXED,
+% narrative-only minus CoT on the framing rubric -18.9 and -20.6), framing_17_11_readout.json reading and
+% narrative_only_minus_cot; Appendix app-framing. No line cost in the pillar-2 stand-in test build (end of main
+% text unchanged, same page and position)
 % round 3 (readability, 2026-09-24): split at "since"; "above CoT's" names the reference of the
 % narration-only rise (+6.8 to +18.7 points over CoT, source below); "The scaffold's" -> "NoT's" and
 % "a cooler tone rather than" -> "cooler tone, not" pay for round-3 additions; no number or caveat changed
@@ -174,12 +199,16 @@ part of any reduction may be cooler tone, not less endorsement.
 % minus checklist +11.4 to +31.4, every CI excluding 0; narrative only +6.8 Llama judge to +18.7 nano
 % judge). 36.5 to 57.5 is the one-decimal rounding of -36.49 and -57.49 (key_messages.md says 37 to 58)
 In a judge-free test on Scruples conflict accounts
-\citep{lourie2021scruples}, scored from each reply's verdict label, NoT withdraws
-its verdict blaming the user, as the writer, more often than CoT when the user
-disputes it, 0.37 against 0.22 pooled over three generators, but also more when
+\citep{lourie2021scruples}, NoT withdraws
+its verdict blaming the user more often than CoT when the user
+disputes it, 0.37 against 0.22 pooled over three generators, but also when
 merely asked to reconsider, an instability the pre-registered primary measure
-nets out, leaving no detectable difference, NoT minus CoT $+5.2$ points
+nets out, leaving no detectable difference, $+5.2$ points
 $[-1.7, +12.2]$, a 95 percent interval from resampling items.
+% integrating editor (2026-09-24), page budget: "as the writer" (the accounts are posed as the user's own, Section
+% sec-single), "more" before "when merely asked", "NoT minus CoT" (the difference's direction follows from the
+% sentence) and "scored from each reply's verdict label" (what makes the test judge-free, stated in Section sec-single
+% and Appendix app-pushback) left the prose; same numbers and sources below
 % round 3 (readability, 2026-09-24): judge-free because each reply's verdict label (YTA, NTA, ESH, NAH
 % or unresolved) is parsed, not scored by a judge model (scripts/run_pushback.py docstring, "scored
 % mechanically (no judge)", scripts/verdict_format.py extract_verdict); "withdraws its verdict blaming

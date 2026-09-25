@@ -2,7 +2,7 @@
 % its source (prereg addendum in Guidance_Documents/prereg_embodiment_community.md and/or
 % artefact in divergence_study_outputs/). Prose follows the repository rules (no em dashes,
 % colons, semicolons or lists in running prose). No number here goes beyond the agreed
-% key_messages.md. Model names as in the other sections (haiku = claude-haiku-4-5, sonnet =
+% key_messages.md and the RESULTS blocks named below. Model names as in the other sections (haiku = claude-haiku-4-5, sonnet =
 % claude-sonnet-4-6, nano = gpt-5.4-nano, grok = grok-4-1-fast-reasoning, Llama =
 % Llama-3.3-70B-Instruct, Mistral = Mistral-Large-3-2, DeepSeek = DeepSeek-V4-Pro).
 % NOTE FOR THE PI: this section states the evidence as it stands. Where the abstract (fixed wording)
@@ -51,15 +51,50 @@
 % sensor of its own errors"), writing "4.9 of its 7.0 points on grok" as "on grok most of its gain", or
 % both, leaves the paragraph at the same line count, and so does replacing the three example pairs after
 % "for example" in Other limitations; none of these is a one-line lever on its own.
+% New results integration (section editor, 2026-09-24), after review round 1: prereg Addenda 17.11 (the
+% accepting-framing rubric), the 17.11 amendment and amendment 2 (the baselines on that rubric and the
+% human reference), 17.12 (the benchmark's prompting baselines on validation), the 17.10 amendment run 2
+% (a second 4,096-token run on sonnet and haiku) and the 16.28 amendment E-D (plain seats on haiku). Every
+% new number is read from those RESULTS blocks and their artefacts and named in the comment under its
+% sentence; "No number here goes beyond the agreed key_messages.md" above now reads "beyond key_messages.md
+% and those RESULTS blocks". Changes: (1) the content-over-form conclusion is scoped to judged validation
+% and the premise-acceptance result is stated (NoT beats the checklist and narration alone, each of which
+% gives about three quarters of its drop); (2) the register caveat cites that result and "No judge can
+% separate register from endorsement" is withdrawn; (3) the sonnet statements follow Section sec-single
+% (the other four judges raise the rate in every run; the production judge's drop fails only in sonnet's
+% second 4,096-token run); (4) the benchmark's naive instruction and our sceptical persona are placed
+% against NoT and the checklist on both rubrics, including where they beat them; (5) the pushback and
+% judge-free verdict-shift (Z3) results are unchanged, and the BrokenMath result stays in Section
+% sec-single only, as before. Budget: measured in a scratch build of a snapshot of the live tree of
+% 2026-09-24 21:36 with the ToM stand-in (w08_pillar2_standin.tex) as pillar2_tom.tex, the Discussion
+% renders in 38 lines (heading included) before and after this edit. The additions were paid for by the
+% trims each noted "page budget" in the comments below (no result, reversal or caveat removed; three
+% qualifiers and examples moved to comments with their Section sec-single, Section sec-collective or
+% table homes named).
 \section{Discussion and Limitations}
 \label{sec-discussion}
 
 \paragraph{What the evidence supports.}
 On judged validation and in the collective the evidence supports the
-scaffold's principle (Section~\ref{sec-scaffold}) more weakly than
+scaffold's principle more weakly than
 hypothesised and, on validation, depending on the judge. It does not
 support our hypothesis, recorded in the name Narration-of-Thought, that a
-first-person narrative of the missing perspectives lowers sycophancy.
+first-person narrative of the missing perspectives lowers sycophancy,
+which premise acceptance alone partly supports.
+% fix pass (2026-09-24, after the new results integration): the one-sentence merge read as a garden path
+% ("depending on the judge, but not our hypothesis" first parses as "not on our hypothesis"), so the two
+% sentences of clarity round 3 are restored; "It" is the evidence on judged validation and in the
+% collective, so the opening scope still carries to the clause on the name. The closing relative clause
+% states in the prose what the registered reading shows, so that the verdict is not read as global: on
+% premise acceptance narration without the sections lowers the rate, and NoT lowers it further than the
+% checklist, so there the narrative form adds to the sections (prereg "Addendum 17.11 RESULTS", design
+% (b), registered reading FRAMING-MIXED, "the narrative-only arm also lowers the accepting-framing rate
+% with an interval excluding 0 under both judges" and "the full scaffold lowers it more than either
+% part"; framing_17_11_readout.json judges.<judge>.narrative_only_minus_cot.drop_arm -18.9 [-22.6,
+% -15.3] production and -20.6 [-25.2, -16.3] gpt-4o, and checklist_minus_cot.gap, NoT minus checklist,
+% -5.7 [-9.7, -1.9] and -4.1 [-7.8, -0.7]). "partly" because NoT's further drop takes it below the
+% rate of human answers (next sentence's comment) and because the narrative form raises judged validation.
+% The name stays (W15, PI decision of 2026-09-23).
 % whole-03 with discussion-01 (clarity round 3, 2026-09-24): the question sentence and the verdict merged so
 % that the section opens on its answer to the Introduction's question (both settings); same claims. The
 % notes below that describe the separate opening question sentence are superseded by whole-03 (round 3).
@@ -77,7 +112,8 @@ first-person narrative of the missing perspectives lowers sycophancy.
 % recorded in the name" states whole-03's "and not our hypothesis, recorded in the name ..." as its own
 % sentence, the same claim as the former "so the name Narration-of-Thought records that hypothesis, not
 % what we found"; "recorded in the name" stands before the that-clause so that it cannot attach to
-% "sycophancy". Kept as two sentences for readability (a one-sentence form measured the same length).
+% "sycophancy". Kept as two sentences for readability (a one-sentence form measured the same length;
+% restored as two sentences in the fix pass of 2026-09-24).
 % integrating editor, clarity loop 2 (2026-09-24): the gloss "organised criticism across perspectives"
 % with its longino1990science citation is replaced by a pointer to Section sec-scaffold, where the
 % principle is defined, so the term keeps one main-text definition (its first use); the citation stays
@@ -104,16 +140,153 @@ first-person narrative of the missing perspectives lowers sycophancy.
 % first-person narrative) and 17.7 RESULTS reading for the paper (supported by the content of the
 % scaffold, not its narrative form); narrative_form_readout.json form_pooled narrative_only and
 % checklist under all five judges
-% Scope (W29): the content-against-form decomposition exists on judged validation only (prereg 17.7,
-% narrative_form_readout.json) and the narrated-against-plain seat contrast in the collective only
+% Scope (W29): the content-against-form decomposition exists on judged validation (prereg 17.7,
+% narrative_form_readout.json) and on premise acceptance (prereg 17.11 design (b),
+% framing_17_11_readout.json), and the narrated-against-plain seat contrast in the collective only
 % (16.28, seat_scaffold_comparison.json, narrated against plain chain-of-thought seats with the
 % perspectives held by separate agents in both); no form contrast on theory of mind anywhere in the
 % record (pillar 2 is the co-author's; Addendum 18 stage 1 compared NoT with CoT only, ruled out of scope)
-Pooled over four generators and under every judge, a third-person
-checklist of NoT's five sections lowers judged validation further below CoT
-than NoT does, and narration without the sections raises it
-above CoT (Table~\ref{tab-form-main}), though part of the checklist's effect
-may be a cooler register, inseparable here from less endorsement.
+Pooled over four generators, the checklist lowers
+validation more than NoT under every judge and narration alone raises
+it above CoT, yet each
+gives most of NoT's drop in premise acceptance,
+NoT lowering it 4 to 8 points further under both judges scoring it and,
+unlike either, below the rate of human answers, so part of
+the checklist's larger validation drop may be register.
+% integrating editor (2026-09-24), page budget: "Pooled over four generators and under every judge, a third-person checklist
+% of NoT's five sections lowers validation more than NoT, and narration without them" -> "Pooled over four generators,
+% the checklist of NoT's sections lowers validation more than NoT under every judge and narration without them"; the
+% checklist is defined in Section sec-single and "under every judge" still scopes both the checklist's and narration's
+% results (narrative_form_readout.json form_pooled, every interval excluding 0 under all five judges)
+% fix pass (2026-09-24): "raises it above CoT" restores the baseline of the rise, since the previous clause
+% compares with NoT (narrative_form_readout.json form_pooled narrative_only drop_arm +6.8 Llama judge to
+% +18.7 nano judge against CoT, every lower bound above 0; Section sec-single "raises validation above CoT
+% under every judge"). "NoT beating both there ... under both its judges" is now "NoT lowering it 4 to 8
+% points further under both judges scoring it": "beating" presented a lower premise-acceptance rate as a
+% win, while by the benchmark's own definition (Section sec-single, "The benchmark's mitigations and the
+% human rate") NoT's further drop takes it below the rate of human answers and the checklist and
+% narration alone stay at it (human_anchor_readout.json rubrics.framing.<judge>.pooled, arm minus the
+% same judge's rate on the 149 human answers: NoT (narrative_cot_rep) -9.7 [-17.7, -1.6] production and
+% -11.1 [-19.6, -2.4] gpt-4o, BELOW-HUMAN; checklist -4.0 [-11.9, +3.8] and -6.9 [-15.3, +1.6] and
+% narrative only -4.9 [-12.7, +3.0] and -2.9 [-11.3, +5.6], AT-HUMAN; prereg "Addendum 17.11 amendment
+% RESULTS and amendment 2 RESULTS", descriptive); "its judges" could only attach to NoT. "and, unlike
+% either, below the rate of human answers" states that result (the rate of human answers is defined in
+% Section sec-single, "ELEPHANT measures sycophancy as a rate minus that of human answers", and tabulated
+% in Table tab-app-human-anchor); it cost no line in the scratch build with the ToM stand-in.
+% "most of" (was "about three quarters of"): the shares are 0.72 to 0.86 (below), "most" as in the Table
+% tab-form-main caption ("each carries most of the drop in accepting the framing"); the prereg 17.11
+% RESULTS block has no "three quarters" (it says the narrative form lowers the rate "by about as much as
+% the content alone"), and "at least three quarters" is the registered 17.7 threshold, which the gpt-4o
+% narrative-only share (0.72) falls below.
+% new results integration (2026-09-24; review round 1 W05 and area-chair experiment E-A): the
+% content-over-form conclusion is scoped to judged validation and the endorsement result is stated.
+% "lowers validation more than NoT" and "raises it" are the former "lowers judged validation further
+% below CoT than NoT does" and "raises it above CoT", shortened for the page budget with the same claims
+% (NoT's own pooled drop lies below 0 under all five judges, so both prompts lie below CoT and the
+% checklist further; the opening sentence already says "judged validation"); "them" is NoT's five
+% sections. The validation sources are unchanged (comments below this sentence).
+% Premise acceptance, the share of answers that accept the asker's framing (ELEPHANT's accepting-framing
+% rubric; the term is defined in Section sec-single, paragraph "Accepting the asker's framing", "premise
+% acceptance, the share of answers accepting the framing", and the Table tab-form-main caption calls it
+% "accepting the asker's framing"; if Section sec-single renames it, rename it here): prereg "Addendum
+% 17.11 RESULTS", design (b), registered reading
+% FRAMING-MIXED (the narrative-only prompt also lowers the rate with an interval excluding 0 under both
+% judges); framing_17_11_readout.json judges.<judge>.{checklist,narrative_only}_minus_cot, pooled over
+% haiku, grok, nano and Llama, 150 items paired, 8,000 draws, seed 20260822.
+% "most of": share of NoT's drop, checklist 0.76 [0.61, 0.92] under the production judge and
+% 0.86 [0.74, 0.98] under gpt-4o, narrative only 0.81 [0.66, 0.99] and 0.72 [0.58, 0.87] (0.72 to 0.86,
+% as Section sec-single states; "most" as in the Table tab-form-main caption; every lower bound above
+% 0.5; the 17.11 RESULTS block says narration alone lowers it "by about as much as the content alone").
+% "4 to 8 points further": NoT minus checklist -5.7 [-9.7, -1.9] (production) and -4.1 [-7.8, -0.7] (gpt-4o),
+% NoT minus narrative only -4.3 [-8.7, -0.2] and -8.1 [-12.8, -3.5], so 4.1 to 8.1 points, every interval
+% excluding 0 ("gap" in the artefact). "both judges scoring it": the production judge (haiku) and gpt-4o, the
+% only two judges registered for this rubric (17.11 registration, Judges).
+% Register caveat (was "though part of the checklist's effect may be a cooler register, inseparable here
+% from less endorsement"): the framing result now bears on it. The checklist lowers validation more than
+% NoT (NoT minus checklist +11.4 to +31.4 points under the five judges, narrative_form_readout.json
+% form_pooled) but lowers premise acceptance less (NoT minus checklist -5.7 and -4.1 above), so its extra
+% validation drop has no counterpart in endorsement, which fits part of it being register; kept as
+% "may", since both rubrics are scored by model judges. Section sec-single states the same ("consistent
+% with part of its larger validation drop being register"); prereg 17.11 RESULTS reports that no
+% registered contrast went in the direction the register caveat feared. "a cooler" before "register" was
+% dropped for the page budget (restore as "may be a cooler register" when the page allows); Section
+% sec-single glosses register at its first main-text use ("a cooler tone, or register").
+% Left out of this paragraph and, since the fix pass of 2026-09-24, stated in the first sentence of "Judges
+% and judge-free tests" beside sonnet's validation reversal (also in Section sec-single and Table
+% tab-app-rep4k panel (b)): NoT lowers premise acceptance on all seven generators under both judges,
+% sonnet included, pooled -24.5 [-28.4, -20.6] (production) and -30.9 [-35.1, -27.0] (gpt-4o) (17.11
+% RESULTS design (a); framing_17_11_readout.json judges.<judge>.design_a_not_minus_cot_pooled).
+The benchmark's instruction not to validate lowers validation more than NoT
+under every judge and than the checklist under three, but leaves premise
+acceptance where CoT has it, while our sceptical persona lowers
+validation more than NoT under four judges and premise acceptance more than
+NoT and the checklist (Table~\ref{tab-app-baselines}).
+% pillar1 fix pass (2026-09-24): "Table tab-form-main" is "Table tab-app-baselines" because the four baseline
+% rows left Table tab-form-main for the main-text page budget (scripts/make_iclr_figures.py
+% form_main_table); Table tab-app-baselines holds every baseline drop and paired difference cited here
+% Discussion fix pass (2026-09-24): ", Appendix app-baselines" dropped from the pointer, since Table
+% tab-app-baselines sits in that appendix and carries the paired differences the Discussion fix list
+% asked the pointer to reach (page budget); Table tab-form-main is kept beside it for NoT's and the
+% checklist's own drops, so that the Discussion still points to Table 1.
+% fix pass (2026-09-24): "but not premise acceptance" could be read as limiting only the comparison with
+% the checklist; the clause now states the registered finding, that the instruction leaves premise
+% acceptance where CoT has it (prereg "Addendum 17.11 amendment RESULTS": "leaves premise acceptance
+% where CoT has it ... so it removes warmth, not endorsement"; Section sec-single, paragraph "Accepting the
+% asker's framing", now "leave premise acceptance at or above CoT's"; sources in the comment below). "our sceptical persona"
+% (was "a sceptical persona of ours") pays for part of it. The pointer must reach the paired baseline
+% differences on which "than the checklist under three" and the MATCH readings rest
+% (baselines_17_12_readout.json, Table tab-app-baselines), which Table tab-form-main never gave.
+% new results integration (2026-09-24; review round 1 W06 and area-chair experiment E-B): the prompting
+% baselines placed against NoT and the checklist, stated whichever way they fell. The persona is ours,
+% not the benchmark's (prereg 17.12 design; Section sec-single says "a sceptical persona of ours").
+% Validation: prereg "Addendum 17.12 RESULTS"; baselines_17_12_readout.json judges.<judge>.pooled and
+% .readings (paired, 8,000 draws, seed 20260923; a positive NoT or checklist minus baseline means the
+% baseline validates less). Naive instruction (cot_prepend_naive, ELEPHANT's "Do not be emotionally
+% validating or empathetic in your response.") BASELINE-BEATS-NOT under all five judges ("under every
+% judge"; NoT minus baseline +10.1 [+4.5, +15.3] production, +20.8 [+15.7, +25.8] gpt-4o, +29.1 [+24.2,
+% +34.2] nano, +42.8 [+37.4, +48.2] Llama, +39.9 [+34.3, +45.6] grok judge; judge-robust); against the
+% checklist MATCH under the production judge (-1.4 [-6.5, +3.6]) and gpt-4o (-1.2 [-6.2, +3.6]) and
+% BASELINE-BEATS-CHECKLIST under the nano (+11.9 [+7.4, +16.4]), Llama (+11.8 [+6.6, +17.1]) and grok
+% (+14.5 [+9.2, +19.7]) judges ("than the checklist under three"). Sceptical persona (cot_sceptical)
+% BASELINE-BEATS-NOT under gpt-4o (+10.2 [+5.9, +14.7]), nano (+19.4 [+14.7, +24.3]), Llama (+26.0
+% [+21.7, +30.3]) and grok (+25.2 [+20.4, +30.1]) judges and MATCH under the production judge (-1.7
+% [-6.7, +3.1]) ("under four judges", not judge-robust); against the checklist it never wins
+% (CHECKLIST-BEATS-BASELINE under the production judge and gpt-4o, MATCH under the other three).
+% Premise acceptance: prereg "Addendum 17.11 amendment RESULTS and amendment 2 RESULTS";
+% framing_17_11_readout.json baselines.judges.<judge>.pooled (8,000 draws, seed 20260822). The naive
+% instruction's change from CoT is -1.9 [-5.7, +1.9] (production) and +1.4 [-1.5, +4.3] (gpt-4o), both
+% intervals including 0 ("leaves premise acceptance where CoT has it"), and NoT and the checklist beat it under both
+% judges (NoT minus baseline -21.3 [-25.7, -17.1] and -29.8 [-34.3, -25.4], checklist minus baseline
+% -15.7 [-19.6, -11.8] and -25.4 [-29.7, -21.1]; NOT-BEATS-BASELINE and CHECKLIST-BEATS-BASELINE,
+% judge-robust). The persona lowers it by -57.5 [-62.3, -52.6] and -56.0 [-60.9, -51.0], more than NoT
+% (+34.1 [+28.2, +39.9] and +27.6 [+21.5, +33.5], BASELINE-BEATS-NOT) and the checklist (+40.0 [+34.7,
+% +45.3] and +32.1 [+26.1, +37.9], BASELINE-BEATS-CHECKLIST), judge-robust.
+% Left out of the prose for the page budget, all stated in Section sec-single (paragraph "Accepting the
+% asker's framing", formerly "The benchmark's mitigations and the human rate") and Appendix app-baselines
+% (Tables tab-app-baselines and tab-app-human-anchor): (i) the benchmark's two milder mitigations, the context-dependent instruction
+% and the third-person rewrite, which leave premise acceptance where CoT has it or raise it (context -1.0
+% and +0.7, rewrite -2.5 [-5.7, +0.9] and +4.4 [+0.6, +8.3]) and which NoT and the checklist beat there
+% under both judges (judge-robust) and on validation (the checklist under all five judges; NoT under all
+% five against the context instruction and under the production judge and gpt-4o against the rewrite,
+% MATCH under the other three), the rewrite being scored as an answer about a third party; (ii) the human
+% reference (prereg 17.11 amendment 2, descriptive; human_anchor_readout.json rubrics.framing pooled,
+% arm minus the same judge's rate on the 149 human answers): on premise acceptance the persona is -43.7
+% [-51.8, -35.3] and -39.5 [-48.2, -30.5] points from the human rate (BELOW-HUMAN, over-correction by
+% ELEPHANT's definition), NoT -9.7 [-17.7, -1.6] and -11.1 [-19.6, -2.4] (also BELOW-HUMAN), the
+% checklist -4.0 [-11.9, +3.8] and -6.9 [-15.3, +1.6] (AT-HUMAN), CoT +13.7 and +17.2 (ABOVE-HUMAN); the
+% checklist is the only prompt at the human rate on both rubrics (validation AT-HUMAN under gpt-4o, nano
+% and Llama, BELOW under the production judge, ABOVE under grok). A draft sentence carrying (ii) cost
+% one line more than the page allows; if a line frees up, add after "the checklist" ", to 40 to 44 points
+% below the rate of human answers against NoT's 10". Fix pass (2026-09-24): that draft is selective as it
+% stands, since it holds up NoT's 10 points as the modest comparator; if it is ever added it must also say
+% that NoT is below the human rate (BELOW-HUMAN under both judges) and that the checklist is the only
+% prompt at it.
+% "(Table tab-form-main)" moved here from the previous sentence: Table 1 carries the validation and
+% framing columns for the form prompts (figures/tab_form_main.tex); its four baseline rows moved to Table
+% tab-app-baselines in the pillar1 fix pass of 2026-09-24, and the pointer above follows them.
+% SUPERSEDED (new results integration, 2026-09-24): the notes directly below on "the same register caveat
+% in fewer words" and on the ranges refer to the former sentence ending "inseparable here from less
+% endorsement"; the validation sources they list still apply to the first sentence above.
 % clarity round 3 (discussion-12): the same register caveat in fewer words ("here" is this design). Without
 % it the paragraph measured one further line in the scratch build.
 % Clarity loop 2 (discussion-02): "under every judge" now scopes both clauses, as Section sec-single
@@ -150,9 +323,11 @@ may be a cooler register, inseparable here from less endorsement.
 % to 0.33; haiku 0.42 to 0.55), knockout_social_analysis.json; 17.5 RESULTS (+6.1 [+2.1, +10.2] pooled
 % over haiku, grok and nano; haiku +10.0 [+2.0, +18.0], grok and nano intervals include 0; REVERSED
 % label added after the run), counterparty_causal_analysis.json; both production judge only
-In the collective, a verdict blaming one party is wrong more often when a
+In the collective, a one-party verdict is wrong more often when a
 second seat objects, on four of five models, an analysis proposed after
 grok's debates were collected.
+% new results integration (2026-09-24), page budget: "a one-party verdict" is Section sec-collective's
+% term ("one-party verdicts") for the former "a verdict blaming one party"; same claim and sources as below.
 % clarity round 3 (discussion-05): the measured quantity as Section sec-collective states it ("Dissent flags
 % errors"): the error rate of one-party verdicts with two or more objecting seats against at most one. The
 % lift interval excludes zero on grok, Mistral, DeepSeek and Llama
@@ -163,21 +338,47 @@ grok's debates were collected.
 % (discussion-11).
 % "an analysis" (was "a reading"): a reading is an interpretation declared in advance (Reproducibility
 % statement, Appendix app), and this split was proposed after the data (integrating editor, clarity loop 2)
-Those objections, however, come from assigned opposition,
-which on grok costs accuracy, three neutral seats scoring higher, in a
-contrast not pre-registered.
+The objections come from assigned opposition, which costs grok accuracy
+against three neutral seats in a contrast not pre-registered.
+% new results integration (2026-09-24), page budget: same claim as clarity round 3's "which on grok costs
+% accuracy, three neutral seats scoring higher", the direction now carried by "costs grok accuracy against
+% three neutral seats" (prereg 16.10 RESULTS, identical/on minus embodied/on +0.021 [+0.004, +0.038],
+% topology_2x2_analysis.json, observed, not pre-declared); "however" dropped.
 % clarity round 3 (discussion-06): the direction stated as Section sec-collective words it ("three neutral
 % seats scoring +2.1 points [+0.4, +3.8] above opposed ones"), that is, a collective whose three seats all
 % get the neutral brief scores above the opposed one (prereg 16.10 RESULTS, identical/on minus embodied/on
 % +0.021 [+0.004, +0.038], topology_2x2_analysis.json, observed, not pre-declared). This is shorter than the
 % readers' wording and costs no line.
-CoT seats make the collective more accurate than NoT seats on grok and Llama.
-The collective is no better a decider than the solo, worse on four of five
-models (Table~\ref{tab-routing}) and indistinguishable on haiku, but a
-sensor of its own errors. Routing raises its accuracy on all five but
-beats the solo only on Mistral, and 4.9 of its 7.0 points on grok come from
-verdicts blaming both parties or neither, where objections carry no
-detectable error signal.
+CoT seats make the collective more accurate than NoT seats on grok and Llama,
+and its routing more accurate on haiku when both route equally often.
+% fix pass (2026-09-24): the registered E-D reading on haiku, a third generator on which the scaffold's
+% seats lose, is now in the prose (prereg "Addendum 16.28 amendment E-D RESULTS", "Registered reading,
+% haiku: PLAIN-BETTER, carried by matched-coverage routed accuracy"; seat_scaffold_comparison.json
+% per_model.haiku.routed_matched, narrated minus plain -3.2 [-6.0, -0.3] (hi -0.0035; the RESULTS block
+% prints -0.4), NoT flags thinned at random to the CoT fire rate, 0.090 from 0.197). "when both route
+% equally often" is Section sec-collective's gloss of matched coverage. Haiku's collective's own verdict,
+% -3.0 [-6.4, +0.4] (per_model.haiku.acc), includes 0, so "the collective more accurate" is still not
+% claimed for haiku.
+The collective is worse than the solo on four of five models
+(Table~\ref{tab-routing}), and routing, which raises its accuracy on all
+five, beats the solo only on Mistral, 4.9 of its 7.0 points on grok coming from verdicts blaming both
+parties or neither, where objections carry no detectable error signal.
+% integrating editor (2026-09-24), page budget, second step: "(Section sec-scaffold)" after "the scaffold's principle",
+% "of NoT's sections" after "the checklist" (both defined earlier) and Table tab-form-main from the baseline pointer
+% (Table tab-app-baselines holds every baseline contrast) dropped, and "is a sensor of its own errors, not a decider,"
+% left this sentence, the sensor finding being the sentence "In the collective, a one-party verdict is wrong more often
+% ..." above; no number, failure or caveat changed
+% integrating editor (2026-09-24), page budget: the two sentences joined, "no better a decider than the solo, worse on
+% four of five models" -> "worse than the solo on four of five models ... not a decider", same failures and numbers
+% (sources below)
+% new results integration (2026-09-24), page budget: "and indistinguishable on haiku" left this sentence
+% (haiku's collective minus solo -0.6 [-4.7, +3.5], collective_vs_solo_paired.json); it is a qualifier,
+% not a failure, and it stays in the Introduction, Section sec-collective and Table tab-routing. "worse on
+% four of five models" and "no better a decider" keep the failure. Haiku's plain-seat collective (16.28
+% amendment E-D RESULTS, PLAIN-BETTER through matched-coverage routed accuracy only, -3.2 [-6.0, -0.3]
+% (artefact hi -0.0035; the RESULTS block prints -0.4); collective's own verdict -3.0 [-6.4, +0.4]) is
+% still not claimed in "CoT seats make the collective more accurate"; its routing result is stated
+% (fix pass, 2026-09-24, comment under that sentence).
 % discussion-07 with whole-07 (clarity round 3, 2026-09-24). From discussion-07: the upshot in Section
 % sec-collective's own words (paragraph "The collective is a poor decider" (renamed in round 3); the Introduction
 % calls it "a poor decider ... but a sensor of its own errors"), stated as "no better a decider than the
@@ -233,8 +434,9 @@ detectable error signal.
 % RESULTS, seat_scaffold_comparison.json pair haiku) reads PLAIN-BETTER through the routed verdict at
 % matched coverage only, -3.2 [-6.0, -0.3] (per_model.haiku.routed_matched hi -0.0035; the E-D RESULTS
 % block prints the upper bound as -0.4), its collective's own verdict -3.0 [-6.4, +0.4] including 0,
-% so "more accurate" is not claimed for haiku here; the haiku result is stated in Appendix app-seat (inserted
-% 2026-09-24, clarity loop 1)
+% so "more accurate" is not claimed for haiku's collective here; the haiku result is stated in Appendix
+% app-seat (inserted 2026-09-24, clarity loop 1) and, since the fix pass of 2026-09-24, as routing "more
+% accurate on haiku when both route equally often" in the sentence above
 % prereg Addendum 16.10 RESULTS (H-ROLE, grok only; identical/on fires on 2 of 420 debates;
 % identical/on minus embodied/on +0.021 [+0.004, +0.038], observed, not pre-declared;
 % topology_2x2_analysis.json); 16.28 RESULTS (PLAIN-BETTER on grok and Llama, +2.0 and +4.2 points,
@@ -248,14 +450,62 @@ detectable error signal.
 % zero, Llama -18.2 and DeepSeek -10.8 below (prereg block "Zero-spend post hoc analyses for review
 % round 1"); the 2.1 points [+0.4, +3.8] against identical readers is stated in Section sec-collective
 \todo{PILLAR 2 (co-author): Section~\ref{sec-tom}'s result, its scope and limits, and whether any contrast there separates content from form, else say the decomposition above was tested on judged validation and the collective only.}
+% Note for the co-author (2026-09-24): the content-against-form decomposition was also run on premise
+% acceptance (prereg Addendum 17.11 RESULTS, design (b); framing_17_11_readout.json), so the fallback
+% scope should read 'judged validation, premise acceptance and the collective'. The TODO itself is left
+% unchanged, as the co-author's slot.
 % Single ToM slot of this section (W29, 2026-09-23), merged from Other limitations. No ToM number is
 % written here; the Addendum 18 stage-1 figure stays in the comment of pillar2_tom.tex only.
 
-\paragraph{Judges and judge-free tests.}
-NoT's reduction holds on all seven generators only under the production
-judge, haiku, and under every judge only on Llama, while on sonnet, whose
-responses haiku could favour as its developer's, the other four reverse it
-in the regeneration (Section~\ref{sec-single}).
+\paragraph{Judges, judge-free tests, limitations and future work.}
+NoT's validation drop, pooled over runs, holds on all seven only under the
+production judge and under every judge only on Llama, and on sonnet,
+whose responses haiku could favour as its developer's, the other four reverse
+it, pooled and by point estimate in every run, though NoT lowers premise
+acceptance on all seven under both judges scoring it (Section~\ref{sec-single}),
+a rubric on which the production judge agrees only moderately with the
+benchmark's labels (kappa 0.44, \citealp{cohen60}).
+% integrating editor (2026-09-24): the framing-judge caveat (pillar-1 editor's issue 32), placed here because Section
+% sec-single cannot pay its line in the stand-in build: judge_reference_agreement_framing.json kappa claude-haiku-4-5
+% 0.441 [0.283, 0.587] against the benchmark's framing labels on the 149 labelled human answers (gpt-4o 0.65 [0.52,
+% 0.77]); prereg "Addendum 17.11 amendment RESULTS and amendment 2 RESULTS"; Appendix app-framing gives both with
+% intervals; cohen60 cited at this first main-text use of kappa
+% integrating editor (2026-09-24), page budget, the Discussion editor's measured option for this paragraph: "while on
+% sonnet ... NoT's rate exceeds CoT's under the other four" -> "and on sonnet ... the other four reverse it" (a reversal
+% is NoT's rate above CoT's, Section sec-single's term, same sources below), "sonnet included," dropped ("all seven"
+% includes it)
+% fix pass (2026-09-24): "pooled over runs" gives the sentence its run scope, since the production-judge
+% drop fails in sonnet's second 4,096-token run (Other limitations); pooled, run_stability.json
+% judges.<judge>.per_generator.<gen>.pooled (run as a fixed crossed factor): the production judge's upper
+% bound is below 0 on all seven (sonnet -12.2 [-18.0, -6.7]), and all five judges' only on Llama (-65.9,
+% -63.1, -44.7, -15.8, -48.6; every other generator includes 0 under at least the Llama judge). "NoT's rate
+% exceeds CoT's under the other four" (Section sec-single's wording) replaces "the other four raise the
+% rate", whose subject was the judges; "pooled and by point estimate in every run" because in run 1 the
+% gpt-4o and nano intervals include 0 and nano's run-3b lower bound is +0.0 (sources in the comment below).
+% The premise-acceptance clause follows the run-2 RESULTS block ("reported as such, with the
+% accepting-framing result (17.11), on which sonnet drops under both judges, beside it") and the 17.11
+% Reporting clause: prereg "Addendum 17.11 RESULTS" design (a), NoT lowers premise acceptance on all seven
+% generators under both judges, every interval excluding 0, pooled -24.5 [-28.4, -20.6] (production) and
+% -30.9 [-35.1, -27.0] (gpt-4o), sonnet -32.7 [-41.3, -24.0] and -26.7 [-34.7, -18.7]
+% (framing_17_11_readout.json judges.<judge>.design_a_not_minus_cot_pooled and design_a_per_generator);
+% single run (the 17.10 same-day 4,096-token cells), so "pooled over runs" does not scope it.
+% new results integration (2026-09-24): "NoT's validation drop" scopes the sentence to judged validation,
+% since premise acceptance falls on all seven generators under both of its judges (17.11 RESULTS design
+% (a), comment in "What the evidence supports"); "generators" after "all seven" dropped for the page budget.
+% Sonnet over its runs (review round 1 E-C; prereg "Addendum 17.10 amendment, run 2 RESULTS": "Sonnet
+% under the four other judges rises in every run"; Section sec-single: "under the other four judges NoT's
+% rate exceeds CoT's in every run, pooled by +6.2 to +12.0 points with each interval above zero"):
+% run_stability.json judges.<judge>.per_generator.claude-sonnet-4-6.per_run 1, 3 and 3b, NoT minus CoT,
+% gpt-4o +3.3 [-4.7, +11.3], +8.0 [+1.3, +15.3], +7.3 [+0.7, +14.7]; nano judge +2.0 [-6.7, +10.7],
+% +8.7 [+0.7, +16.7], +8.0 [+0.0, +16.0]; Llama judge +7.4, +8.7, +7.4; grok judge +14.0, +12.1, +10.1;
+% pooled (run as a fixed crossed factor) +6.2 [+1.3, +11.1], +6.2 [+0.7, +11.8], +7.8 [+4.0, +11.9],
+% +12.0 [+7.9, +16.6]. "raise the rate in every run" is by point estimate in each run, as the RESULTS
+% word it (on the original responses the gpt-4o and nano intervals include 0), and every pooled interval
+% excludes 0. This replaces "reverse it in the regeneration", which named only run 3. Sonnet's
+% production-judge drop by run and pooled is in the comment under "It holds under the production judge"
+% in Other limitations. Sonnet's premise acceptance falls under both framing judges, -32.7 [-41.3,
+% -24.0] and -26.7 [-34.7, -18.7] (17.11 RESULTS design (a)), stated in Section sec-single and, since
+% the fix pass of 2026-09-24, in the sentence above.
 % discussion-08 with whole-13 (clarity round 3, 2026-09-24). From discussion-08 (merging the readers' two
 % items on this sentence): the reason the shared developer matters, in Appendix app-judges' words ("whose
 % responses it could favour as its own or its developer's"), with self-preference as in Section
@@ -300,9 +550,14 @@ in the regeneration (Section~\ref{sec-single}).
 % statistic, Llama 0.79 and grok 0.64 of combinations above 0.85) and 17.8 amendment 2;
 % judge_reference_agreement.json (kappa Llama 0.478 [0.358, 0.600], grok 0.551 [0.402, 0.688], haiku
 % 0.587, nano 0.606, gpt-4o 0.792 [0.670, 0.892])
-No judge can separate register from endorsement, but the judge-free
-pushback test measures commitment, keeping a verdict when asked to
-reconsider, not register.
+In the judge-free pushback test of commitment, not register,
+% new results integration (2026-09-24): "No judge can separate register from endorsement" is withdrawn,
+% because the accepting-framing rubric (prereg 17.11) now scores endorsement on the same responses and the
+% register caveat in "What the evidence supports" cites it. What this sentence kept, that the judge-free
+% pushback test measures commitment and not register, is now its opening phrase, merged into the next
+% sentence for the page budget ("keeping a verdict when asked to reconsider" is carried by the clause that
+% follows, "gives up its verdict ... whether the user disputes it or asks again"). The pushback result
+% itself is unchanged.
 % whole-17 (clarity round 3, 2026-09-24, flow L2): "not tone" -> "not register", the word of this
 % sentence's first clause, which Section sec-single glosses once ("a cooler tone, or register")
 % integrating editor, clarity loop 2 (2026-09-24), page budget: fanous2025syceval stays cited for the
@@ -312,8 +567,8 @@ reconsider, not register.
 % Clarity loop 2 (discussion-05): the verdict is parsed from the reply with no judge
 % (scripts/run_pushback.py docstring, "scored mechanically (no judge)"), and both second turns ask
 % the model to reconsider (the pushback and the neutral re-ask, scripts/run_pushback.py CONDITIONS).
-There NoT gives up its verdict more often than CoT whether the user
-disputes it or asks again, carried almost entirely by Llama, and the
+NoT gives up its verdict more often than CoT whether the user
+disputes it or asks again, almost entirely on Llama, and the
 registered primary measure, the first rise minus the second, is null
 because the rises are alike, not absent.
 % clarity round 3 (discussion-04): "primary measure" (the Introduction's term) and "minus" for "primary" and
@@ -344,7 +599,10 @@ because the rises are alike, not absent.
 % entirely by Llama"); no minimum detectable difference was registered in 17.9 (W16, W31, 2026-09-23)
 In a second judge-free test, against the brief unscaffolded prompt, not
 CoT, NoT does not remove the verdict's shift toward the user on Llama and
-Mistral, and DeepSeek shows it under neither prompt.
+Mistral, and DeepSeek shows none to remove.
+% integrating editor (2026-09-24), page budget: "shows it under neither prompt" -> "shows none to remove", Section
+% sec-single's wording for the same result (Table tab-app-z3); ", haiku" after "the production judge" above dropped,
+% Section sec-single naming haiku as the production judge
 % clarity round 3 (discussion-10, with whole-12's Discussion half): "shift toward the user" is the term
 % Section sec-single defines (blaming the writer less when the writer is the user than in the third person)
 % and replaces the compressed "toward excusing the user as writer". "shows it under neither prompt" supplies
@@ -367,11 +625,27 @@ Mistral, and DeepSeek shows it under neither prompt.
 % budget, the paragraph's first sentence points there. The
 % propositional boundary (16.15.5, BrokenMath, nano only) is left to the single-agent section, where
 % its registered sentence with all three estimates belongs.
-
-\paragraph{Other limitations and future work.}
-Each generator answered each item once per prompt per run, and our
-intervals resample items, not runs, so only its two to four runs, compared
-post hoc (Table~\ref{tab-app-runs}), show how far the reduction moves.
+% integrating editor (2026-09-24), page budget: the paragraph "Other limitations and future work" is joined to this one,
+% whose heading now names both ("Judges and judge-free tests" -> "Judges, judge-free tests, limitations and future work");
+% same sentences, and "Future work" is marked in the text by "The decisive test would ..."
+Each generator answered each item once per prompt and run, and intervals
+resample items, not runs, so only its two to four runs
+(Table~\ref{tab-app-runs}, compared post hoc) show how far the reduction moves,
+while the form and baseline prompts ran once.
+% fix pass (2026-09-24): "compared post hoc" restored, because "post hoc" alone read as if the runs
+% themselves were post hoc; runs 2 and 3 were registered (17.7, 17.10) and run 3b was registered before
+% any call ("Addendum 17.10 amendment, run 2 (registered 2026-09-23 BEFORE any call ...)"); only the
+% comparison across runs was added afterwards (Appendix app-rep4k, run_stability.json, prereg block
+% "Zero-spend post hoc analyses for review round 1"). The closing clause says that the form and baseline
+% results of "What the evidence supports" rest on one run per prompt (Appendix app-form; Appendix
+% app-baselines, "Every baseline was answered once per item"), where some margins are small (NoT minus
+% checklist on premise acceptance -4.1 [-7.8, -0.7], NoT minus narrative only -4.3 [-8.7, -0.2],
+% framing_17_11_readout.json) against a run-to-run SD of a generator's drop of 2.1 points on average and
+% 8.0 at most (run_stability.json summary.overall mean_sigma_run_points 2.12, max_sigma_run_points 7.97).
+% The further caveat that the baselines' comparators were generated one to two days before the baselines
+% (prereg Addendum 17.12 Comparators) stays in Appendix app-baselines (page budget).
+% new results integration (2026-09-24), page budget: "per prompt per run, and our" is "per prompt and
+% run, and"; same claims.
 % clarity round 3 (discussion-09 a): "between generations" (read as model generations) is dropped because
 % the runs are named in the same sentence.
 % Clarity loop 2 (discussion-09): intervals resample items and hold the run fixed (head of Appendix
@@ -379,9 +653,26 @@ post hoc (Table~\ref{tab-app-runs}), show how far the reduction moves.
 % Reproducibility statement); runs 1, 2, 3 and 3b are defined in the Table tab-app-runs caption
 % (run_stability.json, not pre-registered); "per run" and "post hoc" save the line this paragraph
 % would otherwise gain
-It holds under the production judge in every run but sonnet's second
-4,096-token run, and the regeneration shrinks it, for example, on sonnet
-under the production judge and on Mistral and DeepSeek under gpt-4o.
+It holds under the production judge in all runs but sonnet's second
+4,096-token run, and the first 4,096-token run shrinks it on some generators, by up
+to 13 points.
+% fix pass (2026-09-24): the size of the shrinkage is restored in the prose, and "the regeneration" is "the
+% first 4,096-token run" (run 3), since run 3b is also a 4,096-token regeneration and run 2 a 2,048-token
+% one; run 1 to run 3 (run_stability.json judges.<judge>.per_generator.<gen>.per_run 1 and 3), the largest
+% shrinks: gpt-4o DeepSeek -29.1 to -16.3 (12.8 points), gpt-4o Mistral -41.0 to -29.5 (11.5); production
+% judge Llama -70.2 to -63.4 (6.8) and sonnet -19.3 to -12.7 (6.6); no other run-1-to-run-3 shrink exceeds
+% 12.8 points.
+% new results integration (2026-09-24): consistent with Section sec-single, which states sonnet's
+% production-judge drop as -4.7 [-13.3, +3.3] in that run alone ("which the rule would read as failing")
+% and -12.2 [-18.0, -6.7] pooled after the fact over its three runs (prereg "Addendum 17.10 amendment,
+% run 2 RESULTS"; run_stability.json judges.claude-haiku-4-5.per_generator.claude-sonnet-4-6.per_run 1
+% -19.3 [-28.0, -10.7], 3 -12.7 [-22.0, -3.3], 3b -4.7 [-13.3, +3.3], pooled -12.2 [-18.0, -6.7], random-run
+% interval [-21.1, -3.3]); haiku's is -27.0 [-33.5, -20.3] pooled over its four runs. "every run" is "all
+% runs" (page budget). The examples of shrinkage ("for example, on sonnet under the production judge and
+% on Mistral and DeepSeek under gpt-4o", run_stability.json per_run 1 and 3: sonnet -19.3 to -12.7,
+% Mistral -41.0 to -29.5, DeepSeek -29.1 to -16.3) left the prose for the page budget and stand in
+% Section sec-single ("smaller than before on Mistral and DeepSeek") and Table tab-app-runs; the caveat
+% itself, that the regeneration shrinks the reduction, is kept.
 % clarity round 3 (discussion-09 b, merging the readers' items on these two sentences): "It holds"
 % replaces "They keep it", whose referent was unclear. "holds" means a negative drop whose interval
 % excludes zero, as Section sec-single defines it, so "with an interval excluding zero" is dropped as
@@ -396,8 +687,10 @@ under the production judge and on Mistral and DeepSeek under gpt-4o.
 % (judge_panel_full_oeq_claude-haiku-4-5.json, judge_panel_full_oeq_gpt-4o.json,
 % headline_rep4k_readout.json; prereg 17.8 and 17.10 RESULTS). "for example" (clarity round 3) marks the
 % three pairs as examples; others also shrink (listed in the comment above).
-Content filters on most platforms refuse some disputes, so collective
-and pushback item sets differ by model.
+Most platforms' content filters refuse some disputes, so collective
+and pushback items vary by model.
+% new results integration (2026-09-24), page budget: reworded from "Content filters on most platforms
+% refuse some disputes, so collective and pushback item sets differ by model"; same claim and sources.
 % clarity round 3 (discussion-13): "the" dropped. With discussion-02, 03, 09 and 11 applied this is the cut
 % that keeps the paragraph at its length (measured; discussion-09's dropped words pay for the rest).
 % sonnet run 3b: headline_rep4k_b_readout.json and run_stability.json per_run.3b (prereg "Addendum
@@ -439,9 +732,17 @@ and pushback item sets differ by model.
 % (W29, 2026-09-23).
 % integrating editor, clarity loop 2 (2026-09-24), page budget: the paragraph "Future work" is merged
 % into this one under the heading "Other limitations and future work"; its sentences are unchanged
-The decisive test of form against content would cross first- and
-third-person voice with narrative and checklist form and have blind human
-raters score endorsement apart from register.
+The decisive test would cross voice with form and have blind human raters
+score endorsement apart from register.
+% fix pass (2026-09-24): the crossing is restored, because without it the sentence named the wrong test
+% (blind raters separate register from endorsement, not narrative form from content) and the Discussion
+% lost the caveat that the checklist changes voice and genre at once (Section sec-single, "nor voice from
+% narrative genre"; the checklist is third person and a list of labelled points where NoT is a
+% first-person story, Appendix fig-app-prompts). "voice with form" stands for the former "first- and
+% third-person voice with narrative and checklist form" (page budget), and "of form against content"
+% is dropped since the crossing now says what the test separates. The test is still needed after
+% prereg 17.11, since the accepting-framing rubric is scored by model judges, not blind human raters
+% (area-chair E-E).
 % clarity round 3 (discussion-02): conditional mood because no such test was run; "of form against
 % content" names what it would decide, the confound Section sec-single states ("nor voice from narrative
 % genre") and the register caveat of "What the evidence supports". The readers' "left to future work" was
@@ -452,8 +753,11 @@ raters score endorsement apart from register.
 % is third person and a list of labelled points where NoT is a first-person story (Appendix
 % fig-app-prompts), and Section sec-single says the design cannot separate the register effect "nor
 % voice from narrative genre"
-A second is whether the scaffold's content in either form resists
-multi-turn pushback \citep{hong2025sycophancy}.
+A second is whether NoT or the checklist resists multi-turn pushback
+\citep{hong2025sycophancy}.
+% new results integration (2026-09-24): "the scaffold's content in either form" is now named as the two
+% prompts that carry it, NoT (narrative) and the checklist, because the previous sentence no longer names
+% the two forms; same question (the pushback test compared only NoT with CoT, prereg 17.9 registration).
 % clarity round 3 (discussion-03): "any form of content" (from "any form of the scaffold's content", clarity
 % pass 2026-09-24) restated so that "form" and "content" keep their meanings from Section sec-single.
 % "either form" refers to the narrative or checklist form named in the previous sentence (discussion-02).
@@ -467,8 +771,11 @@ sample disagreement,
 % 0.419), and the one lift interval that includes zero, +3.5 [-4.1, +12.0]
 % (verify_pillar3_headline_haiku_249.json). "registered only on grok" already says that the other models'
 % comparisons were not registered, so the readers' "and exploratory on the other models" was not added.
-which routed errors at least as well everywhere but Mistral,
+which did at least as well everywhere but Mistral,
 in comparisons registered only on grok.
+% new results integration (2026-09-24), page budget: "which routed errors at least as well" is "which
+% did at least as well" (the subject is the solo's sample disagreement routing errors); same claim and
+% sources as below.
 % integrating editor, clarity loop 2 (2026-09-24), page budget: jitkrittum2023deferral and
 % manakul2023selfcheck stay cited for sample disagreement and deferral in Section sec-related (and
 % manakul2023selfcheck in Section sec-collective); "seats lock weakly to their sides" is "role-lock is

@@ -9818,3 +9818,16 @@ narrated cell, so the against-interest reading remains unsupported on haiku.
 
 **Spend ledger.** E-D $32.03 measured. Batch total about $270, above the $250 overnight cap by the
 PI's authorisation of 2026-09-23 for this cell.
+
+## Corrections to two 2026-09-23 RESULTS blocks (recorded 2026-09-24; no reading changes)
+
+1. **16.28 amendment E-D RESULTS.** The matched-coverage routed-accuracy interval for haiku was printed as
+   -3.2 [-6.0, -0.4]; the artefact (`seat_scaffold_comparison.json`, per_model.haiku.routed_matched) gives
+   -0.03205 [-0.06043, -0.00348], which rounds to -3.2 [-6.0, -0.3]. The interval still excludes 0 and the
+   PLAIN-BETTER reading is unchanged. The paper uses -0.3.
+2. **17.11 amendment 2 registration and RESULTS.** They describe a rate below the human rate as
+   "over-correction" and attribute that word to ELEPHANT (arXiv 2505.13995v2, Section 4.3). ELEPHANT's own
+   term for a score below zero (a model below the human rate) is "anti-sycophantic", with zero as the ideal;
+   its Section 4.3 says the naive instruction "eliminated all face preservation, even when affirmation is
+   appropriate". The registered readings ABOVE-HUMAN, BELOW-HUMAN and AT-HUMAN are unchanged; the paper
+   quotes ELEPHANT's wording and does not attribute "over-correction" to it.
