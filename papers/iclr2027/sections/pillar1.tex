@@ -234,48 +234,69 @@ collective results stay uncorrected.
 \begin{figure}[t]
 \centering
 \input{figures/fig_judge_panel.tex}
-\caption{\textbf{The reduction depends on the judge.} Rows are generators
-and marker shapes the five judges, each marker NoT's validation rate minus
-CoT's in points with a 95 percent item-clustered interval, left of zero where
-NoT validates less. Left, both prompts regenerated in one run at a
-4,096-token cap (8,192 for nano, Table~\ref{tab-app-rep4k}), and right the
-original, partly truncated responses (Table~\ref{tab-app-judge-drops}).}
+\caption{\textbf{The validation drop depends on the judge, but the framing
+drop holds under both judges.} Cells give NoT's minus CoT's rate in points per
+generator (row) and judge (column), of answers judged (a) emotionally
+validating or (b) accepting the asker's framing, both prompts regenerated in
+one run at a 4,096-token cap (8,192 for nano). Blue marks a drop under NoT and
+red a rise, darker when larger, and bold coloured cells have a 95 percent
+item-clustered interval excluding zero, grey cells one including it
+(intervals in Table~\ref{tab-app-rep4k}, original, partly truncated responses
+in Table~\ref{tab-app-judge-drops}).}
 \label{fig:judges}
 \end{figure}
-% figures/fig_judge_panel.tex (scripts/make_iclr_figures.py). Left panel from headline_rep4k_readout.json
-% (prereg Addendum 17.10 RESULTS; at most two responses at the cap per generator and prompt from
-% per_generator.<gen>.cap, largest Mistral NoT 2 of 140, then sonnet NoT 1 of 150). Right panel from
-% judge_panel_full_oeq_<judge>.json (prereg 17.8 RESULTS). Caps of the original responses from the
-% 17.10 registration (CoT 1,024, NoT 2,048) and the pre-spend review amendment (nano June cells ran
-% both arms under a 2,048-token total budget, reasoning included, stated in Appendix app-rep4k and
-% dropped from the caption for the page limit); headline restated from 17.10 per the 17.10
-% registration; production judge the filled black circle, other judges open shapes (W09)
-% Rows are generators and the legend judges (figures/fig_judge_panel.tex yticklabels and
-% addlegendentry), the difference on the horizontal axis. The at-cap count (at most two responses per
-% generator and prompt) and the original caps (1,024 tokens for CoT, 2,048 for NoT) left the caption
-% on 2026-09-23 and are stated with their sources in the paragraph "The regeneration without
-% truncation"; nano 8,192 from scripts/generators.py generate (max(max_tokens, 8192) for OpenAI
-% reasoning models) and the 17.10 registration, stated in that paragraph; the production judge is the
-% filled black circle labelled "haiku (production)" in the legend (clarity pass, review round 1)
-% caption (clarity loop 2, single-22): "marker shapes" names what distinguishes the judges; "the registered
-% headline" dropped as internal wording, since the regeneration paragraph says the headline numbers are
-% taken from this panel as registered; nano's 8,192 cap from scripts/generators.py generate (above).
-% The dot plot is unchanged because commit 26cc343 holds a heatmap to replace it; if the dot plot ships,
-% move its legend above both panels (scripts/make_iclr_figures.py judge_panel_figure legend style
-% at={(1.03,1.16)}, anchor=south, legend columns=5), which costs one Section 4 line
+% Figure fig:judges is figures/fig_judge_panel.tex, written by scripts/iclr_fig_judge_heatmap.py through
+% scripts/make_iclr_figures.py (heatmap design approved by the senior author, 2026-09-24). Panel (a) from
+% headline_rep4k_readout.json per_generator.<gen>.per_judge.<judge> (drop, lo, hi; prereg Addendum 17.10
+% RESULTS) and panel (b) from framing_17_11_readout.json judges.<judge>.design_a_per_generator.<gen>
+% .drop_arm (point, lo, hi; prereg Addendum 17.11 RESULTS, design (a), the cells standard_cot_rep4k and
+% narrative_cot_rep4k re-scored with ELEPHANT's accepting-framing rubric, so the same responses)
+% Title. Judge-dependent validation drop from headline_rep4k_readout.json per_generator.<gen>.reading
+% (JUDGE-DEPENDENT on six generators, HOLDS on Llama, prereg 17.10 RESULTS). Framing drop on all seven
+% generators under both judges from framing_17_11_readout.json design_a_per_generator (all 14 drop_arm
+% intervals below zero, prereg 17.11 RESULTS), the scope of the 17.11 RESULTS sentence, not a claim that
+% other judges would agree
+% Seven generators and five validation judges, the per_generator and per_judge keys of
+% headline_rep4k_readout.json, and two framing judges, the judges keys of framing_17_11_readout.json
+% (claude-haiku-4-5 as production judge, gpt-4o)
+% 4,096-token cap and nano's 8,192, the 17.10 registration for the responses of headline_rep4k_readout.json,
+% which framing_17_11_readout.json design (a) re-scores; nano's 8,192 from scripts/generators.py generate
+% (max(max_tokens, 8192) for OpenAI reasoning models); at most two responses per generator and prompt
+% at the cap (headline_rep4k_readout.json per_generator.<gen>.cap), stated in the paragraph "The
+% regeneration without truncation"
+% 95 percent item-clustered intervals, headline_rep4k_readout.json lo and hi (8,000 draws, Setup paragraph)
+% and framing_17_11_readout.json drop_arm lo and hi (draws 8000, seed 20260822). Bold and coloured where
+% the interval excludes zero, grey (F0EFEC) where it includes zero, in both files' cells alike; colour
+% bins at 10, 25 and 45 points of the absolute difference (scripts/iclr_fig_judge_heatmap.py EDGES,
+% the tick labels of the colour bar). Intervals are uncorrected, the Holm dagger (nano judge on sonnet,
+% +8.7) is in Table tab-app-rep4k and the text
+% Every interval of headline_rep4k_readout.json and framing_17_11_readout.json design (a) is printed in
+% Table tab-app-rep4k panels (a) and (b). The original responses (judge_panel_full_oeq_<judge>.json,
+% prereg 17.8 RESULTS; caps CoT 1,024 and NoT 2,048 tokens from the 17.10 registration, so "partly
+% truncated") are no longer plotted and appear only in Table tab-app-judge-drops; neither
+% headline_rep4k_readout.json nor framing_17_11_readout.json holds them
+% caption rewritten for the heatmap (2026-09-24), replacing the two-panel dot plot of 17.10 (left) and
+% 17.8 (right) responses; no result changed. Sources of both panels headline_rep4k_readout.json and
+% framing_17_11_readout.json. "darker when larger" is the binned colour bar (EDGES above) applied to the
+% cells of both files. Page budget (9 pages with the pillar-2 stand-in): caption held to six lines, and
+% the figure compacted vertically (CELL_H 0.42 cm, was 0.50, colour bar centre LEGEND_Y -0.36 cm, was
+% -0.50, in scripts/iclr_fig_judge_heatmap.py); width 391 pt of the 397 pt text width, no scaling
 
 \paragraph{The original responses under five judges.}
-On the original, partly truncated responses (Figure~\ref{fig:judges}, right)
-the production judge finds the reduction on every generator, gpt-4o on six,
-the nano judge on five and the Llama and grok judges on one and two, those
-two reversing it on three generators (Table~\ref{tab-app-judge-drops}).
+On the original, partly truncated responses the production judge finds
+the reduction on every generator, gpt-4o on six, the nano judge on five and
+the Llama and grok judges on one and two, those two reversing it on three
+generators (Table~\ref{tab-app-judge-drops}).
+% Figure 2 heatmap (2026-09-24): these responses are no longer plotted, so "(Figure fig:judges, right)" left
+% this sentence and Table tab-app-judge-drops (judge_panel_full_oeq_<judge>.json, prereg 17.8 RESULTS), already
+% cited, is their only display; no count changed
 % integrating editor (2026-09-24), page budget: "only" (implied, as no other judge finds all seven), the range "by 19.3
-% points on sonnet to 70.2 on Llama" (Table tab-app-judge-drops, Figure fig:judges right and Table tab-claims) and
+% points on sonnet to 70.2 on Llama" (Table tab-app-judge-drops and Table tab-claims; no longer plotted in Figure fig:judges since the 2026-09-24 heatmap) and
 % "Holm correction in Appendix app-judges" (the Setup paragraph points there) left the prose; no finding changed
 % second pass: which generators each judge finds or reverses (gpt-4o all but sonnet; nano judge missing
 % haiku and sonnet; Llama judge Llama; grok judge Llama and, marginally, DeepSeek; reversals Llama judge
 % on nano +13.8 and, marginally, sonnet +7.4, grok judge on haiku +11.4 and sonnet +14.0, so three
-% generators) are in Figure fig:judges, right, Table tab-app-judge-drops and Appendix app-judges, and the
+% generators) are in Table tab-app-judge-drops and Appendix app-judges, and the
 % next sentences name the reversals on sonnet and haiku; the Holm correction keeps the production judge's
 % seven (multiplicity_mde.json, Appendix app-judges)
 % page budget (new-results integration, 2026-09-24): the three sentences on these responses ("The gpt-4o
@@ -285,12 +306,11 @@ two reversing it on three generators (Table~\ref{tab-app-judge-drops}).
 % The Holm correction keeps the production judge's seven reductions and drops those two marginal results
 % and, on these responses only, haiku and nano under gpt-4o") are joined to this one. Moved to Appendix
 % app-judges, which states them (multiplicity_mde.json tables.table2_judge_panel): that the nano judge
-% misses haiku as well as sonnet (haiku -5.3 [-15.3, +4.7], also plotted in Figure fig:judges, right), and
+% misses haiku as well as sonnet (haiku -5.3 [-15.3, +4.7], also in Table tab-app-judge-drops), and
 % which results the Holm correction drops (haiku and nano under gpt-4o, DeepSeek under the grok judge,
 % the rise on sonnet under the Llama judge); sources in the comment blocks below
 % judge_panel_full_oeq_claude-haiku-4-5.json (prereg 17.8 RESULTS; sonnet -19.3, haiku -26.7, grok
-% -35.2, nano -37.9, DeepSeek -46.1, Mistral -57.6, Llama -70.2, all in Figure fig:judges and Table
-% tab-app-judge-drops); the earlier unpaired scoring by this judge (22 to 70 points, 31 to 87 percent
+% -35.2, nano -37.9, DeepSeek -46.1, Mistral -57.6, Llama -70.2, all in Table tab-app-judge-drops); the earlier unpaired scoring by this judge (22 to 70 points, 31 to 87 percent
 % of the CoT rate, pillar1_headline.json "unpaired arms", prereg 16.15.7 and 17.1 RESULTS, stored and
 % fresh scores mixed per 16.15.7 apply_corrected_scores) is now compared with the panel in Appendix
 % app-judges only
@@ -300,10 +320,10 @@ two reversing it on three generators (Table~\ref{tab-app-judge-drops}).
 % (the per-judge sentences formerly here are joined to the sentence above, new-results integration)
 % the per-judge values (gpt-4o sonnet +3.3, nano judge haiku -5.3, Llama judge Llama -11.3, grok judge
 % DeepSeek -5.0, Llama judge nano +13.8 and sonnet +7.4, grok judge haiku +11.4 and sonnet +14.0) are
-% plotted in Figure fig:judges and listed in Table tab-app-judge-drops and below, and left the prose
+% listed in Table tab-app-judge-drops and below, and left the prose
 % for the page budget (clarity pass, review round 1)
 % judge_panel_full_oeq_{gpt-4o,gpt-5.4-nano,Llama-3.3-70B-Instruct,grok-4-1-fast-reasoning}.json,
-% prereg 17.8 RESULTS table; intervals in Figure fig:judges and Table tab-app-judge-drops (gpt-4o
+% prereg 17.8 RESULTS table; intervals in Table tab-app-judge-drops (gpt-4o
 % sonnet +3.3 [-4.7, +11.3]; nano judge haiku -5.3 [-15.3, +4.7], sonnet +2.0 [-6.7, +10.7]; Llama
 % judge Llama -11.3 [-19.1, -3.5], nano +13.8 [+7.8, +20.7]; grok judge haiku +11.4 [+5.4, +18.1],
 % sonnet +14.0 [+8.7, +20.0], Llama -49.6, DeepSeek -5.0 [-10.0, -0.7])
@@ -510,7 +530,7 @@ empty (Appendix~\ref{app-rep4k}).
 % reasoning floor existed", hidden reasoning included)
 We therefore regenerated both prompts on all seven in one run at an equal
 4,096-token cap (8,192 for nano), which almost no response reaches, and, as
-registered, take the headline numbers from it (Figure~\ref{fig:judges}, left).
+registered, take the headline numbers from it (Figure~\ref{fig:judges}a).
 % integrating editor (2026-09-24), page budget: "which at most two non-empty responses per generator and prompt reach" -> "which almost no
 % response reaches", the section opener's wording; the counts (one sonnet NoT and two Mistral NoT responses of 2,036 end at
 % the cap, headline_rep4k_readout.json finish reasons) are in Appendix app-rep4k
@@ -580,7 +600,7 @@ judge-dependent on the other six.
 % 0.090), so the correction removes one rise but no reduction; surviving negative counts 7, 6, 5, 1, 1
 % equal the uncorrected counts;
 % the nano judge's +8.7 [+0.7, +16.7] (Holm-adjusted p 0.090) left the prose for the page budget. It is
-% daggered in Table tab-app-rep4k and plotted in Figure fig:judges, left (clarity loop 2,
+% daggered in Table tab-app-rep4k and shown in Figure fig:judges a, bold as its interval excludes zero (clarity loop 2,
 % m-replicate-01); "the Holm correction" is the one defined in the Setup; "the registered rule" (was
 % "this regeneration's registered rule") is the 17.10 per-generator rule stated in this sentence
 % claude-haiku-4-5 per_judge grok-4-1-fast-reasoning +12.1 [+4.7, +19.5] (original responses +11.4
@@ -707,7 +727,7 @@ alone, which the rule would read as failing.
 \begin{table}[t]
 \caption{\textbf{Content, not form, carries the drop in judged validation,
 and each carries most of the drop in accepting the framing.}
-Points pooled over haiku, grok, nano and Llama, each prompt minus CoT at the
+Points pooled over the generators haiku, grok, nano and Llama, each prompt minus CoT at the
 same 2,048-token cap or the named difference, negative where the first term
 is lower, under five validation and two framing judges, $^{\circ}$ marking a 95 percent interval including zero
 (Appendix~\ref{app-form}). A cooler tone may partly explain the checklist's
@@ -741,6 +761,8 @@ validation drop.}
 % date; they are in Table tab-app-baselines, whose caption states the date, and the paragraph "Accepting
 % the asker's framing" points there. The length-matched rows moved to Table tab-app-length (page
 % budget); the length sentence of 'What carries the reduction' is unchanged.
+% legibility review (2026-09-25): "the generators" added before the four names pooled over, since the columns
+% are judges (the table's group headers now say "by judge"); the caption keeps its five lines
 \label{tab-form-main}
 \centering
 \input{figures/tab_form_main}
@@ -1007,16 +1029,25 @@ the same responses in a test registered after the validation results.
 % framing_17_11_readout.json (prereg "Addendum 17.11 RESULTS": unparsed 1 of 4,955 under the production
 % judge and 0 under gpt-4o, missing 0)
 NoT lowers premise acceptance, the share accepting the framing, on all seven
-generators under both judges, sonnet included, with pooled drops of $-24.5$
+generators under both judges, with pooled drops of $-24.5$
 $[-28.4, -20.6]$ and $-30.9$ $[-35.1, -27.0]$ points
-(Table~\ref{tab-app-rep4k}, Appendix~\ref{app-framing}).
+(Figure~\ref{fig:judges}b, Table~\ref{tab-app-rep4k}, Appendix~\ref{app-framing}).
+% Figure fig:judges b (2026-09-24 heatmap) is first cited here, so this sentence describes it at the scope of
+% prereg Addendum 17.11 RESULTS (all seven generators, both judges, framing_17_11_readout.json
+% design_a_per_generator, every interval below zero; the validation panel's source is
+% headline_rep4k_readout.json)
+% "sonnet included" left this sentence for the page budget when Figure fig:judges b was cited here
+% (2026-09-24): sonnet is one of the seven and its row in panel (b) is blue under both judges
+% (framing_17_11_readout.json design_a_per_generator.claude-sonnet-4-6, production judge -32.7, gpt-4o
+% -26.7) against its red validation row under gpt-4o (headline_rep4k_readout.json +8.0); Appendix
+% app-framing keeps "sonnet included"; no result changed
 % framing_17_11_readout.json judges.claude-haiku-4-5.design_a_not_minus_cot_pooled.drop_not -24.5 [-28.4,
 % -20.6] and judges.gpt-4o.design_a_not_minus_cot_pooled.drop_not -30.9 [-35.1, -27.0]; per generator
 % (design_a_per_generator.<gen>.drop_not, every hi below 0 under both judges) production judge haiku
 % -34.0, sonnet -32.7 [-41.3, -24.0], nano -16.3, grok -15.7, Llama -9.2 [-16.9, -2.1], Mistral -32.4,
 % DeepSeek -30.5; gpt-4o haiku -35.3, sonnet -26.7 [-34.7, -18.7], nano -23.1, grok -20.0, Llama -38.0,
 % Mistral -40.3, DeepSeek -33.3 (prereg "Addendum 17.11 RESULTS", design (a), the 4,096-token regeneration
-% of Figure fig:judges, left); per-generator rates and drops in Table tab-app-rep4k panel (b)
+% of Figure fig:judges, plotted in its panel (b) from framing_17_11_readout.json design_a_per_generator); per-generator rates and drops in Table tab-app-rep4k panel (b)
 % (figures/tab_rep4k.tex, scripts/make_iclr_figures.py). "sonnet included": sonnet's validation drop
 % reverses under gpt-4o in the same responses (+8.0 [+1.3, +15.3], headline_rep4k_readout.json), and it
 % drops on this rubric under both judges (17.11 RESULTS: "Sonnet, whose validation drop reversed under

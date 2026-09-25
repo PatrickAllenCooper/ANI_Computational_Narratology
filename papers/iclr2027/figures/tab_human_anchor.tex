@@ -10,53 +10,53 @@
 % amendment 2). CoT is standard_cot_rep (the 2,048-token CoT of the form tests); persona only is advisor_cot.
 % reading/rule mismatches: none
 {\footnotesize
-\setlength{\tabcolsep}{3.5pt}
+\setlength{\tabcolsep}{6pt}
 \textit{(a) Judged validation, prompt $-$ human answers}\\[2pt]
-\begin{tabular}{@{}lccccc@{}}
+\begin{tabular}{@{}lrrrrr@{}}
 \toprule
 prompt & haiku & gpt-4o & nano & Llama & grok \\
  & (production) &  &  &  &  \\
 \midrule
 human rate & $0.389$ & $0.302$ & $0.235$ & $0.551$ & $0.354$ \\  % human_rate; n_human 149, 149, 149, 147, 147
 \midrule
-CoT & $+37.7$ above & $+41.0$ above & $+41.5$ above & $+33.3$ above & $+51.0$ above \\  % haiku (production) ABOVE-HUMAN pairs 583 items 149; gpt-4o ABOVE-HUMAN pairs 583 items 149; nano ABOVE-HUMAN pairs 583 items 149; Llama ABOVE-HUMAN pairs 573 items 146; grok ABOVE-HUMAN pairs 573 items 146
- & $[+29.8, +45.7]$ & $[+32.9, +49.0]$ & $[+34.0, +49.0]$ & $[+25.3, +42.0]$ & $[+42.8, +58.8]$ \\[1pt]
-NoT & $-9.0$ below & $+18.0$ above & $+22.0$ above & $+27.5$ above & $+40.1$ above \\  % haiku (production) BELOW-HUMAN pairs 577 items 149; gpt-4o ABOVE-HUMAN pairs 577 items 149; nano ABOVE-HUMAN pairs 577 items 149; Llama ABOVE-HUMAN pairs 567 items 147; grok ABOVE-HUMAN pairs 566 items 147
- & $[-17.2, -1.1]$ & $[+10.6, +25.3]$ & $[+14.5, +29.5]$ & $[+18.9, +36.2]$ & $[+31.7, +48.3]$ \\[1pt]
-checklist & $-19.9$ below & $-4.1$ at & $+4.8$ at & $-4.2$ at & $+14.1$ above \\  % haiku (production) BELOW-HUMAN pairs 579 items 149; gpt-4o AT-HUMAN pairs 579 items 149; nano AT-HUMAN pairs 579 items 149; Llama AT-HUMAN pairs 571 items 147; grok ABOVE-HUMAN pairs 569 items 147
- & $[-28.3, -11.7]$ & $[-11.8, +3.5]$ & $[-2.4, +11.8]$ & $[-12.9, +4.7]$ & $[+5.9, +22.1]$ \\[1pt]
-narrative only & $+50.3$ above & $+52.5$ above & $+60.3$ above & $+41.3$ above & $+60.6$ above \\  % haiku (production) ABOVE-HUMAN pairs 577 items 149; gpt-4o ABOVE-HUMAN pairs 577 items 149; nano ABOVE-HUMAN pairs 577 items 149; Llama ABOVE-HUMAN pairs 569 items 147; grok ABOVE-HUMAN pairs 566 items 147
- & $[+41.7, +58.6]$ & $[+44.3, +60.4]$ & $[+52.7, +67.6]$ & $[+33.2, +49.6]$ & $[+52.3, +68.5]$ \\[1pt]
-persona only & $+37.0$ above & $+44.8$ above & $+47.0$ above & $+35.1$ above & $+52.1$ above \\  % haiku (production) ABOVE-HUMAN pairs 583 items 149; gpt-4o ABOVE-HUMAN pairs 583 items 149; nano ABOVE-HUMAN pairs 583 items 149; Llama ABOVE-HUMAN pairs 572 items 146; grok ABOVE-HUMAN pairs 570 items 146
- & $[+28.7, +45.3]$ & $[+36.4, +53.0]$ & $[+39.2, +54.7]$ & $[+26.9, +43.6]$ & $[+43.7, +60.2]$ \\[1pt]
-naive instruction & $-18.5$ below & $-2.9$ at & $-6.8$ below & $-16.8$ below & $-0.7$ at \\  % haiku (production) BELOW-HUMAN pairs 577 items 149; gpt-4o AT-HUMAN pairs 577 items 149; nano BELOW-HUMAN pairs 577 items 149; Llama BELOW-HUMAN pairs 567 items 146; grok AT-HUMAN pairs 567 items 146
- & $[-26.6, -10.7]$ & $[-10.7, +4.7]$ & $[-13.4, -0.3]$ & $[-25.0, -8.2]$ & $[-9.2, +8.0]$ \\[1pt]
-context instruction & $+35.9$ above & $+43.0$ above & $+43.7$ above & $+32.8$ above & $+49.1$ above \\  % haiku (production) ABOVE-HUMAN pairs 579 items 149; gpt-4o ABOVE-HUMAN pairs 579 items 149; nano ABOVE-HUMAN pairs 579 items 149; Llama ABOVE-HUMAN pairs 570 items 147; grok ABOVE-HUMAN pairs 570 items 147
- & $[+27.8, +44.0]$ & $[+35.1, +51.0]$ & $[+36.4, +50.9]$ & $[+24.7, +40.9]$ & $[+40.8, +57.1]$ \\[1pt]
-third-person rewrite & $+24.2$ above & $+35.0$ above & $+27.9$ above & $+24.1$ above & $+39.7$ above \\  % haiku (production) ABOVE-HUMAN pairs 537 items 136; gpt-4o ABOVE-HUMAN pairs 537 items 136; nano ABOVE-HUMAN pairs 537 items 136; Llama ABOVE-HUMAN pairs 531 items 135; grok ABOVE-HUMAN pairs 531 items 135
- & $[+15.9, +32.6]$ & $[+26.9, +43.2]$ & $[+20.1, +35.7]$ & $[+15.2, +33.0]$ & $[+31.1, +48.2]$ \\[1pt]
-sceptical persona & $-6.9$ at & $+7.6$ above & $+2.6$ at & $+0.7$ at & $+13.2$ above \\  % haiku (production) AT-HUMAN pairs 577 items 149; gpt-4o ABOVE-HUMAN pairs 577 items 149; nano AT-HUMAN pairs 577 items 149; Llama AT-HUMAN pairs 568 items 147; grok ABOVE-HUMAN pairs 568 items 147
- & $[-15.1, +1.0]$ & $[+0.2, +15.1]$ & $[-4.6, +9.5]$ & $[-7.3, +8.8]$ & $[+4.8, +21.2]$ \\[1pt]
+CoT & $+37.7$~\makebox[2.5em][l]{above} & $+41.0$~\makebox[2.5em][l]{above} & $+41.5$~\makebox[2.5em][l]{above} & $+33.3$~\makebox[2.5em][l]{above} & $+51.0$~\makebox[2.5em][l]{above} \\  % CoT: haiku (production) ABOVE-HUMAN pairs 583 items 149; gpt-4o ABOVE-HUMAN pairs 583 items 149; nano ABOVE-HUMAN pairs 583 items 149; Llama ABOVE-HUMAN pairs 573 items 146; grok ABOVE-HUMAN pairs 573 items 146
+ & $[+29.8, +45.7]$ & $[+32.9, +49.0]$ & $[+34.0, +49.0]$ & $[+25.3, +42.0]$ & $[+42.8, +58.8]$ \\[3pt]
+NoT & $-9.0$~\makebox[2.5em][l]{below} & $+18.0$~\makebox[2.5em][l]{above} & $+22.0$~\makebox[2.5em][l]{above} & $+27.5$~\makebox[2.5em][l]{above} & $+40.1$~\makebox[2.5em][l]{above} \\  % NoT: haiku (production) BELOW-HUMAN pairs 577 items 149; gpt-4o ABOVE-HUMAN pairs 577 items 149; nano ABOVE-HUMAN pairs 577 items 149; Llama ABOVE-HUMAN pairs 567 items 147; grok ABOVE-HUMAN pairs 566 items 147
+ & $[-17.2, -1.1]$ & $[+10.6, +25.3]$ & $[+14.5, +29.5]$ & $[+18.9, +36.2]$ & $[+31.7, +48.3]$ \\[3pt]
+checklist & $-19.9$~\makebox[2.5em][l]{below} & $-4.1$~\makebox[2.5em][l]{at} & $+4.8$~\makebox[2.5em][l]{at} & $-4.2$~\makebox[2.5em][l]{at} & $+14.1$~\makebox[2.5em][l]{above} \\  % checklist: haiku (production) BELOW-HUMAN pairs 579 items 149; gpt-4o AT-HUMAN pairs 579 items 149; nano AT-HUMAN pairs 579 items 149; Llama AT-HUMAN pairs 571 items 147; grok ABOVE-HUMAN pairs 569 items 147
+ & $[-28.3, -11.7]$ & $[-11.8, +3.5]$ & $[-2.4, +11.8]$ & $[-12.9, +4.7]$ & $[+5.9, +22.1]$ \\[3pt]
+narrative & $+50.3$~\makebox[2.5em][l]{above} & $+52.5$~\makebox[2.5em][l]{above} & $+60.3$~\makebox[2.5em][l]{above} & $+41.3$~\makebox[2.5em][l]{above} & $+60.6$~\makebox[2.5em][l]{above} \\  % narrative only: haiku (production) ABOVE-HUMAN pairs 577 items 149; gpt-4o ABOVE-HUMAN pairs 577 items 149; nano ABOVE-HUMAN pairs 577 items 149; Llama ABOVE-HUMAN pairs 569 items 147; grok ABOVE-HUMAN pairs 566 items 147
+only & $[+41.7, +58.6]$ & $[+44.3, +60.4]$ & $[+52.7, +67.6]$ & $[+33.2, +49.6]$ & $[+52.3, +68.5]$ \\[3pt]
+persona & $+37.0$~\makebox[2.5em][l]{above} & $+44.8$~\makebox[2.5em][l]{above} & $+47.0$~\makebox[2.5em][l]{above} & $+35.1$~\makebox[2.5em][l]{above} & $+52.1$~\makebox[2.5em][l]{above} \\  % persona only: haiku (production) ABOVE-HUMAN pairs 583 items 149; gpt-4o ABOVE-HUMAN pairs 583 items 149; nano ABOVE-HUMAN pairs 583 items 149; Llama ABOVE-HUMAN pairs 572 items 146; grok ABOVE-HUMAN pairs 570 items 146
+only & $[+28.7, +45.3]$ & $[+36.4, +53.0]$ & $[+39.2, +54.7]$ & $[+26.9, +43.6]$ & $[+43.7, +60.2]$ \\[3pt]
+naive & $-18.5$~\makebox[2.5em][l]{below} & $-2.9$~\makebox[2.5em][l]{at} & $-6.8$~\makebox[2.5em][l]{below} & $-16.8$~\makebox[2.5em][l]{below} & $-0.7$~\makebox[2.5em][l]{at} \\  % naive instruction: haiku (production) BELOW-HUMAN pairs 577 items 149; gpt-4o AT-HUMAN pairs 577 items 149; nano BELOW-HUMAN pairs 577 items 149; Llama BELOW-HUMAN pairs 567 items 146; grok AT-HUMAN pairs 567 items 146
+instruction & $[-26.6, -10.7]$ & $[-10.7, +4.7]$ & $[-13.4, -0.3]$ & $[-25.0, -8.2]$ & $[-9.2, +8.0]$ \\[3pt]
+context & $+35.9$~\makebox[2.5em][l]{above} & $+43.0$~\makebox[2.5em][l]{above} & $+43.7$~\makebox[2.5em][l]{above} & $+32.8$~\makebox[2.5em][l]{above} & $+49.1$~\makebox[2.5em][l]{above} \\  % context instruction: haiku (production) ABOVE-HUMAN pairs 579 items 149; gpt-4o ABOVE-HUMAN pairs 579 items 149; nano ABOVE-HUMAN pairs 579 items 149; Llama ABOVE-HUMAN pairs 570 items 147; grok ABOVE-HUMAN pairs 570 items 147
+instruction & $[+27.8, +44.0]$ & $[+35.1, +51.0]$ & $[+36.4, +50.9]$ & $[+24.7, +40.9]$ & $[+40.8, +57.1]$ \\[3pt]
+third-person & $+24.2$~\makebox[2.5em][l]{above} & $+35.0$~\makebox[2.5em][l]{above} & $+27.9$~\makebox[2.5em][l]{above} & $+24.1$~\makebox[2.5em][l]{above} & $+39.7$~\makebox[2.5em][l]{above} \\  % third-person rewrite: haiku (production) ABOVE-HUMAN pairs 537 items 136; gpt-4o ABOVE-HUMAN pairs 537 items 136; nano ABOVE-HUMAN pairs 537 items 136; Llama ABOVE-HUMAN pairs 531 items 135; grok ABOVE-HUMAN pairs 531 items 135
+rewrite & $[+15.9, +32.6]$ & $[+26.9, +43.2]$ & $[+20.1, +35.7]$ & $[+15.2, +33.0]$ & $[+31.1, +48.2]$ \\[3pt]
+sceptical & $-6.9$~\makebox[2.5em][l]{at} & $+7.6$~\makebox[2.5em][l]{above} & $+2.6$~\makebox[2.5em][l]{at} & $+0.7$~\makebox[2.5em][l]{at} & $+13.2$~\makebox[2.5em][l]{above} \\  % sceptical persona: haiku (production) AT-HUMAN pairs 577 items 149; gpt-4o ABOVE-HUMAN pairs 577 items 149; nano AT-HUMAN pairs 577 items 149; Llama AT-HUMAN pairs 568 items 147; grok ABOVE-HUMAN pairs 568 items 147
+persona & $[-15.1, +1.0]$ & $[+0.2, +15.1]$ & $[-4.6, +9.5]$ & $[-7.3, +8.8]$ & $[+4.8, +21.2]$ \\[3pt]
 \bottomrule
 \end{tabular}
 
 \medskip
 \textit{(b) Accepting the asker's framing, prompt $-$ human answers}\\[2pt]
-\begin{tabular}{@{}lrlrl@{}}
+\begin{tabular}{@{}lrr@{}}
 \toprule
-prompt & \multicolumn{2}{c}{haiku (production)} & \multicolumn{2}{c}{gpt-4o} \\
+prompt & haiku (production) & gpt-4o \\
 \midrule
-human rate & \multicolumn{2}{c}{$0.644$} & \multicolumn{2}{c}{$0.591$} \\  % human_rate; n_human 149, 149
+human rate & $0.644$ & $0.591$ \\  % human_rate; n_human 149, 149
 \midrule
-CoT & $+13.7$ $[+6.5, +21.0]$ & above & $+17.2$ $[+8.6, +26.0]$ & above \\  % haiku (production) ABOVE-HUMAN pairs 583 items 149; gpt-4o ABOVE-HUMAN pairs 583 items 149
-NoT & $-9.7$ $[-17.7, -1.6]$ & below & $-11.1$ $[-19.6, -2.4]$ & below \\  % haiku (production) BELOW-HUMAN pairs 577 items 149; gpt-4o BELOW-HUMAN pairs 577 items 149
-checklist & $-4.0$ $[-11.9, +3.8]$ & at & $-6.9$ $[-15.3, +1.6]$ & at \\  % haiku (production) AT-HUMAN pairs 578 items 149; gpt-4o AT-HUMAN pairs 579 items 149
-narrative only & $-4.9$ $[-12.7, +3.0]$ & at & $-2.9$ $[-11.3, +5.6]$ & at \\  % haiku (production) AT-HUMAN pairs 577 items 149; gpt-4o AT-HUMAN pairs 577 items 149
-persona only & $+9.9$ $[+2.6, +17.5]$ & above & $+14.8$ $[+6.5, +23.2]$ & above \\  % haiku (production) ABOVE-HUMAN pairs 583 items 149; gpt-4o ABOVE-HUMAN pairs 583 items 149
-naive instruction & $+12.5$ $[+5.0, +19.9]$ & above & $+18.2$ $[+10.0, +26.7]$ & above \\  % haiku (production) ABOVE-HUMAN pairs 577 items 149; gpt-4o ABOVE-HUMAN pairs 577 items 149
-context instruction & $+13.1$ $[+5.7, +20.6]$ & above & $+17.4$ $[+9.1, +26.2]$ & above \\  % haiku (production) ABOVE-HUMAN pairs 579 items 149; gpt-4o ABOVE-HUMAN pairs 579 items 149
-third-person rewrite & $+11.5$ $[+4.2, +19.1]$ & above & $+19.7$ $[+11.4, +28.4]$ & above \\  % haiku (production) ABOVE-HUMAN pairs 537 items 136; gpt-4o ABOVE-HUMAN pairs 537 items 136
-sceptical persona & $-43.7$ $[-51.8, -35.3]$ & below & $-39.5$ $[-48.2, -30.5]$ & below \\  % haiku (production) BELOW-HUMAN pairs 577 items 149; gpt-4o BELOW-HUMAN pairs 577 items 149
+CoT & $+13.7$ $[+6.5, +21.0]$~\makebox[2.5em][l]{above} & $+17.2$ $[+8.6, +26.0]$~\makebox[2.5em][l]{above} \\  % haiku (production) ABOVE-HUMAN pairs 583 items 149; gpt-4o ABOVE-HUMAN pairs 583 items 149
+NoT & $-9.7$ $[-17.7, -1.6]$~\makebox[2.5em][l]{below} & $-11.1$ $[-19.6, -2.4]$~\makebox[2.5em][l]{below} \\  % haiku (production) BELOW-HUMAN pairs 577 items 149; gpt-4o BELOW-HUMAN pairs 577 items 149
+checklist & $-4.0$ $[-11.9, +3.8]$~\makebox[2.5em][l]{at} & $-6.9$ $[-15.3, +1.6]$~\makebox[2.5em][l]{at} \\  % haiku (production) AT-HUMAN pairs 578 items 149; gpt-4o AT-HUMAN pairs 579 items 149
+narrative only & $-4.9$ $[-12.7, +3.0]$~\makebox[2.5em][l]{at} & $-2.9$ $[-11.3, +5.6]$~\makebox[2.5em][l]{at} \\  % haiku (production) AT-HUMAN pairs 577 items 149; gpt-4o AT-HUMAN pairs 577 items 149
+persona only & $+9.9$ $[+2.6, +17.5]$~\makebox[2.5em][l]{above} & $+14.8$ $[+6.5, +23.2]$~\makebox[2.5em][l]{above} \\  % haiku (production) ABOVE-HUMAN pairs 583 items 149; gpt-4o ABOVE-HUMAN pairs 583 items 149
+naive instruction & $+12.5$ $[+5.0, +19.9]$~\makebox[2.5em][l]{above} & $+18.2$ $[+10.0, +26.7]$~\makebox[2.5em][l]{above} \\  % haiku (production) ABOVE-HUMAN pairs 577 items 149; gpt-4o ABOVE-HUMAN pairs 577 items 149
+context instruction & $+13.1$ $[+5.7, +20.6]$~\makebox[2.5em][l]{above} & $+17.4$ $[+9.1, +26.2]$~\makebox[2.5em][l]{above} \\  % haiku (production) ABOVE-HUMAN pairs 579 items 149; gpt-4o ABOVE-HUMAN pairs 579 items 149
+third-person rewrite & $+11.5$ $[+4.2, +19.1]$~\makebox[2.5em][l]{above} & $+19.7$ $[+11.4, +28.4]$~\makebox[2.5em][l]{above} \\  % haiku (production) ABOVE-HUMAN pairs 537 items 136; gpt-4o ABOVE-HUMAN pairs 537 items 136
+sceptical persona & $-43.7$ $[-51.8, -35.3]$~\makebox[2.5em][l]{below} & $-39.5$ $[-48.2, -30.5]$~\makebox[2.5em][l]{below} \\  % haiku (production) BELOW-HUMAN pairs 577 items 149; gpt-4o BELOW-HUMAN pairs 577 items 149
 \bottomrule
 \end{tabular}
 }

@@ -8,11 +8,27 @@
 \usepackage{booktabs}
 \usepackage{graphicx}
 \usepackage{amsmath}
+% newtxmath: math digits and signs in a Times face, so that a table row mixing math-mode numbers ($-6.9$) and
+% text-mode numbers (0.843) prints its digits in one typeface (was Computer Modern beside Times; legibility
+% review, 2026-09-25). Loaded after amsmath as the package asks; the main text's length is unchanged (checked
+% with the pillar-2 stand-in). newtxmath defines \laplace, which math_commands.tex defines again, so it is
+% released first; the paper uses neither.
+\usepackage{newtxmath}
+\let\laplace\relax
 \usepackage{array}
 \usepackage{placeins}
 % rotating: sidewaystable for the two run-to-run tables of the appendix (tab-app-runs, tab-app-runs-b),
 % which are set at \footnotesize without scaling and are wider than the portrait text width (2026-09-24).
 \usepackage{rotating}
+% tabularx: the two claims tables of the appendix (tab-claims, tab-claims-collective), text columns that fill
+% the text width at \footnotesize (legibility pass, 2026-09-24).
+\usepackage{tabularx}
+% Table captions sit above their tables (ICLR style). Article's skips assume a caption below its float
+% (10pt above the caption, 0pt below), which left each table caption touching its \toprule and put 10pt
+% of white space at the top of every top-placed table. In tables the skips are swapped to 0pt above and
+% 4pt below (legibility pass, 2026-09-24); figures, whose captions sit below, keep article's skips.
+\AddToHook{env/table/begin}{\setlength{\abovecaptionskip}{0pt}\setlength{\belowcaptionskip}{4pt}}
+\AddToHook{env/sidewaystable/begin}{\setlength{\abovecaptionskip}{0pt}\setlength{\belowcaptionskip}{4pt}}
 % When a page holds only floats (the two tables that close the appendix, or whichever of them the
 % end-of-document flush pushes onto a page of its own), stack them from the top of the page instead
 % of spreading LaTeX's default float-page glue around them, which otherwise centres a lone table

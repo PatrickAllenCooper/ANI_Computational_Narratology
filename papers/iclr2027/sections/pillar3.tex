@@ -613,15 +613,25 @@ mainly when its side loses, so the argument above is supported only there.
 \centering
 \small
 \caption{\textbf{Routing improves the collective on every row but beats the solo
-only on Mistral.} Solo (the model's majority of three brief unscaffolded
-answers), collective (the integrated verdict) and routed (after routing to
-sonnet) are accuracies against the crowd verdict. $n$ counts codable
-debates, whose synthesis and integrated verdict each blame one party, both
-or neither, fire is the share flagged, differences are paired per debate, in
-points, with 95 percent item-clustered intervals, and precision and recall
-are the shares of flagged one-party verdicts that are wrong and of wrong
-ones flagged. Exchange cut, where no seat reads another's statements, has no
-solo pairing.}
+only on Mistral.} Solo (S, the model's majority of three brief unscaffolded
+answers), collective (C, the integrated verdict) and routed (R, after routing
+to sonnet) are accuracies on the crowd verdict. $n$ counts codable debates,
+whose synthesis and integrated verdict each blame one party, both or
+neither, fire is the share flagged, differences are paired per debate, in
+points, $^{\circ}$ marking a 95 percent interval including zero
+(Table~\ref{tab-app-routing-ci}), and precision and recall are the shares of
+flagged one-party verdicts that are wrong and of wrong ones flagged. Exchange
+cut, where no seat reads another's statements, has no solo pairing (dashes).}
+% legibility pass (2026-09-24): figures/tab_routing.tex lost its \resizebox (0.75, 6.7pt effective) and
+% now prints points only at \small, with the circle for an interval including zero as in Table
+% tab-form-main; its intervals moved to Table tab-app-routing-ci (figures/tab_routing_ci.tex, same
+% generator and values) in Appendix app-collective, and the difference and precision/recall headers are
+% abbreviated and defined here. The caption names the three accuracies S, C and R so that the difference
+% headers read R - C, C - S and R - S without a separate definition, points to Table tab-app-routing-ci for
+% the item-clustered intervals, and reads "accuracies on the crowd verdict" (was "against"), which with
+% the dashes for the exchange cut's missing solo keeps it at six lines, the length at which Section
+% sec-collective still ends where it did (measured with the theory-of-mind stand-in; at seven lines the
+% main text ran one line past page 9)
 % integrating editor (2026-09-24), page budget: the pointer "(Appendix app-collective)" after the intervals dropped,
 % the section's text pointing to that appendix for the estimators
 \label{tab-routing}

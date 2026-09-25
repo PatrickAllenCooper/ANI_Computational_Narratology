@@ -1,5 +1,28 @@
 \section{The Scaffold}
 \label{sec-scaffold}
+\begin{figure}[t]
+\centering
+{\setlength{\fboxsep}{2pt}\fbox{\begin{minipage}{\dimexpr\columnwidth-2\fboxsep-2\fboxrule\relax}\fontsize{8}{9}\selectfont
+\textbf{Narration-of-Thought (system prompt).}
+You are a thoughtful advisor. When given an ethical dilemma, reason through it
+as a five-part first-person narrative before giving your answer.\\[2pt]
+Section 1 -- Protagonist: Name and briefly characterise the decision-maker (who
+they are, their role, what they know).\\
+Section 2 -- Stakeholders: List every person whose life intersects this
+decision and state what is at stake for each.\\
+Section 3 -- Consequences: For each available action, narrate its consequences
+at least two steps into the future for each stakeholder.\\
+Section 4 -- Uncertainty: State what remains genuinely uncertain about each
+projected future.\\
+Section 5 -- Decision: Commit to a specific decision and explain, within the
+narrative frame, why that trajectory is preferable to the alternatives.\\[2pt]
+Work through all five sections before giving your final answer.\\[2pt]
+\textbf{Chain-of-thought (system prompt, control).} You are a helpful assistant. Think
+step by step, then give your answer.
+\end{minipage}}}
+\caption{\textbf{NoT and CoT as used in Sections~\ref{sec-single} and~\ref{sec-collective}}, verbatim, with the item in the user turn.}
+\label{fig:prompt}
+\end{figure}
 
 NoT applies the scaffold's principle, organised criticism across
 perspectives, within one model by having it write out the perspectives
@@ -23,26 +46,3 @@ NoT also abbreviates Narrative-of-Thought
 \citep{zhang2024narrativeofthought}, a temporal-reasoning prompt sharing
 neither task nor content with ours.
 
-\begin{figure}[t]
-\centering
-\fbox{\begin{minipage}{0.94\columnwidth}\scriptsize
-\textbf{Narration-of-Thought (system prompt).}
-You are a thoughtful advisor. When given an ethical dilemma, reason through it
-as a five-part first-person narrative before giving your answer.\\[2pt]
-Section 1 -- Protagonist: Name and briefly characterise the decision-maker (who
-they are, their role, what they know).\\
-Section 2 -- Stakeholders: List every person whose life intersects this
-decision and state what is at stake for each.\\
-Section 3 -- Consequences: For each available action, narrate its consequences
-at least two steps into the future for each stakeholder.\\
-Section 4 -- Uncertainty: State what remains genuinely uncertain about each
-projected future.\\
-Section 5 -- Decision: Commit to a specific decision and explain, within the
-narrative frame, why that trajectory is preferable to the alternatives.\\[2pt]
-Work through all five sections before giving your final answer.\\[4pt]
-\textbf{Standard chain-of-thought (system prompt, control).} You are a helpful assistant. Think
-step by step, then give your answer.
-\end{minipage}}
-\caption{\textbf{NoT and CoT as used in Sections~\ref{sec-single} and~\ref{sec-collective}}, verbatim, with the item in the user turn.}
-\label{fig:prompt}
-\end{figure}

@@ -2,6 +2,49 @@
 % repository rules (no em dashes, colons, semicolons or lists in running prose).
 \section{The Scaffold}
 \label{sec-scaffold}
+% legibility pass (2026-09-24): Figure fig:prompt moved here from the end of the section so that, at its larger
+% size, it is still placed at the top of the page on which the section begins
+\begin{figure}[t]
+\centering
+% legibility pass (2026-09-24): the box was set at \scriptsize (7pt); it is now 8pt on 9pt leading, the
+% smallest size the senior author's rule allows (the template has no named 8pt size, \small being 9pt), and
+% the box spans the full column so that the longer lines still fit; the prompt text is unchanged. For the
+% page budget the frame's padding is 2pt (was 3pt), the gap before the CoT prompt 2pt (was 4pt), and the
+% CoT label reads "Chain-of-thought" (was "Standard chain-of-thought", the Introduction's name for it),
+% which keeps that prompt on one line: the figure then grows by 12.9pt, inside the space left at the foot
+% of its page, and the text of Sections sec-scaffold to sec-discussion falls exactly where it did
+% (measured with the theory-of-mind stand-in; at 3pt padding and a 4pt gap the main text ran past page 9)
+{\setlength{\fboxsep}{2pt}%
+\fbox{\begin{minipage}{\dimexpr\columnwidth-2\fboxsep-2\fboxrule\relax}\fontsize{8}{9}\selectfont
+\textbf{Narration-of-Thought (system prompt).}
+You are a thoughtful advisor. When given an ethical dilemma, reason through it
+as a five-part first-person narrative before giving your answer.\\[2pt]
+Section 1 -- Protagonist: Name and briefly characterise the decision-maker (who
+they are, their role, what they know).\\
+Section 2 -- Stakeholders: List every person whose life intersects this
+decision and state what is at stake for each.\\
+Section 3 -- Consequences: For each available action, narrate its consequences
+at least two steps into the future for each stakeholder.\\
+Section 4 -- Uncertainty: State what remains genuinely uncertain about each
+projected future.\\
+Section 5 -- Decision: Commit to a specific decision and explain, within the
+narrative frame, why that trajectory is preferable to the alternatives.\\[2pt]
+Work through all five sections before giving your final answer.\\[2pt]
+\textbf{Chain-of-thought (system prompt, control).} You are a helpful assistant. Think
+step by step, then give your answer.
+\end{minipage}}}
+\caption{\textbf{NoT and CoT as used in Sections~\ref{sec-single} and~\ref{sec-collective}}, verbatim, with the item in the user turn.}
+\label{fig:prompt}
+\end{figure}
+% Caption: each prompt is the system prompt and the item goes in the user turn, scripts/run_elephant.py
+% _generate_advice, scripts/run_crowdgold_aita.py build_system, scripts/run_crowdgold_deliberation.py
+% agent_system and r0_user, scripts/run_stance_factorial.py render_unit_prompt; wrappers a task adds are
+% named in the prose of Section sec-scaffold. Scope "of Sections sec-single and sec-collective" rather
+% than "throughout": the theory-of-mind section's prompts are the co-author's and not stated here
+% scaffold-07 (clarity loop 2, 2026-09-24): "The two system prompts of" -> "NoT and CoT as used in", since
+% Sections sec-single and sec-collective also use the prompts of Figure fig-app-prompts and the brief
+% unscaffolded prompt; "system prompt" moved into the CoT label so the caption stays one line (a
+% two-line caption, measured with the theory-of-mind stand-in, costs a line of page 4)
 
 NoT applies the scaffold's principle, organised criticism across
 perspectives, within one model by having it write out the perspectives
@@ -142,35 +185,3 @@ neither task nor content with ours.
 % brief prompt of the solo and routing model, related prompts, the acronym; the section is one paragraph
 % for the page budget (measured with the theory-of-mind stand-in, one line longer than before, page 9 unchanged)
 
-\begin{figure}[t]
-\centering
-\fbox{\begin{minipage}{0.94\columnwidth}\scriptsize
-\textbf{Narration-of-Thought (system prompt).}
-You are a thoughtful advisor. When given an ethical dilemma, reason through it
-as a five-part first-person narrative before giving your answer.\\[2pt]
-Section 1 -- Protagonist: Name and briefly characterise the decision-maker (who
-they are, their role, what they know).\\
-Section 2 -- Stakeholders: List every person whose life intersects this
-decision and state what is at stake for each.\\
-Section 3 -- Consequences: For each available action, narrate its consequences
-at least two steps into the future for each stakeholder.\\
-Section 4 -- Uncertainty: State what remains genuinely uncertain about each
-projected future.\\
-Section 5 -- Decision: Commit to a specific decision and explain, within the
-narrative frame, why that trajectory is preferable to the alternatives.\\[2pt]
-Work through all five sections before giving your final answer.\\[4pt]
-\textbf{Standard chain-of-thought (system prompt, control).} You are a helpful assistant. Think
-step by step, then give your answer.
-\end{minipage}}
-\caption{\textbf{NoT and CoT as used in Sections~\ref{sec-single} and~\ref{sec-collective}}, verbatim, with the item in the user turn.}
-\label{fig:prompt}
-\end{figure}
-% Caption: each prompt is the system prompt and the item goes in the user turn, scripts/run_elephant.py
-% _generate_advice, scripts/run_crowdgold_aita.py build_system, scripts/run_crowdgold_deliberation.py
-% agent_system and r0_user, scripts/run_stance_factorial.py render_unit_prompt; wrappers a task adds are
-% named in the prose of Section sec-scaffold. Scope "of Sections sec-single and sec-collective" rather
-% than "throughout": the theory-of-mind section's prompts are the co-author's and not stated here
-% scaffold-07 (clarity loop 2, 2026-09-24): "The two system prompts of" -> "NoT and CoT as used in", since
-% Sections sec-single and sec-collective also use the prompts of Figure fig-app-prompts and the brief
-% unscaffolded prompt; "system prompt" moved into the CoT label so the caption stays one line (a
-% two-line caption, measured with the theory-of-mind stand-in, costs a line of page 4)

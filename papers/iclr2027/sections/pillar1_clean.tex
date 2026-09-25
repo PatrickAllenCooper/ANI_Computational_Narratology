@@ -41,20 +41,23 @@ collective results stay uncorrected.
 \begin{figure}[t]
 \centering
 \input{figures/fig_judge_panel_clean}
-\caption{\textbf{The reduction depends on the judge.} Rows are generators
-and marker shapes the five judges, each marker NoT's validation rate minus
-CoT's in points with a 95 percent item-clustered interval, left of zero where
-NoT validates less. Left, both prompts regenerated in one run at a
-4,096-token cap (8,192 for nano, Table~\ref{tab-app-rep4k}), and right the
-original, partly truncated responses (Table~\ref{tab-app-judge-drops}).}
+\caption{\textbf{The validation drop depends on the judge, but the framing
+drop holds under both judges.} Cells give NoT's minus CoT's rate in points per
+generator (row) and judge (column), of answers judged (a) emotionally
+validating or (b) accepting the asker's framing, both prompts regenerated in
+one run at a 4,096-token cap (8,192 for nano). Blue marks a drop under NoT and
+red a rise, darker when larger, and bold coloured cells have a 95 percent
+item-clustered interval excluding zero, grey cells one including it
+(intervals in Table~\ref{tab-app-rep4k}, original, partly truncated responses
+in Table~\ref{tab-app-judge-drops}).}
 \label{fig:judges}
 \end{figure}
 
 \paragraph{The original responses under five judges.}
-On the original, partly truncated responses (Figure~\ref{fig:judges}, right)
-the production judge finds the reduction on every generator, gpt-4o on six,
-the nano judge on five and the Llama and grok judges on one and two, those
-two reversing it on three generators (Table~\ref{tab-app-judge-drops}).
+On the original, partly truncated responses the production judge finds
+the reduction on every generator, gpt-4o on six, the nano judge on five and
+the Llama and grok judges on one and two, those two reversing it on three
+generators (Table~\ref{tab-app-judge-drops}).
 The registered rule, six of seven generators under every judge, set after a
 withdrawn comparison failed a stricter every-generator rule, reads this as
 judge-dependent, as does the stricter rule (Appendix~\ref{app-prereg}).
@@ -74,7 +77,7 @@ responses (Mistral's CoT 126 of 142) and left 34 of nano's 150 NoT responses
 empty (Appendix~\ref{app-rep4k}).
 We therefore regenerated both prompts on all seven in one run at an equal
 4,096-token cap (8,192 for nano), which almost no response reaches, and, as
-registered, take the headline numbers from it (Figure~\ref{fig:judges}, left).
+registered, take the headline numbers from it (Figure~\ref{fig:judges}a).
 Under the production judge the reduction holds on all seven, from $-12.7$
 points on sonnet to $-63.4$ on Llama (a relative reduction of 16 to 80
 percent), so truncation did not manufacture it. The gpt-4o judge finds it on
@@ -99,7 +102,7 @@ alone, which the rule would read as failing.
 \begin{table}[t]
 \caption{\textbf{Content, not form, carries the drop in judged validation,
 and each carries most of the drop in accepting the framing.}
-Points pooled over haiku, grok, nano and Llama, each prompt minus CoT at the
+Points pooled over the generators haiku, grok, nano and Llama, each prompt minus CoT at the
 same 2,048-token cap or the named difference, negative where the first term
 is lower, under five validation and two framing judges, $^{\circ}$ marking a 95 percent interval including zero
 (Appendix~\ref{app-form}). A cooler tone may partly explain the checklist's
@@ -142,9 +145,9 @@ A second ELEPHANT rubric asks whether an answer accepts the asker's framing
 or challenges its premise, and the production judge and gpt-4o scored it on
 the same responses in a test registered after the validation results.
 NoT lowers premise acceptance, the share accepting the framing, on all seven
-generators under both judges, sonnet included, with pooled drops of $-24.5$
+generators under both judges, with pooled drops of $-24.5$
 $[-28.4, -20.6]$ and $-30.9$ $[-35.1, -27.0]$ points
-(Table~\ref{tab-app-rep4k}, Appendix~\ref{app-framing}).
+(Figure~\ref{fig:judges}b, Table~\ref{tab-app-rep4k}, Appendix~\ref{app-framing}).
 Pooled over the four generators of Table~\ref{tab-form-main}, the checklist
 and narration alone each lower it by 0.72 to 0.86 of NoT's drop,
 every interval above one half, and NoT by 4.1 to 8.1 points more than either,

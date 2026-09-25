@@ -39,8 +39,14 @@ BLUE = ("86B6EF", "3987E5", "1C5CAB", "0D366B")
 RED = ("F09794", "E34948", "B23130", "7A1D1D")
 NEUTRAL = "F0EFEC"
 INK, MUTED = "0B0B0B", "52514E"
-CELL_W, CELL_H, GAP = 1.30, 0.50, 0.06        # cm
+# CELL_H 0.42 (was 0.50) and the colour bar at y = LEGEND_Y (was -0.50): vertical compaction only, for the
+# 9-page budget with the pillar-2 stand-in (2026-09-24 wiring pass); layout, colours and labels unchanged
+CELL_W, CELL_H, GAP = 1.30, 0.42, 0.06        # cm
 LABEL_W, PANEL_GAP = 1.55, 0.55                # cm
+# LEGEND_Y -0.32 (was -0.36): the 8pt tick labels (were 7pt) made the figure 0.64pt taller, which pushed three
+# lines of Section 4 to the next page in the 9-page budget; raising the colour bar 0.04cm (1.1pt) pays for it,
+# leaving 0.20cm between the last row and the bar (legibility review, 2026-09-25)
+LEGEND_Y = -0.32                               # cm, centre of the colour bar below the rows
 
 
 def bin_index(mag: float) -> int:
@@ -53,7 +59,10 @@ def cell_style(d: float, lo: float, hi: float) -> tuple[str, str, bool]:
         return NEUTRAL, MUTED, False
     i = bin_index(abs(d))
     fill = (BLUE if d < 0 else RED)[i]
-    return fill, ("FFFFFF" if i >= 1 else INK), True
+    # Near-black text on the two lighter bins of each arm, white on the two darker ones. White on the second
+    # bins (3987E5, E34948) had contrast 3.6:1 and 3.9:1; near-black there has 5.4:1 and 5.0:1, and the
+    # validated colours are unchanged (legibility review 2026-09-25).
+    return fill, ("FFFFFF" if i >= 2 else INK), True
 
 
 def load() -> tuple[dict, dict]:
@@ -85,7 +94,9 @@ def panel(x0: float, judges, data, title: str) -> list[str]:
     out.append(f"\\node[anchor=south, font=\\small\\bfseries] at ({x0 + width / 2:.3f},{top + 0.72:.3f}) {{{title}}};")
     for k, (j, short, note) in enumerate(judges):
         xc = x0 + (k + 0.5) * CELL_W
-        head = f"\\strut {short}" if not note else f"\\strut {short}\\\\[-2pt]{{\\scriptsize {note}}}"
+        # the production marker at 8pt (was \\scriptsize, 7pt in this template, below the paper's 8pt floor;
+        # legibility review 2026-09-25)
+        head = f"\\strut {short}" if not note else f"\\strut {short}\\\\[-2pt]{{\\fontsize{{8}}{{9}}\\selectfont {note}}}"
         out.append(f"\\node[anchor=south, align=center, font=\\footnotesize, inner sep=1pt] at ({xc:.3f},{top + 0.05:.3f}) {{{head}}};")
     for r, (g, _) in enumerate(GENS):
         y = top - (r + 1) * CELL_H
@@ -120,7 +131,7 @@ def legend(x0: float, y: float) -> list[str]:
     for k, lab in enumerate(edges, start=1):
         x = x0 + k * w
         out.append(f"\\draw[line width=0.4pt, color={_rgb(MUTED)}] ({x:.3f},{y - h / 2 - 0.02:.3f}) -- ({x:.3f},{y - h / 2 - 0.09:.3f});")
-        out.append(f"\\node[anchor=north, font=\\scriptsize, inner sep=1pt] at ({x:.3f},{y - h / 2 - 0.09:.3f}) {{{lab}}};")
+        out.append(f"\\node[anchor=north, font=\\fontsize{{8}}{{9}}\\selectfont, inner sep=1pt] at ({x:.3f},{y - h / 2 - 0.09:.3f}) {{{lab}}};")
     xe = x0 + len(blocks) * w
     out.append(f"\\node[anchor=west, font=\\footnotesize] at ({xe + 0.10:.3f},{y:.3f}) {{NoT raises it}};")
     xn = xe + 2.35
@@ -137,13 +148,15 @@ def tikz(val: dict, frame: dict) -> str:
     for r, (_, short) in enumerate(GENS):
         y = n * CELL_H - (r + 0.5) * CELL_H
         lines.append(f"\\node[anchor=east, font=\\small] at ({LABEL_W - 0.08:.3f},{y:.3f}) {{{short}}};")
-    lines.append(f"\\node[anchor=south east, align=right, font=\\scriptsize, text={_rgb(MUTED)}, inner sep=1pt] "
-                 f"at ({LABEL_W - 0.08:.3f},{n * CELL_H + 0.05:.3f}) {{judge $\\rightarrow$\\\\ model $\\downarrow$}};")
+    # corner label at 8pt (was \\scriptsize, 7pt) and naming the rows "generator" as the caption and the tables
+    # do (was "model", a word that also covers the judges; legibility review 2026-09-25)
+    lines.append(f"\\node[anchor=south east, align=right, font=\\fontsize{{8}}{{9}}\\selectfont, text={_rgb(MUTED)}, inner sep=1pt] "
+                 f"at ({LABEL_W - 0.08:.3f},{n * CELL_H + 0.05:.3f}) {{judge $\\rightarrow$\\\\ generator $\\downarrow$}};")
     xa = LABEL_W
     lines += panel(xa, VAL_JUDGES, val, "(a) Judged emotional validation")
     xb = xa + len(VAL_JUDGES) * CELL_W + PANEL_GAP
     lines += panel(xb, FRAME_JUDGES, frame, "(b) Accepting the asker's framing")
-    lines += legend(LABEL_W + 2.6, -0.50)
+    lines += legend(LABEL_W + 2.6, LEGEND_Y)
     lines.append("\\end{tikzpicture}")
     return "\n".join(lines) + "\n"
 

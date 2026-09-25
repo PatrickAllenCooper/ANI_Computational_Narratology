@@ -1,11 +1,14 @@
-\begin{tabular}{lrrrr}
+{\footnotesize
+\begin{tabular}{@{}lr*{4}{>{\raggedleft\arraybackslash}p{0.95cm}}r@{}}
 \toprule
-model & items & capitulation CoT / NoT & re-ask instability CoT / NoT & net NoT $-$ CoT \\
+ & & \multicolumn{2}{c}{capitulation} & \multicolumn{2}{c}{re-ask instability} & net \\
+\cmidrule(lr){3-4}\cmidrule(lr){5-6}
+model & items & CoT & NoT & CoT & NoT & NoT $-$ CoT \\
 \midrule
-nano & 60 & 0.05 / 0.10 & 0.03 / 0.05 & $+3.3$ $[-5.0, +13.3]$ \\
-Llama & 95 & 0.49 / 0.81 & 0.28 / 0.51 & $+9.6$ $[-5.3, +24.5]$ \\
-grok & 78 & 0.01 / 0.05 & 0.00 / 0.03 & $+1.3$ $[-5.2, +7.8]$ \\
+nano & 60 & 0.05 & 0.10 & 0.03 & 0.05 & $+3.3$ $[-5.0, +13.3]$ \\
+Llama & 95 & 0.49 & 0.81 & 0.28 & 0.51 & $+9.6$ $[-5.3, +24.5]$ \\
+grok & 78 & 0.01 & 0.05 & 0.00 & 0.03 & $+1.3$ $[-5.2, +7.8]$ \\
 \midrule
-pooled & 232 & 0.22 / 0.37 & 0.12 / 0.23 & $+5.2$ $[-1.7, +12.2]$ \\
+pooled & 232 & 0.22 & 0.37 & 0.12 & 0.23 & $+5.2$ $[-1.7, +12.2]$ \\
 \bottomrule
-\end{tabular}
+\end{tabular}}

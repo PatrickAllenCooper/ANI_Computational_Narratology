@@ -8,22 +8,26 @@
 % paired per debate, 4,000-draw item-clustered bootstrap, seed 101. 'routed' there is the ROUTED
 % COLLECTIVE (S2 unless the counter fires, then the sonnet judge) against the solo, NOT the 16.22 R1
 % system that routes the solo's own verdicts by the collective's flags (routing_certification*.json:
-% grok +2.4 [+0.5, +4.5], haiku +3.1 [+1.2, +5.1]). Exchange cut (edges off) has no solo pairing (blank).
+% grok +2.4 [+0.5, +4.5], haiku +3.1 [+1.2, +5.1]). Exchange cut (edges off) has no solo pairing (--).
 % precision = ol_wrong_fired; recall = ol_fired*ol_wrong_fired / (ol_fired*ol_wrong_fired + (ol_n-ol_fired)*ol_wrong_unfired),
 % both on verdicts that blame exactly one party (the one-loser stratum, prereg 16.15.1 Rule 1).
 % missing at generation time: none
-% The file carries its own resizebox and 3pt column padding: ten columns run to about 500pt at
-% \small against the 397pt text width. Remove the wrapper if the table is restructured.
-{\setlength{\tabcolsep}{3pt}\resizebox{\textwidth}{!}{%
-\begin{tabular}{lrrrrrrrrr}
+% Legibility pass (2026-09-24): no resizebox (it shrank the table to 0.75, 6.7pt effective). Points only at
+% \small (the float's size) with 4pt column padding; a circle marks a difference whose 95 percent interval
+% includes zero, and every interval is in the row comments here and in Table tab-app-routing-ci
+% (figures/tab_routing_ci.tex, routing_ci_table). R - C = routed - collective, C - S = collective - solo,
+% R - S = routed - solo (the caption names the accuracies S, C and R); precision and recall in separate
+% columns; '--' where exchange cut has no solo.
+{\setlength{\tabcolsep}{4pt}%
+\begin{tabular}{@{}lrrrrrrrrrr@{}}
 \toprule
-condition & $n$ & fire & solo & collective & routed & routed $-$ collective & collective $-$ solo & routed $-$ solo & prec. / recall \\
+condition & $n$ & fire & solo & collective & routed & R $-$ C & C $-$ S & R $-$ S & precision & recall \\
 \midrule
-grok (primary) & 1677 & 0.20 & 0.912 & 0.843 & 0.913 & $+7.0$ $[+4.8, +9.4]$ & $-6.9$ $[-9.7, -4.2]$ & $+0.1$ $[-2.6, +3.0]$ & 0.39 / 0.43 \\  % verify all_agree=True; one-party 1287, flagged 93, wrong flagged 36, wrong unflagged 47; solo cells 420, paired debates 1677, items 210, debates without solo 0
-grok, exchange cut & 1675 & 0.15 &  & 0.832 & 0.880 & $+4.8$ $[+3.2, +6.6]$ &  &  & 0.28 / 0.25 \\  % verify all_agree=True; one-party 1263, flagged 78, wrong flagged 22, wrong unflagged 66; no solo pairing in collective_vs_solo_paired.json
-haiku & 487 & 0.19 & 0.862 & 0.854 & 0.891 & $+3.7$ $[+1.6, +5.8]$ & $-0.6$ $[-4.7, +3.5]$ & $+3.1$ $[-0.8, +7.0]$ & 0.11 / 0.21 \\  % verify all_agree=True; one-party 424, flagged 65, wrong flagged 7, wrong unflagged 26; solo cells 486, paired debates 486, items 249, debates without solo 1
-Llama & 897 & 0.08 & 0.842 & 0.620 & 0.661 & $+4.1$ $[+2.8, +5.7]$ & $-22.2$ $[-27.9, -16.6]$ & $-18.2$ $[-23.7, -12.7]$ & 0.47 / 0.12 \\  % verify all_agree=True; one-party 804, flagged 64, wrong flagged 30, wrong unflagged 227; solo cells 449, paired debates 895, items 225, debates without solo 2
-DeepSeek & 832 & 0.28 & 0.959 & 0.778 & 0.850 & $+7.2$ $[+5.3, +9.3]$ & $-18.1$ $[-21.9, -14.4]$ & $-10.8$ $[-14.1, -7.7]$ & 0.10 / 0.39 \\  % verify all_agree=True; one-party 575, flagged 128, wrong flagged 13, wrong unflagged 20; solo cells 419, paired debates 830, items 210, debates without solo 2
-Mistral & 868 & 0.88 & 0.843 & 0.752 & 0.967 & $+21.4$ $[+17.1, +26.2]$ & $-9.1$ $[-13.1, -5.2]$ & $+12.3$ $[+8.1, +16.8]$ & 0.13 / 0.97 \\  % verify all_agree=True; one-party 614, flagged 521, wrong flagged 69, wrong unflagged 2; solo cells 434, paired debates 868, items 217, debates without solo 0
+grok (primary) & 1,677 & 0.20 & 0.912 & 0.843 & 0.913 & $+7.0$ & $-6.9$ & $+0.1$\rlap{\smash{$^{\circ}$}} & 0.39 & 0.43 \\  % R - C $+7.0$ $[+4.8, +9.4]$; C - S $-6.9$ $[-9.7, -4.2]$; R - S $+0.1$ $[-2.6, +3.0]$; verify all_agree=True; one-party 1287, flagged 93, wrong flagged 36, wrong unflagged 47; solo cells 420, paired debates 1677, items 210, debates without solo 0
+grok, exchange cut & 1,675 & 0.15 & -- & 0.832 & 0.880 & $+4.8$ & -- & -- & 0.28 & 0.25 \\  % R - C $+4.8$ $[+3.2, +6.6]$; C - S no solo; R - S no solo; verify all_agree=True; one-party 1263, flagged 78, wrong flagged 22, wrong unflagged 66; no solo pairing in collective_vs_solo_paired.json
+haiku & 487 & 0.19 & 0.862 & 0.854 & 0.891 & $+3.7$ & $-0.6$\rlap{\smash{$^{\circ}$}} & $+3.1$\rlap{\smash{$^{\circ}$}} & 0.11 & 0.21 \\  % R - C $+3.7$ $[+1.6, +5.8]$; C - S $-0.6$ $[-4.7, +3.5]$; R - S $+3.1$ $[-0.8, +7.0]$; verify all_agree=True; one-party 424, flagged 65, wrong flagged 7, wrong unflagged 26; solo cells 486, paired debates 486, items 249, debates without solo 1
+Llama & 897 & 0.08 & 0.842 & 0.620 & 0.661 & $+4.1$ & $-22.2$ & $-18.2$ & 0.47 & 0.12 \\  % R - C $+4.1$ $[+2.8, +5.7]$; C - S $-22.2$ $[-27.9, -16.6]$; R - S $-18.2$ $[-23.7, -12.7]$; verify all_agree=True; one-party 804, flagged 64, wrong flagged 30, wrong unflagged 227; solo cells 449, paired debates 895, items 225, debates without solo 2
+DeepSeek & 832 & 0.28 & 0.959 & 0.778 & 0.850 & $+7.2$ & $-18.1$ & $-10.8$ & 0.10 & 0.39 \\  % R - C $+7.2$ $[+5.3, +9.3]$; C - S $-18.1$ $[-21.9, -14.4]$; R - S $-10.8$ $[-14.1, -7.7]$; verify all_agree=True; one-party 575, flagged 128, wrong flagged 13, wrong unflagged 20; solo cells 419, paired debates 830, items 210, debates without solo 2
+Mistral & 868 & 0.88 & 0.843 & 0.752 & 0.967 & $+21.4$ & $-9.1$ & $+12.3$ & 0.13 & 0.97 \\  % R - C $+21.4$ $[+17.1, +26.2]$; C - S $-9.1$ $[-13.1, -5.2]$; R - S $+12.3$ $[+8.1, +16.8]$; verify all_agree=True; one-party 614, flagged 521, wrong flagged 69, wrong unflagged 2; solo cells 434, paired debates 868, items 217, debates without solo 0
 \bottomrule
-\end{tabular}}}
+\end{tabular}}

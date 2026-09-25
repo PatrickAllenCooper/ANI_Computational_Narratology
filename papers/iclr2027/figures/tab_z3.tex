@@ -3,15 +3,24 @@
 % fa_rate) and decomposition '<model>|<prompt>|PERSON (3rd -> as_asker)' (delta, ci_low, ci_high).
 % brief is the unscaffolded four-sentence prompt used on the dispute set (scaffold key standard), not Figure 1's CoT.
 % missing at generation time: none
-\begin{tabular}{llrrrrrrr}
+% Legibility pass (2026-09-24): set at \footnotesize without the section's \resizebox (it shrank the
+% table to 0.93, 8.4pt effective); c, d', H and F grouped under the two framings, the shift last,
+% hit and false-alarm rates in columns of their own (were 'hit / FA' pairs), model named once per group.
+{\footnotesize
+\setlength{\tabcolsep}{4pt}%
+\begin{tabular}{@{}llrrrrrrrrr@{}}
 \toprule
-model & prompt & $c$ third & $c$ writer & shift $[95\%]$ & $d'$ third & $d'$ writer & hit / FA third & hit / FA writer \\
+ & & \multicolumn{4}{c}{third person} & \multicolumn{4}{c}{user as writer} & \\
+\cmidrule(lr){3-6}\cmidrule(lr){7-10}
+model & prompt & $c$ & $d'$ & $H$ & $F$ & $c$ & $d'$ & $H$ & $F$ & shift $[95\%]$ \\
 \midrule
-Llama & brief & $-0.44$ & $-0.19$ & $+0.26$ $[+0.13, +0.41]$ & 2.03 & 2.41 & 0.93 / 0.28 & 0.92 / 0.15 \\
-Llama & NoT & $-0.41$ & $-0.14$ & $+0.27$ $[+0.09, +0.45]$ & 2.20 & 2.30 & 0.94 / 0.25 & 0.90 / 0.16 \\
-Mistral & brief & $-0.30$ & $-0.18$ & $+0.13$ $[+0.01, +0.27]$ & 2.03 & 2.02 & 0.91 / 0.24 & 0.88 / 0.20 \\
-Mistral & NoT & $+0.24$ & $+0.54$ & $+0.30$ $[+0.17, +0.46]$ & 1.88 & 2.27 & 0.76 / 0.12 & 0.72 / 0.05 \\
-DeepSeek & brief & $-0.19$ & $-0.26$ & $-0.08$ $[-0.32, +0.23]$ & 3.30 & 3.60 & 0.97 / 0.07 & 0.98 / 0.06 \\
-DeepSeek & NoT & $-0.01$ & $-0.00$ & $+0.01$ $[-0.16, +0.16]$ & 2.66 & 2.89 & 0.91 / 0.09 & 0.93 / 0.07 \\
+Llama & brief & $-0.44$ & 2.03 & 0.93 & 0.28 & $-0.19$ & 2.41 & 0.92 & 0.15 & $+0.26$ $[+0.13, +0.41]$ \\
+ & NoT & $-0.41$ & 2.20 & 0.94 & 0.25 & $-0.14$ & 2.30 & 0.90 & 0.16 & $+0.27$ $[+0.09, +0.45]$ \\
+\addlinespace
+Mistral & brief & $-0.30$ & 2.03 & 0.91 & 0.24 & $-0.18$ & 2.02 & 0.88 & 0.20 & $+0.13$ $[+0.01, +0.27]$ \\
+ & NoT & $+0.24$ & 1.88 & 0.76 & 0.12 & $+0.54$ & 2.27 & 0.72 & 0.05 & $+0.30$ $[+0.17, +0.46]$ \\
+\addlinespace
+DeepSeek & brief & $-0.19$ & 3.30 & 0.97 & 0.07 & $-0.26$ & 3.60 & 0.98 & 0.06 & $-0.08$ $[-0.32, +0.23]$ \\
+ & NoT & $-0.01$ & 2.66 & 0.91 & 0.09 & $0.00$ & 2.89 & 0.93 & 0.07 & $+0.01$ $[-0.16, +0.16]$ \\
 \bottomrule
-\end{tabular}
+\end{tabular}}

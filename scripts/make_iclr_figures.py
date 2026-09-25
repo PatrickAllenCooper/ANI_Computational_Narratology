@@ -2,12 +2,13 @@
 scripts/make_iclr_figures.py -- figure and table sources for papers/iclr2027, generated from
 the committed artefacts only (every number carries a % source comment in the output).
 
-  figures/fig_judge_panel.tex    NOT WRITTEN by main() since 2026-09-24 (Figure 2 is being redesigned by
-                                 scripts/iclr_fig_judge_heatmap.py). Formerly: pillar 1: NoT minus CoT validation drop per generator under
-                                 every judge, two panels. Left, the 17.10 same-day regeneration
-                                 of both prompts at 4,096 tokens (headline_rep4k_readout.json,
-                                 the registered headline); right, the original responses of the
-                                 17.8 panel (judge_panel_full_oeq_<judge>.json)
+  figures/fig_judge_panel.tex    Figure 2, written by scripts/iclr_fig_judge_heatmap.py (tikz): an annotated
+                                 diverging heatmap of NoT minus CoT per generator (rows), panel (a) judged
+                                 validation under the five judges (headline_rep4k_readout.json, prereg 17.10
+                                 RESULTS), panel (b) accepting the asker's framing under the production judge
+                                 and gpt-4o (framing_17_11_readout.json design (a), prereg 17.11 RESULTS), both
+                                 on the same-day 4,096-token responses. The original responses of 17.8 are no
+                                 longer plotted (appendix Table tab-app-judge-drops)
   figures/tab_routing.tex        pillar 3: collective, routed, routing gain and the sensor's
                                  precision and recall per condition (verify_pillar3_headline_*.json),
                                  the same model's solo, and the paired collective minus solo and
@@ -23,7 +24,8 @@ the committed artefacts only (every number carries a % source comment in the out
                                  (baselines_17_12_readout.json, framing_17_11_readout.json key baselines)
   figures/tab_human_anchor.tex   appendix, every prompt minus the judge-scored human rate on both rubrics
                                  (human_anchor_readout.json, 17.11 amendment 2)
-  figures/tab_rep4k.tex          17.10 replicate by judge with Holm daggers, run 3b and pooled rows for
+  figures/tab_rep4k.tex          (and figures/tab_rep4k_framing.tex, its panel (b), a continuation float since 2026-09-25)
+                                 17.10 replicate by judge with Holm daggers, run 3b and pooled rows for
                                  sonnet and haiku, and a framing panel (headline_rep4k_readout.json,
                                  headline_rep4k_b_readout.json, run_stability.json, framing_17_11_readout.json,
                                  judge_panel_full_rep4k_framing.json, multiplicity_mde.json)
@@ -50,19 +52,16 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+from scripts.iclr_fig_judge_heatmap import load as heatmap_load, tikz as heatmap_tikz
+
 OUT = Path("divergence_study_outputs")
 FIG = Path("papers/iclr2027/figures")
 GENS = [("claude-haiku-4-5", "haiku"), ("claude-sonnet-4-6", "sonnet"), ("gpt-5.4-nano", "nano"),
         ("grok-4-1-fast-reasoning", "grok"), ("Llama-3.3-70B-Instruct", "Llama"),
         ("Mistral-Large-3-2", "Mistral"), ("DeepSeek-V4-Pro", "DeepSeek")]
-# (key, legend label, colour, pgfplots mark, mark fill). The production judge is the filled black
-# circle and the other four are open shapes, so the judge panel reads in greyscale print (violet and
-# red, and teal and grey, collapse to one tone when filled).
-JUDGES = [("claude-haiku-4-5", "haiku (production)", "black", "*", "black"),
-          ("gpt-4o", "gpt-4o", "orange!85!black", "square", "white"),
-          ("gpt-5.4-nano", "nano", "violet!80!black", "triangle", "white"),
-          ("Llama-3.3-70B-Instruct", "Llama", "gray!60!black", "diamond", "white"),
-          ("grok-4-1-fast-reasoning", "grok", "red!70!black", "pentagon", "white")]
+# (key, label) of the five validation judges in column order; the production judge first.
+JUDGES = [("claude-haiku-4-5", "haiku (production)"), ("gpt-4o", "gpt-4o"), ("gpt-5.4-nano", "nano"),
+          ("Llama-3.3-70B-Instruct", "Llama"), ("grok-4-1-fast-reasoning", "grok")]
 # Row labels (clarity round 2, 2026-09-24, collective-05): the edges-off condition is called the exchange cut
 # in the paper, so its row reads "grok, exchange cut" and the primary row "grok (primary)".
 CONDITIONS = [("grok", "grok (primary)"), ("noedge", "grok, exchange cut"),
@@ -71,107 +70,13 @@ CONDITIONS = [("grok", "grok (primary)"), ("noedge", "grok, exchange cut"),
 # the edges-off community has no solo of its own in that artefact).
 SOLO_COND = {"grok": "grok", "noedge": None, "haiku_249": "haiku", "llama": "llama",
              "deepseek": "deepseek", "mistral": "mistral"}
-DAGGER = "$^{\\dagger}$"
+# The dagger and circle markers are \\smash'ed inside their \\rlap so that a row carrying one keeps the height of
+# its neighbours (legibility review, 2026-09-25); DAGGER is always set inside \\rlap{...} at its use sites.
+DAGGER = "\\smash{$^{\\dagger}$}"
 
 
 def _load(p: Path):
     return json.loads(p.read_text()) if p.exists() else None
-
-
-def _judge_series_original():
-    """Right panel: the original responses, judge_panel_full_oeq_<judge>.json (prereg 17.8 RESULTS)."""
-    series, missing = [], []
-    for jk, jl, *_ in JUDGES:
-        d = _load(OUT / f"judge_panel_full_oeq_{jk}.json")
-        pts = []
-        if d is not None:
-            pg = d["judges"][jk]["per_generator"]
-            for gi, (gk, gl) in enumerate(GENS):
-                c = pg.get(gk, {}).get("narrative_cot")
-                if not c or c.get("drop") is None:
-                    continue
-                pts.append((gi, 100 * c["drop"], 100 * c["lo"], 100 * c["hi"], gl))
-        if not pts:
-            missing.append(f"judge_panel_full_oeq_{jk}.json")
-            continue
-        series.append((jk, jl, pts))
-    return series, missing
-
-
-def _judge_series_rep4k():
-    """Left panel: both prompts regenerated in one run at a 4,096-token cap, headline_rep4k_readout.json
-    per_generator.<gen>.per_judge.<judge> (prereg Addendum 17.10 RESULTS), the registered headline."""
-    d = _load(OUT / "headline_rep4k_readout.json")
-    if d is None:
-        return [], ["headline_rep4k_readout.json"]
-    series, missing = [], []
-    for jk, jl, *_ in JUDGES:
-        pts = []
-        for gi, (gk, gl) in enumerate(GENS):
-            c = d["per_generator"].get(gk, {}).get("per_judge", {}).get(jk)
-            if not c or c.get("drop") is None:
-                continue
-            pts.append((gi, 100 * c["drop"], 100 * c["lo"], 100 * c["hi"], gl))
-        if not pts:
-            missing.append(f"headline_rep4k_readout.json per_judge.{jk}")
-            continue
-        series.append((jk, jl, pts))
-    return series, missing
-
-
-def _judge_axis(series, name, title, first):
-    """One axis of the two-panel judge figure. The first axis carries the row labels and the legend,
-    which sits in the upper left with no fill: the lower left holds Llama's and Mistral's drops in both
-    panels, and an opaque box in the upper left would cover the nano row's production-judge marker.
-    Marks are 2.3pt (2.5pt touched neighbouring rows at the earlier 5.0cm height; 3.5cm since 2026-09-23 for the page budget) with a per-judge row offset."""
-    style = {jk: (col, mark, fill) for jk, _jl, col, mark, fill in JUDGES}
-    k = len(series)
-    opts = [f"name={name}", "scale only axis", f"title={{{title}}}",
-            "title style={font=\\small, yshift=-3pt}", "width=0.40\\columnwidth", "height=3.5cm",
-            "xmin=-85", "xmax=25", "xlabel={NoT $-$ CoT, validation rate (points)}",
-            "xlabel style={font=\\small}", f"ytick={{{','.join(str(i) for i in range(len(GENS)))}}}",
-            "ymin=-0.6", "ymax=6.6", "y dir=reverse", "xmajorgrids", "axis lines*=left",
-            "tick label style={font=\\small}"]
-    if first:
-        opts += [f"yticklabels={{{','.join(g[1] for g in GENS)}}}",
-                 "legend style={font=\\scriptsize, at={(0.02,0.99)}, anchor=north west, draw=none, "
-                 "fill=none, row sep=-3pt}", "legend cell align=left"]
-    else:
-        opts += ["yticklabels={,,}", "at={(left.east)}", "anchor=west", "xshift=0.45cm"]
-    lines = ["\\begin{axis}[" + ", ".join(opts) + "]"]
-    for gi in range(0, len(GENS), 2):  # light bands on alternate generator rows
-        lines.append(f"\\fill[gray!9] (axis cs:-85,{gi - 0.5}) rectangle (axis cs:25,{gi + 0.5});")
-    lines.append("\\addplot[black, dashed, forget plot] coordinates {(0,-0.6) (0,6.6)};")
-    for si, (jk, jl, pts) in enumerate(series):
-        off = (si - (k - 1) / 2) * 0.16
-        col, mark, fill = style[jk]
-        lines.append(f"\\addplot[only marks, mark={mark}, mark size=2.3pt, color={col}, "
-                     f"mark options={{fill={fill}, line width=0.7pt}}, error bars/.cd, x dir=both, "
-                     "x explicit, error bar style={line width=0.55pt}]")
-        lines.append("  coordinates {")
-        for gi, dr, lo, hi, gl in pts:
-            lines.append(f"    ({dr:.1f},{gi + off:.2f}) -= ({dr - lo:.1f},0) += ({hi - dr:.1f},0)"
-                         f"  % {gl}: {dr:+.1f} [{lo:+.1f}, {hi:+.1f}]")
-        lines.append("  };")
-        if first:
-            lines.append(f"\\addlegendentry{{{jl}}}")
-    lines.append("\\end{axis}")
-    return lines
-
-
-def judge_panel_figure() -> str:
-    rep, m1 = _judge_series_rep4k()
-    orig, m2 = _judge_series_original()
-    lines = ["% AUTO-GENERATED by scripts/make_iclr_figures.py. Left: headline_rep4k_readout.json (prereg",
-             "% Addendum 17.10 RESULTS, both prompts regenerated in one run at a 4,096-token cap, the",
-             "% registered headline). Right: judge_panel_full_oeq_<judge>.json (17.8 RESULTS, the original",
-             "% responses at their caps). Production judge = filled black circle; other judges open shapes.",
-             f"% missing at generation time: {(m1 + m2) or 'none'}",
-             "\\begin{tikzpicture}"]
-    lines += _judge_axis(rep, "left", "Regenerated, 4,096-token cap", True)
-    lines += _judge_axis(orig, "right", "Original responses", False)
-    lines += ["\\end{tikzpicture}"]
-    return "\n".join(lines) + "\n"
 
 
 def _pts(c):
@@ -179,12 +84,9 @@ def _pts(c):
     return f"${c['points']:+.1f}$ $[{c['points_lo']:+.1f}, {c['points_hi']:+.1f}]$"
 
 
-def routing_table() -> str:
-    """Main-text tab-routing. Per condition: debates, fire rate, the same model's solo (standard
-    majority-of-3 on the paired framing x item cells), collective and routed accuracy, routed minus
-    collective (verify_pillar3_headline_<cond>.json recomputed), the paired collective minus solo and
-    routed collective minus solo (collective_vs_solo_paired.json, debate-weighted, sonnet judge on
-    flagged debates), and the sensor's precision and recall on the one-loser stratum."""
+def _routing_rows():
+    """Per condition of tab-routing: verify_pillar3_headline_<cond>.json recomputed values, the sensor's
+    precision and recall on the one-loser stratum, and the paired solo comparison (or None)."""
     solo = _load(OUT / "collective_vs_solo_paired.json")
     rows, missing = [], []
     for ck, cl in CONDITIONS:
@@ -205,6 +107,29 @@ def routing_table() -> str:
             missing.append(f"collective_vs_solo_paired.json conditions.{sk}")
         rows.append((cl, r["collective"], r["routed"], r["delta"], r["lo"], r["hi"], r["fire"], r["n"],
                      v.get("all_agree"), prec, rec, r["ol_n"], r["ol_fired"], wf, wu, sk, p))
+    return rows, missing
+
+
+def _routing_diffs(d, lo, hi, p):
+    """(R - C, C - S, R - S) as (point, lo, hi, scale to points) tuples, None where there is no solo pairing.
+    verify_pillar3_headline holds proportions (scale 100); collective_vs_solo_paired.json holds points."""
+    rc = (d, lo, hi, 100)
+    if p is None:
+        return rc, None, None
+    c_cs = p["collective_minus_solo_debate_weighted"]
+    c_rs = p["routed_minus_solo_debate_weighted"]
+    return (rc, (c_cs["points"], c_cs["points_lo"], c_cs["points_hi"], 1),
+            (c_rs["points"], c_rs["points_lo"], c_rs["points_hi"], 1))
+
+
+def routing_table() -> str:
+    """Main-text tab-routing. Per condition: debates, fire rate, the same model's solo (standard
+    majority-of-3 on the paired framing x item cells), collective and routed accuracy, routed minus
+    collective (verify_pillar3_headline_<cond>.json recomputed), the paired collective minus solo and
+    routed collective minus solo (collective_vs_solo_paired.json, debate-weighted, sonnet judge on
+    flagged debates), and the sensor's precision and recall on the one-loser stratum. Points only, a
+    circle marking an interval that includes zero; the intervals are in routing_ci_table (appendix)."""
+    rows, missing = _routing_rows()
     out = ["% AUTO-GENERATED by scripts/make_iclr_figures.py from verify_pillar3_headline_<cond>.json",
            "% (independent recomputation; sonnet standard majority-of-3 judge on flagged debates) and",
            "% collective_vs_solo_paired.json (scripts/analyze_collective_vs_solo.py, post hoc, zero spend,",
@@ -215,31 +140,66 @@ def routing_table() -> str:
            "% paired per debate, 4,000-draw item-clustered bootstrap, seed 101. 'routed' there is the ROUTED",
            "% COLLECTIVE (S2 unless the counter fires, then the sonnet judge) against the solo, NOT the 16.22 R1",
            "% system that routes the solo's own verdicts by the collective's flags (routing_certification*.json:",
-           "% grok +2.4 [+0.5, +4.5], haiku +3.1 [+1.2, +5.1]). Exchange cut (edges off) has no solo pairing (blank).",
+           "% grok +2.4 [+0.5, +4.5], haiku +3.1 [+1.2, +5.1]). Exchange cut (edges off) has no solo pairing (--).",
            "% precision = ol_wrong_fired; recall = ol_fired*ol_wrong_fired / (ol_fired*ol_wrong_fired + (ol_n-ol_fired)*ol_wrong_unfired),",
            "% both on verdicts that blame exactly one party (the one-loser stratum, prereg 16.15.1 Rule 1).",
            f"% missing at generation time: {missing or 'none'}",
-           "% The file carries its own resizebox and 3pt column padding: ten columns run to about 500pt at",
-           "% \\small against the 397pt text width. Remove the wrapper if the table is restructured.",
-           "{\\setlength{\\tabcolsep}{3pt}\\resizebox{\\textwidth}{!}{%",
-           "\\begin{tabular}{lrrrrrrrrr}", "\\toprule",
-           "condition & $n$ & fire & solo & collective & routed & routed $-$ collective & "
-           "collective $-$ solo & routed $-$ solo & prec. / recall \\\\", "\\midrule"]
+           "% Legibility pass (2026-09-24): no resizebox (it shrank the table to 0.75, 6.7pt effective). Points only at",
+           "% \\small (the float's size) with 4pt column padding; a circle marks a difference whose 95 percent interval",
+           "% includes zero, and every interval is in the row comments here and in Table tab-app-routing-ci",
+           "% (figures/tab_routing_ci.tex, routing_ci_table). R - C = routed - collective, C - S = collective - solo,",
+           "% R - S = routed - solo (the caption names the accuracies S, C and R); precision and recall in separate",
+           "% columns; '--' where exchange cut has no solo.",
+           "{\\setlength{\\tabcolsep}{4pt}%",
+           "\\begin{tabular}{@{}lrrrrrrrrrr@{}}", "\\toprule",
+           "condition & $n$ & fire & solo & collective & routed & R $-$ C & C $-$ S & R $-$ S & precision & recall \\\\",
+           "\\midrule"]
     for cl, coll, rt, d, lo, hi, fire, n, agree, prec, rec, ol_n, ol_fired, wf, wu, sk, p in rows:
+        rc, cs, rs = _routing_diffs(d, lo, hi, p)
         if p is not None:
             solo_c = f"{p['solo_acc_paired_cells']:.3f}"
-            cms = _pts(p["collective_minus_solo_debate_weighted"])
-            rms = _pts(p["routed_minus_solo_debate_weighted"])
             note = (f"; solo cells {p['n_paired_cells']}, paired debates {p['n_paired_debates']}, "
                     f"items {p['n_items']}, debates without solo {p['n_debates_without_solo']}")
         else:
-            solo_c, cms, rms, note = "", "", "", "; no solo pairing in collective_vs_solo_paired.json"
-        out.append(f"{cl} & {n} & {fire:.2f} & {solo_c} & {coll:.3f} & {rt:.3f} & "
-                   f"${100 * d:+.1f}$ $[{100 * lo:+.1f}, {100 * hi:+.1f}]$ & {cms} & {rms} & "
-                   f"{prec:.2f} / {rec:.2f} \\\\"
-                   f"  % verify all_agree={agree}; one-party {ol_n}, flagged {ol_fired}, "
-                   f"wrong flagged {round(wf)}, wrong unflagged {round(wu)}{note}")
-    out += ["\\bottomrule", "\\end{tabular}}}"]
+            solo_c, note = "--", "; no solo pairing in collective_vs_solo_paired.json"
+        # n with a thousands separator, 1,677 as in the text (legibility review, 2026-09-25)
+        out.append(f"{cl} & {n:,} & {fire:.2f} & {solo_c} & {coll:.3f} & {rt:.3f} & "
+                   f"{_pt(rc)} & {_pt(cs)} & {_pt(rs)} & {prec:.2f} & {rec:.2f} \\\\"
+                   f"  % R - C {_ivc(rc)}; C - S {_ivc(cs)}; R - S {_ivc(rs)}; verify all_agree={agree}; "
+                   f"one-party {ol_n}, flagged {ol_fired}, wrong flagged {round(wf)}, wrong unflagged {round(wu)}{note}")
+    out += ["\\bottomrule", "\\end{tabular}}"]
+    return "\n".join(out) + "\n"
+
+
+def _pt(c):
+    """A routing difference's point, with the zero mark when its interval includes zero; '--' for None."""
+    if c is None:
+        return "--"
+    return _pp(c[0], c[3]) + (ZERO_MARK if c[1] <= 0 <= c[2] else "")
+
+
+def _ivc(c):
+    """A routing difference's point and interval, for row comments and the appendix table."""
+    return "no solo" if c is None else f"{_pp(c[0], c[3])} {_iv(c[1], c[2], c[3])}"
+
+
+def routing_ci_table() -> str:
+    """Appendix tab-app-routing-ci: the three paired differences of tab-routing with their 95 percent
+    item-clustered intervals, which the main-text table leaves out for its width (legibility pass,
+    2026-09-24). Same sources and values as routing_table."""
+    rows, missing = _routing_rows()
+    out = ["% AUTO-GENERATED by scripts/make_iclr_figures.py (routing_ci_table) from verify_pillar3_headline_<cond>.json",
+           "% recomputed.{delta, lo, hi} (routed minus collective, 4,000 draws, seed 101) and collective_vs_solo_paired.json",
+           "% conditions.<c>.paired.{collective,routed}_minus_solo_debate_weighted.{points, points_lo, points_hi} (paired per",
+           "% debate, 4,000-draw item-clustered bootstrap, seed 101), the same values as figures/tab_routing.tex.",
+           f"% missing at generation time: {missing or 'none'}",
+           "{\\footnotesize",
+           "\\begin{tabular}{@{}lrrr@{}}", "\\toprule",
+           "condition & routed $-$ collective & collective $-$ solo & routed $-$ solo \\\\", "\\midrule"]
+    for cl, coll, rt, d, lo, hi, fire, n, agree, prec, rec, ol_n, ol_fired, wf, wu, sk, p in rows:
+        cells = ["--" if c is None else _ivc(c) for c in _routing_diffs(d, lo, hi, p)]
+        out.append(f"{cl} & " + " & ".join(cells) + " \\\\")
+    out += ["\\bottomrule", "\\end{tabular}}"]
     return "\n".join(out) + "\n"
 
 
@@ -259,7 +219,7 @@ def _ci(c, scale=100):
 # on the second (LEG_OPEN / LEG_CLOSE and the _two_row helper).
 LEG_OPEN = "{\\footnotesize"
 LEG_CLOSE = "}"
-ZERO_MARK = "\\rlap{$^{\\circ}$}"   # main-text table: the 95 percent interval includes zero
+ZERO_MARK = "\\rlap{\\smash{$^{\\circ}$}}"   # main-text table: the 95 percent interval includes zero
 
 
 def _pp(x, scale=100):
@@ -344,7 +304,8 @@ def form_table() -> str:
     framing under the production judge and gpt-4o on the same responses (framing_17_11_readout.json
     design (b), prereg 17.11). Columns: the prompt's change from same-run CoT, NoT minus the prompt,
     that change as a share of NoT's, and the registered reading (validation only; the framing rubric's
-    single reading, FRAMING-MIXED, is over the whole pattern and goes in the caption)."""
+    single reading, FRAMING-MIXED, is over the whole pattern and goes in the caption and, since
+    2026-09-25, in each framing block's heading)."""
     d = _load(OUT / "narrative_form_readout.json")
     if d is None:
         return "% narrative_form_readout.json not present\n"
@@ -383,7 +344,7 @@ def form_table() -> str:
                 f"{f['n_raw_ci_excludes_0']}" + (f", removed {removed}" if removed else "") + ";")
         if removed:
             any_dagger = True
-            return DAGGER, note
+            return "\\rlap{" + DAGGER + "}", note   # in a zero-width box so the cell stays aligned (2026-09-24)
         return "", note
 
     first = True
@@ -412,8 +373,12 @@ def form_table() -> str:
         for j in [jk for jk in FRAMING_JUDGES if jk in fr["judges"]]:
             jr = fr["judges"][j]
             out.append("\\addlinespace")
+            # the framing rubric's one registered reading, over both judges together, in each block's heading so
+            # that the table shows it without the caption (legibility review, 2026-09-25)
+            rd = fr.get("reading") or ""
             out.append(f"\\multicolumn{{5}}{{@{{}}l}}{{\\textit{{accepting the asker's framing, "
-                       f"{JUDGE_SHORT.get(j, j)} judge}}}} \\\\")
+                       f"{JUDGE_SHORT.get(j, j)} judge}}"
+                       + (f", reading {rd} over both judges" if rd else "") + "} \\\\")
             nm = jr["not_minus_cot"]
             out.append(f"NoT & {_ci(nm['drop_arm'])} & & $1.00$ & \\\\  % not_minus_cot, pairs {nm['n_pairs']}")
             for key, lab in (("checklist_minus_cot", "checklist"),
@@ -491,7 +456,7 @@ def baselines_table() -> str:
     return "\n".join(out) + "\n"
 
 
-def rep4k_table() -> str:
+def rep4k_table() -> tuple[str, str]:
     """Appendix tab-app-rep4k, two panels. (a) Judged validation, NoT minus CoT per generator under the
     five judges in the 4,096-token regeneration (headline_rep4k_readout.json, prereg 17.10), each
     estimate on two rows (point, then interval) with the generator's pre-declared reading under its
@@ -503,7 +468,7 @@ def rep4k_table() -> str:
     prereg 17.11 RESULTS)."""
     d = _load(OUT / "headline_rep4k_readout.json")
     if d is None:
-        return "% headline_rep4k_readout.json not present\n"
+        return "% headline_rep4k_readout.json not present\n", "% headline_rep4k_readout.json not present\n"
     b = _load(OUT / "headline_rep4k_b_readout.json")
     rs = _load(OUT / "run_stability.json")
     fr = _load(OUT / "framing_17_11_readout.json")
@@ -531,7 +496,8 @@ def rep4k_table() -> str:
            f"judge_panel_full_rep4k_framing.json {fp is not None}",
            LEG_OPEN, "\\setlength{\\tabcolsep}{4pt}",
            "\\textit{(a) Judged validation, NoT $-$ CoT}\\\\[2pt]",
-           "\\begin{tabular}{@{}l" + "c" * nj + "@{}}", "\\toprule"] + _judge_head("generator", judges) + ["\\midrule"]
+           # numbers right-aligned (were centred, legibility pass 2026-09-24)
+           "\\begin{tabular}{@{}l" + "r" * nj + "@{}}", "\\toprule"] + _judge_head("generator", judges) + ["\\midrule"]
     daggered = []
     for gk, gl in GENS:
         v = d["per_generator"].get(gk)
@@ -578,33 +544,51 @@ def rep4k_table() -> str:
     out += ["\\bottomrule", f"% daggered (explained in the caption): {'; '.join(daggered) or 'none'}", "\\end{tabular}"]
     if fr is not None:
         fj = [j for j in FRAMING_JUDGES if j in fr["judges"]]
-        out += ["", "\\medskip", "\\textit{(b) Accepting the asker's framing, CoT and NoT rates and NoT $-$ CoT}\\\\[2pt]",
+        # Legibility review (2026-09-25): panel (b) is written to its own file, figures/tab_rep4k_framing.tex, set
+        # in a second float numbered as a continuation of Table tab-app-rep4k, since with its intervals on the
+        # line below the two panels no longer fit one page ("Float too large for page by 44.5pt").
+        out += [SPLIT, "\\textit{(b) Accepting the asker's framing, CoT and NoT rates and NoT $-$ CoT}\\\\[2pt]",
                 "\\begin{tabular}{@{}l" + "rrr" * len(fj) + "@{}}", "\\toprule",
                 " & " + " & ".join(f"\\multicolumn{{3}}{{c}}{{{JUDGE_SHORT.get(j, j)} judge}}" for j in fj) + " \\\\",
                 "".join(f"\\cmidrule(lr){{{2 + 3 * i}-{4 + 3 * i}}}" for i in range(len(fj))),
                 "generator & " + " & ".join("CoT & NoT & NoT $-$ CoT" for _ in fj) + " \\\\", "\\midrule"]
+        # Legibility review (2026-09-25): each NoT - CoT interval on the line below its point, as in panel (a)
+        # (was inline), so that the two panels of the table share one layout.
         for gk, gl in GENS:
-            cells, notes = [], []
+            cells, ivs, notes = [], [], []
             for j in fj:
                 c = fr["judges"][j]["design_a_per_generator"].get(gk)
                 pr = (fp or {}).get("judges", {}).get(j, {}).get("per_generator", {}).get(gk, {}).get("narrative_cot_rep4k")
                 if not c:
                     cells += ["--", "--", "--"]
+                    ivs += ["", "", ""]
                     continue
                 if pr and abs(pr["drop"] - c["drop_arm"]["point"]) > 1e-9:
                     notes.append(f"WARNING drop mismatch {j}")
                 ra = f"{pr['rate_a']:.3f}" if pr else "--"
                 rb = f"{pr['rate_b']:.3f}" if pr else "--"
-                cells += [ra, rb, _ci(c["drop_arm"])]
+                pt = _norm(c["drop_arm"])
+                cells += [ra, rb, _pp(pt[0])]
+                ivs += ["", "", _iv(pt[1], pt[2])]
                 notes.append(f"{JUDGE_SHORT.get(j, j)} n {c['n_pairs']}")
             out.append(f"{gl} & " + " & ".join(cells) + f" \\\\  % {'; '.join(notes)}")
+            out.append(" & " + " & ".join(ivs) + " \\\\[1pt]")
         out.append("\\midrule")
         pooled = [fr["judges"][j]["design_a_not_minus_cot_pooled"] for j in fj]
-        out.append("pooled & " + " & ".join(f"& & {_ci(p['drop_arm'])}" for p in pooled) + " \\\\"
+        out.append("pooled & " + " & ".join(f"& & {_pp(_norm(p['drop_arm'])[0])}" for p in pooled) + " \\\\"
                    f"  % design_a_not_minus_cot_pooled, pairs {', '.join(str(p['n_pairs']) for p in pooled)}")
+        out.append(" & " + " & ".join(f"& & {_iv(*_norm(p['drop_arm'])[1:])}" for p in pooled) + " \\\\")
         out += ["\\bottomrule", "\\end{tabular}"]
     out += [LEG_CLOSE]
-    return "\n".join(out) + "\n"
+    if SPLIT not in out:
+        return "\n".join(out) + "\n", "% framing_17_11_readout.json not present\n"
+    k, h = out.index(SPLIT), out.index(LEG_OPEN)
+    part_a = out[:k] + [LEG_CLOSE]
+    part_b = out[:h] + ["% This file: panel (b) only (figures/tab_rep4k.tex holds panel (a))."] + [LEG_OPEN] + out[k + 1:]
+    return "\n".join(part_a) + "\n", "\n".join(part_b) + "\n"
+
+
+SPLIT = "%%SPLIT-REP4K%%"
 
 
 def form_main_table() -> str:
@@ -631,11 +615,16 @@ def form_main_table() -> str:
            "% and the four prompting baselines (prereg 17.12, generated one to two days after CoT) in tab-app-baselines.",
            f"% present: framing_17_11_readout.json {fr is not None}",
            LEG_OPEN, "\\setlength{\\tabcolsep}{4.5pt}",
-           "\\begin{tabular}{l" + "r" * len(vj) + ("r" * len(fj)) + "}", "\\toprule",
-           f" & \\multicolumn{{{len(vj)}}}{{c}}{{judged validation}}"
-           + (f" & \\multicolumn{{{len(fj)}}}{{c}}{{accepting the framing}}" if fj else "") + " \\\\",
+           # framing columns of equal width, so that the spanning header does not widen the gpt-4o column alone
+           # (legibility pass, 2026-09-24). Legibility review (2026-09-25): the group headers say that the columns
+           # are judges ("..., by judge"; the caption's generators pooled over are not columns) and the stub head
+           # names the rows ("prompt", was "points"); the framing columns widened from 35pt to 53pt so that
+           # "accepting the framing, by judge" (114.2pt at \\footnotesize) spans them without widening either.
+           "\\begin{tabular}{l" + "r" * len(vj) + (">{\\raggedleft\\arraybackslash}p{53pt}" * len(fj)) + "}", "\\toprule",
+           f" & \\multicolumn{{{len(vj)}}}{{c}}{{judged validation, by judge}}"
+           + (f" & \\multicolumn{{{len(fj)}}}{{c}}{{accepting the framing, by judge}}" if fj else "") + " \\\\",
            f"\\cmidrule(lr){{2-{1 + len(vj)}}}" + (f"\\cmidrule(lr){{{2 + len(vj)}-{1 + len(vj) + len(fj)}}}" if fj else ""),
-           "points & " + " & ".join(j_short(j) for j in vj + fj) + " \\\\", "\\midrule"]
+           "prompt & " + " & ".join(j_short(j) for j in vj + fj) + " \\\\", "\\midrule"]
 
     def row(label, vpick, fpick):
         cells, notes = [], []
@@ -690,11 +679,16 @@ def pushback_table() -> str:
         rows.append((lab, pm["n_common_support"], pm.get("cap"), pm.get("inst"), pm.get("net")))
     pooled = _load(OUT / "pushback_readout_pooled.json")
     out = ["% AUTO-GENERATED from pushback_readout_{nano,llama,grok,pooled}.json (17.9; haiku unread, guard).",
-           "\\begin{tabular}{lrrrr}", "\\toprule",
-           "model & items & capitulation CoT / NoT & re-ask instability CoT / NoT & net NoT $-$ CoT \\\\", "\\midrule"]
+           "% Legibility pass (2026-09-24): CoT and NoT in sub-columns under spanning headers (were 'CoT / NoT'",
+           "% pairs in one cell).",
+           LEG_OPEN,   # equal-width rate columns, so that the wide spanning header does not widen only its last column
+           "\\begin{tabular}{@{}lr*{4}{>{\\raggedleft\\arraybackslash}p{0.95cm}}r@{}}", "\\toprule",
+           " & & \\multicolumn{2}{c}{capitulation} & \\multicolumn{2}{c}{re-ask instability} & net \\\\",
+           "\\cmidrule(lr){3-4}\\cmidrule(lr){5-6}",
+           "model & items & CoT & NoT & CoT & NoT & NoT $-$ CoT \\\\", "\\midrule"]
 
     def fmt(v):
-        return "--" if not v else f"{v['cot']:.2f} / {v['not']:.2f}"
+        return "-- & --" if not v else f"{v['cot']:.2f} & {v['not']:.2f}"
 
     def net(v):
         if not v or not v.get("not_minus_cot"):
@@ -707,7 +701,7 @@ def pushback_table() -> str:
         p = pooled["pooled"]
         out.append("\\midrule")
         out.append(f"pooled & {p['cap']['not_minus_cot']['n_pairs']} & {fmt(p.get('cap'))} & {fmt(p.get('inst'))} & {net(p.get('net'))} \\\\")
-    out += ["\\bottomrule", "\\end{tabular}"]
+    out += ["\\bottomrule", "\\end{tabular}" + LEG_CLOSE]
     return "\n".join(out) + "\n"
 
 
@@ -762,7 +756,8 @@ RUN_HEADS = {"1": "\\shortstack[r]{run 1\\\\original}", "2": "\\shortstack[r]{ru
 
 
 def _run_cell(c):
-    return "" if not c or c.get("drop") is None else \
+    # a run the generator lacks prints a dash, as in every other table (legibility review 2026-09-25; was blank)
+    return "--" if not c or c.get("drop") is None else \
         f"${100 * c['drop']:+.1f}$ $[{100 * c['lo']:+.1f}, {100 * c['hi']:+.1f}]$"
 
 
@@ -880,8 +875,8 @@ def human_anchor_table() -> str:
     (human_anchor_readout.json, prereg 17.11 amendment 2 RESULTS; descriptive). Panel (a) judged
     validation under the five judges, panel (b) acceptance of the asker's framing under the production
     judge and gpt-4o. In panel (a) each entry takes two rows, its point with the reading word and below
-    it its interval; panel (b), two columns, fits with the interval on the same row. The first row of
-    each panel is the judge's rate on the human answers."""
+    it its interval; panel (b), two columns, keeps the interval on the same row, the reading word after it
+    in the same box as in (a). The first row of each panel is the judge's rate on the human answers."""
     d = _load(OUT / "human_anchor_readout.json")
     if d is None:
         return "% human_anchor_readout.json not present\n"
@@ -896,9 +891,20 @@ def human_anchor_table() -> str:
            "% above / below / at and checked against that rule). Human answers' framing scores from",
            "% judge_reference_agreement_framing.json, validation scores from judge_reference_agreement.json (17.8",
            "% amendment 2). CoT is standard_cot_rep (the 2,048-token CoT of the form tests); persona only is advisor_cot.",
-           LEG_OPEN, "\\setlength{\\tabcolsep}{3.5pt}"]
+           # Legibility review (2026-09-25): column padding 6pt (was 3.5pt, whose 7pt gutters ran the intervals
+           # of neighbouring judges together), panel (a)'s two-line rows with their label split over the two
+           # lines, and the reading word printed the same way in both panels, after the estimate in a box of
+           # fixed width (panel (b) had it in a column of its own). Panel (b), two judges, keeps each interval
+           # on its estimate's line: on two lines the table no longer fits one page (by 28.7pt).
+           LEG_OPEN, "\\setlength{\\tabcolsep}{6pt}"]
     panels = [("validation", "(a) Judged validation, prompt $-$ human answers", None),
               ("framing", "(b) Accepting the asker's framing, prompt $-$ human answers", FRAMING_JUDGES)]
+
+    def split_label(al):
+        """A two-word row label over the row's two lines (third-person / rewrite), a one-word one on the first."""
+        a, _, b = al.partition(" ")
+        return a, b
+
     for pi, (rub, title, only) in enumerate(panels):
         R = d["rubrics"].get(rub)
         if not R:
@@ -907,36 +913,40 @@ def human_anchor_table() -> str:
         js = _judges_in(R) if only is None else [j for j in only if j in R]
         if pi:
             out += ["", "\\medskip"]
+        inline = len(js) <= 2   # a two-judge panel keeps the interval on the estimate's line
         out += [f"\\textit{{{title}}}\\\\[2pt]",
-                "\\begin{tabular}{@{}l" + ("rl" if len(js) <= 2 else "c") * len(js) + "@{}}", "\\toprule"] \
-            + (_judge_head("prompt", js) if len(js) > 2 else
-               ["prompt & " + " & ".join(f"\\multicolumn{{2}}{{c}}{{{JUDGE_SHORT.get(j, j)}}}" for j in js) + " \\\\"]) \
+                "\\begin{tabular}{@{}l" + "r" * len(js) + "@{}}", "\\toprule"] \
+            + (["prompt & " + " & ".join(JUDGE_SHORT.get(j, j) for j in js) + " \\\\"] if inline
+               else _judge_head("prompt", js)) \
             + ["\\midrule",
-                "human rate & " + " & ".join((f"\\multicolumn{{2}}{{c}}{{${R[j]['human_rate']:.3f}$}}" if len(js) <= 2
-                                              else f"${R[j]['human_rate']:.3f}$") for j in js) + " \\\\"
-                f"  % human_rate; n_human {', '.join(str(R[j]['n_human']) for j in js)}", "\\midrule"]
-        inline = len(js) <= 2   # a two-judge panel fits with the interval on the same row
+               "human rate & " + " & ".join(f"${R[j]['human_rate']:.3f}$" for j in js) + " \\\\"
+               f"  % human_rate; n_human {', '.join(str(R[j]['n_human']) for j in js)}", "\\midrule"]
         for ak, al in ANCHOR_ARMS:
             cells1, cells2, notes = [], [], []
             for j in js:
                 c = R[j]["pooled"].get(ak)
                 if not c:
-                    cells1.append("-- & " if inline else "--")
+                    cells1.append("--")
                     cells2.append("")
                     continue
                 rd = R[j]["readings"].get(ak)
                 rule = "ABOVE-HUMAN" if c["lo"] > 0 else ("BELOW-HUMAN" if c["hi"] < 0 else "AT-HUMAN")
                 if rd != rule:
                     mism.append(f"{rub} {j} {ak}: {rd} vs {rule}")
-                if inline:   # the reading word in a left-aligned column of its own, so the intervals align
-                    cells1.append(f"{_pp(c['diff'])} {_iv(c['lo'], c['hi'])} & {ANCHOR_WORD.get(rd, rd)}")
+                # right-aligned, the word in a box of fixed width so that the points align (2026-09-24)
+                word = f"~\\makebox[2.5em][l]{{{ANCHOR_WORD.get(rd, rd)}}}"
+                if inline:
+                    cells1.append(f"{_pp(c['diff'])} {_iv(c['lo'], c['hi'])}{word}")
                 else:
-                    cells1.append(f"{_pp(c['diff'])} {ANCHOR_WORD.get(rd, rd)}")
+                    cells1.append(f"{_pp(c['diff'])}{word}")
                 cells2.append(_iv(c["lo"], c["hi"]))
                 notes.append(f"{JUDGE_SHORT.get(j, j)} {rd} pairs {c['n_pairs']} items {c['n_items']}")
-            out.append(f"{al} & " + " & ".join(cells1) + " \\\\  % " + "; ".join(notes))
-            if not inline:
-                out.append(" & " + " & ".join(cells2) + " \\\\[1pt]")
+            if inline:
+                out.append(f"{al} & " + " & ".join(cells1) + " \\\\  % " + "; ".join(notes))
+                continue
+            l1, l2 = split_label(al)
+            out.append(f"{l1} & " + " & ".join(cells1) + " \\\\  % " + f"{al}: " + "; ".join(notes))
+            out.append(f"{l2} & " + " & ".join(cells2) + " \\\\[3pt]")   # 3pt between prompts (2026-09-25)
         out += ["\\bottomrule", "\\end{tabular}"]
     out += [LEG_CLOSE]
     out.insert(10, f"% reading/rule mismatches: {mism or 'none'}")
@@ -970,16 +980,20 @@ def framing_gen_table() -> str:
            "% Rates are shares of answers the judge scores as accepting the asker's framing (1), not challenging",
            "% its premise. No reading is registered per generator (the registered reading, FRAMING-MIXED, is on the",
            "% pooled contrasts of tab_form.tex).",
-           LEG_OPEN, "\\setlength{\\tabcolsep}{2.5pt}",   # 3pt ran 2.4pt past the 397.5pt text width
-           "\\begin{tabular}{@{}lcccccc@{}}", "\\toprule",
-           " & \\multicolumn{4}{c}{change from same-run CoT} & \\multicolumn{2}{c}{NoT $-$ prompt} \\\\",
-           "\\cmidrule(lr){2-5}\\cmidrule(lr){6-7}",
-           "generator & NoT & checklist & narrative only & persona only & checklist & narrative only \\\\",
+           "% Legibility pass (2026-09-24): two stacked panels at default column padding with numbers",
+           "% right-aligned, (a) the four changes from same-run CoT with the judges as row blocks and (b) the two",
+           "% NoT-minus-prompt gaps with the judges as column groups (one table at 2.5pt padding, centred, had its",
+           "% second-line intervals running into each other).",
+           LEG_OPEN,
+           "\\textit{(a) Each prompt's change from same-run CoT}\\\\[2pt]",
+           "\\begin{tabular}{@{}lrrrr@{}}", "\\toprule",
+           "generator & NoT & checklist & narrative only & persona only \\\\",
            "\\midrule"]
+    gaps = {}
     for ji, j in enumerate(fj):
         if ji:
             out.append("\\addlinespace")
-        out.append(f"\\multicolumn{{7}}{{@{{}}l}}{{\\textit{{{JUDGE_SHORT.get(j, j)} judge}}}} \\\\")
+        out.append(f"\\multicolumn{{5}}{{@{{}}l}}{{\\textit{{{JUDGE_SHORT.get(j, j)} judge}}}} \\\\")
         pg = fr["judges"][j].get("design_b_per_generator", {})
         for gk, gl in FORM_GENS:
             v = pg.get(gk)
@@ -992,7 +1006,20 @@ def framing_gen_table() -> str:
                 cells.append(p)
                 if c and field == "drop_arm":
                     pairs.append(f"{ak} {c['n_pairs']}")
-            out += _two_row(gl, "", cells, extra1=f"  % pairs {', '.join(pairs)}")
+            out += _two_row(gl, "", cells[:4], extra1=f"  % pairs {', '.join(pairs)}")
+            gaps.setdefault(gk, {})[j] = cells[4:]
+    out += ["\\bottomrule", "\\end{tabular}", "", "\\medskip",
+            "\\textit{(b) NoT's change minus the prompt's}\\\\[2pt]",
+            "\\begin{tabular}{@{}lrrrr@{}}", "\\toprule",
+            " & " + " & ".join(f"\\multicolumn{{2}}{{c}}{{{JUDGE_SHORT.get(j, j)} judge}}" for j in fj) + " \\\\",
+            "".join(f"\\cmidrule(lr){{{2 + 2 * k}-{3 + 2 * k}}}" for k in range(len(fj))),
+            "generator & " + " & ".join("checklist & narrative only" for _ in fj) + " \\\\",
+            "\\midrule"]
+    for gk, gl in FORM_GENS:
+        if gk not in gaps:
+            continue
+        cells = [c for j in fj for c in gaps[gk].get(j, [None, None])]
+        out += _two_row(gl, "", cells)
     out += ["\\bottomrule", "\\end{tabular}", LEG_CLOSE]
     return "\n".join(out) + "\n"
 
@@ -1062,6 +1089,12 @@ Z3_MODELS = [("llama", "Llama-3.3-70B-Instruct", "Llama"), ("mistral", "Mistral-
 Z3_PROMPTS = [("standard", "brief"), ("narrative_cot", "NoT")]
 
 
+def _crit(x: float) -> str:
+    """A signed criterion to two decimals, with a value that rounds to zero printed 0.00 rather than -0.00
+    (the guard of run_stability_table; legibility review, 2026-09-25)."""
+    return "0.00" if abs(x) < 0.005 else f"{x:+.2f}"
+
+
 def z3_table() -> str:
     """figures/tab_z3.tex from z3_sdt_{llama,mistral,deepseek}.json codings.published. Six rows model x
     prompt; criterion c in each framing, the PERSON shift with its 95 percent item-bootstrap interval,
@@ -1071,24 +1104,32 @@ def z3_table() -> str:
            "% codings.published: '<model>|<prompt>|third_person' and '|as_asker' (criterion, d_prime, hit_rate,",
            "% fa_rate) and decomposition '<model>|<prompt>|PERSON (3rd -> as_asker)' (delta, ci_low, ci_high).",
            "% brief is the unscaffolded four-sentence prompt used on the dispute set (scaffold key standard), not Figure 1's CoT.",
-           "\\begin{tabular}{llrrrrrrr}", "\\toprule",
-           "model & prompt & $c$ third & $c$ writer & shift $[95\\%]$ & $d'$ third & $d'$ writer & hit / FA third & hit / FA writer \\\\",
+           "% Legibility pass (2026-09-24): set at \\footnotesize without the section's \\resizebox (it shrank the",
+           "% table to 0.93, 8.4pt effective); c, d', H and F grouped under the two framings, the shift last,",
+           "% hit and false-alarm rates in columns of their own (were 'hit / FA' pairs), model named once per group.",
+           LEG_OPEN, "\\setlength{\\tabcolsep}{4pt}%",
+           "\\begin{tabular}{@{}llrrrrrrrrr@{}}", "\\toprule",
+           " & & \\multicolumn{4}{c}{third person} & \\multicolumn{4}{c}{user as writer} & \\\\",
+           "\\cmidrule(lr){3-6}\\cmidrule(lr){7-10}",
+           "model & prompt & $c$ & $d'$ & $H$ & $F$ & $c$ & $d'$ & $H$ & $F$ & shift $[95\\%]$ \\\\",
            "\\midrule"]
-    for short, full, label in Z3_MODELS:
+    for mi, (short, full, label) in enumerate(Z3_MODELS):
         z = _load(OUT / f"z3_sdt_{short}.json")
         if z is None:
             missing.append(f"z3_sdt_{short}.json")
             continue
         d = z["codings"]["published"]
-        for pk, pl in Z3_PROMPTS:
+        if mi > 0:
+            out.append("\\addlinespace")
+        for pi, (pk, pl) in enumerate(Z3_PROMPTS):
             a = d[f"{full}|{pk}|third_person"]
             b = d[f"{full}|{pk}|as_asker"]
             s = d["decomposition"][f"{full}|{pk}|PERSON (3rd -> as_asker)"]
-            out.append(f"{label} & {pl} & ${a['criterion']:+.2f}$ & ${b['criterion']:+.2f}$ & "
-                       f"${s['delta']:+.2f}$ $[{s['ci_low']:+.2f}, {s['ci_high']:+.2f}]$ & "
-                       f"{a['d_prime']:.2f} & {b['d_prime']:.2f} & "
-                       f"{a['hit_rate']:.2f} / {a['fa_rate']:.2f} & {b['hit_rate']:.2f} / {b['fa_rate']:.2f} \\\\")
-    out += ["\\bottomrule", "\\end{tabular}"]
+            out.append(f"{label if pi == 0 else ''} & {pl} & ${_crit(a['criterion'])}$ & {a['d_prime']:.2f} & "
+                       f"{a['hit_rate']:.2f} & {a['fa_rate']:.2f} & ${_crit(b['criterion'])}$ & {b['d_prime']:.2f} & "
+                       f"{b['hit_rate']:.2f} & {b['fa_rate']:.2f} & "
+                       f"${s['delta']:+.2f}$ $[{s['ci_low']:+.2f}, {s['ci_high']:+.2f}]$ \\\\")
+    out += ["\\bottomrule", "\\end{tabular}" + LEG_CLOSE]
     out.insert(4, f"% missing at generation time: {missing or 'none'}")
     return "\n".join(out) + "\n"
 
@@ -1121,43 +1162,55 @@ def interjudge_table() -> str:
            "% (scripts/analyze_judge_test_retest.py; draw 1 = production scorer, draw 2 = 17.8 full-text pass,",
            "% same model, rubric and max_tokens, responses of at most 4,000 characters).",
            f"% judge_test_retest.json present: {t is not None}",
-           "\\begin{tabular}{lrrrrrr}", "\\toprule",
+           "% Legibility pass (2026-09-24): set at \\footnotesize without the section's \\resizebox (it shrank the",
+           "% table to 0.81, 7.3pt effective); each kappa's interval on the line below it, and the test-retest row",
+           "% labelled 'haiku, retest' (the caption defines it).",
+           LEG_OPEN, "\\setlength{\\tabcolsep}{5pt}%",
+           "\\begin{tabular}{@{}lrrrrrr@{}}", "\\toprule",
            "judge & rate & agreement & $\\kappa$, all & $\\kappa$, CoT & $\\kappa$, NoT & $\\kappa_{\\max}$ \\\\",
            "\\midrule"]
 
     def kci(c, k="kappa", lo="kappa_lo", hi="kappa_hi"):
-        return f"{c[k]:.3f} [{c[lo]:.3f}, {c[hi]:.3f}]"
+        """(point, interval) of a kappa, printed on two table lines."""
+        return f"{c[k]:.3f}", f"[{c[lo]:.3f}, {c[hi]:.3f}]"
 
     def tci(c):
         ci = c.get("kappa_ci95") or [float("nan"), float("nan")]
-        return f"{c['kappa']:.3f} [{ci[0]:.3f}, {ci[1]:.3f}]"
+        return f"{c['kappa']:.3f}", f"[{ci[0]:.3f}, {ci[1]:.3f}]"
     if t is not None:
         p = t["pooled"]
         ba = t.get("by_arm", {})
-        cot = tci(ba["standard_cot"]) if "standard_cot" in ba else "--"
-        nott = tci(ba["narrative_cot"]) if "narrative_cot" in ba else "--"
-        out.append(f"{JUDGE_SHORT.get(prod, prod)}, test-retest & {prod_rate:.3f} & {p['agreement']:.3f} & "
-                   f"{tci(p)} & {cot} & {nott} & -- \\\\"
+        cot = tci(ba["standard_cot"]) if "standard_cot" in ba else ("--", "")
+        nott = tci(ba["narrative_cot"]) if "narrative_cot" in ba else ("--", "")
+        pk = tci(p)
+        out.append(f"{j_short(prod)}, retest & {prod_rate:.3f} & {p['agreement']:.3f} & "
+                   f"{pk[0]} & {cot[0]} & {nott[0]} & -- \\\\"
                    f"  % n {p['n']} identical-input pairs, {p['n_items']} items; rates draw 1 {p['rate_draw1']:.3f}, "
                    f"draw 2 {p['rate_draw2']:.3f}; CoT n {ba.get('standard_cot', {}).get('n')}, NoT n "
                    f"{ba.get('narrative_cot', {}).get('n')}")
+        out.append(f" & & & {pk[1]} & {cot[1]} & {nott[1]} & \\\\")
         out.append("\\midrule")
     for j in judges:
         k = d["kappa_vs_production"][j]
         a = k["all"]
-        out.append(f"{JUDGE_SHORT.get(j, j)} & {a['rate_1']:.3f} & {a['agreement']:.3f} & {kci(a)} & "
-                   f"{kci(k['standard_cot'])} & {kci(k['narrative_cot'])} & {a['kappa_max_given_marginals']:.3f} \\\\"
+        ka, kc, kn = kci(a), kci(k["standard_cot"]), kci(k["narrative_cot"])
+        out.append(f"{JUDGE_SHORT.get(j, j)} & {a['rate_1']:.3f} & {a['agreement']:.3f} & {ka[0]} & "
+                   f"{kc[0]} & {kn[0]} & {a['kappa_max_given_marginals']:.3f} \\\\"
                    f"  % n {a['n']} (CoT {k['standard_cot']['n']}, NoT {k['narrative_cot']['n']}), items {a['n_items']}")
-    out += ["\\bottomrule", "\\end{tabular}"]
+        out.append(f" & & & {ka[1]} & {kc[1]} & {kn[1]} & \\\\[1pt]")
+    out += ["\\bottomrule", "\\end{tabular}" + LEG_CLOSE]
     return "\n".join(out) + "\n"
 
 
 KNOCK_GENS = [("claude-haiku-4-5", "haiku"), ("grok-4-1-fast-reasoning", "grok"), ("gpt-5.4-nano", "nano")]
 KNOCK_ARMS = [("standard_cot", "CoT"), ("narrative_cot", "intact NoT"),
-              ("not_drop_stakeholders", "NoT without stakeholders"),
-              ("not_drop_consequences", "NoT without consequences"),
-              ("not_drop_uncertainty", "NoT without uncertainty"),
-              ("not_commit_first", "NoT, decision first")]
+              ("not_drop_stakeholders", "without stakeholders"),
+              ("not_drop_consequences", "without consequences"),
+              ("not_drop_uncertainty", "without uncertainty"),
+              ("not_commit_first", "decision first")]
+# Row labels shortened from "NoT without X" and "NoT, decision first" in the legibility pass (2026-09-24);
+# the caption of Table tab-app-knockout says that each is NoT with section X removed or its decision moved
+# to the front (scripts/analyze_knockout_social.py docstring).
 
 
 def knockout_table() -> str:
@@ -1179,8 +1232,12 @@ def knockout_table() -> str:
            "% .manski_lo / .manski_hi (points; every unscored item of 150 imputed first as not validating,",
            "% then as validating; a single number where lo = hi). Scores are the production judge's full-text",
            "% re-scores; every generator's CoT and intact NoT are the June cells, the 17.3 comparators.",
-           "\\begin{tabular}{llrrrrr}", "\\toprule",
-           "generator & condition & non-response & compliance & mean chars & minus intact NoT & bracket \\\\",
+           "% Legibility pass (2026-09-24): set at \\footnotesize without the section's \\resizebox (it shrank the",
+           "% table to 0.85, 7.6pt effective), 4pt column padding and the long headers over two lines.",
+           LEG_OPEN, "\\setlength{\\tabcolsep}{4pt}%",
+           "\\begin{tabular}{@{}llrrrrr@{}}", "\\toprule",
+           " & & non- & & mean & minus & \\\\",
+           "generator & condition & response & compliance & chars & intact NoT & bracket \\\\",
            "\\midrule"]
     for gi, (gk, gl) in enumerate(KNOCK_GENS):
         g = k.get(gk, {})
@@ -1195,8 +1252,8 @@ def knockout_table() -> str:
                 diff = f"${kmi['complete_case']:+.1f}$"
                 lo, hi = kmi["manski_lo"], kmi["manski_hi"]
                 br = f"${lo:+.1f}$" if abs(hi - lo) < 0.05 else f"$[{lo:+.1f}, {hi:+.1f}]$"
-            else:
-                diff, br = "", ""
+            else:   # CoT and intact NoT: not applicable, a dash as in every other table (2026-09-25; was blank)
+                diff, br = "--", "--"
             out.append(f"{gl if first else ''} & {al} & {a['nonresponse_pct']:.1f}\\% & {comp} & "
                        f"{a['mean_len_chars']:,.0f} & {diff} & {br} \\\\"
                        f"  % n_nonempty {a['n_nonempty']}, n_scored {a['n_scored']}, rate "
@@ -1204,7 +1261,7 @@ def knockout_table() -> str:
             first = False
         if gi < len(KNOCK_GENS) - 1:
             out.append("\\addlinespace")
-    out += ["\\bottomrule", "\\end{tabular}"]
+    out += ["\\bottomrule", "\\end{tabular}" + LEG_CLOSE]
     return "\n".join(out) + "\n"
 
 
@@ -1244,7 +1301,7 @@ def collective_prompts_figure() -> str:
         lines = []
         for raw in text.rstrip("\n").split("\n"):
             lines.extend(textwrap.wrap(raw, 78, break_long_words=False, break_on_hyphens=False,
-                                       subsequent_indent="  ") or [""])
+                                       subsequent_indent="    ") or [""])
         return "\\begin{verbatim}\n" + "\n".join(lines) + "\n\\end{verbatim}\n"
 
     blocks = [
@@ -1323,16 +1380,14 @@ def collective_prompts_figure() -> str:
 
 def main() -> int:
     FIG.mkdir(parents=True, exist_ok=True)
-    # figures/fig_judge_panel.tex (Figure 2) is NOT written here while it is being redesigned as a heatmap
-    # by scripts/iclr_fig_judge_heatmap.py (commit 26cc343); a later pass wires that script in and removes
-    # judge_panel_figure(). Until then the committed file stands untouched (instruction of 2026-09-24).
-    outputs = {"tab_routing.tex": routing_table(),
+    outputs = {"fig_judge_panel.tex": heatmap_tikz(*heatmap_load()),  # Figure 2, the approved heatmap
+               "tab_routing.tex": routing_table(), "tab_routing_ci.tex": routing_ci_table(),
                "tab_form.tex": form_table(), "tab_form_main.tex": form_main_table(),
                "tab_baselines.tex": baselines_table(), "tab_human_anchor.tex": human_anchor_table(),
                "tab_framing_gen.tex": framing_gen_table(),
                "fig_framing_rubric.tex": framing_rubric_figure(),
                "fig_baseline_prompts.tex": baseline_prompts_figure(),
-               "tab_rep4k.tex": rep4k_table(), "tab_pushback.tex": pushback_table(),
+               "tab_pushback.tex": pushback_table(),
                "tab_seat.tex": seat_table(), "tab_runs.tex": runs_table(),
                "tab_run_stability.tex": run_stability_table(["claude-haiku-4-5", "gpt-4o"]),
                "tab_run_stability_b.tex": run_stability_table(["gpt-5.4-nano", "Llama-3.3-70B-Instruct",
@@ -1341,6 +1396,7 @@ def main() -> int:
                "tab_interjudge.tex": interjudge_table(),
                "tab_knockout_readouts.tex": knockout_table(),
                "fig_collective_prompts.tex": collective_prompts_figure()}
+    outputs["tab_rep4k.tex"], outputs["tab_rep4k_framing.tex"] = rep4k_table()   # panels (a) and (b), 2026-09-25
     for name, text in outputs.items():
         (FIG / name).write_text(text)
         print("wrote", FIG / name)
