@@ -782,10 +782,15 @@ def collective_prompts_figure() -> str:
         ("Marker lines parsed from the seats' and moderator's text", None,
          "\n".join([m.MOD_MARKER, m.UNRESOLVABLE_MARKER, m.ADDRESSED_MARKER,
                     "SYNTHESIS:", "PROPOSAL:", "VERDICT: <LABEL>"])),
-        ("Routing judge (sonnet), system prompt (run_crowdgold_aita.build_system, scaffold standard)",
+        # scaffold-04 (clarity round 3, 2026-09-24): was "Routing judge (sonnet), system prompt (...,
+        # scaffold standard)"; "scaffold standard" read as the Standard chain-of-thought prompt of Figure
+        # fig:prompt, and Section sec-scaffold points here for the solo's prompt too (Appendix
+        # app-collective "Pairing with the solo"); the next note's semicolon is now ", and" (style rule)
+        ("Brief unscaffolded prompt with neither NoT nor CoT, the system prompt of the solo and of the "
+         "routing judge, sonnet (run_crowdgold_aita.build_system)",
          None, build_system(scaffold="standard", allow_unresolved=allow)),
         ("Routing judge, user turn", "The request wrapper above for the debate's framing, with the "
-         "same account, answered three times; the judge's verdict is the majority of the three "
+         "same account, answered three times, and the judge's verdict is the majority of the three "
          "(YTA and ESH coded at fault, NTA and NAH not) and a tie keeps the collective's verdict "
          "(verify_pillar3_headline.load and routed_ok).", None),
         ("Validation judge of Section~SECSINGLE, system prompt (SCORER_SYSTEM)", None, SCORER_SYSTEM),

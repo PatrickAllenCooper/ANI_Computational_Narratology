@@ -3,8 +3,15 @@
 
 This appendix gives the full evidence behind the single-agent validation and
 pushback results, the collective's dissent mechanism and routing against the
-solo model and the narrated-versus-plain-seat comparison of the collective,
-and records every correction and deviation from the pre-registration.
+solo model and the collective's comparison of narrated seats, under NoT, with
+plain seats, under CoT, and records every correction and deviation from the
+pre-registration.
+The pre-registration is our own log, one append-only document kept under
+version control rather than filed with a public registry, so the order of
+each entry and its results rests on the log's dates and commit history. A
+test's registration is its entry there, written before the test's analysis
+and before any model call the test made after the log opened, except where
+Appendix~\ref{app-prereg} records otherwise.
 Model names are shortened after first use. claude-haiku-4-5 (haiku)
 \citep{anthropic_haiku45} and claude-sonnet-4-6 (sonnet)
 \citep{anthropic_sonnet46} are Anthropic models, gpt-5.4-nano (nano)
@@ -26,15 +33,17 @@ NoT is the Narration-of-Thought system prompt and CoT the one-line standard
 chain-of-thought prompt (Figure~\ref{fig:prompt}). The single-agent outcome is
 the validation rate, the share of responses a judge model scores as
 emotionally validating under the rubric of the ELEPHANT benchmark
-\citep{cheng25elephant}, which asks whether a response shows understanding,
-validates the person's perspective and expresses care. The items are 150 of
-the benchmark's 3,027 open-ended personal-advice questions, drawn once as a
-simple random sample without replacement (a shuffle of the question file
-seeded with 44, keeping the first 150), and every ELEPHANT test draws on
-these same 150.
+\citep{cheng25elephant}, which asks whether a response shows understanding
+of the person's feelings, respect for their perspective and care. The items
+are 150 of the benchmark's 3,027 open-ended personal-advice questions, the
+rows of the file OEQ.csv in its released data, drawn once as a simple random
+sample without replacement (a shuffle of the file's rows by Python's standard
+random-number generator seeded with 44, keeping the first 150), and every
+ELEPHANT test draws on these same 150.
 A drop is the NoT rate minus the CoT rate in percentage points, so a negative
-drop means NoT validates less. For one generator under one judge it is
-computed on the $n$ items whose responses under both prompts are non-empty
+drop means NoT validates less. For one generator, one of the seven models
+whose responses are judged, and one judge, it is computed on the $n$ items
+whose responses under both prompts are non-empty
 and were each scored 0 or 1 by that judge, as
 $d = \tfrac{100}{n}\sum_{i=1}^{n}(s_i^{\mathrm{NoT}} - s_i^{\mathrm{CoT}})$
 with $s_i$ the judge's binary score on item $i$, and no drop is read on fewer
@@ -66,8 +75,12 @@ the share of the reduction taken back is the knockout's rise above NoT
 divided by CoT's excess over NoT. In the collective, the lift is the error
 rate on debates in which at least two seats object minus the error rate on
 those in which at most one does, a statement that the collective is wrong so
-many times as often gives the ratio of the two rates, and the lift's
-intervals, clustered on items, take 4,000 draws.
+many times as often gives the ratio of the two rates, and every interval of
+the collective, on the lift, on routing and on the comparison with the solo,
+takes 4,000 draws that keep all debates of an item together, except the
+contrast of opposed and identical seats, which takes 3,000, and the comparison
+of narrated and plain seats, which has its own estimator
+(Appendices~\ref{app-collective} and~\ref{app-seat}).
 
 \begin{table}[t]
 \centering
@@ -89,8 +102,8 @@ grok (grok-4-1-fast-reasoning), Llama (Llama-3.3-70B-Instruct), Mistral
 claim & where it holds & where it fails or is qualified & registered reading \\
 \midrule
 NoT lowers judged validation of the asker &
-all seven generators under the production judge (13 to 63 points regenerated, 19 to 70 on the original responses), six under gpt-4o, five under nano &
-holds on only one or two generators under the Llama and grok judges, which rate most answers validating either way, sonnet reversed under the four other judges in the regeneration, all five judges agree on Llama alone &
+all seven generators under the production judge (13 to 63 points regenerated, 19 to 70 on the original responses), six under gpt-4o, five under the nano judge &
+holds on only one or two generators under the Llama and grok judges, which rate most answers validating either way, sonnet reversed under the four other judges in the regeneration, all five judges agree on Llama alone, and sonnet's second 4,096-token run puts even the production judge's interval across zero ($-4.7$ $[-13.3, +3.3]$) &
 judge-dependent, holds under every judge on Llama only \\
 \addlinespace
 its structured content, not its narrative form, carries the reduction &
@@ -100,23 +113,23 @@ checklist better and content adds under every judge, persona never lowers, lengt
 \addlinespace
 NoT gives way more under pushback on a verdict &
 raw capitulation 0.37 against 0.22 pooled over nano, Llama and grok, also where the crowd found the user at fault &
-net of NoT's own instability $+5.2$ $[-1.7, +12.2]$, carried by Llama with nano and grok near the floor, haiku unread after failing its no-verdict guard &
+net of NoT's own instability $+5.2$ $[-1.7, +12.2]$, carried by Llama with nano and grok near the floor, haiku not read, 14.1 percent of its NoT replies to the pushback giving no verdict against a registered limit of 5 percent &
 null on the primary, NoT worse on raw capitulation \\
 \addlinespace
 a second objection flags the collective's errors &
 grok, wrong 9.8 times as often on verdicts blaming one party, Mistral, DeepSeek and Llama at 6.2, 2.3 and 1.5 times, each lift's interval excluding zero &
-haiku, 1.5 times with an interval including zero, and the collective is below its own solo on four of five models and indistinguishable from it on haiku &
+haiku, 1.5 times with an interval including zero, and the collective is below its own solo on four of five models and indistinguishable from it on haiku, the argument behind the flag, each advocate objecting mainly when its side loses, supported on grok alone, and on Mistral the flag firing on 88 percent of debates &
 lift excludes zero on four of five models \\
 \addlinespace
 routing flagged debates to a stronger judge raises accuracy &
 over the collective on all five models and on grok with the exchange cut, $+3.7$ to $+21.4$ points, $+7.0$ $[+4.8, +9.4]$ on grok &
-above the solo only on Mistral, indistinguishable from it on grok and haiku, below it on Llama and DeepSeek, and below sonnet answering every case on all five &
+above the solo only on Mistral, indistinguishable from it on grok and haiku, below it on Llama and DeepSeek, and below sonnet answering every case on all five, with 4.9 of grok's 7.0 points from verdicts blaming both parties or neither, where objections show no detectable lift, and, in routing the solo's own answers, its sample disagreement doing at least as well as the flag on every model but Mistral &
 gain over the collective everywhere, below sonnet answering every case on grok \\
 \addlinespace
-plain chain-of-thought seats make the collective more accurate than narrated ones &
-grok and Llama, the two models of the registered comparison, plain more accurate by 2.0 and 4.2 points, the grok sensor surviving at 6.4 times &
-narration raises grok's fire rate and routing gain ($+1.6$ $[+0.0, +3.3]$) without raising routed accuracy, Llama's plain-seat sensor under-gated and not read, and on haiku, registered later, plain better only on routed accuracy at matched coverage, its collective-accuracy interval including zero &
-plain better on both registered models \\
+CoT seats make the collective more accurate than NoT seats &
+grok and Llama, the two models of the registered comparison, CoT seats more accurate by 2.0 and 4.2 points, the grok sensor surviving at 6.4 times &
+NoT seats raise grok's fire rate and routing gain ($+1.6$ $[+0.0, +3.3]$) without raising routed accuracy, Llama's CoT-seat sensor not read, its 53 flagged debates under the registered minimum of 60, and on haiku, registered later, CoT seats better only on routed accuracy at matched coverage, its collective-accuracy interval including zero &
+CoT seats better on both registered models \\
 \addlinespace
 \multicolumn{4}{@{}p{13.6cm}@{}}{\todo{PILLAR 2 (co-author): the theory-of-mind claim, where it holds, where it fails and its registered reading.}} \\
 \bottomrule
@@ -151,7 +164,9 @@ comparison carry no correction (Appendix~\ref{app-seat}). A reading that
 needs the same result under several judges at once, as a judge-robust reading
 does, is no easier to reach than that result under any one of them, so it
 needs no correction across judges.
-Every reading used below is defined here and nowhere else. For the
+Every reading used below is defined here, and any later restatement repeats
+this definition.
+For the
 judge panel (Appendix~\ref{app-judges}), JUDGE-ROBUST means a negative drop
 with an interval excluding zero on at least six of the seven generators under
 every judge, a threshold written after the withdrawn comparison of
@@ -207,8 +222,9 @@ collective's own accuracy and its routed accuracy at matched coverage on
 each of the two models the rule was registered for, grok and Llama, and
 returns the first of four readings that holds. Routed accuracy is the
 accuracy once the verdict of each flagged debate, one with at least two
-objecting seats, is replaced by sonnet's majority of three, and the routing
-gain is routed minus collective accuracy. The fire rate is the share of
+objecting seats, is replaced by the majority of three answers sonnet gave
+without the debate, the collective's verdict standing where those answers tie
+or none parses, and the routing gain is routed minus collective accuracy. The fire rate is the share of
 debates flagged, and matched coverage first thins the flags of the
 collective that fires more, at random and averaging over 200 draws, to the
 other's fire rate (Table~\ref{tab-app-seat}).
@@ -223,28 +239,47 @@ For the one-sentence instruction test recorded in Appendix~\ref{app-prereg},
 STRUCTURE-NEEDED is the registered branch for an instruction that produces no
 drop from CoT with an interval excluding zero, and REVERSED, a label added
 after the run, names a rise with an interval excluding zero.
+For the section-knockout test (Appendix~\ref{app-form}), the readings apply
+to the pooled shares of the reduction taken back, defined above, and the
+analysis returns the first that holds. COUNTERPARTY means the stakeholder or
+the consequence share has an interval wholly above one half and the
+uncertainty share an interval wholly below it, HEDGING-REGISTER means the
+uncertainty share exceeds the other two and has an interval wholly above zero
+while theirs lie wholly below one half, NEITHER, read as no single section
+carrying part of the reduction on its own, means that no share has an
+interval wholly above a quarter, and MIXED means any other pattern. The test
+returned NEITHER. The condition that moves NoT's decision section first is
+read apart from the shares, COMMITMENT-LOADED meaning that its change from
+intact NoT has an interval excluding zero, and otherwise the position is read
+as inert, as it was.
 
 \subsection{Five judges and agreement with the benchmark's labels}
 \label{app-judges}
 
+Scored by five judges, NoT's reduction in the validation rate appears on all
+seven generators under the production judge but on Llama alone under all
+five, and gpt-4o, the judge that agrees best with the benchmark's own labels,
+finds it on six of the seven.
+
 \paragraph{Scoring procedure.}
-The panel asks whether the reduction belongs to the answers or to the model
-that judges them. A judge's score is one model's reading of the rubric, and
+The panel asks whether the reduction is a property of the answers, which any
+judge should then see, or of the model that judges them. A judge's score is one model's reading of the rubric, and
 model judges are known to favour their own generations
 (Section~\ref{sec-related}), so each contrast in this subsection is read
 under five judges and reported per judge. The production judge, haiku, is
 itself one of the seven generators and shares a developer, Anthropic, with
 sonnet, so the same responses were also scored by four further judges,
 gpt-4o and nano from OpenAI, Llama from Meta and grok from xAI, three of them
-also generators. The earlier single-agent results had been scored by the
-production judge. Two earlier alternate-judge checks, one adding nano and
-Llama as judges and a later one adding grok, had their tables withdrawn
-because the new judge re-scored only part of the responses (below and
-Appendix~\ref{app-prereg}), and gpt-4o was added with this panel as the one
-judge that is not also a generator. The nano,
+also generators. The nano,
 Llama and grok judges thus score their own responses among the others, and
 gpt-4o shares its developer with nano, so only the Mistral and DeepSeek
-responses meet no judge from their own developer.
+responses meet no judge from their own developer. Before this panel, the
+single-agent results had been scored by the production judge. Two
+alternate-judge checks, one adding nano and Llama as judges and a later one
+adding grok, had their tables withdrawn because the new judge re-scored only
+part of the responses (below and Appendix~\ref{app-prereg}), and gpt-4o was
+added with this panel as the one judge that is not also a generator.
+
 The system turn is the fixed line ``Judge the advice. Just output the number
 (0 or 1).'' and the user turn is ELEPHANT's emotional-validation instruction,
 copied verbatim from the benchmark's released scorer and printed with the
@@ -253,40 +288,6 @@ each in full. The instruction defines emotional validation as understanding
 the other person's emotions and feelings, names understanding, direct
 validation of their perspective and care as its elements, and asks for 1 if
 the response is emotionally validating and 0 if it is not.
-The generator received the question unchanged as its user turn under the NoT
-or CoT system prompt, once per item and prompt at the decoding settings of
-Appendix~\ref{app-cost}, and the response is its whole visible output, so the
-judge reads NoT's narrated sections and CoT's written steps as well as the
-final answer, though not the hidden reasoning of nano and grok, reasoning
-models that reason internally before writing the visible answer, which alone
-is stored and scored. A generation request that returned empty text was
-repeated at most twice, and a response still empty after the third attempt
-counts as empty. Every response, short or
-long, is scored in full by every judge, the production judge included, so
-the five sets of scores differ only in the judge. The production scorer's
-first pass had instead shown the judge only the first 4,000 characters of
-each response, which cut the closing decision from most NoT responses and
-far fewer CoT ones, and the withdrawn alternate-judge tables had re-scored
-with the new judge only the responses over that length, so their drops set a
-mostly haiku-scored CoT rate against a mostly alternate-scored NoT rate
-(Appendix~\ref{app-prereg}).
-The production, nano, Llama and grok judges had already scored the responses
-over 4,000 characters in full, the production judge when its first pass was
-corrected and the other three in the withdrawn tables, and, as registered,
-those scores were reused.
-Each of the four scored the other 815 responses, all but one of at most 4,000
-characters, on 22 September 2026, the date of every grok-judge and gpt-4o
-score.
-The reused scores of the nano and Llama judges date from 21 September, and
-the production judge's from 18 August 2026 on the four original generators
-and 21 September on the other three, so, because far more NoT than CoT
-responses run past 4,000 characters, 820 of the 983 NoT scores but 369 of the
-1,021 CoT scores under each of these three judges come from an earlier pass.
-The test-retest check below measures how far the production judge's score
-moves between an earlier pass and the 22 September pass on byte-identical
-inputs, and the regenerated responses of Appendix~\ref{app-rep4k}, on which
-the headline rests, were scored by every judge under both prompts within the
-same two days, 22 and 23 September.
 The first 0 or 1 in the judge's reply is its score, 1 meaning validating,
 and a reply in which no 0 or 1 can be found, which we call unparsed, is left
 out. Each judge scores each response once, the production judge, gpt-4o and
@@ -295,6 +296,53 @@ within 8,192 completion tokens and grok within 2,048, at the decoding
 settings of Appendix~\ref{app-cost}, and no judge call sets the temperature to
 zero, so a repeated call on the same text can return a different score, the
 variation the production judge's test-retest check below measures.
+The generator received the question unchanged as its user turn under the NoT
+or CoT system prompt, once per item and prompt at the decoding settings of
+Appendix~\ref{app-cost}, and the response is its whole visible output, so the
+judge reads NoT's narrated sections and CoT's written steps as well as the
+final answer, though not the hidden reasoning of nano and grok, reasoning
+models that reason internally before writing the visible answer, which alone
+is stored and scored. The responses scored here are the original responses
+of Section~\ref{sec-single}, generated in June 2026 for haiku, sonnet, nano
+and grok and on 21 September 2026 for Llama, Mistral and DeepSeek, under caps
+of 1,024 tokens for CoT and 2,048 for NoT, and of 2,048 for nano under both
+prompts, which cut many of them short, a defect that
+Appendix~\ref{app-rep4k} describes and removes by generating the responses
+again at a higher cap.
+A generation request that returned empty text was
+repeated at most twice, and a response still empty after the third attempt
+counts as empty. Every response, short or
+long, is scored in full by every judge, the production judge included, so
+the five sets of scores rest on the same input and differ in the judge and,
+where earlier full-text scores were reused (below), in the date of the call.
+The production scorer's
+first pass had instead shown the judge only the first 4,000 characters of
+each response, which cut the closing decision from most NoT responses and
+far fewer CoT ones, and the withdrawn alternate-judge tables had re-scored
+with the new judge only the responses over that length, so their drops set a
+mostly production-judge-scored CoT rate against a mostly alternate-scored NoT rate
+(Appendix~\ref{app-prereg}).
+
+Not every score behind Table~\ref{tab-app-judge-drops} comes from the same
+scoring pass or date.
+The production, nano, Llama and grok judges had already scored the responses
+over 4,000 characters in full, the production judge when its first pass was
+corrected and the other three in the withdrawn tables, and, as registered,
+those scores were reused.
+Each of the four scored the other 815 responses, all but one of at most 4,000
+characters, on 22 September 2026, the date of every grok-judge and gpt-4o
+score.
+The reused scores of the nano and Llama judges date from 21 September, and
+the production judge's from 18 August 2026 on haiku, sonnet, nano and grok
+and 21 September on the other three, so, because far more NoT than CoT
+responses run past 4,000 characters, 820 of the 983 NoT scores but 369 of the
+1,021 CoT scores under each of these three judges come from an earlier pass.
+The test-retest check below measures how far the production judge's score
+moves between an earlier pass and the 22 September pass on byte-identical
+inputs, and the regenerated responses of Appendix~\ref{app-rep4k}, on which
+the paper's headline numbers rest, were scored by every judge under both prompts within the
+same two days, 22 and 23 September.
+
 Of the 2,100 responses, seven generators by two prompts by 150 items, 96 are
 empty and are left out, 39 of them nano's (34 under NoT), whose hidden
 reasoning could use up its 2,048-token budget before any answer was written
@@ -311,8 +359,9 @@ matters most on nano, whose original NoT run left 34 of 150 responses empty
 (Appendix~\ref{app-rep4k}).
 As registered, non-response is also bounded by scoring every response without
 a score first in the way most favourable to a reduction and then in the way
-least favourable. On the production judge's earlier unpaired scores described
-under Results below, this bound puts nano's drop between $-50.0$ and $-24.0$
+least favourable. On the production judge's drops as first recorded in the
+registration log, computed without pairing and compared with
+Table~\ref{tab-app-judge-drops} under Results below, this bound puts nano's drop between $-50.0$ and $-24.0$
 points, below zero at both ends, and is at most 12 points wide on every other
 generator, and the regeneration of Appendix~\ref{app-rep4k} leaves only three
 of nano's responses per prompt missing.
@@ -325,7 +374,7 @@ contrast. One, as amended before any call, flags but does not drop a judge
 with more than 5 percent unparsed replies, and the largest unparsed share was
 0.3 percent. The other withholds any drop on fewer than 20 paired items, and
 the smallest paired count was 116. Unparsed judge outputs were 0.0 percent for
-haiku, gpt-4o and nano and 0.3 percent for the Llama and grok judges, and
+the production judge, gpt-4o and nano and 0.3 percent for the Llama and grok judges, and
 one Llama-judge call was lost to a rate limit.
 
 \paragraph{Results.}
@@ -370,29 +419,32 @@ whose responses it could favour as its own or its developer's, are the ones
 on which the other judges support its reduction least. Sonnet's reduction is
 confirmed by no other judge, and haiku's only by gpt-4o.
 
-The full-text scoring behind Table~\ref{tab-app-judge-drops} reproduces, to
-within 3.0 points on every generator but nano, the production-judge drops
-first recorded in the registration log, which were computed on all responses
-in each condition without pairing, from stored scores for responses of at
-most 4,000 characters and fresh full-text scores for longer ones, after the
-judge-input correction described in Appendix~\ref{app-prereg}. Those earlier
-drops were haiku $-26.7$, reproduced exactly, grok $-36.0$ against $-35.2$
-here, Llama $-69.9$ against $-70.2$, Mistral $-58.2$ against $-57.6$,
-DeepSeek $-45.5$ against $-46.1$, sonnet $-22.3$ against $-19.3$, the
-largest difference, and nano $-41.4$ against $-37.9$ on its 116 paired items,
-a gap that reflects the pairing. Their range of 22 to 70 points, a relative
-reduction of 31 to 87 percent, is the one the log recorded, and the main text
-quotes instead the full-text scoring of Table~\ref{tab-app-judge-drops} and
-the regenerated responses of Appendix~\ref{app-rep4k}.
+The main text quotes the full-text scoring of Table~\ref{tab-app-judge-drops}
+and the regenerated responses of Appendix~\ref{app-rep4k}, not the
+production-judge drops first recorded in the registration log, which were
+computed on all responses in each condition without pairing, from stored
+scores for responses of at most 4,000 characters and fresh full-text scores
+for longer ones, after the first pass's cut of the judge's input at 4,000
+characters was corrected (Appendix~\ref{app-prereg}). Their range was 22 to
+70 points, a relative reduction of 31 to 87 percent, and
+Table~\ref{tab-app-judge-drops} reproduces them to within 3.0 points on every
+generator but nano. Those earlier drops were haiku $-26.7$, reproduced
+exactly, grok $-36.0$ against $-35.2$ here, Llama $-69.9$ against $-70.2$,
+Mistral $-58.2$ against $-57.6$, DeepSeek $-45.5$ against $-46.1$, sonnet
+$-22.3$ against $-19.3$, the largest difference, and nano $-41.4$ against
+$-37.9$ on its 116 paired items, a gap that reflects the pairing.
 
 The two judges that find little or no reduction are the two that rate most
 responses validating, the pattern a registered acquiescence screen was meant
 to catch in a judge that calls nearly every response validating whatever it
-says. Of the fourteen validation rates under a judge, one for
+says. Such a judge would score the answers of both prompts as validating, so
+its failure to find a reduction would say little about the answers, and the
+screen was registered to exclude it before its drops were read.
+Of the fourteen validation rates under a judge, one for
 each generator under each prompt, each over all of that generator's scored
 responses under that prompt, 11 (79 percent) exceed 0.85
 under the Llama judge and 9 (64 percent) under the grok judge, against 7
-percent under haiku and gpt-4o and none under the nano judge, and the Llama
+percent under the production judge and gpt-4o and none under the nano judge, and the Llama
 judge's fourteen rates span only 0.17, or 0.21 on the paired items of
 Table~\ref{tab-app-judge-rates}.
 The screen would have excluded any judge for which at least 80 percent of
@@ -400,9 +452,9 @@ these fourteen rates, that is 12 or more, exceeded 0.85, or whose fourteen
 rates spanned less than 0.20 from lowest to highest, which here means the
 Llama judge alone, through the span of its rates, 0.17, since its 11 rates
 above 0.85 fall one short of 12. An adversarial review of the registrations
-recorded before any judge-panel call, the pre-spend review of
-Appendix~\ref{app-prereg}, removed the screen, and all five judges are read,
-for two reasons. The screen is computed on the very rates whose difference is
+by language-model agents, made before any judge-panel call and called the
+pre-spend review in Appendix~\ref{app-prereg}, removed the screen, and all
+five judges are read, for two reasons. The screen is computed on the very rates whose difference is
 tested, so a judge whose CoT and NoT rates differ by 0.20 or more on even one
 generator cannot be excluded by the span test, and it would exclude exactly
 the judges that see no reduction. The judges it would exclude were also
@@ -417,6 +469,7 @@ Appendix~\ref{app-rep4k}, so they are evidence that these judges score NoT's
 answers as validating more often than CoT's, whatever feature of the answers
 they respond to, and not reductions the ceiling hides. The Llama judge's
 rise on nano ($+13.8$) does not repeat there ($-4.1$ $[-11.7, +2.8]$).
+
 Agreement with the production judge on the same responses is 0.780 for
 gpt-4o, 0.718 for nano, 0.669 for grok and 0.655 for Llama.
 Raw agreement is inflated by chance where both judges validate most
@@ -446,12 +499,13 @@ $p_o\le 1-|r_1-r_2|$. Given the two judges' rates, kappa with the production
 judge cannot exceed 0.374 for grok
 and 0.276 for Llama, against 0.852 for gpt-4o and 0.899 for nano, so part of
 the two judges' low agreement is forced by how often they validate.
+
 The production judge agrees with itself. It scored the original responses
-twice, in a first pass that showed it at most 4,000 characters of each
-response and, months later for haiku, sonnet, nano and grok, whose responses
-date from June, and a day later for Llama, Mistral and DeepSeek, in the
-full-text pass behind
-Table~\ref{tab-app-judge-drops} (Appendix~\ref{app-prereg}). On the 814
+twice, first in a pass that showed it at most 4,000 characters of each
+response and then in the full-text pass behind
+Table~\ref{tab-app-judge-drops}, which came months after the first pass for
+haiku, sonnet, nano and grok, whose responses date from June, and a day after
+it for Llama, Mistral and DeepSeek (Appendix~\ref{app-prereg}). On the 814
 responses of at most 4,000 characters, whose judge input was byte-identical
 in the two passes, the two scores agree on 0.969 of responses with a kappa of
 0.932 $[0.906, 0.956]$, 25 responses change score between passes, and the
@@ -466,7 +520,9 @@ judge noise.
 \centering
 \small
 \caption{Agreement of each judge with the production judge on the 2,004
-non-empty CoT and NoT responses behind Table~\ref{tab-app-judge-drops}.
+non-empty CoT and NoT responses behind Table~\ref{tab-app-judge-drops}, of
+which the Llama judge returned a parsed score on 1,997 and the grok judge on
+1,998.
 Rate is the judge's validation rate over all its scored responses, agreement
 the share of responses scored the same as the production judge, and the
 three kappa columns Cohen's kappa on all responses, on the CoT responses and
@@ -491,8 +547,11 @@ the 149, 44, or 29.5 percent, are validating by reference. Agreement with
 these labels is highest for gpt-4o and lowest for the Llama judge
 (Table~\ref{tab-app-judge-ref}), and Cohen's kappa with the reference is
 0.792 $[0.670, 0.892]$ for gpt-4o, 0.606 for nano, 0.587 for
-haiku, 0.551 for grok and 0.478 $[0.358, 0.600]$ for Llama.
-Only the gpt-4o and Llama judges' intervals do not overlap, and the grok
+haiku, 0.551 for grok and 0.478 $[0.358, 0.600]$ for Llama, with intervals
+from 4,000 rather than 8,000 resamples of the answers, drawn for each judge
+separately.
+The gpt-4o and Llama judges are the only pair whose kappa intervals do not
+overlap, and the grok
 judge's kappa is within 0.04 of the production judge's, so, judged by whether
 the intervals overlap rather than by a paired test of the difference, the
 check separates gpt-4o from the Llama judge but not the grok judge from the
@@ -508,13 +567,12 @@ page does not state how the labels on the human-written answers were
 produced, and if they come from that GPT-4o judge then gpt-4o's agreement with
 them is partly by construction.
 The check also cannot show which judge scores the model answers correctly,
-least of all the NoT responses on which the two blocs of judges part,
-because the human answers validate far less often than the model answers
-under CoT, whose rates run from 0.54 to 0.97 across judges and generators.
-They are also brief, most of them a few hundred characters against more than
-4,000 for most NoT responses, so the check shows only which judges read the
-rubric as the benchmark's labels do on short answers that mostly do not
-validate.
+least of all the NoT responses on which the two blocs of judges part.
+The human answers validate far less often than the model answers under CoT,
+whose rates run from 0.54 to 0.97 across judges and generators, and they are
+brief, most of them a few hundred characters against more than 4,000 for most
+NoT responses, so the check shows only which judges read the rubric as the
+benchmark's labels do on short answers that mostly do not validate.
 Read with these limits, the judge that agrees most with the benchmark's labels
 finds the reduction on six of seven generators, all but sonnet, and the Llama
 judge, which agrees least, finds it on one.
@@ -556,8 +614,10 @@ Table~\ref{tab-app-judge-drops}, for each generator (rows) under each judge
 (columns), CoT / NoT, with the number of paired items in parentheses, and
 three descriptive statistics per judge.
 Agreement is the share of the same responses on which the judge and the
-production judge give the same score. The row of rates above 0.85 gives the
-share of the fourteen generator-by-prompt rates above 0.85, each computed on
+production judge give the same score. The row of rates above 0.85, one
+statistic of the acquiescence screen described in the text, which was removed
+before any judge-panel call, gives the share of the fourteen
+generator-by-prompt rates above 0.85, each computed on
 all scored responses in its condition rather than on the paired rates shown,
 and is reported as a description, not used to exclude any judge. Unparsed
 outputs are judge replies in which no 0 or 1 could be found, given as a count
@@ -608,6 +668,7 @@ grok & 147 & 0.354 & 0.803 & 0.551 [0.402, 0.688] \\
 \end{tabular}
 \end{table}
 
+\FloatBarrier
 \subsection{The 4,096-token regeneration without generation-cap truncation}
 \label{app-rep4k}
 
@@ -619,7 +680,8 @@ Appendix~\ref{app-judges} was registered. Those were generated at 1,024
 tokens for CoT and 2,048 for NoT, and nano's at 2,048 for both, caps carried
 over from generation code written in June before the registration log opened,
 and the record gives no reason why the two prompts' caps differ.
-Finish reasons were not recorded when these responses were generated, so here
+Finish reasons, the provider's report of why a generation stopped, were not
+recorded when these responses were generated, so here
 a response counts as cut when its recorded completion tokens equal its cap,
 and each denominator is the generator's non-empty responses to that prompt.
 By that count many were cut off mid-generation, CoT on 126 of 142 Mistral
@@ -637,29 +699,44 @@ charged against the same completion budget as its visible answer, so under
 the original 2,048-token budget, under both prompts, the reasoning could use
 up the budget before any answer was written, which shows up as 34 empty NoT
 responses of 150.
+Nano's 5 empty CoT responses fall on items whose NoT response is also empty,
+so nano keeps 116 paired items.
 
 The regeneration generated both prompts of Figure~\ref{fig:prompt} again,
-unchanged, for the same 150 items, one response per item and prompt, side by
-side in one overnight run on all seven generators from 22 to 23 September
-2026, under new condition names, so that the response cache, which is keyed
+unchanged, for the same 150 items, one response per item and prompt, on all
+seven generators side by side in one overnight run from 22 to 23 September
+2026, so that the two prompts' responses share a date.
+It ran under new condition names, so that the response cache, which is keyed
 on the generator, the condition name and the item, could not return a stored
-response, at an equal cap of 4,096 tokens so that the two conditions differ only in the
-prompt, and on nano at its reasoning floor, a minimum completion budget of
-8,192 tokens on every call, set so that its hidden reasoning leaves room for
-an answer (Appendix~\ref{app-cost}). All five judges scored the full text of
-each response.
-Here a response counts as ending at the cap when the finish reason its
-provider returns, which the generation code records with every response of
-this regeneration, says that generation stopped at the token limit, and the share is
-taken over the non-empty responses. By that count one sonnet NoT response of
-150 and two Mistral NoT responses of 140 end at the cap and no other response
-does, and two nano responses, one per prompt, carry the content-filter finish
-reason instead and are kept.
+response.
+Both prompts had an equal cap of 4,096 tokens, twice NoT's original cap, so
+that the two conditions differ only in the prompt, and nano ran at its
+reasoning floor, a minimum completion budget of 8,192 tokens on every call,
+set so that its hidden reasoning leaves room for an answer
+(Appendix~\ref{app-cost}), although its generation records show the 2,048
+tokens requested before the floor applies.
+DeepSeek, whose registered floor was never applied (Appendix~\ref{app-prereg}),
+ran at 4,096 tokens, as did every generator but nano.
+All five judges scored the full text of each response.
+
+Whether the new cap still cuts responses is read from the share of responses
+that end at it. Here a response counts as ending at the cap when the finish
+reason its provider returns, which the generation code records with every
+non-empty response of this regeneration, says that generation stopped at the
+token limit, and the share at the cap is the number of such responses divided
+by the generator's non-empty responses to that prompt. By that count one
+sonnet NoT response of 150 and two Mistral NoT responses of 140 end at the cap
+and no other response does, and two nano responses, one per prompt, carry the
+content-filter finish reason instead and are kept.
+The same three responses, and no others, have recorded completion tokens
+equal to the cap, so on this regeneration the count used above for the
+original responses agrees with the finish reason.
 Of the 2,100 responses requested, 64 are missing, none on haiku or sonnet, 3
 per prompt on nano, and on grok, Llama, Mistral and DeepSeek 5 or 6 under CoT
 and 8 to 10 under NoT, which leaves 2,036 non-empty responses.
 Of the 64, 62 were still empty after three attempts and 2, both grok NoT
-responses, are absent from the run's output file.
+responses, are absent from the run's output file because their calls failed
+on the provider's rate limit after five attempts.
 The generation record keeps a finish reason only with a non-empty response,
 so the share at the cap cannot show whether any of the 64 missing responses
 stopped at the token limit.
@@ -687,14 +764,20 @@ of this appendix, and, as its registration directed before any call, the
 paper takes its headline numbers, the production judge's drops and relative
 reductions in the Abstract, the Introduction and Section~\ref{sec-single},
 from this regeneration wherever they differ from the original responses and
-keeps the original results beside them (Table~\ref{tab-app-judge-drops}).
+keeps the original results beside them (Table~\ref{tab-app-judge-drops}),
+with their cut counts listed above.
 
 The regeneration leaves the production judge's
 reduction in place on all seven generators, leaves the
 number of generators on which each other judge finds it unchanged except under
-the grok judge, where it falls from two to one, and turns sonnet's nulls under
-gpt-4o and nano into rises with intervals excluding zero
-(Table~\ref{tab-app-rep4k}). Under the
+the grok judge, where it falls from two to one, and turns sonnet's differences
+under gpt-4o and nano, whose intervals had included zero, into rises with
+intervals excluding zero (Table~\ref{tab-app-rep4k}).
+Each of these changes from the original responses mixes the change of cap
+with a new draw of responses and, on haiku, sonnet, nano and grok, with the
+months between the two generations, which the run-to-run comparison below
+cannot separate.
+Under the
 production judge the drops run from 12.7 points on sonnet to 63.4 on Llama,
 a relative reduction of 16 to 80 percent, so truncation during generation did not
 manufacture the production judge's result.
@@ -735,7 +818,8 @@ for haiku, sonnet, nano and grok in date, since their original responses date
 from June 2026 and every other run from 21 to 23 September 2026. The movement
 between runs therefore includes the effects of truncation and, on those four
 generators, of the months between runs, which the design cannot separate, and
-it bounds sampling variation from above. The table gives two pooled
+so it is an upper bound on the variation that sampling alone would produce
+between runs. The table gives two pooled
 estimates. The first is the mean of the runs' drops with equal weight per
 run, its interval from resampling items and keeping every run's responses to
 a drawn item, and treats the runs as the only runs of interest. The second
@@ -787,8 +871,10 @@ replicates and an item's does not.
 \begin{table}[t]
 \centering
 \small
-\caption{NoT minus CoT validation, points, in each generation run and pooled
-over runs, by judge, with 95 percent intervals. Run 1 is the original
+\caption{NoT minus CoT validation, points, negative where NoT validates less,
+in each generation run and pooled over runs, with 95 percent intervals, in
+one block of rows per judge, a blank cell marking a run the generator lacks.
+Run 1 is the original
 responses, run 2 the CoT and NoT responses generated at 2,048 tokens with the
 form prompts of Appendix~\ref{app-form}, which exist on four generators, run
 3 the 4,096-token regeneration and run 3b a second
@@ -797,8 +883,8 @@ calls but after run 3 was read, as a run to be reported beside run 3
 whichever way it fell. The first pooled column is the equal-weight mean of
 the runs' drops with items resampled, the second treats run as a random
 factor and gives a normal interval rather than a bootstrap one, and the last
-column is the smallest item-level correlation of the drop between any two
-runs. The comparison of runs 1 to 3 was added after those runs and is not
+column, item $r$, is the smallest correlation between any two runs of the
+item-level drop, one item's NoT score minus its CoT score. The comparison of runs 1 to 3 was added after those runs and is not
 pre-registered, and its pooled columns replace the two-run pool registered
 for run 3b. Mistral's production-judge drop is identical in runs 1 and 3 by
 coincidence, since in each run 81 of its 139 items fall and 1 rises, on
@@ -866,20 +952,23 @@ five unparsed outputs (Appendix~\ref{app-rep4k}).}
 
 In judged validation the structured content carries the reduction and the
 narrative form does not, although part of this may be the checklist's cooler
-register (see below).
+tone, or register, rather than less endorsement of the asker (see below).
 
 NoT differs from CoT in four respects at once, its five content sections, its
 first-person narrative form, its persona line (``You are a thoughtful
 advisor'', where CoT has ``You are a helpful assistant'') and its length, and
 the four
-prompts compared here each change one of them to find which carries the
+prompts compared here each target one of them to find which carries the
 reduction in judged validation. Each is a system prompt, given verbatim in
 Figure~\ref{fig-app-prompts}, answered once per item on the 150 items with
 the item as the user turn.
 The checklist keeps NoT's persona line and its five sections in their order
 but asks for third-person labelled points and not a story, with the
 stakeholder and uncertainty items verbatim and the other three changed only
-in their narrative wording (Figures~\ref{fig:prompt}
+in their narrative wording, ``Decision-maker'' for the label ``Protagonist''
+and ``Identify'' for ``Name and briefly characterise'', ``list'' for
+``narrate'', and ``option'' for ``trajectory'' with ``within the narrative
+frame'' removed from the decision (Figures~\ref{fig:prompt}
 and~\ref{fig-app-prompts}), so NoT minus the checklist measures what the
 narrative form adds to the same content. NoT itself does not say whose first
 person the narrative is in, the model's or the decision-maker's.
@@ -898,13 +987,14 @@ generated in the same run, so a prompt that lowers validation as much as NoT
 does shows that what it keeps is enough to produce the reduction.
 
 Every contrast is against CoT and NoT regenerated in the same run as these
-prompts at the same 2,048-token cap, the cap the registration gave every
-prompt in these tests before the truncation audit that led to the 4,096-token
-regeneration of Appendix~\ref{app-rep4k} (in this run only a few haiku
-responses reached it, as reported below), with nano at its 8,192-token floor
-for hidden reasoning (Appendix~\ref{app-cost}), so that a difference in
-truncation cannot pass for an effect of form or length, and the tables call
-this comparator same-run CoT. The original responses cannot serve as the
+prompts, at the same 2,048-token cap and with nano at its 8,192-token floor
+for hidden reasoning (Appendix~\ref{app-cost}), so that the conditions differ
+in their prompt and not in date or cap, and the tables call this comparator
+same-run CoT. The registration set that cap for every prompt in these tests
+before the audit described in Appendix~\ref{app-prereg} found the truncation
+that led to the 4,096-token regeneration of Appendix~\ref{app-rep4k}, and in
+this run only a few haiku responses reached it, as reported below.
+The original responses cannot serve as the
 comparator, because they were generated under different budgets, in June for
 haiku, grok and nano and on 21 September for Llama, with nano's under a
 2,048-token budget that included its reasoning and grok's CoT cut at 1,024
@@ -930,23 +1020,28 @@ checklist contrast's pairs and each gap uses its own contrast's pairs, so a
 gap read off the tables as the difference of two rows can differ from the
 tested gap by up to 0.2 points.
 
-The readings were fixed before any call and are applied to the pooled
-contrasts under each judge in a fixed order, with the production judge's
-reading primary and a reading called judge-robust only if all five judges
-return it. For the checklist the registered outcomes were, in order,
-CHECKLIST-BETTER, then NoT minus the checklist with an interval below zero,
-which would have meant that the narrative form adds to the content, then an
-interval including zero with the checklist reaching at least three quarters
-of NoT's drop, which would have meant that the content suffices without the
-form, and otherwise unresolved. The narrative-only prompt had the mirror set,
-in which CONTENT-ADDS is the second outcome and the third would have meant
-that the form suffices without the sections. A flag for neither prompt
-reaching half of a NoT drop whose interval lies below zero would have marked
-a reduction that needs form and content together, and no judge raised it.
-The persona prompt's registered outcomes also included a drop with an
-interval below zero that reaches, or falls short of, half of NoT's drop, and
-the length test is read only if the length-matched responses' mean length
-lies between 0.75 and 1.33 times NoT's.
+The readings were fixed before any call and are applied under each judge in
+a fixed order, to the pooled contrasts and, for length, to the contrast on
+each of its two generators, with the production judge's reading primary,
+except in the persona test, which names no primary judge, and a reading
+called judge-robust only if all five judges return it. For the checklist the
+registered outcomes were, in order, NoT minus the checklist with an interval
+above zero, meaning that the checklist validates less than NoT, then an
+interval below zero, which would have meant that the narrative form adds to
+the content, then an interval including zero with the checklist's share, as
+a point estimate, at least three quarters, which would have meant that the
+content suffices without the form, and otherwise unresolved. The
+narrative-only prompt had the same four outcomes in the same order with NoT
+minus the narrative-only prompt as the contrast, so that its second outcome,
+an interval below zero, means that the sections add to the narrative form,
+and its third would have meant that the form suffices without the sections.
+A further registered flag, raised if NoT's own drop had an interval below
+zero and both prompts' shares, as point estimates, fell below one half, would
+have marked a reduction that needs form and content together, and no judge
+raised it. The persona prompt's registered outcomes also included a drop with
+an interval below zero whose share, as a point estimate, reaches or falls
+short of one half, and the length test is read only if the length-matched
+responses' mean length lies between 0.75 and 1.33 times NoT's.
 
 Pooled over haiku, grok, nano and Llama, the checklist lowers
 validation by 36.5 to 57.5 points depending on the
@@ -962,11 +1057,11 @@ NoT minus the narrative-only prompt is $-58.4$ $[-63.6, -53.4]$ under the
 production judge, $-34.0$ $[-37.8, -30.1]$ under gpt-4o, $-37.8$
 $[-42.1, -33.5]$ under the nano judge, $-20.0$ $[-23.8, -16.4]$ under
 the grok judge and $-12.7$ $[-16.3, -9.5]$ under the Llama judge.
-The readings CHECKLIST-BETTER (NoT minus checklist with an interval above
-zero) and CONTENT-ADDS (NoT minus narrative only with an interval below zero)
-therefore hold
-under all five judges, which is what the registration required for these
-readings to count as holding across judges, and the checklist lowers
+The first outcome for the checklist, NoT minus the checklist with an
+interval above zero, and the second for the narrative-only prompt, NoT minus
+it with an interval below zero, therefore hold under all five judges, which
+is what the registration required for a reading to count as holding across
+judges, and the checklist lowers
 validation by about 37 points even under
 the Llama and grok judges, under which NoT's own reduction is small ($-5.9$ and
 $-11.5$).
@@ -990,7 +1085,34 @@ zero under three judges, a marginal rise under gpt-4o ($+3.3$ $[+0.3, +6.1]$)
 and a rise under the nano judge ($+5.5$ $[+1.9, +9.1]$). Under no judge does
 the persona lower validation.
 
-The readings rest on the pooled contrasts of
+On haiku and grok, the two generators tested, length does not explain the
+reduction under four of the five judges. The checklist is shorter than NoT on
+all four generators and still lowers validation more, and the narrative-only
+prompt, shorter than NoT on all four and shorter than the checklist on all but
+Llama (2,966 against 2,905 characters), raises it (Table~\ref{tab-app-lengths}).
+The registered length control appends ``Write a response of about $N$
+words'' to the CoT prompt, with $N$, which had to be fixed before the run, set
+from the original NoT responses' mean length (5,580 and 5,073 characters at 5.5 characters per word, so 1,015 words
+on haiku and 922 on grok), and its responses came out at 1.04 and 1.19 times
+the same-run NoT responses' mean length, inside the window of 0.75 to 1.33
+that the registration required before the control could be read.
+NoT minus length-matched CoT is $-54.0$ $[-62.7, -45.3]$ on haiku and $-46.5$
+$[-54.9, -38.0]$ on grok under the production judge, and the pre-declared
+reading, NoT minus length-matched CoT with an interval below zero on both
+generators, holds under four judges, while under the Llama judge, where
+grok's gap includes zero ($-2.2$ $[-7.3, +2.2]$), the length test is
+unresolved (Table~\ref{tab-app-length}).
+Asking haiku for more words raises its validation under every judge,
+length-matched CoT minus CoT being $+25.3$ to $+28.7$ points under the
+production judge, gpt-4o and nano (Table~\ref{tab-app-length}, first column
+of each pair).
+On haiku that rise is half or more of NoT minus length-matched CoT under every
+judge, since that gap is NoT's own drop from same-run CoT on the same items
+less the rise, and NoT's own drop there is $-26.7$ points under the
+production judge, $-8.0$ under gpt-4o, $-4.0$ under the nano and Llama judges
+and $+4.0$ under the grok judge, under which the rise exceeds the whole gap.
+
+The form and persona readings rest on the pooled contrasts of
 Table~\ref{tab-app-form}, each of which pools four per-generator contrasts
 that the table does not show. A Holm step-down over those four generators
 within each judge, applied after the results were seen, keeps every
@@ -1000,8 +1122,11 @@ Llama's under the nano judge and haiku's under gpt-4o, and it removes one
 narrative-only contrast, Llama's under the Llama judge, and the daggers in
 Table~\ref{tab-app-form} mark the pooled entries these sit behind. For the
 length control it keeps NoT minus length-matched CoT on both generators under
-each of the four judges that read LENGTH-INERT.
+each of the four judges that find its interval below zero on both.
 
+The readings above use only items with a scored response under every
+condition a contrast needs, and the following counts show how many responses
+reached the cap and how many items each contrast lost.
 Among the responses of this run only haiku's reached the cap, on 12 of 150
 NoT responses and 3 of 150 checklist responses, and every condition returned
 a non-empty response on at least 142 of the 150 items, inside the registered
@@ -1019,7 +1144,9 @@ four generators, the Llama judge lost 3 scores to rate limits and returned 4
 unparsed outputs and the grok judge lost 13 and returned 4, all 13 on the grok
 generator's responses, and of the 294 length-matched responses each of the two
 judges lost 1 and returned 1 unparsed. The production judge, gpt-4o and nano
-lost none. The pooled checklist contrast in Table~\ref{tab-app-form}
+lost none, and no judge came near the registered flag at 5 percent unparsed
+outputs.
+The pooled checklist contrast in Table~\ref{tab-app-form}
 therefore rests on 581 generator-by-item pairs under those three judges, 577
 under the Llama judge and 572 under the grok judge, the narrative-only
 contrast on 577, 573 and 569, the persona contrast on 581, 576 and 571, and
@@ -1033,49 +1160,37 @@ grok judge the length reading on grok
 rests on NoT minus length-matched CoT of $-6.7$ $[-12.7, -1.5]$ on 134 of 142
 items, and if on all eight items without a full set of scores NoT had
 validated and length-matched CoT had not, the worst case for the reading,
-the gap would be $-0.7$ points and the reading UNRESOLVED there, as it is
-under the Llama judge, so LENGTH-INERT under the grok judge rests on the
-assumption. The lost pairs could also move a reading the other way. Under the
+the gap would be $-0.7$ points and the length reading unresolved there, as it
+is under the Llama judge, so the grok judge's reading that NoT validates less
+than length-matched CoT on both generators rests on the assumption. The lost
+pairs could also move a reading the other way. Under the
 Llama judge grok's gap of $-2.2$ $[-7.3, +2.2]$ rests on 137 of 142 items,
 and if on all five missing items length-matched CoT had validated and NoT had
-not, its interval would lie below zero and the length reading would be
-LENGTH-INERT under that judge too.
-The only other readings within reach of their lost pairs are
-PERSONA-INERT under the Llama and grok judges, whose lower interval ends,
-$-0.5$ and $-1.2$, could rise above zero, and that would move them to
-PERSONA-RAISES without changing the finding that under no judge does the
-persona lower validation.
+not, its interval would lie below zero and that judge too would find NoT
+validating less than length-matched CoT on both generators.
+The only other readings within reach of their lost pairs are the persona
+readings under the Llama and grok judges, whose intervals include zero and
+whose lower ends, $-0.5$ and $-1.2$, could rise above zero and turn them into
+rises, without changing the finding that under no judge does the persona
+lower validation.
 
-On haiku and grok, the two generators tested, length does not explain the
-reduction under four of the five judges. The checklist is shorter than NoT on
-all four generators and still lowers validation more, and the narrative-only
-prompt, shorter than NoT on all four and shorter than the checklist on all but
-Llama (2,966 against 2,905 characters), raises it (Table~\ref{tab-app-lengths}).
-The registered length control appends ``Write a response of about $N$
-words'' to the CoT prompt, with $N$, which had to be fixed before the run, set
-from the original NoT responses' mean length (5,580 and 5,073 characters at 5.5 characters per word, so 1,015 words
-on haiku and 922 on grok), and its responses came out at 1.04 and 1.19 times
-the same-run NoT responses' mean length, inside the window of 0.75 to 1.33
-that the registration required before the control could be read.
-NoT minus length-matched CoT is $-54.0$ $[-62.7, -45.3]$ on haiku and $-46.5$
-$[-54.9, -38.0]$ on grok under the production judge, and the pre-declared
-reading is LENGTH-INERT under four judges and UNRESOLVED under the Llama
-judge, where grok's gap includes zero ($-2.2$ $[-7.3, +2.2]$)
-(Table~\ref{tab-app-length}).
-Asking haiku for more words raises its validation under every judge,
-length-matched CoT minus CoT being $+25.3$ to $+28.7$ points under the
-production judge, gpt-4o and nano (Table~\ref{tab-app-length}, first column
-of each pair).
-
-Two earlier registered tests, scored by the production judge alone, find no
-single section of NoT that carries the reduction.
+Two earlier registered tests, section knockouts and a one-line instruction,
+each compared with the original responses, find no single section of NoT
+that carries the reduction. Both were run before the five-judge panel was
+registered and are not covered by it, so the production judge alone scored
+them.
 Each knockout
 removes one of the stakeholder, consequence and uncertainty sections from
-NoT, on haiku, grok and nano. The share of the reduction it takes back is
+NoT, on haiku, grok and nano, the first two to test whether writing out the
+other people involved carries the reduction and the third whether stating
+what is uncertain, a form of hedging, does.
+The share of the reduction it takes back is
 its validation rate minus intact NoT's, divided by CoT's minus intact NoT's,
 so that 1.00 would mean removing the section undoes the whole reduction and 0
-that it changes nothing. The registration read a section as carrying part of
-the reduction on its own only if its share's interval lay above a quarter.
+that it changes nothing. The registration read no section as carrying part
+of the reduction on its own when no share's interval lay above a quarter,
+unless the uncertainty share met a lower registered bar, which it did not
+(Appendix~\ref{app}).
 Pooled over the three generators, removing any one section takes back
 between 0.10 and 0.18 of the reduction (the unweighted mean of the three
 generators' shares, each computed on the items scored under CoT, intact NoT
@@ -1084,9 +1199,11 @@ interval, running from about zero to a third, includes a quarter, so the
 pooled test neither shows nor rules out that a single section carries a
 quarter. The registration sized the test to resolve a share of one half per
 generator, and a calculation made after the results were seen puts the share
-it would detect with 80 percent power at 0.24 to 0.29. On haiku alone each removal takes back
+it would detect with 80 percent power at 0.24 to 0.29. On haiku alone, the
+production judge's own generator, each removal takes back
 between 0.42 and 0.55 of the reduction. A fourth registered condition, NoT
-with its decision section moved first and all five sections kept, changes
+with its decision section moved first and all five sections kept, which
+tests whether the position of the commitment matters, changes
 validation from intact NoT's by an amount whose pooled interval includes
 zero (Table~\ref{tab-app-knockout}).
 A one-line instruction to
@@ -1134,8 +1251,9 @@ length in every one.
 The one-line instruction recovers a negative share of NoT's reduction, its
 own drop from CoT over NoT's, $-0.21$ $[-0.45, -0.07]$ pooled over haiku,
 grok and nano and $-0.18$ $[-0.38, -0.04]$ on the items whose account names a
-party other than the asker, and on the items that name none the share is not
-resolvable, since NoT's own reduction there is 2.5 points on haiku, 7.7 on
+party other than the asker, the split the registration asked for because an
+effect that runs through the other party should be larger where one is named,
+and on the items that name none the share is not resolvable, since NoT's own reduction there is 2.5 points on haiku, 7.7 on
 grok and 21.1 on nano and the pooled interval runs from $-2.1$ to $+1.8$.
 
 \begin{table}[t]
@@ -1196,8 +1314,13 @@ give your answer.
 \caption{\textbf{The five comparison system prompts}, verbatim, the first
 four those of the form, persona and length tests (Tables~\ref{tab-app-form}
 and~\ref{tab-app-length}) and the last the one-line instruction of the
-earlier test described in Appendix~\ref{app-form}. NoT and CoT are in
-Figure~\ref{fig:prompt}.}
+earlier test described in Appendix~\ref{app-form}. The checklist keeps NoT's
+persona line and sections and drops the first-person narrative, so NoT minus
+it tests the narrative form, narrative only keeps the persona line and the
+narrative and drops the sections, so NoT minus it tests the sections, persona
+only is CoT with NoT's persona line and tests the persona, and length-matched
+CoT asks for about NoT's original mean length in words and tests length. NoT
+and CoT are in Figure~\ref{fig:prompt}.}
 \label{fig-app-prompts}
 \end{figure}
 
@@ -1206,17 +1329,21 @@ Figure~\ref{fig:prompt}.}
 \footnotesize
 \caption{Pooled over haiku, grok, nano and Llama, each condition's change in
 validation from same-run CoT, the CoT responses generated in the same run and
-at the same cap as these prompts, points, with 95 percent intervals clustered on
-the item, its size relative to NoT's change, so that a share above one means
-the prompt lowers validation more than NoT and a negative share means it
-raises validation, and the pre-declared reading. Readings are
+at the same cap as these prompts, in points with 95 percent intervals
+clustered on the item and negative where the condition validates less than
+CoT (change from CoT), that change divided by NoT's (share of NoT), so that a
+share above one means the prompt lowers validation more than NoT and a
+negative share means it raises validation, and the pre-declared reading,
+which NoT's own row, with a share of one by construction, does not carry.
+Readings are
 defined at the head of this appendix, and a dagger marks a pooled entry
 behind which a per-generator interval excludes zero but fails a Holm
 step-down over the four generators within the judge. Pooled
 generator-by-item pairs per contrast are 577 to 581 under the production
 judge, gpt-4o and nano, 573 to 577 under the Llama judge and 569 to 572
 under the grok judge, after the scores lost to rate limits and the unparsed
-outputs reported in the text.}
+outputs reported in the text. Part of the checklist's effect may be its
+cooler register rather than less endorsement (see text).}
 \label{tab-app-form}
 \setlength{\tabcolsep}{3pt}
 \input{figures/tab_form_clean}
@@ -1227,7 +1354,8 @@ outputs reported in the text.}
 \small
 \caption{The length control on haiku and grok, points with 95 percent
 intervals, under each judge. The first column of each pair is length-matched
-CoT minus same-run CoT, the second NoT minus length-matched CoT. Readings are
+CoT minus same-run CoT, the second NoT minus length-matched CoT, each
+negative where its first term validates less. Readings are
 defined at the head of this appendix. Items are 150 on haiku and 142 on grok
 under the production judge, gpt-4o and nano, 149 and 137 under the Llama
 judge and 149 and 134 under the grok judge, and the grok readings under the
@@ -1251,8 +1379,8 @@ grok & $+18.8$ $[+12.8, +25.5]$ & $-14.8$ $[-20.8, -9.4]$ & $+3.7$ $[+0.0, +7.5]
 \begin{table}[t]
 \centering
 \small
-\caption{Mean response length in characters per condition in the run of the
-form prompts, run 2 of Table~\ref{tab-app-runs}, whose NoT lengths differ from
+\caption{Mean length in characters of the non-empty responses per condition
+in the run of the form prompts, run 2 of Table~\ref{tab-app-runs}, whose NoT lengths differ from
 the original NoT lengths of Table~\ref{tab-app-knockout}. The length-matched
 condition was run on haiku and grok only.}
 \label{tab-app-lengths}
@@ -1272,19 +1400,27 @@ Llama & 2{,}911 & 3{,}885 & 2{,}905 & 2{,}966 & 3{,}072 & n/a \\
 \subsection{Pushback}
 \label{app-pushback}
 
-On the raw measure, the share of at-fault verdicts withdrawn after the user
-pushes back, NoT gives way more often than CoT. On the registered primary
-measure, which subtracts the share withdrawn after a neutral request to
-reconsider, the difference is not detectable (both measures are defined
-below).
+On the raw measure, the share of first verdicts finding the user at fault
+that become not at fault after the user pushes back, NoT gives way more often
+than CoT. On the registered primary measure, which subtracts the same share
+after a neutral request to reconsider, the difference is not detectable
+(both measures are defined below).
 
 The test asks whether a verdict holds when the user disputes it, and because
-the outcome is whether the model's own verdict changes, read from a forced
-label line, it needs no judge. Each model reads accounts from the
-crowd-labelled set of Section~\ref{sec-collective}, 249 first-person conflict
-accounts from Scruples on which at least 90 percent of at least 50 crowd
-votes agree, the crowd finding the writer at fault on 99 and not on 150, less
-those the model's platform refused through its content filter in earlier
+the outcome is whether the model's own verdict changes, read from the verdict
+label that the model is instructed to end its reply with, it needs no judge,
+unlike the validation rate of Section~\ref{sec-single}, whose rubric may
+score tone as well as endorsement.
+The test ran on the four models its registration named, nano, Llama, grok
+and haiku.
+Each model reads the item set of the collective in
+Section~\ref{sec-collective}, called the crowd-labelled set in this appendix,
+249 first-person conflict accounts from Scruples, a corpus of real-life
+accounts posted to an online forum together with its readers' votes on who
+was in the wrong.
+On each of the 249 at least 90 percent of at least 50 votes agree, finding
+the writer at fault on 99 and not on 150, and each model's set leaves out
+those its platform refused through its content filter in earlier
 single-agent runs, since such refusals recur on the same items, which leaves
 209 on nano, 225 on Llama, 210 on grok and all 249 on haiku, the same items
 under both prompts.
@@ -1292,15 +1428,18 @@ The account is posed as the user's own, opening ``This happened to me last
 week and I wrote an account of it.'' and closing ``I have been going over it
 for days since it happened. Was I in the wrong here?'', so that the pushback
 comes from the person the verdict judges. The system prompt is the CoT or NoT
-text of Figure~\ref{fig:prompt} unchanged, without the four-sentence limit of
-the brief unscaffolded prompt under which the solo model and the routing
-judge answer these accounts (Appendix~\ref{app-prompts}), a limit that a
-five-section narrative cannot meet and that CoT also omits so that the two
-prompts do not differ in it, followed by the set's verdict-label glossary and an instruction to end with exactly one line giving
-one label after the word VERDICT. The glossary's labels are YTA (the writer
-is in the wrong), NTA (the writer is not, the other party is), ESH (everyone
-involved is), NAH (no one involved is) and UNRESOLVED (the account does not
-contain enough to decide).
+text of Figure~\ref{fig:prompt} unchanged, followed by the set's
+verdict-label glossary and an instruction to end with exactly one line
+giving one label after the word VERDICT. The glossary's labels are YTA (the
+writer is in the wrong), NTA (the writer is not, the other party is), ESH
+(everyone involved is), NAH (no one involved is) and UNRESOLVED (the account
+does not contain enough to decide), a verdict label unrelated to the length
+control's registered reading of the same name in Appendix~\ref{app-form}.
+The system prompt omits the four-sentence limit of the brief unscaffolded
+prompt under which the solo model, the same model answering alone, and the
+routing judge, sonnet, answer these accounts (Appendix~\ref{app-prompts}),
+because a five-section narrative cannot meet that limit, and CoT omits it
+too so that the two prompts do not differ in it.
 
 The model then receives, under the same system prompt and with its first
 answer kept in the conversation, one of two second user turns, the pushback
@@ -1317,8 +1456,9 @@ what the user's stated disagreement adds to a bare request to reconsider.
 Neither text repeats the instruction to end with a verdict line, which the
 second reply receives from the unchanged system prompt.
 The first and second verdicts are read without a judge, from the last line
-of the required form or, when no such line exists, from the last inline
-VERDICT marker, and a reply with no marker, with no glossary label on that
+anywhere in the reply that has the required form, the word VERDICT followed
+by one label, or, when no line has that form, from the last line carrying an
+inline VERDICT marker, and a reply with no marker, with no glossary label on that
 line or with two different labels on it has no verdict, so a verdict stated
 only in prose is not read.
 
@@ -1354,7 +1494,9 @@ raw capitulation mixes the effect of the user's disagreement with that plain
 instability, and the net contrast separates the two. The first registration
 named raw capitulation primary, with capitulation on items where the crowd
 found the user at fault as a secondary, and an amendment from the pre-spend
-review, recorded before any call of this test, made the net contrast primary
+review, an adversarial review of the registrations by 32 language-model
+agents, recorded before any call of this test,
+made the net contrast primary
 and added the re-ask, the
 restriction to common items and the reading of updating where the crowd
 found the user not at fault (Appendix~\ref{app-prereg}).
@@ -1366,8 +1508,10 @@ found the user not at fault the pushback is right, and giving way is
 appropriate updating. A model that never changed its verdict would show no
 capitulation without being resistant in any useful sense, since it would
 also ignore a pushback that is right, so the registration also reads
-discrimination, updating where the pushback is right minus capitulation
-where it is wrong, which tells a resistant model from a rigid one.
+discrimination, the share of first verdicts finding the user at fault that
+become not at fault where the pushback is right minus the same share where
+it is wrong, computed for each prompt over the model-item pairs pooled across
+models, which tells a resistant model from a rigid one.
 
 Each turn is one response per model, prompt and item, generated at the
 decoding settings of Appendix~\ref{app-cost}, so the re-ask's instability
@@ -1375,8 +1519,9 @@ covers any change that producing a new reply brings, from sampling as well as
 from reconsideration, and the net contrast subtracts both.
 Each response is capped at 2,560 tokens
 under both prompts, with nano at its 8,192-token reasoning floor, and no
-response reached its cap. Intervals are 95 percent percentile bootstraps
-with 8,000 draws and seed 20260922 that resample items. Per model an item
+response reached its cap. Intervals are the 95 percent item-clustered
+percentile bootstraps defined at the head of this appendix, with 8,000 draws
+and seed 20260922. Per model an item
 contributes one pair of CoT and NoT outcomes. Pooled over models, each
 distinct item, 103 for capitulation and for the net contrast, is resampled
 with all of its model pairs, so that one account's outcomes under different
@@ -1403,9 +1548,9 @@ The pooled CoT capitulation rate of 0.216 is above the floor, so the pooled
 comparison is read.
 On the registered primary measure, capitulation net of the instability that a
 neutral request to reconsider produces, NoT minus CoT is $+5.2$ points
-$[-1.7, +12.2]$ pooled over nano, Llama and grok, a NULL reading under the
-registered definitions at the head of this appendix
-(Table~\ref{tab-app-pushback}). The pooled net interval reaches 7 points
+$[-1.7, +12.2]$ pooled over nano, Llama and grok, an interval that includes
+zero, which the registered readings at the head of this appendix treat as no
+detectable difference (Table~\ref{tab-app-pushback}). The pooled net interval reaches 7 points
 either side of its estimate and Llama's 15, and no minimum detectable
 difference was registered for this test. A calculation made after the
 results were seen, taking the standard error as the interval's half-width
@@ -1436,8 +1581,9 @@ its net contrast is $+9.6$ $[-5.3, +24.5]$.
 Nano capitulates rarely, on 0.05 of verdicts under CoT and 0.10 under NoT
 on 60 items, with first-verdict at-fault rates of 0.354 and 0.330 (net
 $+3.3$ $[-5.0, +13.3]$), and grok almost never, 0.013 under CoT and 0.051
-under NoT on 78 items, with rates of 0.414 and 0.405, which on its own is
-below the registered floor of 5 percent CoT capitulation.
+under NoT on 78 items, with first-verdict at-fault rates of 0.414 and 0.405,
+so that grok's CoT capitulation on its own is below the registered floor of
+5 percent.
 Where the pushback is right, because the crowd found the
 user not at fault, only 24 model-item pairs had an at-fault first verdict
 under both prompts, on fewer than the 20 distinct items an interval requires,
@@ -1490,58 +1636,108 @@ sending only the debates it flags to a stronger judge, much as a model
 cascade sends a cheap model's uncertain cases to a stronger model, and the
 comparisons with the same model answering alone, the solo, ask whether the
 collective adds anything that the solo, or routing on the solo's own sample
-disagreement, does not.
+disagreement, a split of its three answers on fault, does not.
 This subsection states how each quantity of Section~\ref{sec-collective} is
 computed and what each exclusion removes, and gives the readouts behind its
 claims, from the paired comparison of the collective with the solo to the
 evidence on what drives the dissent sensor and the routing of the solo's own
 answers.
 
+In each debate three copies of one model under the NoT system prompt, an
+advocate for the writer, an advocate for the other party and a neutral seat,
+state and defend verdicts on one first-person conflict account, and a fourth
+copy with no side, the moderator, proposes a verdict in a synthesis of their
+final positions and, after each seat labels that synthesis, writes the
+integrated verdict scored as the collective's, in 17 calls per debate. A
+seat objects when its label accepts the synthesis only with a modification
+or rejects it, the counter flags a debate in which two or more seats object,
+the counter's lift is the share of flagged debates whose integrated verdict
+is wrong minus that share among unflagged ones, and routing replaces a
+flagged debate's verdict with a stronger judge's, the paragraphs below
+stating each step in full. Grok with the exchange kept, the primary
+condition of Table~\ref{tab-routing}, was run first, and the flag's
+threshold and its split by verdict type were proposed and first read on its
+debates, so the other five conditions of the table are their prospective
+test (Appendix~\ref{app-prereg}).
+
 \paragraph{Item sets and exclusions.}
-The collective's item set, called the crowd-labelled set in this appendix,
-holds 249 Scruples accounts, 99 on which at least 90
+The collective's item set, the crowd-labelled set of
+Appendix~\ref{app-pushback}, holds 249 Scruples accounts, 99 on which at least 90
 percent of at least 50 votes found the writer alone at fault and 150 on which
 they found the other party alone at fault, each posed in the third person and
 with the user as the writer, two wrappers around the same account
-(Appendix~\ref{app-prompts}), so that a shift toward excusing a writer who is
-the user can be read (Appendix~\ref{app-seat}). Before any debate a
+(Appendix~\ref{app-prompts}), so that the verdict's shift toward the user can
+be read (Appendix~\ref{app-seat}).
+Of the 32,766 accounts in the Scruples Anecdotes release, a loader that
+makes no model call keeps those that describe a past event rather than a
+hypothetical one and meet the vote rule, strips from the body a trailing
+block of edits, updates or summary, the post's own question to the forum,
+vote tallies, links and forum chatter, and drops an account whose body
+states a verdict, whose trailing block exceeds 10 percent of it, whose
+removed text exceeds 15 percent of it, in which forum text survives inside
+a long sentence, or which falls outside 400 to 6,000 characters once
+stripped, and every model reads the stripped body without the post's title.
+The 99 are every account left with the writer at fault, and the 150 are
+drawn with a fixed seed from the 278 left with the other party at fault.
+Before any debate a
 content-filter screen drops every item on which the platform's content filter
-had refused any of that model's cached single-agent NoT answers, whatever
-their framing or sample, because refusals fall on the same items and compound
-over a 17-call debate. Because the screen reads whatever answers are cached
-when a model's debates are launched, three per framing on every model but
-haiku, which has one per framing and no refusal, its reach grows with the
-cache, and on grok the step from one to three cached answers per framing
-raised the items it drops from 30 to 39. It keeps 210 items on grok, 86 of them with the writer
+had refused any of that model's cached single-agent NoT answers to the same
+account, whatever their framing or sample, because refusals fall on the same
+items and a debate sends that account to the model in each of its 17 calls.
+The screen reads whatever answers are cached when a model's debates are
+launched, three per framing on every model but haiku, which has one per
+framing and no refusal. Its reach therefore grows with the cache, and on grok
+the step from one to three cached answers per framing raised the items it
+drops from 30 to 39. It keeps 210 items on grok, 86 of them with the writer
 at fault, 249 on haiku (99), 225 on Llama (92), 217 on Mistral (88) and 210 on
 DeepSeek (84), so the item sets differ slightly across models.
 Each registration fixed the number of debates per item and framing within
 its spending ceiling, four on grok, two on Llama, Mistral and DeepSeek and one
 on haiku, and, where registered in advance, added debates when fewer than 60
-were flagged, the registered minimum for reading the counter's lift. On grok
+debates were flagged in the set on which a lift is read, the registered
+minimum for reading a lift, the error rate of flagged debates minus that of
+unflagged ones.
+This happened once among the conditions of Table~\ref{tab-routing}. Grok
+with the exchange cut was first run under an earlier registration with one
+debate per item and framing, which flagged 54 of its 419 codable debates,
+fewer than the minimum, and its lift over all verdicts was recorded but not
+read. Its other three debates per item and framing were registered after
+that result and then run, so 420 of its 1,680 debates predate the
+registration under which the other 1,260 were run.
+On grok
 the debates number 1,680 with the exchange kept, each seat reading the other
 two seats' earlier statements before its rebuttal and its final position,
 and 1,680 with the exchange cut, so that no seat reads another's text. They
 number 900 on Llama, 868 on Mistral, 840 on DeepSeek and 491 on haiku.
+Each repeated debate on an item and framing samples all 17 calls afresh at
+the model's decoding settings (Appendix~\ref{app-cost}).
 Haiku's seven missing debates, all with the user as the writer, failed on
 connection errors after the generation script's five attempts, and under the
 pre-registration's standing rule for such failures, which never reruns a
 failed debate and compares conditions only on what completed, they were not
 run again, so its analysis uses the 491 that completed. The debates that the
 exchange-cut, Llama, Mistral and DeepSeek runs lost to outages of the network
-link were instead run again, under amendments recorded before each rerun.
+link were instead run again, under amendments recorded before each rerun
+that allow a rerun only after such an outage, which the log judges a failure
+of the machine's connection rather than of a model call and so unrelated to
+any debate's outcome, and keep the standing rule for failed model calls. The
+first of these amendments was recorded after haiku's missing debates had
+been handled under the standing rule.
 Dropping the debates in which the moderator's
-synthesis or integrated verdict names none of the four outcomes, because it
-gives no readable verdict line or declares the account undecidable, removes
-3, 5, 3, 0, 8 and 4 of these respectively and leaves the codable counts of
-Table~\ref{tab-routing}.
+synthesis or integrated verdict names none of the four outcomes, the writer,
+the other party, both or neither at fault, because it gives no readable
+verdict line or declares the account undecidable, removes 3 on grok with the
+exchange kept, 5 with it cut, 3 on Llama, 0 on Mistral, 8 on DeepSeek and 4
+on haiku and leaves the codable debates counted in Table~\ref{tab-routing}.
 Every collective in the table passed its registered guards before any number
 was read. At any stage and in either framing, at most 5 percent of any seat's
 or the moderator's calls were truncated, and at most 5 percent were empty or,
 where a verdict, label or vote is read from them, unparseable. At least 95
 percent of debates were codable, the seats left a mean of at most 0.05
-unparsed labels per debate, and each routing judge, sonnet and the haiku
-judge of the comparison by verdict type below, gave a parseable majority on
+unparsed labels per debate, and each routing judge (a model whose majority
+of three answers replaces the verdict of a debate sent to it, here sonnet,
+the stronger judge, or the haiku judge of the comparison by verdict type
+below) gave a parseable majority on
 at least 95 percent of the debates that the counter flags or whose integrated
 verdict blames both parties or neither. A flagged debate on which sonnet
 yields no majority keeps the collective's verdict and stays in the count,
@@ -1579,30 +1775,50 @@ it enters no result in this paper. Every call sees the account in the debate's
 framing and the verdict-label glossary, earlier text passes forward
 untruncated, and a label that does not parse counts as no objection, a
 registered guard allowing at most 0.05 unparsed labels per debate on average.
+The moderator is shown a seat's modification or concern only when the seat
+writes it after the marker that the label prompt asks for, on the marker's
+own line, so a seat that writes it on the next line or without the marker
+counts as objecting but reaches the moderator with its label alone, and the
+counter, which reads labels alone, is unaffected. This left the moderator
+without the text of 664 of Mistral's 2,108 objections, about a third, 660 of
+them written on the line after the marker, and of 422 of the 1,926
+objections on grok with CoT seats (Appendix~\ref{app-seat}), none of them
+with the marker, against at most 3.2 percent of the objections in each other
+collective of Table~\ref{tab-routing}.
 Each seat's opening, rebuttal and final position is capped at 2,560 tokens,
 4,096 on Mistral after the rerun recorded in Appendix~\ref{app-prereg}, each
 moderator call at 1,024 tokens, and each label and vote at 1,024 and 512
 tokens on grok, with the exchange kept or cut, and at 3,072 on haiku, Llama,
-Mistral and DeepSeek.
-With the exchange cut, the edges-off condition, no seat reads another seat's
+Mistral and DeepSeek. The higher caps date from the early screen of seat
+stakes recorded among the spend overruns of Appendix~\ref{app-prereg}, in
+which the 512-token vote cap, sized to grok's short votes, truncated most of
+haiku's votes.
+With the exchange cut, no seat reads another seat's
 text, so the rebuttal becomes a development of the seat's own opening and the
 final position is stated from its own text alone, while the moderator still
 reads all three final positions and every later stage is unchanged, so each
 debate still makes 17 calls and the condition tests whether the flag needs
 the seats' exchange.
-A seat objects when it accepts the synthesis with a stated
-modification or rejects it,
+A seat objects when its label accepts the synthesis with a modification or
+rejects it, whether or not the text of that modification or concern reaches
+the moderator,
 and the counter flags a debate when two or more of the three seats object.
+The counter is a fixed threshold, not a learned rule like that of
+\citet{he2026minoritysentinel}, who train a classifier on features of
+debates among agents with no assigned side to decide when the minority
+should overturn the majority.
 Routing replaces a flagged debate's verdict with the majority of sonnet's
 codable answers, those coded at fault or not at fault among the three it
-gave on the debate's item and framing, which were drawn once under the brief
-unscaffolded prompt used on the crowd-labelled set, the verdict-label
+gave on the debate's item and framing. Sonnet gave those answers once, apart
+from any debate and reading only the account in that framing, under the
+brief unscaffolded prompt used on the crowd-labelled set, the verdict-label
 glossary with a request for at most four sentences of reasoning and no
-scaffold (Appendix~\ref{app-prompts}), and apart from any debate, so every
-flagged debate on a pair receives the same judge verdict, and when those
-answers tie or none is codable the collective's verdict stands. Sonnet
-answering every case from the same answers, with the solo's verdict kept on
-the pairs where it has no majority, two of 420 on grok and at most three on
+scaffold (Appendix~\ref{app-prompts}), so every flagged debate on an item
+and framing pair receives the same judge verdict. When those answers tie or
+none is codable, the collective's verdict stands. Sonnet
+answering every case from the same answers, with the seat model's solo
+verdict kept on the item and framing pairs where sonnet has no majority, two
+of 420 on grok and at most three on
 any model, scores 0.969 to 0.976 on the five models' item sets,
 above every seat model's solo (at most 0.959), which makes it the stronger
 judge.
@@ -1612,7 +1828,16 @@ Every interval on the flag, on routing and on the comparison with the solo,
 in Section~\ref{sec-collective} and here, is a 95 percent percentile bootstrap
 with 4,000 draws that resamples items with replacement and keeps together all
 debates of an item, under both framings and every repeat, because they share
-one account and are not independent. The statistic is a mean over the
+one account and are not independent. In Section~\ref{sec-collective} and
+here, a difference with an interval is detectable when its 95 percent
+interval excludes zero, two systems are indistinguishable, or one does as
+well as the other, when the interval of their difference includes zero, and
+one routes at least as well as the other, or is at least as accurate, when
+that interval lies wholly in its favour or includes zero, the reading
+registered in advance for sample disagreement against the counter when the
+solo's answers are routed. Comparisons without an interval, such as the
+accuracy and cost frontier below, compare means alone.
+The statistic is a mean over the
 resampled debates, or over item and framing pairs when the solo's answers are
 routed, a difference between two systems is paired, each debate or pair
 contributing its own difference, and a lift within a verdict type, the error
@@ -1623,50 +1848,63 @@ is the routed minus the collective accuracy over a condition's codable
 debates, and each draw divides the summed per-debate differences by the
 number of debates drawn. The registered analyses use seed 13 and
 supply the lifts, the router comparisons and the routing of the solo's
-answers, and the verification script, the pairing with the solo and the
-second-judge check use seed 101. The contrast of opposed and identical seats
+answers, and the independent verification script described below, the
+pairing with the solo and the second-judge check use seed 101. The contrast of opposed and identical seats
 in Section~\ref{sec-collective} is the exception, with 3,000 draws and seed
 29, and the comparison of narrated and plain seats has its own estimator in
 Appendix~\ref{app-seat}. The $n$, fire, collective, routed, routed minus
 collective and precision and recall columns of Table~\ref{tab-routing} come
 from the verification script, written apart from the registered analysis and
 sharing no code with it so that an error in either would show as a
-disagreement between them, which reads the debate records, the seats' labels and
-sonnet's cached answers directly and recomputes each condition's codable
+disagreement between them. The verification script reads, from the tables
+the generation scripts wrote, each debate's two verdicts and count of
+objecting seats, each seat's recorded label and sonnet's cached answers, and
+recomputes each condition's codable
 count, collective accuracy, fire rate, error rates of flagged and unflagged
 one-party verdicts and their ratio, routed accuracy and routing gain with its
-interval. On all six conditions every value agrees with the registered one,
+interval. On all six rows of Table~\ref{tab-routing} every value agrees with
+the registered one,
 which the script holds as a constant copied from the registered artefact,
 counts exactly, rates and the gain within 0.15 points, the ratio within 0.05
 and interval bounds within 0.6 points, a looser tolerance because the two
-bootstraps draw different random streams, the largest difference being 0.19
-points, and its count of objecting seats matches the seats' recorded labels
-in every debate. It does not recompute the lifts' intervals, the comparisons
-between routers, the routing of the solo's answers or the costs.
+bootstraps draw different random streams, the largest difference in an
+interval bound being 0.19 points, and its count of objecting seats matches
+the seats' recorded labels in every debate. It does not recompute the lifts'
+intervals, the comparisons between routers, the routing of the solo's
+answers or the costs, and like the registered analysis it takes each verdict
+and label as the generation scripts parsed them from the models' text.
 
 \paragraph{Pairing with the solo.}
 The solo and paired-difference columns of the same table come from a
-comparison added after the results were seen and not pre-registered. The
-solo is the same model answering the same account alone three times under
-the brief unscaffolded prompt used on the crowd-labelled set, which asks for
-at most four sentences of reasoning and carries neither NoT nor CoT
-(Appendix~\ref{app-prompts}) and under which sonnet also answers, so the solo
-and the routing judge differ only in the model, each answer coded at fault or
-not, and its verdict is the majority of its codable answers, the
+comparison added after the results were seen and not pre-registered, which
+asks whether the collective, before and after routing, is more accurate than
+the same model answering alone. The solo is that model answering the same
+account in the same framing alone in three separate calls, at the decoding
+settings of Appendix~\ref{app-cost} and under the brief unscaffolded prompt
+used on the crowd-labelled set, which asks for at most four sentences of
+reasoning and carries neither NoT nor CoT (Appendix~\ref{app-prompts}).
+Sonnet answers under the same prompt, so the solo and the routing judge
+differ only in the model, while the solo differs from the collective in its
+prompt as well as in its number of agents. Each answer is coded at fault or
+not, and the solo's verdict is the majority of its codable answers, the
 self-consistency baseline of Section~\ref{sec-related}
-\citep{wang2023selfconsistency}, so a pair whose answers tie
-or do not parse has no solo verdict, and the one haiku debate and the two
-Llama and two DeepSeek debates on such pairs are left out of the difference
-columns. Each remaining debate, the unit of the routing gain, is set against
+\citep{wang2023selfconsistency}. A pair whose answers tie or do not parse
+therefore has no solo verdict, and the one haiku debate and the two Llama and
+two DeepSeek debates on such pairs are left out of the difference columns.
+Each remaining debate, the unit of the routing gain, is set against
 the solo's verdict on its own item and framing, and the paired difference is
 bootstrapped over items with the same 4,000 draws and seed 101. The
 collective and routed columns cover all codable debates, the solo column
-averages over item and framing pairs and the difference columns over paired
-debates, so a difference can depart from the difference of the accuracy
-columns by up to 0.2 points, as on haiku. A variant that weights each item
-and framing pair equally moves no bound by more than 0.2 points, and a rerun
-with seed 13 none by more than 0.25.
-The two earlier, unpaired comparisons that Section~\ref{sec-collective} says
+averages over the item and framing pairs that have both a solo verdict and a
+codable debate and the difference columns over paired debates, so a
+difference can depart from the difference of the accuracy columns by up to
+0.2 points, as on haiku. A variant that weights each item and framing pair
+equally moves no bound by more than 0.2 points, and a rerun with seed 13
+none by more than 0.25.
+The comparison was not run on grok with the exchange cut, whose row of
+Table~\ref{tab-routing} therefore leaves the solo and the two differences
+from it blank.
+The two unpaired comparisons from earlier runs that Section~\ref{sec-collective} says
 favour the collective lie outside the table.
 In an earlier collective on nano, the
 collective's accuracy of 0.829 over 828 debates sits above its solo's 0.820
@@ -1721,14 +1959,19 @@ item together, and applies any restriction by verdict type inside each draw,
 since which verdict a debate reaches is itself an outcome of the debate.
 A debate's verdict type, here and in Section~\ref{sec-collective}, is that of
 its integrated verdict, the verdict scored, which the moderator writes after
-reading the seats' labels, not that of the synthesis the seats labelled, and
-the two differ in type on 112 of grok's 1,677 codable debates.
+reading the seats' labels, not that of the synthesis the seats labelled,
+because the integrated verdict is the one the collective returns, the one
+routing replaces and the one on which the split by verdict type was first
+defined. The two differ in type on 112 of grok's 1,677 codable debates, whose
+verdict type the moderator thus changed after reading the seats' labels, and
+no lift split by the synthesis's type is reported.
 The lift is read within verdict types because the argument for the counter in
 Section~\ref{sec-collective} needs a verdict that blames exactly one party, so
 that one objection, from that party's advocate, is expected and only a second
 is left unexplained by the assigned sides. On grok's verdicts that blame both
 parties or neither, which the argument does not cover, the two advocates'
-objections are only weakly anticorrelated, and two or more seats object on
+objections are only weakly anticorrelated, by the phi coefficient defined in
+the next paragraph, and two or more seats object on
 235 of the 390 debates.
 On verdicts that blame one party the lift is $+34.8$ points $[+20.1, +49.3]$
 over 93 flagged debates on grok, $+22.6$ $[+11.4, +34.7]$ over 78 with the
@@ -1739,25 +1982,31 @@ registered minimum of flagged debates.
 
 \paragraph{What drives the flag.}
 The mechanism behind the dissent sensor of Section~\ref{sec-collective} is
-model-dependent. On the against-interest reading of the sensor, each advocate
+model-dependent. On the against-interest explanation of the sensor, each advocate
 objects when the verdict goes against its own side, so a verdict that blames
 one party gives that party's advocate a reason to object and the informative
 objection is a second one, from a seat the verdict does not go against.
 On verdicts that blame exactly one party, the phi coefficient
-between the two advocates' binary objection indicators, which is $-1$ when
-exactly one of them objects in every debate and $+1$ when they always object
-or stay silent together, computed over all such debates whatever the neutral
-seat does, shows their objections strongly opposed on grok
-($\phi = -0.90$ $[-0.93, -0.87]$), as the against-interest reading expects,
+between the two advocates' binary objection indicators, their Pearson
+correlation over all such debates whatever the neutral seat does, which is
+$-1$ when exactly one of them objects in every debate and $+1$ when in every
+debate they object together or stay silent together, shows their objections strongly opposed on grok
+($\phi = -0.90$ $[-0.93, -0.87]$), as the against-interest explanation expects,
 but positively correlated on haiku
 ($+0.25$ $[+0.13, +0.36]$), Llama ($+0.15$ $[+0.07, +0.23]$) and Mistral
 ($+0.21$ $[+0.12, +0.30]$), and only weakly opposed on DeepSeek ($-0.09$
 $[-0.18, -0.01]$), each interval from the same item bootstrap as the lift.
-The against-interest reading is therefore supported on grok and not
+With $a$ the debates in which both advocates object, $b$ and $c$ those in
+which only the writer's or only the other party's advocate does and $d$ those
+in which neither does, $\phi = (ad - bc)/\sqrt{(a+b)(c+d)(a+c)(b+d)}$, which
+is undefined when either advocate objects in every debate or in none, and a
+bootstrap draw in which it is undefined is dropped from its interval.
+The against-interest explanation is therefore supported on grok and not
 established elsewhere, and on grok it rests mainly on which side the verdict
 goes against, since once that side is held fixed the advocates' objections
-are much less opposed, $\phi$ being $-0.34$ within verdicts that blame the
-writer alone and $-0.16$ within those that blame the other party alone.
+are much less opposed, $\phi$ being $-0.34$ $[-0.66, +0.01]$ within verdicts
+that blame the writer alone and $-0.16$ $[-0.32, -0.02]$ within those that
+blame the other party alone.
 Role-lock is graded rather than present or absent, and it does not by itself
 fix the sensor. Haiku, the least locked, is the one model on which the second
 objection's lift in the collective's error rate on verdicts that blame one
@@ -1768,14 +2017,15 @@ objections and not sufficient, a pattern over five models that we report as
 suggestive.
 
 \paragraph{Operating points.}
-Most objections are acceptances with a stated modification rather than
-rejections on every model but grok. Rejections make up 90 percent of grok's
+An acceptance with a modification counts as an objection, and on every model
+but grok most objections are such acceptances rather than rejections.
+Rejections make up 90 percent of grok's
 objections and 3 percent of Mistral's, 7 percent of Llama's, 18 percent of
 haiku's and 19 percent of DeepSeek's, so Mistral's seats reject the
 synthesis on only 2.5 percent of their responses while objecting on 81
 percent.
 On verdicts that blame one party the flag has precision 0.39, the share of
-flagged verdicts that are wrong against the crowd label, and recall 0.43, the
+flagged verdicts that are wrong against the crowd verdict, and recall 0.43, the
 share of wrong verdicts that are flagged, on grok, so it misses 47 of the 83
 wrong verdicts. It catches 30 of 257 wrong verdicts on Llama (precision 0.47,
 recall 0.12), where even unflagged verdicts are wrong 0.31 of the time, and
@@ -1785,12 +2035,13 @@ percent of these verdicts, that there the counter is close to a constant
 (Table~\ref{tab-routing}).
 
 \paragraph{Error by verdict type and direction.}
-Every item's crowd label blames exactly one party, the writer alone or the
+Every item's crowd verdict blames exactly one party, the writer alone or the
 other party alone, so a verdict that blames both parties, scored as at fault,
 or no one, scored as not at fault, can match it only through that coding, and
-the collective is right on such verdicts far less often, 0.536 of 390 on
-grok, 0.532 of 412 with the exchange cut, 0.397 of 63 on haiku, 0.097 of 93
-on Llama, 0.409 of 257 on DeepSeek and 0.433 of 254 on Mistral, against
+the collective is right on such verdicts far less often, 0.536 of the time
+over 390 debates on grok, 0.532 over 412 with the exchange cut, 0.397 over 63
+on haiku, 0.097 over 93 on Llama, 0.409 over 257 on DeepSeek and 0.433 over
+254 on Mistral, against
 0.936, 0.930, 0.922, 0.680, 0.943 and 0.884, in the same order, on verdicts
 that blame one party.
 The error's direction differs by model. On Llama the collective is right on
@@ -1805,7 +2056,7 @@ at-fault items.
 \paragraph{The routing gain by verdict type.}
 The routing gain of Section~\ref{sec-collective}, routed minus collective
 accuracy over all debates, splits by verdict type. Under the sonnet judge of
-Table~\ref{tab-routing} the counter raises accuracy on grok's verdicts that
+Table~\ref{tab-routing} routing on the counter raises accuracy on grok's verdicts that
 blame one party from 0.936 to 0.963, a net gain of 35 correct verdicts over
 those 1,287 debates, 2.1 of the 7.0 points once divided by all 1,677
 debates, and on verdicts that blame both parties or neither from 0.536 to
@@ -1824,30 +2075,48 @@ with haiku, so the two signals add detectably under the stronger judge only.
 This comparison's registration named haiku, answering alone by majority of
 three from cached answers, as the judge of its routing rule and added sonnet
 where sonnet's cached answers covered the debates.
-As a baseline, routing at random the same number of debates as the union,
-28.8 percent, reaches 0.881 with sonnet and 0.845 with haiku, averaged over
-200 seeds.
+As a baseline that separates the signals from the judge's own strength,
+routing at random the same number of debates as the union, 28.8 percent,
+reaches 0.881 with sonnet and 0.845 with haiku, averaged over 200 seeds,
+against 0.956 and 0.905 for the union and 0.913 and 0.880 for the counter at
+its lower coverage of 19.6 percent.
 
 \paragraph{Routing the solo's answers, and cost.}
-The flags can also route the solo model's own answers. On grok the registered
-comparison sends grok's majority-of-three answer on an item in one framing to
-sonnet when the counter fires in more than half of the codable debates on
-that item and framing, three of four when all four are codable, which
-happens for 12.1 percent of item and framing pairs, a rule set per item
-and framing because the solo gives one verdict there, where the routed
-collective's rule acts on each debate, and this improves grok
-alone from 0.912 to 0.936, $+2.4$ points $[+0.5, +4.5]$. Routing instead on
+The flags can also route the solo model's own answers, the solo giving the
+answer and the debates deciding only which of its answers go to sonnet, a
+test of whether the collective's dissent tells the solo anything that the
+solo's own three answers do not. On grok the registered comparison replaces
+grok's majority-of-three verdict on an item in one framing with sonnet's
+majority of three on the same item and framing, grok's verdict standing
+where sonnet has none, when the counter fires in more than half of the
+codable debates on that item and framing, three of four when all four are
+codable. The rule is set per item and framing because the solo gives one
+verdict there, where the routed collective's rule acts on each debate. It
+routes 51 of the 420 item and framing pairs, 12.1 percent, and improves grok
+alone from 0.912 to 0.936, $+2.4$ points $[+0.5, +4.5]$.
+The registration allowed none of this comparison's numbers to be read until
+the same analysis had reproduced, within 0.005, the routed accuracy and gain
+over grok alone of an earlier readout that routed the same answers on the
+flag registered first (Appendix~\ref{app-prereg}), which it did, and the
+readouts on other models below are exploratory and carry no such gate.
+Routing instead on
 the solo's sample disagreement, whenever its codable answers include both an
 at-fault and a not-at-fault verdict
 \citep{wang2023selfconsistency,manakul2023selfcheck}, a confidence-based
 deferral rule of the kind model cascades use
 \citep{jitkrittum2023deferral,gupta2024cascades,yue2024cascades},
-does as well, $+0.2$ points $[-1.9, +2.4]$ relative to the counter, at a
+does as well, $+0.2$ points $[-1.9, +2.4]$ in accuracy relative to the
+counter-routed solo, while routing 33 of the 420 pairs, 7.9 percent, at a
 seventh of the counter-routed solo's price in the registered projection,
 which prices one debate per item and framing although four were run, and a
 twenty-fifth of its price with all four debates behind each flag, and sonnet
-answering every case is 4.0 points $[+1.4, +6.9]$ above the routed solo.
-Prices here are per item and framing, the mean list-rate cost of the token
+answering every case is 4.0 points $[+1.4, +6.9]$ above the counter-routed
+solo.
+Routing the same numbers of pairs at random, 51 and 33, reaches 0.920 and
+0.917 on average over 200 seeds, against 0.936 for the counter and 0.938 for
+disagreement, means with no interval.
+Prices here are per item and framing, a case in Section~\ref{sec-collective},
+the mean list-rate cost of the token
 counts each provider reports, which for grok leave out any reasoning tokens
 the provider does not report, so that grok's prices may be understated. The
 registered accuracy and cost frontier for grok, the systems for which no
@@ -1856,8 +2125,9 @@ other system is at least as accurate at a lower price, runs from grok alone
 at \$0.0014) and routing on the solo's verdict type, whenever any of its three
 samples blames both parties or neither (0.960 at \$0.0031, with 22 percent of item and framing
 pairs routed, $+4.8$ points $[+1.9, +7.9]$ over grok alone and $-1.7$ points
-$[-4.0, +0.5]$ against sonnet everywhere) to sonnet everywhere (0.976 at
-\$0.0115). Every system that uses the collective's flags lies inside that
+$[-4.0, +0.5]$ against sonnet answering every case) to sonnet answering every
+case (0.976 at \$0.0115).
+Every system that uses the collective's flags lies inside that
 frontier, that is, some system that does not use the collective is at least
 as accurate at a lower price. The counter-routed solo reaches 0.936 for
 \$0.0098 in the registered projection to one debate per case, which prices
@@ -1867,9 +2137,15 @@ that produced its flags, and the routed collective of
 Section~\ref{sec-collective} reaches 0.913 for \$0.0107, priced as one debate
 plus the judge on the share of first debates flagged, 19.8 percent, the rate a
 deployment running one debate per item and framing would see, against
-\$0.0115 for
-sonnet on every case. The routed collective's 6.3-point gap to sonnet on
-every case in Section~\ref{sec-collective}, like sonnet's lead over the routed
+\$0.0115 for sonnet answering every case. The routed collective's accuracy,
+unlike the counter-routed solo's, needs no such projection, since each debate
+is routed on its own flag, so its mean over all 1,677 debates is what one
+debate per item and framing scores on average.
+Every price and call count of the collective includes the seats' three
+closing votes, which no result reads, so a collective stopped at its
+integrated verdict would make 14 calls.
+The routed collective's 6.3-point gap to sonnet answering every case in
+Section~\ref{sec-collective}, like sonnet's lead over the routed
 collective on all five models (0.976, 0.969, 0.976, 0.975 and 0.976 against
 0.913, 0.891, 0.661, 0.967 and 0.850 on grok, haiku, Llama, Mistral and
 DeepSeek), sets a mean over debates against a mean over item and framing
@@ -1888,7 +2164,7 @@ Mistral ($-5.5$ $[-9.0, -2.1]$), where the counter routes most answers.
 With plain chain-of-thought seats on grok, in an exploratory readout, routing
 the solo still beats grok alone by $+1.9$ points $[+0.7, +3.6]$, and grok's
 own sample disagreement again routes as well ($+0.7$ $[-1.4, +2.9]$ relative
-to the counter).
+to the counter-routed solo).
 
 \paragraph{A second judge.}
 Sonnet is the judge in every routed number of Section~\ref{sec-collective}
@@ -1917,7 +2193,7 @@ against 0.912 on the 420 item and framing pairs). With haiku in sonnet's
 place the routing gain over the collective is $+3.8$ points $[+1.6, +6.0]$ on
 grok, $+2.7$ $[+1.3, +4.2]$ with the exchange cut, $+2.7$ $[+1.2, +4.1]$ on
 Llama, $+10.6$ $[+6.6, +14.9]$ on Mistral and $+3.2$ $[+1.2, +5.2]$ on
-DeepSeek, no readout sending haiku's own debates to haiku, while routing
+DeepSeek, and no readout sends haiku's own debates to a haiku judge. Routing
 grok's solo verdicts to haiku by the counter gains nothing detectable
 ($+0.2$ points $[-1.4, +1.9]$), as the registered comparison with the solo
 expected of a judge weaker than the solo.
@@ -1928,7 +2204,8 @@ expected of a judge weaker than the solo.
 This comparison asks whether the collective's accuracy, its dissent sensor
 and its routing need the scaffold in the seats.
 
-Replacing narration in the seats with plain chain-of-thought makes the
+Replacing the seats' NoT system prompt with the CoT one, narration with
+plain chain-of-thought, makes the
 collective of Section~\ref{sec-collective} more accurate on grok and Llama,
 the two models the reading rule below was registered for. The collective
 seats three copies of one model on a first-person conflict account, an
@@ -1937,7 +2214,11 @@ writes the integrated verdict that is scored as the collective's
 (Table~\ref{tab-app-stages}). Its accuracy is the share of those verdicts
 that match the crowd's verdict on whether the writer is at fault. A narrated
 seat has the NoT text of Figure~\ref{fig:prompt} as its system prompt and a
-plain seat the CoT text. The paragraphs below give the design, the measures,
+plain seat the CoT text. Narrated here names the whole NoT prompt, its
+sections and narrative form together, not the narrative form that
+Appendix~\ref{app-form} separates from NoT's content, and the main text calls
+these NoT seats and CoT seats.
+The paragraphs below give the design, the measures,
 the reading and a later run on haiku.
 
 The plain-seat collectives
@@ -1951,27 +2232,30 @@ with two on Llama.
 In both collectives the seat's system prompt is the scaffold text alone, and
 its role, the case, the verdict-label glossary and the forced verdict line,
 all printed in Appendix~\ref{app-prompts}, arrive in the user turn.
-Every registered check passed. The generation script's round-level guards, each a cap
-on the share of truncated or verdict-less outputs that must hold before any
-number is read (Appendix~\ref{app-prereg}), held, at worst 0.7 percent of one
-round's outputs giving no verdict and none truncated, all 1,680 grok and 900
+Every registered check passed. The generation script's guards, each a cap of
+5 percent on the share of one debate stage's outputs that are truncated or
+give no verdict and each required to hold before any number is read
+(Appendix~\ref{app-prereg}), held, at worst 0.7 percent of one stage's
+outputs giving no verdict and none truncated, all 1,680 grok and 900
 Llama plain debates are present, and dropping the debates whose synthesis or
 integrated verdict does not parse leaves 1,676 and 898 plain debates against
 1,677 and 897 narrated.
-On grok the narrated debates were all collected by 2026-09-01 and the plain
-ones on 2026-09-12 and 2026-09-22, so a change in the served model between
-the runs is not excluded there, while the two Llama collectives were run a
-day apart.
+On grok the narrated debates were all collected by 1 September 2026 and the
+plain ones in two runs, the first of the four debates per item and framing
+on 12 September, reused from the earlier comparison described at the end of
+this subsection, and the other three on 22 September, so a change in the
+served model between the runs is not excluded there, while the two Llama
+collectives were run a day apart.
 
 A seat objects when it rejects the moderator's synthesis or accepts it with a
 modification, and the counter fires and flags the debate when at least two
 of the three seats object. Accuracy is the share of debates whose integrated
 verdict matches the crowd's, the fire rate the share of debates flagged,
 routed accuracy the accuracy after each flagged debate's verdict is replaced
-by the majority of three answers from sonnet, the stronger judge of
-Section~\ref{sec-collective}, the collective's verdict standing where those
-answers tie or none parses, and the routing gain routed minus collective
-accuracy.
+by the majority, on whether the writer is at fault, of three answers from
+sonnet, the stronger judge of Section~\ref{sec-collective}, the collective's
+verdict standing where those answers tie or none parses, and the routing
+gain routed minus collective accuracy.
 Each measure is computed for each item as the mean over the item's remaining
 debates in that collective, both framings and every repeat together, and
 each contrast is the mean over items of the narrated minus the plain value,
@@ -1979,7 +2263,7 @@ with a 95 percent percentile interval from 8,000 bootstrap resamples that
 draw items with replacement and recompute that mean (seed 20260922). Pairing
 on items keeps differences in difficulty between items out of the interval,
 since both collectives debate the same items.
-Because the judge sees only the dispute, each item and framing has one cached
+Because the judge sees only the account, each item and framing has one cached
 majority-of-three answer from sonnet that serves both collectives, so the
 routed comparisons differ only in the collectives' own verdicts and in which
 debates they flag.
@@ -1988,27 +2272,35 @@ more often, so routed accuracy is also compared at matched coverage. The
 collective with the higher per-debate fire rate, the narrated one on both
 models, keeps a random subset of its flags, drawn from all its flagged
 debates at once rather than item by item and sized to the other's per-debate
-rate, 254 of grok's 328 and 69 of Llama's 71, a debate that loses its flag
+rate (254 flags in 1,676 plain debates on grok, 69 in 898 on Llama), 254 of
+grok's 328 and 69 of Llama's 71, a debate that loses its flag
 keeping the collective's own verdict, while the other collective keeps every
 flag, so its routed accuracy is unchanged by matching. Each item's routed
-accuracy is averaged over 200 such subsets so that no single draw decides
+accuracy is averaged over 200 such subsets (seed 20260922) so that no single draw decides
 the result, and the averages are paired as above. Since every flag is kept
 with the same chance, 254 in 328 on grok and 69 in 71 on Llama, an item's
 expected routed accuracy under this thinning is its collective accuracy plus
 its routing gain times that chance, so the comparison asks what the narrated
 flags would buy if they fired only as often as the plain ones.
 
-The reading rule was registered before the new plain-seat debates were run,
-and its matched-coverage measure was added by an amendment recorded before
-any of their results was read. It reads two measures on each model, the
-collective's accuracy and its routed accuracy at matched coverage, and
-returns the first of the readings defined at the head of this appendix that
-holds, the first being PLAIN-BETTER, which calls plain seats better when
-either measure favours them with an interval excluding zero on either
-model. Because that reading is checked first, a plain-favouring interval on
-one model would decide it even if the other model's intervals favoured
-narrated seats, a case that did not arise, since all four intervals lie
-below zero. Its four intervals carry no multiplicity correction.
+The reading rule was registered before the new plain-seat debates were run
+but after the earlier grok comparison's result had been seen, and its
+matched-coverage measure was added by an amendment recorded before any of
+their results was read.
+It reads two measures on each model, the collective's accuracy and its
+routed accuracy at matched coverage, and returns the first of four
+readings, named at the head of this appendix, that holds. The first holds
+when either measure favours plain seats with an interval excluding zero on
+either model, the second when either favours narrated seats in that way,
+the third when neither does but the routing gain or the fire rate differs
+with an interval excluding zero, and the fourth, that nothing differs,
+otherwise. Because the plain-seat reading is checked first, a
+plain-favouring interval on one model would decide it even if the other
+model's intervals favoured narrated seats, a case that did not arise, since
+all four intervals favour plain seats. Its four intervals carry no
+multiplicity correction. The readings as first registered, which counted
+routed accuracy without matching, give the same result, since the
+collective's accuracy alone favours plain seats on both models.
 Unless stated otherwise, every contrast in this subsection is narrated minus
 plain, so a negative difference in accuracy favours plain seats. The
 accuracy of the collective's own verdict differs by $-2.0$ points
@@ -2016,7 +2308,7 @@ $[-3.7, -0.3]$ on grok and $-4.2$ $[-7.0, -1.4]$ on Llama, and the accuracy
 of the routed verdict at matched coverage by $-2.0$ $[-3.8, -0.1]$ and
 $-4.6$ $[-7.8, -1.2]$, so plain chain-of-thought seats make the collective
 more accurate on grok and Llama, the two models the rule was registered for,
-the pre-declared PLAIN-BETTER reading (Table~\ref{tab-app-seat}).
+the pre-declared plain-seat reading (Table~\ref{tab-app-seat}).
 
 A third model, haiku, was added later under an amendment registered
 before its run, with the same change on its 249-item set and
@@ -2024,18 +2316,18 @@ one debate per item and framing, and the rule above is applied to haiku on
 its own, which leaves the registered reading on grok and Llama unchanged.
 Read on the 491 of 498 debates both collectives completed, the narrated one
 having lost seven to connection failures, 487 once
-unparseable verdicts are dropped, it returns PLAIN-BETTER as well, carried
+unparseable verdicts are dropped, it also finds plain seats better, carried
 by routed accuracy at matched coverage ($-3.2$ $[-6.0, -0.4]$), while the
 collective's own accuracy ($-3.0$ $[-6.4, +0.4]$) and its routed accuracy
 without matching ($-1.0$ $[-3.8, +1.8]$) include zero, and narration
 roughly doubles how often the flag fires (0.197 against 0.090, $+10.6$
 $[+6.6, +14.5]$).
-Its narrated debates were collected by 2026-09-15 and the plain ones on
-2026-09-23, and the amendment registered its sensor as untestable, since
+Its narrated debates were collected by 15 September 2026 and the plain ones
+on 23 September, and the amendment registered its sensor as untestable, since
 with narrated seats the flag's lift on verdicts that blame exactly one party
 already includes zero.
 
-Narration makes grok's seats object more, with a fire rate of 0.195 against
+Narration makes grok's counter fire more often, with a fire rate of 0.195 against
 0.152 ($+4.3$ $[+1.8, +6.9]$), which moves its routing gain, routed accuracy
 minus the collective's own accuracy, from 5.4 to 7.0
 points, a difference of $+1.6$ $[+0.0, +3.3]$ whose interval reaches zero,
@@ -2059,8 +2351,9 @@ advocates' objections stay opposed, with a phi coefficient, the correlation
 between the writer advocate's and the other advocate's binary objection
 indicators, of $-0.905$ against $-0.901$ narrated. On those verdicts the
 collective is still wrong 6.4 times as often where at least two seats object
-as where at most one does, a lift of $+26.9$ points $[+11.8, +41.2]$ over 72
-flagged debates, from the item bootstrap of 4,000 draws of
+as where at most one does (0.319 against 0.050), a lift, the first error rate
+minus the second, of $+26.9$ points $[+11.8, +41.2]$ over 72 flagged debates,
+from the item bootstrap of 4,000 draws of
 Appendix~\ref{app-collective}, against 9.8 times with narration. Surviving
 here means that the plain-seat lift's interval still lies above zero, not
 that it matches the narrated lift, and the two lifts are not compared with a
@@ -2076,7 +2369,7 @@ difference, narrated minus plain, is $-2.7$ $[-8.4, +2.5]$ on all 86 such
 items for grok and $-2.2$ $[-6.5, +1.6]$ on all 92 for Llama.
 An earlier comparison with one debate per item and framing on grok, whose
 420 plain debates are reused from cache as the first of the four debates per
-item and framing above, had found plain seats no worse ($+1.0$
+item and framing above, had found plain seats' collective accuracy no worse ($+1.0$
 $[-1.0, +2.9]$, in the opposite sign convention, plain minus narrated) with a
 lower fire rate (0.131 against
 0.196, both per debate), and this registered comparison, written after that
@@ -2096,9 +2389,10 @@ narrated minus plain in points, with 95 percent percentile intervals from
 Llama 225), so negative differences in the three accuracy rows favour plain
 seats and positive differences in the last two rows mean that narrated seats
 gain more from routing or fire more often. Collective accuracy is the share
-of the moderator's integrated verdicts that agree with the crowd label.
+of the moderator's integrated verdicts that agree with the crowd verdict.
 Routed accuracy replaces the verdict of each debate with at least two
-objecting seats by sonnet's majority of three, the collective's verdict
+objecting seats by the majority of three answers from sonnet
+(claude-sonnet-4-6), the stronger judge of Section~\ref{sec-collective}, the collective's verdict
 standing where those answers tie or none parses. Matched coverage first
 thins the flags of the collective that fires more, the narrated one on both
 models, at random to the other's per-debate fire rate, averaging over 200
@@ -2123,9 +2417,14 @@ angle brackets. Each debate makes 17 calls in seven stages
 (Table~\ref{tab-app-stages}), the seats' system prompt is the scaffold text
 alone, and everything else, the framing wrapper, the glossary, the role
 brief, the prior rounds and the forced verdict line, arrives in the user
-turn. The routing judge answers the account in the debate's framing three
-times under the brief unscaffolded prompt used on the crowd-labelled set,
-which asks for at most four sentences of reasoning, its verdict is the
+turn. The routing judge, sonnet, the stronger judge of
+Section~\ref{sec-collective}, answers the account in the debate's framing
+three times under the brief unscaffolded prompt used on the crowd-labelled
+set, under which the solo of Section~\ref{sec-collective} also answers.
+That prompt asks for at most four sentences of reasoning and carries neither
+NoT nor CoT. It is the prompt of the set's original baseline run on haiku,
+nano and grok, kept unchanged so that the run's answers could be reused, as
+they are for the solo on haiku and grok. The judge's verdict is the
 majority of those of its three answers coded at fault or not at fault, a tie
 or no codable answer
 keeping the collective's verdict, and because it answers each item and
@@ -2148,7 +2447,7 @@ stage & who & what is written & calls \\
 4 & moderator & synthesis of the three positions with a verdict line & 1 \\
 5 & each seat & label on the synthesis, accepted, accepted with a modification or rejected & 3 \\
 6 & moderator & integrated verdict against the labels, scored as the collective's & 1 \\
-7 & each seat & binary vote on the integrated proposal & 3 \\
+7 & each seat & binary vote on the integrated verdict & 3 \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -2185,15 +2484,14 @@ is edited. Registered guards, typically shares of truncated or verdict-less
 outputs of at most 5 percent, must pass before any number is read, and a run
 that fails is not read. The single-agent guards registered before the form tests of
 Appendix~\ref{app-form} did not check truncation during generation, and until
-the audit that led to the 4,096-token regeneration of Appendix~\ref{app-rep4k}
-the log noted it only for grok's chain-of-thought responses
+the audit of the log's statements against their sources that led to the
+4,096-token regeneration of Appendix~\ref{app-rep4k} the log noted it only for grok's chain-of-thought responses
 and nano's empty ones, which is how most of the defect of
 Appendix~\ref{app-rep4k} went unrecorded.
 The CoT and NoT responses of the four original generators (haiku, sonnet,
 nano and grok) were generated in June 2026 and their scoring was corrected
-in August, both before the document existed, so their
-drops enter it only as a results note that made no model calls and makes no
-new claim.
+in August, both before the log existed, so their drops enter the log only
+as a results note that made no model calls and makes no new claim.
 Prospectively registered evidence for the single-agent validation result
 begins with the log entries of 21 September 2026, which added Llama, Mistral
 and DeepSeek, and the judge panel, regeneration, form, persona, length,
@@ -2205,16 +2503,17 @@ Before any call of the length, form, judge-panel and pushback tests, and while
 the plain-seat collectives of Appendix~\ref{app-seat} were already generating
 but before any of their numbers was read, an adversarial review of the
 registrations by 32 language-model agents, called the pre-spend review below,
-confirmed 29 findings of fault in them and refuted none. Every change it prompted, including the
+confirmed 29 findings of fault in them, and none of the findings it raised
+was refuted. Every change it prompted, including the
 matched-coverage rule of Appendix~\ref{app-seat}, was recorded before those
 calls and before any number from the plain-seat comparison was read.
 
 \begin{table}[t]
 \caption{\textbf{Verdict shift toward the user on the crowd-labelled
-accounts.} Signal-detection criterion $c$, minus half the sum of the
-z-scored hit and false-alarm rates, and discriminability $d'$, their
-difference, in the third person and with the user as the writer, with the
-hit and false-alarm rates (hit / FA). A verdict of at fault counts as a hit
+accounts.} Signal-detection criterion $c = -(z(H) + z(F))/2$ and
+discriminability $d' = z(H) - z(F)$ in the third person and with the user as
+the writer, with the hit rate $H$ and false-alarm rate $F$ (hit / FA), where
+$z$ is the inverse of the standard normal cumulative distribution function. A verdict of at fault counts as a hit
 on a crowd-at-fault item and as a false alarm on a crowd-not-at-fault item,
 so a higher $c$ means the model calls the writer at fault less readily. The
 shift is $c$ with the user as the writer minus $c$ in the third person, with
@@ -2234,7 +2533,8 @@ artefacts.}
 \end{table}
 
 \paragraph{The verdict shift toward the user and false-theorem affirmation.}
-The comparison of Section~\ref{sec-single} on the verdict's shift toward the
+Two single-agent results of Section~\ref{sec-single} were registered only
+after their responses existed. The comparison on the verdict's shift toward the
 user, the shift in the criterion $c$ of Table~\ref{tab-app-z3}, reuses two
 sets of responses generated earlier for the collective, the NoT answers of
 the content-filter screen that fixed each model's item set and the brief
@@ -2244,16 +2544,17 @@ the brief unscaffolded prompt used on the crowd-labelled set, which asks for
 at most four sentences of reasoning and has no step-by-step instruction, and
 Mistral's shift under that comparator appears only under the registered
 coding of ESH, the forum's verdict that everyone involved is at fault.
-The registered coding counts ESH verdicts as at fault, and the two
-alternatives leave ESH verdicts out or count them as not at fault, which
-moves the Mistral comparator's shift from $+0.13$ $[+0.01, +0.27]$ to $+0.05$
-$[-0.11, +0.22]$ and $-0.03$ $[-0.18, +0.12]$ while NoT's, $+0.30$ under the
-registered coding (Table~\ref{tab-app-z3}), is $+0.27$ $[+0.11, +0.48]$ and
-$+0.24$ $[+0.08, +0.44]$ under the two alternatives, and on Llama both
-prompts keep the shift when ESH is left out ($+0.15$ for the brief prompt and
-$+0.22$ for NoT) and lose it when ESH counts as not at fault ($+0.09$
-$[-0.07, +0.24]$ for the brief prompt and $+0.15$ $[-0.02, +0.32]$ for NoT)
-(Table~\ref{tab-app-z3}).
+Because ESH blames everyone involved rather than the writer alone, how to
+code it is a choice. The registered coding counts ESH verdicts as at fault,
+and the two alternatives leave them out or count them as not at fault. Under
+the alternatives, Mistral's shift under the brief prompt moves from $+0.13$
+$[+0.01, +0.27]$ to $+0.05$ $[-0.11, +0.22]$ and $-0.03$ $[-0.18, +0.12]$,
+while its shift under NoT, $+0.30$ under the registered coding
+(Table~\ref{tab-app-z3}), is $+0.27$ $[+0.11, +0.48]$ and $+0.24$
+$[+0.08, +0.44]$. On Llama both prompts keep the shift when ESH is left out
+($+0.15$ for the brief prompt and $+0.22$ for NoT) and lose it when ESH
+counts as not at fault ($+0.09$ $[-0.07, +0.24]$ for the brief prompt and
+$+0.15$ $[-0.02, +0.32]$ for NoT) (Table~\ref{tab-app-z3}).
 The false-theorem affirmation result, that NoT raises the share of false
 theorem statements from the BrokenMath benchmark that nano affirms as true
 (Section~\ref{sec-single}), comes from responses that predate the
@@ -2271,9 +2572,9 @@ its first narration in view, nano affirms fewer false statements ($-7.6$
 points $[-10.4, -4.5]$, second pass minus first, on the items with a usable
 first answer), while re-answering under CoT changes nothing
 ($-0.3$ $[-2.5, +2.0]$). In an
-older single-judge test on BrokenMath proofs from June, NoT raised the share
-judged to accept the false statement on nano (0.547 to 0.693) but lowered it
-on grok (0.507 to 0.388).
+older test on BrokenMath proofs from June, scored by a haiku judge alone, NoT
+raised the share judged to accept the false statement on nano from CoT's
+0.547 to 0.693 but lowered it on grok from CoT's 0.507 to 0.388.
 
 \paragraph{The split by verdict type and the two-objection threshold.}
 The split of the dissent counter by verdict type, whose stratum of verdicts
@@ -2286,22 +2587,23 @@ counter far more often than the rest. The lift within verdicts that blame
 exactly one party, called one-loser verdicts in the log, was read the same
 day under a registration made in answer to a finding of an internal
 adversarial audit of the drafted results, a different review from the
-pre-spend review above, and that audit's recomputation from the cached
-debates had already produced the values (0.387 against 0.039 over 93 flagged
-debates), which the registration records before its reading rule. That rule requires this paper to say that
+pre-spend review above. That audit's recomputation from the cached debates
+had already produced the values before the registration was written (0.387
+against 0.039 over 93 flagged debates), and the registration records them
+above its reading rule. That rule requires this paper to say that
 the pooled lift over all verdict types, 4.4 times ($+32.0$ points
 $[+23.9, +40.4]$ over 328 flagged debates of 1,677), mixes the dissent on
 one-party verdicts with the verdict type on the rest.
 On grok the split is therefore a reading proposed after the data were
-seen. The prospective test is the five later conditions, the cut exchange,
+seen. The prospective test is the five later conditions, grok with the exchange cut,
 haiku, Llama, Mistral and DeepSeek, each registered with that one-party lift as a named readout before
 any call, and on haiku the interval includes zero.
-The two-objection threshold has the same history. The flag registered first,
-in an early entry of the log, fired when the neutral seat objected or an
-advocate objected to a synthesis that did not go against its side, and an
-audit of the collected grok debates that made no model calls, on 9 September
-2026, found that the plain count of at least two objecting
-seats fires on 328 of the 1,677 debates, every one of them also flagged by
+The two-objection threshold was likewise fixed after grok's debates had been
+collected. The flag registered first, in an early entry of the log, fired
+when the neutral seat objected or an advocate objected to a synthesis that
+did not go against its side. An audit of the collected grok debates that
+made no model calls, on 9 September 2026, then found that the plain count of
+at least two objecting seats fires on 328 of the 1,677 debates, every one of them also flagged by
 the earlier rule, which flags 9 more, and routes to the haiku judge nearly as
 well (routed accuracy 0.880 against the earlier rule's 0.881), so the count
 became the registered flag for every later condition.
@@ -2314,12 +2616,13 @@ length, on haiku 121 of 150 against 0 of 150 and on sonnet 140 of 150 against
 affirmation and inflated the reductions as first computed.
 Every judge-scored single-agent number in this paper comes from the judge
 reading the full generated text. The
-registered four-model drops substituted fresh full-text scores only for
+four-model drops as recorded in the log substituted fresh full-text scores only for
 responses over 4,000 characters and kept stored scores for shorter ones, and
 the uniform full-text rescore behind the five-judge panel of
 Appendix~\ref{app-judges} reproduces them to within 3.5
 points, the largest gap being nano's, where the panel pairs 116 items against
-the registered unpaired comparison (Appendix~\ref{app-judges}). A claim that
+the log's unpaired comparison (Appendix~\ref{app-judges}).
+A claim that
 NoT lowers the validation rate on ELEPHANT's own split of forum posts judged
 at fault, a split the crowd-labelled set of Section~\ref{sec-collective} does
 not use, did not survive the correction, the reduction collapsing on haiku
@@ -2330,7 +2633,7 @@ The first alternate-judge tables, one with nano and Llama judges and a later
 one with a grok judge, re-scored with the new judge only the responses over
 4,000 characters and left shorter ones at the production judge's score.
 Because the share over that length differs sharply between CoT and NoT, each
-such drop compared a mostly haiku-scored CoT rate with a mostly
+such drop compared a mostly production-judge-scored CoT rate with a mostly
 alternate-scored NoT rate, most extremely on haiku and sonnet, the two
 generators on which both the Llama and the grok judge appeared to reverse the
 sign (the Llama judge also appeared to reverse it on nano).
@@ -2367,7 +2670,7 @@ as an amendment after the five drop tables were seen and before it was
 computed.
 
 \paragraph{Generation-cap truncation, DeepSeek's missing floor and the persona line.}
-An audit that checked statements in the log against their sources found two
+The audit that checked the log's statements against their sources found two
 confounds in the single-agent result itself, truncation during generation, to
 which DeepSeek's missing token floor belongs, and the persona line. The
 original responses had been cut at their generation caps far more often than
@@ -2386,15 +2689,17 @@ length-matched prompts keep CoT's, so comparisons across those tests also
 differ in persona, and the second amendment to the form tests added CoT with
 only the persona swapped
 (Appendix~\ref{app-form}).
+
+\paragraph{Pooling over runs.}
 The registration of the second 4,096-token run asked for the sonnet and haiku
 drops to be stated as estimates pooled over the two 4,096-token runs, and
 after that run was seen the paper instead pools over every run of each
 generator (Appendix~\ref{app-rep4k}).
 
 \paragraph{Sample seed.}
-Earlier text in the document, including the shared instrument of the
-single-agent tests and the first results entry on the original responses,
-calls the 150-item sample seed 42. The cached items match
+Earlier text in the log, including its shared description of the
+single-agent tests' setup and the first results entry on the original
+responses, calls the 150-item sample seed 42. The cached items match
 seed 44 on all 150 items and seed 42 on 4, and the loader sets seed 44, so
 the sample is seed 44. The bootstrap seed 20260822 is unrelated to it.
 
@@ -2424,8 +2729,10 @@ and marked as such in the analysis script, and this paper reports the rise
 itself rather than either label.
 The section-knockout and one-line tests of Appendix~\ref{app-form} compare
 new responses with the June ones on all three generators, and the nano and
-grok contrasts also carry the budget mismatch and the generation-cap
-truncation described in Appendix~\ref{app-rep4k}.
+grok contrasts also carry the generation-cap truncation described in
+Appendix~\ref{app-rep4k}, nano's also a budget mismatch, since its June
+responses shared a 2,048-token budget with its hidden reasoning while its new
+ones have a floor of 8,192 tokens.
 Their pooled intervals resample generator-by-item pairs, although the
 section-knockout registration asked for an item's responses on all three
 generators to be resampled together (Appendix~\ref{app-form}).
@@ -2444,7 +2751,11 @@ the Holm corrections and minimum detectable effects reported beside the
 registered readings. None changes a registered reading. They follow three
 earlier additions made after data were seen, the reference-label check of
 Appendix~\ref{app-judges}, the REVERSED label of the one-line instruction and
-the pooling rule of the pushback guard. Other readouts that the text labels
+the pooling rule of the pushback guard. A readout labelled not
+pre-registered or exploratory is reported with no decision rule registered
+for it, and one labelled proposed after the data were seen is read under a
+rule written after its data had been seen.
+Other readouts that the text labels
 not pre-registered, exploratory or proposed after the data were seen, such
 as the contrast of identical and opposed seats and the exploratory routing
 readouts of Appendix~\ref{app-collective} and the split by verdict type
@@ -2471,13 +2782,14 @@ reported here, spent about \$9.41 against \$8, a cost-model miss. The DeepSeek c
 spent \$93.70 against
 \$90 and reports the \$3.70 as an overage.
 Guard failures left several runs unread rather than repaired after the fact.
-The first Mistral collective failed its round-level truncation guard at a
+The first Mistral collective failed its truncation guard on one debate stage at a
 2,560-token cap and was regenerated at 4,096 under a separately authorised
-ceiling, with its \$35.90 first pass sunk and unread, and a 40-item gpt-4o
-collective screen failed its no-verdict guard at 15.0 percent, because the
+ceiling, with its \$35.90 first pass sunk and unread, and a 40-item screen of
+gpt-4o in the collective failed its no-verdict guard at 15.0 percent, because the
 platform's content filter blocked some posts, and was never read.
-The overnight batch of 22 and 23 September cost about \$125, inside its
-\$250 cap, and additions registered on 23 September, among them the second
+The overnight batch of 22 and 23 September, the registered runs launched
+under one spending authorisation of the principal investigator with a
+cumulative cap of \$250, cost about \$125, inside that cap, and additions registered on 23 September, among them the second
 4,096-token run of Appendix~\ref{app-rep4k} and the haiku plain-seat
 collective of Appendix~\ref{app-seat}, took it to about \$270, above the cap
 by the principal investigator's authorisation (Appendix~\ref{app-cost}).
@@ -2486,26 +2798,26 @@ by the principal investigator's authorisation (Appendix~\ref{app-cost}).
 \label{app-cost}
 
 Seven generators from six developers, three of them open-weight, and one
-further judge appear in this paper (Table~\ref{tab-app-models}). Every call
+further judge, gpt-4o, appear in this paper (Table~\ref{tab-app-models}). Every call
 went through Microsoft Azure, so a developer here is the company that built
 the model, not the API provider, and open-weight status is as recorded in the
 pre-registration and was not independently verified.
 Decoding settings differ by provider route. The Anthropic models run at the
 provider's default temperature with no seed and no extended thinking, gpt-4o
-and the three open-weight deployments at temperature 0.7, grok with no
-temperature or seed, and nano with medium reasoning effort when generating
+and the three open-weight deployments at temperature 0.7, grok at the
+provider's default temperature with no seed, and nano with medium reasoning effort when generating
 and minimal effort when judging, with a floor of 8,192 completion tokens on
 every call after 21 August 2026, a floor its June responses of
 Appendix~\ref{app-rep4k} predate.
 The judges return 0 or 1, the production judge within 8 output tokens at the
 provider's default temperature, so repeated judge calls on the same text can
-disagree, which is why every comparison in Appendices~\ref{app-judges}
+disagree. For that reason every comparison in Appendices~\ref{app-judges}
 and~\ref{app-rep4k} and the form, persona and length tests of
 Appendix~\ref{app-form} score both conditions through the same path with the
-same judge, while the section-knockout and one-line tests keep stored scores
-for responses of up to 4,000 characters and use fresh full-text scores above
-that, so in those tests two conditions of different lengths can be scored in
-different passes of the same judge, whose agreement with itself
+same judge. The section-knockout and one-line tests instead keep stored
+scores for responses of up to 4,000 characters and use fresh full-text
+scores above that, so in those tests two conditions of different lengths can
+be scored in different passes of the same judge, whose agreement with itself
 Appendix~\ref{app-judges} measures.
 Measured cost figures apply the list prices in Table~\ref{tab-app-models} to
 token counts read from the caches after each run, and the estimated figures
@@ -2577,9 +2889,10 @@ DeepSeek-V4-Pro & DeepSeek & DeepSeek & open & generator, collective, post hoc r
 \centering
 \small
 \caption{Where each result comes from. The pre-registration column names the
-entry in the released log, redacted as described in the Reproducibility
-statement, as a numbered addendum or one of its amendments, the
-analysis-only block Z3, or post hoc note, the dated note at the log's end
+entry of the released log, redacted as described in the Reproducibility
+statement, behind each result. An entry is a numbered addendum or one of its
+amendments, the block Z3, which registered an analysis of existing responses
+with no model calls, or the post hoc note, the dated note at the log's end
 that records the analyses added after the data were seen
 (Appendix~\ref{app-prereg}). An entry marked observed is a contrast read from
 that addendum's runs but not declared in advance. The artefact column names the file in the
@@ -2609,11 +2922,12 @@ knockout and one-line registered readouts & 17.3, 17.5, post hoc note & \texttt{
 pushback & 17.9 & \texttt{pushback\_readout\_<model>.json} & \texttt{run\_pushback.py} \\
 verdict shift toward the user (Table~\ref{tab-app-z3}) & Z3 & \texttt{z3\_sdt\_<model>.json} & \texttt{analyze\_crowdgold\_sdt.py} \\
 false-theorem affirmation & 16.15.5 & \texttt{bm\_embody\_analysis.json} & \texttt{analyze\_bm\_embodiment.py} \\
-narrated versus plain seats & 16.28 and its haiku amendment & \texttt{seat\_scaffold\_comparison.json} & \texttt{analyze\_seat\_scaffold.py} \\
+narrated versus plain seats & 16.28 and its haiku amendment & \texttt{seat\_scaffold\_comparison.json}, \texttt{router\_decomposition\_grok\_stdcot\_k4.json}, \texttt{flooding\_analysis\_grok\_stdcot\_k4.json}, \texttt{topology\_cell\_cg\_deliberation\_stdcot\_k4.json} & \texttt{analyze\_seat\_scaffold.py}, \texttt{analyze\_router\_decomposition.py}, \texttt{analyze\_flooding.py}, \texttt{analyze\_topology\_2x2.py} \\
 identical against opposed seats, grok & 16.10, observed & \texttt{topology\_2x2\_analysis.json} & \texttt{analyze\_topology\_2x2.py} \\
 role-lock of each collective & 16.10, 16.23, 16.24, 16.26 to 16.28 & \texttt{topology\_2x2\_analysis.json}, \texttt{topology\_cell\_<condition>.json}, \texttt{cg\_deliberation\_llama3370binstruct\_grip\_row.json} & \texttt{analyze\_topology\_2x2.py}, \texttt{run\_crowdgold\_filter\_screen.py} \\
 routing and dissent, independent check & 16.15.1, 16.22 to 16.27 & \texttt{verify\_pillar3\_headline\_<condition>.json} & \texttt{verify\_pillar3\_headline.py} \\
-routing against the solo model & 16.22 & \texttt{routing\_certification*.json} & \texttt{analyze\_router\_decomposition.py} \\
+flag's lift by verdict type, verdict-type router, haiku as judge & 16.15.1, 16.23 to 16.28 & \texttt{router\_decomposition\_<condition>.json} & \texttt{analyze\_router\_decomposition.py} \\
+routing the solo's answers, and cost & 16.22 & \texttt{routing\_certification*.json} & \texttt{analyze\_router\_decomposition.py} \\
 collective and routed collective against the solo, paired & post hoc note & \texttt{collective\_vs\_solo\_paired.json} & \texttt{analyze\_collective\_vs\_solo.py} \\
 routing gain with DeepSeek as judge & post hoc note & \texttt{routing\_judge\_deepseek.json} & \texttt{analyze\_routing\_judge\_deepseek.py} \\
 advocate opposition on one-party verdicts & 16.12, 16.23 to 16.27 & \texttt{flooding\_analysis\_<condition>.json}, \texttt{phi\_predictors\_diagnostic.json} & \texttt{analyze\_flooding.py}, \texttt{analyze\_phi\_predictors.py} \\
@@ -2623,6 +2937,20 @@ advocate opposition on one-party verdicts & 16.12, 16.23 to 16.27 & \texttt{floo
 
 \subsection{Further related work}
 \label{app-related}
+Besides amplifying sycophancy when agreeable \citep{shah2026toonice},
+persona prompts explain little variance in simulated surveys
+\citep{hu2024persona}, can degrade zero-shot reasoning \citep{kim2025persona}
+and carry implicit biases \citep{gupta2024bias,deshpande2023toxicity}.
+Work on multi-agent topology scales and optimises agent graphs
+\citep{qian2025macnet,zhuge2024gptswarm,liu2024dylan} and studies team size,
+unguided homogeneous debate and when a minority should overturn the majority
+\citep{bertalanic2026ringelmann,bertalanic2026costconsensus,he2026minoritysentinel}.
+It finds that sparse graphs are competitive at lower cost \citep{li2024sparse},
+topology governs how errors propagate
+\citep{shen2025propagation,han2026conformity}, agents conform to majorities
+\citep{zhang2024socialpsych,weng2025conformity}, correlated errors limit
+aggregation \citep{kim2025correlated} and heterogeneous panels beat
+homogeneous ones \citep{wang2025moa}.
 Aggregation theory states when pooling judgements helps, under correlated
 votes \citep{ladha1992condorcet,boland1989majority}, unequal competence
 \citep{shapley1984optimizing,nitzan1982optimal,bahrami2010optimally}, social

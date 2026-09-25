@@ -15,15 +15,21 @@ The experiments use public benchmark text (ELEPHANT open-ended advice questions,
 Anecdotes) and public model APIs, with no human subjects and no new personal data. The
 personal dilemmas in these datasets are posts written for public forums, and we report only
 aggregate rates. The scaffold studied here changes how a model answers people who describe
-their own conflicts, so a reduction in validation is not automatically a benefit to the person
-asking, since ELEPHANT's own human-written answers are labelled validating in 30 percent of
-cases (Section~\ref{sec-single}).
+their own conflicts, and a reduction in validation is not automatically a benefit to the person
+asking, since human answers also validate at times, ELEPHANT's own human-written answers being
+labelled validating in 30 percent of cases (Section~\ref{sec-single}).
 % 30 percent: judge_reference_agreement.json reference_rate 0.2953 (44 of 149 labelled human answers),
 % as in Section sec-single ("30 percent by reference")
-We report where the scaffold fails to help or makes things worse (capitulating under pushback,
-affirming false theorem statements, and the collective's own accuracy) rather than only where it
-helps.
-% "affirming false theorem statements" (discussion-14, subsuming whole-29): Section sec-single, NoT also
+% clarity round 3 (discussion-14): "and" for "so", and "human answers also validate at times" bridges the
+% 30 percent to the claim it supports; same numbers and claim
+We report where the scaffold fails to help or makes things worse (capitulating more under pushback,
+affirming more false theorem statements, and a collective less accurate than the model answering
+alone) rather than only where it helps.
+% clarity round 3 (discussion-18): each failure stated as what happens, NoT giving up its verdict more
+% often under pushback (prereg 17.9 RESULTS, pushback_readout_pooled.json), affirming more false theorem
+% statements (prereg 16.15.5, nano), and the collective less accurate than the solo on four of five models
+% (collective_vs_solo_paired.json, Section sec-collective)
+% "affirming (more) false theorem statements" (discussion-14 of an earlier round, subsuming whole-29): Section sec-single, NoT also
 % affirms more false theorem statements from the BrokenMath benchmark (prereg 16.15.5, nano)
 
 \subsection*{Reproducibility statement}
@@ -32,6 +38,11 @@ Every experiment run after our append-only pre-registration log opened was regis
 before any model call, with a spending ceiling, a stop rule, the quantities to be reported with
 their baselines, and for every outcome an interpretation declared in advance, which the log calls
 a reading, and every corrected or withdrawn result is recorded there beside the original.
+The log is our own, kept under version control rather than filed with a public registry, so
+the order of registrations, model calls and results rests on its dates and commit history.
+% Appendix app-prereg, "Practice and scope" (Guidance_Documents/prereg_embodiment_community.md under git,
+% first commits ca5e805 and 07e597d, 2026-08-31; PI to confirm no registry filing, as noted there). The
+% readers' pointer is dropped because the next sentence opens with Appendix~\ref{app-prereg}.
 Appendix~\ref{app-prereg} and Table~\ref{tab-app-provenance} identify the results that predate
 the log and the readings added after data were seen.
 % Integrating editor, 2026-09-23: the earlier "Every experiment was pre-registered ... before any
@@ -50,7 +61,7 @@ implementation that shares no code with the analysis scripts named in the regist
 % scripts/verify_pillar3_headline.py, verify_pillar3_headline_<condition>.json all_agree true); the
 % solo column and the two differences from the solo come from collective_vs_solo_paired.json
 % (scripts/analyze_collective_vs_solo.py) and are not part of the independent check
-Fresh calls would not reproduce every response or score, since models were sampled at 0.7 or at
+Fresh calls would not reproduce every response or score, since models were sampled at temperature 0.7 or at
 the provider's default temperature and repeated judge calls on the same text can disagree
 (Appendix~\ref{app-cost}), so the numbers are reproduced from the caches.
 % sampling: Appendix app-cost decoding paragraph (scripts/generators.py temperature=0.7 on the gpt-4o
@@ -58,15 +69,23 @@ the provider's default temperature and repeated judge calls on the same text can
 % scripts/elephant_scorers.py _judge_text at the provider's default temperature); disagreement: the
 % production judge's test-retest agreement 0.969 on byte-identical input (judge_test_retest.json,
 % Appendix app-judges) and no response recurring between runs 1 and 3 (Appendix app-rep4k)
-Intervals are percentile bootstraps that resample items and keep every
-response to an item together (item-clustered).
+Unless stated otherwise, intervals are percentile bootstraps that resample items and keep
+every response to an item together (item-clustered), so they hold the judge fixed and do not
+cover a shift shared by a whole generation run, which Appendix~\ref{app-rep4k} measures.
+% head of Appendix app ("holds the judge fixed ... but not a shift shared by a whole generation run, which
+% Appendix app-rep4k measures"), Section sec-single Setup ("judge and generation run fixed"). "Unless
+% stated otherwise" as the Appendix head qualifies it ("percentile bootstraps with 8,000 draws unless
+% stated", clarity round 3, discussion-17): the pooled interval with run as a random factor in Table
+% tab-app-runs is a normal interval (run_stability.json bootstrap.pooled_random_run_ci). The readers'
+% wording, "with the judge and the generation run held fixed", was corrected because it would be false for
+% that interval.
 % Cache names (discussion-16): judge calls hash metric, question, advice and judge
 % (scripts/elephant_scorers.py _cache_key), ELEPHANT generations carry no sample index
 % (scripts/run_elephant.py _gen_cache_path), crowdgold and pushback caches add cap, round, role and
 % turn, so "built from the call's inputs" is the description true of every cache. The analysis scripts
 % named in the registrations: analyze_router_decomposition, analyze_topology_2x2 and analyze_flooding
 % (scripts/verify_pillar3_headline.py docstring; prereg ~l.3994, ~l.4222).
-The appendix lists the scripts, artefacts and pre-registration entries behind each result. The
+Table~\ref{tab-app-provenance} lists the pre-registration entry, artefact and script behind each result. The
 release holds the per-call caches, the ELEPHANT and Scruples item lists with the reference labels
 they carry and each platform's content-filter exclusions, every prompt including the collective's, the scripts
 behind each result together with the independent verification script, the bootstrap seeds, and

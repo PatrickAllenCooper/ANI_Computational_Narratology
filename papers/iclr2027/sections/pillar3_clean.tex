@@ -2,66 +2,68 @@
 \label{sec-collective}
 
 The collective places the scaffold's principle across opposed agents but is
-less accurate than the solo on four of five models, where its dissent flags
-its own errors, on grok with NoT or CoT seats.
+less accurate than the solo on four of five models, on which its dissent
+flags its own errors, as it does on grok with CoT seats.
 
 \paragraph{Instrument and protocol.}
 Disputes are Scruples Anecdotes \citep{lourie2021scruples}, first-person
-conflict accounts whose crowd verdict, a community judgement of blame rather
-than a ground truth, is the reference when at least 90 percent of at least 50
+conflict accounts whose crowd verdict, a community judgement, not a ground
+truth, is the reference when at least 90 percent of at least 50
 votes agree in blaming the writer alone or the other party alone, and
 accuracy is agreement with it.
-ELEPHANT's own set of such posts has no vote counts, so it admits no
-consensus rule, and a validation claim we made on it in this study was
-withdrawn (Appendix~\ref{app-prereg}).
-The set has 249 items, less those whose single-agent answers each
-platform's content filter refused, each posed under two framings, the third
-person and the user as the writer, and each item and framing pair is debated
-four times on grok, twice on Llama, Mistral and DeepSeek and once on haiku
-(Appendix~\ref{app-collective}).
-Over seven stages in 17 calls (Table~\ref{tab-app-stages}), in which the
-seats exchange statements, the fourth copy, a moderator with no side,
-synthesises the seats' final positions and, after each seat labels that
-synthesis, writes the integrated verdict scored as the collective's.
+ELEPHANT's set of such posts lacks vote counts, and this study's claim
+that NoT lowers judged validation there is withdrawn
+(Appendix~\ref{app-prereg}).
+The set has 249 items, 99 with the writer at fault, less those whose
+single-agent NoT answers content filters refused, each posed under two
+framings, the third person and the user as the writer, and each item and
+framing pair, a case, is debated four times on grok, twice on Llama, Mistral
+and DeepSeek and once on haiku (Appendix~\ref{app-collective}).
+Over seven stages in 17 calls (Table~\ref{tab-app-stages}), in which three
+copies of one model, one advocate per party and a neutral seat, exchange
+statements, a fourth copy, a moderator with no side, synthesises their final
+positions and, after each seat labels that synthesis, writes the integrated
+verdict scored as the collective's.
 A verdict blaming the writer alone or both parties counts as
 at fault, one blaming the other party alone or no one as not at fault.
 A seat objects when it rejects the synthesis or accepts it with a
-modification, the counter fires, flagging the debate, when at least two
-seats object, and routing, to test whether the flag is worth acting on,
-replaces a flagged debate's verdict with the majority of three answers that
-sonnet gave to the framed account alone, unless they tie or none decides.
+modification, an objection counter fires, flagging the debate, when at
+least two seats object, and routing, to test whether the flag merits
+action, replaces a flagged debate's verdict with the majority, if any, of
+sonnet's three answers to the case without the debate.
 
-\paragraph{The collective is a sensor, not a decider.}
+\paragraph{The collective is a poor decider.}
 In a paired comparison not pre-registered, the collective's accuracy is
 below the solo's on four of five models (Table~\ref{tab-routing}), by
 6.9 to 22.2 points, intervals excluding zero, and indistinguishable from it
-on haiku ($-0.6$ $[-4.7, +3.5]$), while two earlier, unpaired comparisons
-favour the collective.
-Role-lock, the gap between the advocates' opening at-fault rates, is 0.97
-on grok and 0.42 on haiku, the other three between, and Llama errs
+on haiku ($-0.6$ $[-4.7, +3.5]$), while two unpaired comparisons from earlier
+runs favour the collective.
+Role-lock, measured as the gap between the advocates' opening at-fault rates, is 0.97
+on grok and 0.42 on haiku, the other three between. Llama's collective errs
 one way, toward blaming the writer.
-Opposition itself costs accuracy, three neutral seats scoring $+2.1$ points
-$[+0.4, +3.8]$ above opposed ones on grok in a contrast not pre-registered
+Opposition itself costs accuracy, a collective of three neutral seats
+scoring $+2.1$ points $[+0.4, +3.8]$ above the opposed one on grok, post hoc
 (Appendix~\ref{app-collective}).
 
 \paragraph{Dissent flags errors.}
-A verdict blaming one party gives that party's advocate a reason to
-object, so the informative objection is a second one no assigned side
-explains \citep{milgrom1986relying,lipman1995robust}, and the counter
-is a fixed threshold, not the learned rule of \citet{he2026minoritysentinel}.
-On grok's integrated verdicts that blame one party the collective is wrong on 0.387 of
+On grok's integrated verdicts blaming one party the collective is wrong on 0.387 of
 debates where a second seat objects against 0.039 where at most one does,
 9.8 times as often, a lift in error rate of $+34.8$ points $[+20.1, +49.3]$,
 against 4.4 times pooled over all verdicts.
-On verdicts that blame both parties or neither (accuracy 0.536 on 390
-grok debates against 0.936 for one-party verdicts), the counter shows no
-detectable lift, so the pooled figure mixes the dissent with the verdict
+A verdict blaming one party gives that party's advocate a reason to
+object, so the informative objection is a second one no assigned side
+explains \citep{milgrom1986relying,lipman1995robust}, which the
+two-objection threshold, not a learned rule \citep{he2026minoritysentinel},
+approximates.
+On verdicts blaming both parties or neither (accuracy 0.536 on 390
+grok debates against 0.936 for one-party verdicts), the flag shows no
+detectable lift, so the pooled figure mixes dissent with verdict
 type, itself a second, cheaper error signal. This split, like the
-two-objection threshold, was proposed and first read on grok's debates after
-their collection, so Table~\ref{tab-routing}'s other five rows are their
-prospective test.
+threshold, was proposed and first read on grok's debates after
+collection, so Table~\ref{tab-routing}'s other five rows test them
+prospectively.
 The lift replicates, 5.1 times ($+22.6$ points) on grok with the exchange
-cut, 6.2 ($+11.1$) on Mistral, where the counter fires on 88 percent of
+cut (testing whether the flag needs it), 6.2 ($+11.1$) on Mistral, where the counter fires on 88 percent of
 debates and is close to a constant, 2.3 ($+5.7$) on DeepSeek and 1.5
 ($+16.2$) on Llama, each interval excluding zero. On haiku the interval
 includes zero (1.5 times, $+3.5$ points $[-4.1, +12.0]$) and rules out a
@@ -77,9 +79,9 @@ mainly when its side loses, so the argument above is supported only there
 only on Mistral.} Solo (the model's majority of three brief unscaffolded
 answers), collective (the integrated verdict) and routed (after routing to
 sonnet) are accuracies against the crowd verdict. $n$ counts codable
-debates, whose synthesis and integrated verdict each blame the writer, the
-other party, both or neither, fire is the share flagged, differences are
-paired, in points, with 95 percent item-clustered intervals
+debates, whose synthesis and integrated verdict each blame one party, both
+or neither, fire is the share flagged, differences are paired per debate, in
+points, with 95 percent item-clustered intervals
 (Appendix~\ref{app-collective}), and precision and recall are the shares of
 flagged one-party verdicts that are wrong and of wrong ones flagged. Exchange
 cut, where no seat reads another's statements, has no solo pairing.}
@@ -90,44 +92,44 @@ cut, where no seat reads another's statements, has no solo pairing.}
 \paragraph{Routing.}
 Routing improves the collective on every row of Table~\ref{tab-routing}, by
 $+7.0$ points $[+4.8, +9.4]$ on grok with 19.6 percent of debates routed, and
-holds with DeepSeek in sonnet's place in an analysis not pre-registered
+holds with DeepSeek in sonnet's place, post hoc
 (Appendix~\ref{app-collective}).
 Most of the 7.0 points, 4.9 against 2.1 from one-party verdicts, come from
-verdicts blaming both or neither, where dissent shows no detectable lift
-and sending every such verdict to sonnet beats the counter.
+verdicts blaming both or neither, flagged in 235 of 390 grok debates with no
+detectable lift, and sending every such verdict to sonnet beats the counter.
 The routed collective detectably beats the solo only on Mistral ($+12.3$
-points $[+8.1, +16.8]$), is indistinguishable from it on grok and haiku and
-below it on Llama and DeepSeek.
+points $[+8.1, +16.8]$), where 88 percent of debates are flagged, is
+indistinguishable from it on grok and haiku and below it on Llama and
+DeepSeek.
 On grok, priced at one debate per case, it costs 93 percent as much as
 sonnet answering every case, at list rates on reported tokens, which may
 understate grok's cost, for 6.3 points less accuracy.
-Routing grok's solo to sonnet where most debates on its item and
-framing are flagged gains $+2.4$ points $[+0.5, +4.5]$, but its own
-sample disagreement \citep{manakul2023selfcheck}, a split of its three
-answers on fault, routes at least as well, and sonnet answering every case
-is above the routed collective on all five models and 4.0 points above the
-routed solo on grok (Appendix~\ref{app-collective}).
+Routing grok's solo to sonnet where most debates of its case are flagged
+gains $+2.4$ points $[+0.5, +4.5]$ over the solo, 4.0 points below sonnet
+answering every case.
 We therefore find no setting in which the collective is worth building
-for accuracy, since the solo is at least as accurate as the unrouted
-collective at 3 calls against 17 and that disagreement routes its errors at
-least as well on every model but Mistral, and the contribution is the
-mechanism finding.
+for accuracy, since sonnet answering every case is above the routed
+collective on all five models, the solo is at least as accurate as the
+unrouted collective at 3 calls against 17 and routing on its sample
+disagreement \citep{manakul2023selfcheck}, a split of its three answers on
+fault, does at least as well as the flags on every model but Mistral, and
+the contribution is that a poor decider senses its own errors.
 
-\paragraph{Narration costs the collective accuracy.}
-Changing only the seats' system prompt from NoT to CoT raises the
-collective's accuracy by 2.0 points $[+0.3, +3.7]$ on grok and
-4.2 $[+1.4, +7.0]$ on Llama and, with narrated flags thinned at random to
-the plain fire rate so both route equally often, its routed
-accuracy by 2.0 $[+0.1, +3.8]$ and 4.6 $[+1.2, +7.8]$, a reversal under a
-rule registered on both measures (Appendix~\ref{app-seat}).
-Narration raises grok's fire rate and so its gain from routing, the latter
-by 1.6 points with an interval reaching zero, and changes neither detectably
+\paragraph{NoT seats cost the collective accuracy.}
+Changing only the seats' system prompt from NoT to CoT raises
+collective accuracy by 2.0 points $[+0.3, +3.7]$ on grok and
+4.2 $[+1.4, +7.0]$ on Llama and, with NoT flags thinned at random to
+the CoT fire rate so both route equally often, routed
+accuracy by 2.0 $[+0.1, +3.8]$ and 4.6 $[+1.2, +7.8]$, reversing the
+scaffold's prediction on both registered measures (Appendix~\ref{app-seat}).
+NoT seats raise grok's fire rate and so, by 1.6 points with an interval
+reaching zero, its routing gain, changing neither detectably
 on Llama, both intervals within 2.7 points of zero.
-The sensor survives without narration on grok (6.4 against 9.8 times on
-one-party verdicts) and is not read on Llama, its 53 flagged debates under
-the registered minimum of 60, and narration changes neither model's
-shift toward excusing a writer at fault who is the user.
-The collective's accuracy on grok and Llama, and its sensor on grok, do
+The flag's lift on one-party verdicts stays detectable with CoT seats on
+grok (6.4 against 9.8 times) and is not read on Llama, its 53 flagged
+debates under the registered minimum of 60, and the seats' prompt changes
+neither model's verdict shift toward the user (Appendix~\ref{app-seat}).
+Collective accuracy on grok and Llama, and the flag's lift on grok, do
 not depend on the scaffold and so are not evidence for it, the collective
-only placing its principle across agents \citep{longino1990science}.
+sharing only its principle \citep{longino1990science}.
 

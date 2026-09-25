@@ -14,12 +14,12 @@ The experiments use public benchmark text (ELEPHANT open-ended advice questions,
 Anecdotes) and public model APIs, with no human subjects and no new personal data. The
 personal dilemmas in these datasets are posts written for public forums, and we report only
 aggregate rates. The scaffold studied here changes how a model answers people who describe
-their own conflicts, so a reduction in validation is not automatically a benefit to the person
-asking, since ELEPHANT's own human-written answers are labelled validating in 30 percent of
-cases (Section~\ref{sec-single}).
-We report where the scaffold fails to help or makes things worse (capitulating under pushback,
-affirming false theorem statements, and the collective's own accuracy) rather than only where it
-helps.
+their own conflicts, and a reduction in validation is not automatically a benefit to the person
+asking, since human answers also validate at times, ELEPHANT's own human-written answers being
+labelled validating in 30 percent of cases (Section~\ref{sec-single}).
+We report where the scaffold fails to help or makes things worse (capitulating more under pushback,
+affirming more false theorem statements, and a collective less accurate than the model answering
+alone) rather than only where it helps.
 
 \subsection*{Reproducibility statement}
 
@@ -27,6 +27,8 @@ Every experiment run after our append-only pre-registration log opened was regis
 before any model call, with a spending ceiling, a stop rule, the quantities to be reported with
 their baselines, and for every outcome an interpretation declared in advance, which the log calls
 a reading, and every corrected or withdrawn result is recorded there beside the original.
+The log is our own, kept under version control rather than filed with a public registry, so
+the order of registrations, model calls and results rests on its dates and commit history.
 Appendix~\ref{app-prereg} and Table~\ref{tab-app-provenance} identify the results that predate
 the log and the readings added after data were seen.
 Every model call is cached in a file whose name is built from the call's inputs, so every number
@@ -35,12 +37,13 @@ accuracies before and after routing, routing gains, precision, recall and error-
 Table~\ref{tab-routing} and Section~\ref{sec-collective} are recomputed by an independent
 implementation that shares no code with the analysis scripts named in the registrations
 (Appendix~\ref{app-collective}).
-Fresh calls would not reproduce every response or score, since models were sampled at 0.7 or at
+Fresh calls would not reproduce every response or score, since models were sampled at temperature 0.7 or at
 the provider's default temperature and repeated judge calls on the same text can disagree
 (Appendix~\ref{app-cost}), so the numbers are reproduced from the caches.
-Intervals are percentile bootstraps that resample items and keep every
-response to an item together (item-clustered).
-The appendix lists the scripts, artefacts and pre-registration entries behind each result. The
+Unless stated otherwise, intervals are percentile bootstraps that resample items and keep
+every response to an item together (item-clustered), so they hold the judge fixed and do not
+cover a shift shared by a whole generation run, which Appendix~\ref{app-rep4k} measures.
+Table~\ref{tab-app-provenance} lists the pre-registration entry, artefact and script behind each result. The
 release holds the per-call caches, the ELEPHANT and Scruples item lists with the reference labels
 they carry and each platform's content-filter exclusions, every prompt including the collective's, the scripts
 behind each result together with the independent verification script, the bootstrap seeds, and

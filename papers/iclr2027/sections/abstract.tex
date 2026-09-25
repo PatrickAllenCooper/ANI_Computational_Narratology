@@ -61,6 +61,24 @@
 %      errors" rests on a plain-seat sensor read on grok only (Llama's 53 flagged debates fall under the
 %      registered minimum of 60, and haiku's sensor survival was registered as not testable), prereg 16.28
 %      RESULTS and amendment E-D, seat_scaffold_comparison.json, Appendix app-seat.
+%  (10) Clarity review round 3 (2026-09-24), for the PI, prose not edited. (a) "a ... prompt scaffold that
+%      writes the decision-maker ... into the model's reasoning" makes the scaffold the writer, where the
+%      Introduction has the scaffold "asking the model to write". (b) "in their seats" uses "seats" before any
+%      definition (the Introduction defines them as an advocate for each party and a neutral seat). (c)
+%      "organized" and "emphasizes" are American spellings in a paper otherwise British ("organised" in the
+%      Introduction and Section sec-scaffold, "judgement", "favour"); the title's "Generalizable" (main.tex)
+%      is the same case.
+%  (11) Round 3 skim review (2026-09-24, whole-22), for the PI: the abstract, like every section, names standard
+%      chain-of-thought as NoT's only comparison, while prereg 17.12 RESULTS (registered before any call) find
+%      ELEPHANT's naive instruction lowering judged validation more than NoT under all five judges
+%      (BASELINE-BEATS-NOT, judge-robust) and the sceptical-advisor prompt doing so under four of five (MATCH
+%      under the production judge), while NoT beats the context-prepending baseline under all five and the
+%      perspective-shift rewrite under the production and gpt-4o judges (MATCH under the other three);
+%      baselines_17_12_readout.json judge_robust and judges.<judge>.readings, judge_panel_baselines_17_12.json.
+%      Not yet reported in the paper. At integration (integrate_results.js, new_results_args.json) 17.12 and
+%      17.11 go into Section sec-single and Appendix app-form with a Table tab-claims row, the Related Work
+%      pointer its comment names, and PENDING_EDITS.md item 1 (Chen et al. 2025 persona vectors).
+%      (Numbered 11 because the round-3 readability item above took 10; the package text numbered it 10.)
 % ============================================================================================
 \begin{abstract}
 LLMs today are adept at conversation, providing advice and suggestions with apparent empathy and understanding. While the underlying nature of their understanding and the manner of its emergence might be a matter of much debate, the premise that this "understanding" breaks down under more complex social conditions remains largely accepted. The social account of objectivity emphasizes how organized criticism across perspectives can expose individual errors. Based on this account, we introduce a general, lightweight prompt scaffold that writes the decision-maker, the affected stakeholders, the consequences of each action and what remains uncertain into the model's reasoning, and which improves their social reasoning abilities when compared to standard chain-of-thought.
@@ -87,7 +105,9 @@ and that among agents with opposing interests, with or without the scaffold in t
 % (router_decomposition.json composed_sonnet; independently reproduced by verify_pillar3_headline.py)
 Our findings lay the groundwork for further exploring the potential of this scaffold in improving models' social alignment.
 \end{abstract}
-\noindent\todo{PI: decide the title (note above it in main.tex) and items 5 to 9 atop sections/abstract.tex.}
+\noindent\todo{PI: decide the title (note above it in main.tex) and items 5 to 11 atop sections/abstract.tex.}
+% "items 5 to 11" (clarity review round 3, 2026-09-24): comment items (10), the readability items, and (11),
+% whole-22's comparison baselines, added above
 % visible note cut to one line (whole-02, clarity loop 2, 2026-09-24; supersedes intro-13's edit of this
 % \todo, whose comment item 9 stays): the three clauses reworded on 2026-09-23 are recorded in lines 2-6 of
 % this file, the theory-of-mind figure's owner in the PILLAR 2 \todo inside the abstract, and the title

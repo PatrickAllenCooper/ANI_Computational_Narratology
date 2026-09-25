@@ -3,14 +3,44 @@
 \section{The Scaffold}
 \label{sec-scaffold}
 
-Figure~\ref{fig:prompt} gives NoT and its control, the one-line CoT prompt,
-verbatim.
+NoT applies the scaffold's principle, organised criticism across
+perspectives, within one model by having it write out the perspectives
+missing from one person's account, and the collective of
+Section~\ref{sec-collective} gives them to separate, opposed agents.
+% integrating editor, clarity loop 2 (2026-09-24), page budget: the Introduction cites
+% longino1990science and popper2011open for the same account at its first use, so the repeated
+% citation is dropped here; "places them in separate agents with opposed interests" is "gives them to
+% separate, opposed agents", same meaning
+% "the perspectives missing from one person's account" restates the introduction's "a model answering
+% one person's account holds only that person's perspective" (sections/introduction.tex, since round 3 "a model answering one
+% person hears only that person's side"); the earlier
+% "into the trace before the answer" is carried by "before answering" in the first sentence
+% Citation matches the introduction's for the same account (longino1990science,popper2011open);
+% mercier2011argumentative stays cited in Related Work for the argumentative theory
+% "the scaffold's principle, organised criticism across perspectives" (scaffold-03, clarity loop 2,
+% 2026-09-24) names the referent of "the scaffold's principle" in the opener of sections/pillar3.tex, of
+% "its principle's external form" at the end of that section and of "its principle, organised criticism
+% across perspectives" in sections/discussion.tex; the introduction attributes the phrase to the social
+% account of objectivity with the same two citations; "NoT has" for "the scaffold has" ties the
+% scaffold of the title to NoT
+% scaffold-01 (clarity round 3, 2026-09-24): this sentence now opens the section so that its point
+% comes first and "the scaffold's principle", which the opener of sections/pillar3.tex and the Discussion
+% ("only the scaffold's principle (Section sec-scaffold)") rely on, is named in the section's first
+% sentence; "Under the scaffold's principle ..., NoT has the model write out" -> "NoT applies the
+% scaffold's principle ... within one model by having it write out", since "Under" read as "subject to";
+% "account of a conflict" -> "account", since the Section sec-single items are ELEPHANT requests for
+% advice about the asker's own situation, not conflict accounts, and the Introduction's wording is "a
+% model answering one person's account"; the section order of scaffold-04 (clarity loop 2) below is now
+% the principle and what NoT does, the verbatim prompts, how the tasks use it, the brief prompt, related
+% prompts, the acronym; measured with the theory-of-mind stand-in together with scaffold-02 and
+% scaffold-05 (Section sec-scaffold stays 12 rendered lines, AI use statement unchanged at page 9)
+Figure~\ref{fig:prompt} gives NoT and its one-line CoT control verbatim.
 % integrating editor, clarity loop 2 (2026-09-24), one definition per term and page budget with the
 % theory-of-mind stand-in: "NoT asks the model to reason in a first-person narrative of five sections
 % before answering, and its control is the one-line CoT prompt, both verbatim in Figure fig:prompt"
 % restated the Introduction's definition of NoT at its first use ("a lightweight prompt scaffold asking
 % the model to write the missing perspectives into its reasoning as a first-person narrative in five
-% sections"), so this sentence now only points to the verbatim prompts; the next sentence says what NoT
+% sections"), so this sentence now only points to the verbatim prompts; the sentence before it says what NoT
 % has the model write
 % integrating editor, clarity loop 2 (2026-09-24): the parenthesis naming the five sections
 % (protagonist, stakeholders, consequences, uncertainty and decision) is dropped because the
@@ -24,25 +54,8 @@ verbatim.
 % scaffold-08 (clarity loop 2, 2026-09-24) had put the five section names in parentheses so that "before
 % answering" could not be read as a sixth item; both the names and that sentence have since left this
 % section (notes above), so the fix is moot
-Under the scaffold's principle, organised criticism across perspectives, NoT
-has the model write out the perspectives missing from one person's account
-of a conflict, and the collective of Section~\ref{sec-collective} gives them
-to separate, opposed agents.
-% integrating editor, clarity loop 2 (2026-09-24), page budget: the Introduction cites
-% longino1990science and popper2011open for the same account at its first use, so the repeated
-% citation is dropped here; "places them in separate agents with opposed interests" is "gives them to
-% separate, opposed agents", same meaning
-% "the perspectives missing from one person's account" restates the introduction's "a model answering
-% one person's account holds only that person's perspective" (sections/introduction.tex); the earlier
-% "into the trace before the answer" is carried by "before answering" in the first sentence
-% Citation matches the introduction's for the same account (longino1990science,popper2011open);
-% mercier2011argumentative stays cited in Related Work for the argumentative theory
-% "the scaffold's principle, organised criticism across perspectives" (scaffold-03, clarity loop 2,
-% 2026-09-24) names the referent of "the scaffold's principle" in the opener of sections/pillar3.tex, of
-% "its principle's external form" at the end of that section and of "its principle, organised criticism
-% across perspectives" in sections/discussion.tex; the introduction attributes the phrase to the social
-% account of objectivity with the same two citations; "NoT has" for "the scaffold has" ties the
-% scaffold of the title to NoT
+% scaffold-01 (clarity round 3, 2026-09-24): moved after the principle sentence; "its control, the
+% one-line CoT prompt, verbatim" -> "its one-line CoT control verbatim" to pay for the longer opener
 Sections~\ref{sec-single} and~\ref{sec-collective} use the NoT text
 unchanged on every model and task, with what a task adds, such as labels for
 who is at fault or a seat's role, after it in the system prompt or user turn
@@ -69,8 +82,8 @@ who is at fault or a seat's role, after it in the system prompt or user turn
 % scaffold-05 (clarity loop 2, 2026-09-24): "any glossary of verdict labels, line forcing a verdict or
 % seat role in the collective that a task adds" -> "what a task adds, such as labels for who is at fault
 % or a seat's role"; the forced verdict line stays in the appendices named and in the comment above
-The solo and the stronger judge, sonnet, answer instead under a brief
-unscaffolded prompt, which gives those labels and asks for at
+The solo and the stronger judge, sonnet, answer under neither NoT nor CoT
+but a brief unscaffolded prompt, which gives those labels and asks for at
 most four sentences of reasoning (Appendix~\ref{app-prompts}).
 % scaffold-01 (clarity loop 2, 2026-09-24), defining at its first main-text use the prompt that Section
 % sec-single ("Against a brief unscaffolded prompt rather than CoT") and Table tab-routing ("majority of
@@ -87,6 +100,12 @@ most four sentences of reasoning (Appendix~\ref{app-prompts}).
 % "Section sec-collective's routing model": the Introduction now defines sonnet at its first use as
 % "claude-sonnet-4-6 (sonnet), a stronger judge whose answer without the debate replaces the collective's
 % verdict", and Related Work and Section sec-collective use the same name
+% scaffold-02 (clarity round 3, 2026-09-24): "answer instead under a brief unscaffolded prompt" ->
+% "answer under neither NoT nor CoT but a brief unscaffolded prompt", so that the brief prompt cannot be
+% taken for the CoT control; Appendix app-collective "Pairing with the solo" ("carries neither NoT nor
+% CoT"); scripts/run_crowdgold_aita.py build_system with scaffold "standard" has an empty scaffold head
+% and no step-by-step line (GLOSSARY_CORE + BREVITY + verdict_instruction); the Appendix app-prompts label
+% of that prompt is renamed to match (scaffold-04, clarity round 3); measured with scaffold-01
 Among related prompts, SimToM \citep{wilf2024simtom} first restates what
 one character knows, then answers from it, MoralCoT \citep{jin22_moralcot}
 builds chain-of-thought on a theory of moral reasoning, and Solo
@@ -95,7 +114,7 @@ Performance Prompting \citep{wang2024spp} has one model play several personas.
 % https://arxiv.org/abs/2210.01478 ("a novel moral chain of thought (MORALCOT) prompting strategy",
 % jin22_moralcot) and https://arxiv.org/abs/2307.05300 ("Solo Performance Prompting (SPP)", a single LLM
 % in "self-collaboration with multiple personas", wang2024spp); no citation added
-NoT instead fixes its five sections in one system prompt used in one call per
+NoT instead puts its five sections in one system prompt used in one call per
 answer, with no restating pass or worked examples.
 % wilf2024simtom added 2026-09-23 for reviewer W38; primary pages https://aclanthology.org/2024.acl-long.451/
 % and https://arxiv.org/abs/2311.10227 fetched 2026-09-23 (two-stage perspective-taking, no exemplars).
@@ -109,6 +128,9 @@ answer, with no restating pass or worked examples.
 % and a closing commitment to a decision" shortened to "its five sections" for the page budget, the
 % sections, the last the decision, being listed in the first sentence and Figure fig:prompt ("Commit to a
 % specific decision")
+% scaffold-05 (clarity round 3, 2026-09-24): "fixes its five sections" -> "puts its five sections",
+% since "fixes" could be read as "repairs"; that the text is fixed stays said above ("use the NoT text
+% unchanged on every model and task"); one character shorter, measured with scaffold-01 and scaffold-02
 NoT also abbreviates Narrative-of-Thought
 \citep{zhang2024narrativeofthought}, a temporal-reasoning prompt sharing
 neither task nor content with ours.

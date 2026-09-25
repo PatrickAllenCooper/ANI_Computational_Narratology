@@ -2,62 +2,63 @@
 \label{sec-discussion}
 
 \paragraph{What the evidence supports.}
-We set out to test whether a first-person narrative of the missing
-perspectives lowers sycophancy.
-On judged validation and in the collective the evidence supports only the
-scaffold's principle (Section~\ref{sec-scaffold}), in a weaker,
-judge-dependent form, so the name Narration-of-Thought records that
-hypothesis, not what we found.
+On judged validation and in the collective the evidence supports the
+scaffold's principle (Section~\ref{sec-scaffold}) more weakly than
+hypothesised and, on validation, depending on the judge. It does not
+support our hypothesis, recorded in the name Narration-of-Thought, that a
+first-person narrative of the missing perspectives lowers sycophancy.
 Pooled over four generators and under every judge, a third-person
 checklist of NoT's five sections lowers judged validation further below CoT
 than NoT does, and narration without the sections raises it
 above CoT (Table~\ref{tab-form-main}), though part of the checklist's effect
-may be a cooler register, which this design cannot separate from less
-endorsement.
-In the collective, among verdicts blaming one party, a second objection
-flags errors on four of five models, an analysis proposed after grok's debates
-were collected.
+may be a cooler register, inseparable here from less endorsement.
+In the collective, a verdict blaming one party is wrong more often when a
+second seat objects, on four of five models, an analysis proposed after
+grok's debates were collected.
 Those objections, however, come from assigned opposition,
-which on grok costs accuracy against three neutral seats in a contrast not
-pre-registered.
+which on grok costs accuracy, three neutral seats scoring higher, in a
+contrast not pre-registered.
 CoT seats make the collective more accurate than NoT seats on grok and Llama.
-The collective is less accurate than the solo on four of five models
-(Table~\ref{tab-routing}), indistinguishable from it on haiku, and even after
-routing beats it only on Mistral.
+The collective is no better a decider than the solo, worse on four of five
+models (Table~\ref{tab-routing}) and indistinguishable on haiku, but a
+sensor of its own errors. Routing raises its accuracy on all five but
+beats the solo only on Mistral, and 4.9 of its 7.0 points on grok come from
+verdicts blaming both parties or neither, where objections carry no
+detectable error signal.
 \todo{PILLAR 2 (co-author): Section~\ref{sec-tom}'s result, its scope and limits, and whether any contrast there separates content from form, else say the decomposition above was tested on judged validation and the collective only.}
 
 \paragraph{Judges and judge-free tests.}
-The single-agent reduction holds on all seven generators only under the
-production judge, haiku, and under all five only on Llama, while no other
-judge confirms it on sonnet, which shares haiku's developer
-(Section~\ref{sec-single}).
+NoT's reduction holds on all seven generators only under the production
+judge, haiku, and under every judge only on Llama, while on sonnet, whose
+responses haiku could favour as its developer's, the other four reverse it
+in the regeneration (Section~\ref{sec-single}).
 No judge can separate register from endorsement, but the judge-free
 pushback test measures commitment, keeping a verdict when asked to
-reconsider, not tone.
+reconsider, not register.
 There NoT gives up its verdict more often than CoT whether the user
 disputes it or asks again, carried almost entirely by Llama, and the
-registered primary, the first rise net of the second, is null because the
-rises are alike, not because either is absent.
+registered primary measure, the first rise minus the second, is null
+because the rises are alike, not absent.
 In a second judge-free test, against the brief unscaffolded prompt, not
-CoT, NoT does not remove the verdict's shift toward excusing the user
-as writer on Llama and Mistral, and DeepSeek shows none under either prompt.
+CoT, NoT does not remove the verdict's shift toward the user on Llama and
+Mistral, and DeepSeek shows it under neither prompt.
 
 \paragraph{Other limitations and future work.}
 Each generator answered each item once per prompt per run, and our
 intervals resample items, not runs, so only its two to four runs, compared
-post hoc (Table~\ref{tab-app-runs}), show how far the reduction moves
-between generations.
-They keep it under the production judge, with an
-interval excluding zero, in every run but sonnet's second at 4,096 tokens,
-and the regeneration shrinks it on sonnet under the production judge and on
-Mistral and DeepSeek under gpt-4o.
-Content filters on most platforms refuse some disputes, so the collective
+post hoc (Table~\ref{tab-app-runs}), show how far the reduction moves.
+It holds under the production judge in every run but sonnet's second
+4,096-token run, and the regeneration shrinks it, for example, on sonnet
+under the production judge and on Mistral and DeepSeek under gpt-4o.
+Content filters on most platforms refuse some disputes, so collective
 and pushback item sets differ by model.
-The decisive test crosses first- and third-person voice with narrative and
-checklist form and has blind human raters score endorsement apart from
-register.
-A second is whether any form of content resists multi-turn pushback
-\citep{hong2025sycophancy}. A third is whether dissent flags errors where
-role-lock is weak and routes them better than the solo's sample
-disagreement, which routed errors at least as well everywhere but Mistral,
+The decisive test of form against content would cross first- and
+third-person voice with narrative and checklist form and have blind human
+raters score endorsement apart from register.
+A second is whether the scaffold's content in either form resists
+multi-turn pushback \citep{hong2025sycophancy}.
+A third is whether dissent flags errors where
+role-lock is weak, as on haiku, and routes them better than the solo's
+sample disagreement,
+which routed errors at least as well everywhere but Mistral,
 in comparisons registered only on grok.

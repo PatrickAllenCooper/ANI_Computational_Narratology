@@ -7,60 +7,64 @@ warrants, a trained bias called sycophancy
 form \citet{cheng25elephant} call social sycophancy, validating the person
 asking.
 The social
-account of objectivity locates objectivity in organised criticism across
+account of objectivity locates it in organised criticism across
 perspectives, not in one reasoner
-\citep{longino1990science,popper2011open}, and a model answering one person's
-account hears only that person's side. We introduce
+\citep{longino1990science,popper2011open}, and a model answering one person
+hears only that person's side. We introduce
 Narration-of-Thought (NoT), a lightweight prompt scaffold asking the model to write the missing perspectives
 into its reasoning as a first-person narrative in five sections, the decision-maker, the
 stakeholders, the consequences of each action, what remains uncertain and a
-decision (Section~\ref{sec-scaffold}), and compare it with standard chain-of-thought \citep[CoT,][]{wei22,kojima22}.
+decision (Section~\ref{sec-scaffold}), and test whether, against standard chain-of-thought \citep[CoT,][]{wei22,kojima22}, it lowers one agent's sycophancy (Section~\ref{sec-single}) and helps a collective of opposed agents decide who is at fault (Section~\ref{sec-collective}).
 
 On 150 open-ended advice questions from the ELEPHANT benchmark
 \citep{cheng25elephant}, NoT lowers the validation rate, the share
 of answers a judge model scores as emotionally validating the asker, on all
 seven answering models (generators) under our production judge, the
-default scorer claude-haiku-4-5 (haiku), itself one of them, by 13 to 63 percentage points (a relative reduction
-of 16 to 80 percent, the fall divided by CoT's rate), but it depends on the judge, holding under all
-five judges, from four developers, only on Llama-3.3-70B-Instruct (Llama)
+default scorer claude-haiku-4-5 (haiku), by 13 to 63 percentage points (a relative reduction
+of 16 to 80 percent, the fall divided by CoT's rate), though in a second run on
+claude-sonnet-4-6 (sonnet) that judge's interval includes zero. Because haiku is itself a
+generator, four further judges from three other developers score the same answers. The
+reduction depends on the judge, holding under all five only on Llama-3.3-70B-Instruct (Llama)
 (Section~\ref{sec-single}).
-The scaffold's structured content, not the narrative form, carries the
-reduction, since a third-person checklist of the same five sections
+NoT's structured content, not the narrative form, carries the
+reduction. A third-person checklist of the same five sections
 lowers validation below CoT's by 36.5 to 57.5 points across judges, pooled over four
 generators, more than NoT under every judge, while first-person narration
-without the sections raises it, though as the rubric scores emotional validation,
-part of any reduction may be a cooler tone rather than less endorsement.
+without the sections raises it above CoT's, though as the rubric scores emotional validation,
+part of any reduction may be cooler tone, not less endorsement.
 In a judge-free test on Scruples conflict accounts
-\citep{lourie2021scruples}, NoT reverses its own verdict that the user, as
-the writer, is at fault more often than CoT when the user disputes it,
-0.37 against 0.22 pooled over three generators, but also more when merely
-asked to reconsider, with no detectable difference in the pre-registered
-primary measure, which nets out that instability, $+5.2$ points
+\citep{lourie2021scruples}, scored from each reply's verdict label, NoT withdraws
+its verdict blaming the user, as the writer, more often than CoT when the user
+disputes it, 0.37 against 0.22 pooled over three generators, but also more when
+merely asked to reconsider, an instability the pre-registered primary measure
+nets out, leaving no detectable difference, NoT minus CoT $+5.2$ points
 $[-1.7, +12.2]$, a 95 percent interval from resampling items.
-In a multi-agent setting that we call the collective, three copies
-of one model prompted with NoT debate such an account as an advocate for each
+
+The collective is a poor decider but a sensor of
+its own errors. Three copies
+of one model, each prompted with NoT, debate such an account as an advocate for each
 party and a neutral seat and accept or object to the verdict a fourth copy
 proposes before it writes the final one, scored against the account's
 near-unanimous crowd verdict of who is at fault.
-The collective is a poor decider, less accurate
-than the same model answering alone (the solo) on four
-of five models and indistinguishable from it on haiku, but a
-sensor of its own errors, since on grok-4-1-fast-reasoning (grok), among
+It is less accurate
+than the same model's majority of three brief unscaffolded answers (the solo) on four
+of five models and indistinguishable from it on haiku. On grok-4-1-fast-reasoning (grok),
+the model of our primary evaluation, among
 verdicts blaming one party, which give that party's advocate a reason to
 object, it is wrong 9.8 times as often when a second
-seat objects as when at most one does, a
-finding about mechanism, not a system worth building, as the solo is at
+seat objects as when at most one does (a post hoc
+analysis), a finding about mechanism, not a system worth building, as the solo is at
 least as accurate at 3 calls against 17.
-Routing each debate where two or more seats object to claude-sonnet-4-6
-(sonnet), a stronger judge whose answer without the debate replaces the
-collective's verdict, raises the collective's accuracy on all five models,
-by 7.0 points on grok in our primary evaluation, though not above grok's
-solo, and 4.9 of them come from verdicts blaming both parties or
+Routing each flagged debate, one where two or more seats object, to sonnet,
+a stronger judge whose answer without the debate replaces the
+collective's verdict, raises its accuracy on all five models,
+by 7.0 points on grok, though not above the
+solo there, and 4.9 of those points come from verdicts blaming both parties or
 neither, where objections carry no detectable error signal.
-CoT seats make the collective more accurate than NoT seats on grok
-and Llama
-(Section~\ref{sec-collective}).
+CoT seats make the collective more accurate than NoT seats on
+grok and Llama, and on grok its dissent flags errors with either, so
+these results are not evidence for the scaffold (Section~\ref{sec-collective}).
 \todo{PILLAR 2 (co-author): one sentence on the theory-of-mind claim of Section~\ref{sec-tom} and one row of Table~\ref{tab-claims}, expected to support the abstract's 3 to 10 point figure fully.}
 Table~\ref{tab-claims} (Appendix~\ref{app}) gives where each claim holds
-and fails and its pre-registered outcome, and Appendix~\ref{app-prereg} what
+and fails and its pre-registered interpretation, and Appendix~\ref{app-prereg} what
 was not pre-registered.
